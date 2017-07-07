@@ -11,10 +11,8 @@
 
     <title><?php echo $title; ?> | <?php echo $this->config->item('portal_title'); ?></title>
     <!--link the bootstrap css file-->
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.css"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
 
-    <!-- Custom CSS -->
-<!--    <link rel="stylesheet" href="--><?php //echo base_url("assets/css/logo-nav.css"); ?><!--">-->
 </head>
 
 <body>
@@ -39,7 +37,7 @@
         <div class="collapse navbar-collapse" id="navbar1">
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($this->session->userdata('user_is_logged_in')){ ?>
-                    <li><a href="<?php echo base_url(); ?>index.php/profile">Hello <?php echo $this->session->userdata('user_name'); ?></a></li>
+                    <li><a href="<?php echo base_url(); ?>index.php/profile"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?></a></li>
                     <li><a href="<?php echo base_url(); ?>index.php/home/logout">Log Out</a></li>
                 <?php } else { ?>
                     <li><a href="<?php echo base_url(); ?>index.php/login">Login</a></li>

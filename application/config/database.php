@@ -77,7 +77,7 @@ $db['default'] = array(
 	'dsn'	=> 'pgsql:host=localhost;port=5432;dbname=gisapp',
 	'hostname' => 'localhost',
 	'username' => 'pguser',
-	'password' => 'pguser14',
+	'password' => 'password',
 	'database' => 'gisapp',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',

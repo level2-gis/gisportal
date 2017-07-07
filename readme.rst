@@ -6,9 +6,9 @@ Built with Codeigniter and Bootstrap.
 Setup
 *******************
 
-1. Setup database connection in application/config/database.php
-2. Setup base_site and other EQWC settings at bottom of application/config/config.php
-3. Change header_logo.png in assets/img
+1. Checkout into gisportal folder beside gisapp folder (EQWC)
+2. Setup database connection in application/config/database.php
+3. Setup base_site and other EQWC settings at bottom of application/config/config.php
 
 *******************
 Support

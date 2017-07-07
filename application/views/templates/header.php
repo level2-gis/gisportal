@@ -12,6 +12,7 @@
     <title><?php echo $title; ?> | <?php echo $this->config->item('portal_title'); ?></title>
     <!--link the bootstrap css file-->
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css"); ?>">
 
 </head>
 
@@ -49,5 +50,4 @@
     </div>
     <!-- /.container -->
 </nav>
-</br></br></br></br>
 <div class="container">

@@ -8,7 +8,7 @@ class Projects extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('projects_model');
-
+        $this->load->model('clients_model');
         $this->load->helper(array('url', 'html'));
         $this->load->library('session');
     }
@@ -27,6 +27,7 @@ class Projects extends CI_Controller {
     {
         $data['title'] = 'Projects';
         $data['projects'] = $this->projects_model->get_projects($client_id);
+        $data['client']= $this->clients_model->get_client_by_id($client_id);
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects', $data);

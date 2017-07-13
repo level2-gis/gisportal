@@ -16,8 +16,9 @@ class Signup extends CI_Controller
 		$this->form_validation->set_rules('fname', 'First Name', 'trim|required|min_length[3]|max_length[30]');
 		$this->form_validation->set_rules('lname', 'Last Name', 'trim|required|min_length[3]|max_length[30]');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.user_email]');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|md5');
-        $this->form_validation->set_rules('cpassword', 'Confirm Password', 'trim|required|md5|matches[password]');
+        $this->form_validation->set_rules('username', 'Username', 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('cpassword', 'Confirm Password', 'trim|required|min_length[3]|matches[password]');
 		
 		// submit
 		if ($this->form_validation->run() == FALSE)
@@ -33,15 +34,16 @@ class Signup extends CI_Controller
 		{
 			//insert user details into db
 			$data = array(
-				'user_name' => $this->input->post('fname') . ' ' . $this->input->post('lname'),
+                'display_name' => $this->input->post('fname') . ' ' . $this->input->post('lname'),
+                'user_name' => $this->input->post('username'),
 				'user_email' => $this->input->post('email'),
-				'user_password_hash' => $this->input->post('password')
+				'user_password_hash' => password_hash($this->input->post('password'), PASSWORD_DEFAULT)
 			);
 			
 			if ($this->user_model->insert_user($data))
 			{
 				$this->session->set_flashdata('msg','<div class="alert alert-success text-center">You are Successfully Registered! Please login to access your Profile!</div>');
-				redirect('signup/index');
+				redirect('login/index');
 			}
 			else
 			{

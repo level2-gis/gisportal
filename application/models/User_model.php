@@ -7,9 +7,10 @@ class User_model extends CI_Model
         parent::__construct();
     }
 
-    function get_user($email, $pwd)
+    function get_user($key, $pwd)
     {
-        $this->db->where('user_email', $email);
+        $this->db->where('user_email', $key);
+        $this->db->or_where('user_name', $key);
         $user = $this->db->get('users')->result();
 
         $pass = password_verify($pwd, $user[0]->user_password_hash);

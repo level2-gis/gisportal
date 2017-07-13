@@ -5,7 +5,8 @@ class Home extends CI_Controller
 	{
 		parent::__construct();
         $this->load->model('clients_model');
-		$this->load->helper(array('url', 'html'));
+        $this->load->model('user_model');
+        $this->load->helper(array('url', 'html'));
 		$this->load->library('session');
 	}
 	
@@ -14,7 +15,9 @@ class Home extends CI_Controller
         if ($this->session->userdata('user_is_logged_in')){
             $data['title'] = 'Clients';
 
-            $data['clients'] = $this->clients_model->get_clients();
+            $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+
+            $data['clients'] = $this->clients_model->get_clients($user[0]->project_ids);
             $this->load->view('templates/header', $data);
             $this->load->view('clients', $data);
             $this->load->view('templates/footer', $data);

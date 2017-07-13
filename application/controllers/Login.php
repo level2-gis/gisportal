@@ -13,11 +13,11 @@ class Login extends CI_Controller
     public function index()
     {
 		// get form input
-		$email = $this->input->post("email");
+		$key = $this->input->post("user");
         $password = $this->input->post("password");
 
 		// form validation
-		$this->form_validation->set_rules("email", "Email", "trim|required");
+		$this->form_validation->set_rules("user", "User", "trim|required");
 		$this->form_validation->set_rules("password", "Password", "trim|required");
 		
 		if ($this->form_validation->run() == FALSE)
@@ -32,7 +32,7 @@ class Login extends CI_Controller
 		else
 		{
 			// check for user credentials
-			$uresult = $this->user_model->get_user($email, $password);
+			$uresult = $this->user_model->get_user($key, $password);
 			if (count($uresult) > 0)
 			{
 				// set session
@@ -47,7 +47,7 @@ class Login extends CI_Controller
 			}
 			else
 			{
-				$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Wrong Email or Password!</div>');
+				$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Wrong Username or password!</div>');
 				redirect('login/index');
 			}
 		}

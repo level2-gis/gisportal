@@ -11,3 +11,11 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.trunc{
+    /*width:500px;*/
+    height: 55px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

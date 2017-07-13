@@ -6,9 +6,17 @@ class Clients_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_clients()
+    public function get_clients($user_projects = FALSE)
     {
-        $query = $this->db->get('clients');
+        $this->db->order_by('display_name', 'ASC');
+
+        if ($user_projects === FALSE) {
+            $query = $this->db->get('clients_view');
+            return $query->result_array();
+        }
+        //$user_projects
+        $this->db->where("project_ids && '".$user_projects."'");
+        $query = $this->db->get('clients_view');
         return $query->result_array();
     }
 

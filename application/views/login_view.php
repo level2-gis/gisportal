@@ -4,9 +4,9 @@
 			echo form_open("login/index", $attributes);?>
 			<legend>Login</legend>
 			<div class="form-group">
-				<label for="name">Email</label>
-				<input class="form-control" name="email" placeholder="Enter Email" type="text" value="<?php echo set_value('email'); ?>" />
-				<span class="text-danger"><?php echo form_error('email'); ?></span>
+				<label for="name">User</label>
+				<input class="form-control" name="user" placeholder="Enter Username or Email" type="text" value="<?php echo set_value('user'); ?>" />
+				<span class="text-danger"><?php echo form_error('user'); ?></span>
 			</div>
 			<div class="form-group">
 				<label for="name">Password</label>

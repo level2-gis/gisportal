@@ -2,7 +2,7 @@
 
     <div class="row">
         <div class="col-md-4">
-            <a href="#">
+            <a href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">
 <!--                <img class="img-responsive" src="--><?php //echo base_url("assets/img/clients/" . $clients_item['name'] . ".png"); ?><!--" alt="">-->
                 <img class="img-responsive" src="http://placehold.it/300x200" alt="">
             </a>
@@ -11,7 +11,9 @@
             <h3><?php echo $clients_item['display_name']; ?></h3>
             <h4><?php echo $clients_item['name']; ?></h4>
             <p>Description.</br><?php echo $clients_item['url']; ?></p>
-            <a class="btn btn-primary" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">View Projects <span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a class="btn btn-primary" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">View Projects
+                <span class="badge"><?php echo $clients_item['count']; ?></span>
+                <span class="glyphicon glyphicon-chevron-right"></span></a>
         </div>
     </div>
 

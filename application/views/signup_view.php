@@ -22,6 +22,12 @@
 				<span class="text-danger"><?php echo form_error('email'); ?></span>
 			</div>
 
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input class="form-control" name="username" placeholder="Username" type="text" value="<?php echo set_value('username'); ?>" />
+                <span class="text-danger"><?php echo form_error('username'); ?></span>
+            </div>
+
 			<div class="form-group">
 				<label for="subject">Password</label>
 				<input class="form-control" name="password" placeholder="Password" type="password" />

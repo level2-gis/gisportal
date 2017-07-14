@@ -9,8 +9,8 @@
         </div>
         <div class="col-md-8">
             <h3><?php echo $clients_item['display_name']; ?></h3>
-            <h4><?php echo $clients_item['name']; ?></h4>
-            <p>Description.</br><?php echo $clients_item['url']; ?></p>
+<!--            <h4>--><?php //echo $clients_item['name']; ?><!--</h4>-->
+            <p><?php echo $clients_item['description']; ?></p>
             <a class="btn btn-primary" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">View Projects
                 <span class="badge"><?php echo $clients_item['count']; ?></span>
                 <span class="glyphicon glyphicon-chevron-right"></span></a>

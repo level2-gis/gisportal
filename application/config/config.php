@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://192.168.1.60/gisportal/';
+$config['base_url'] = 'http://your_site/gisportal/';
 
 /*
 |--------------------------------------------------------------------------
@@ -533,5 +533,10 @@ $config['proxy_ips'] = '';
 
 $config['company'] = 'Level2';
 $config['company_url'] = 'http://level2.si';
+$config['company_email'] = 'info@level2.si';  //also for receiving system emails
 $config['portal_title'] = 'GIS PORTAL';
 $config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
+
+//Gmail account for sending mails from through Google SMTP
+$config['gmail_account'] = 'gmail email';
+$config['gmail_password'] = 'gmail password';

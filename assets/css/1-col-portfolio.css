@@ -12,10 +12,29 @@ footer {
     margin: 50px 0;
 }
 
-.trunc{
+.client_description{
     /*width:500px;*/
-    height: 55px;
+    height: 120px;
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.project_description{
+    /*width:500px;*/
+    height: 76px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bottomaligned {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: -27px;
+    left: 15px;
+}
+
+.top {
+    margin-top: 1px;
 }

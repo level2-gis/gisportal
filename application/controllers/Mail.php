@@ -48,6 +48,16 @@ class Mail extends CI_Controller
 
     }
 
+    function send()
+    {
+        $data = new  stdClass();
+        $data->mailto = $this->input->post("mailto") == null ? $this->config->item('company_email') : $this->input->post("mailto");
+        $data->subject = $this->input->post("subject");
+        $data->body = $this->input->post("body");
+
+        $this->sendMailWithResponse($data);
+    }
+
     private function sendMailWithResponse($data)
     {
         $this->email->to($data->mailto);
@@ -73,8 +83,8 @@ class Mail extends CI_Controller
                 ->set_status_header(200)
                 ->set_output(json_encode(array(
                     'success' => 'true',
-                    'message' => 'Email sent to ' . $this->config->item('company_email')
-                )));
+                    'message' => 'Email sent to ' . $data->mailto)
+                ));
         }
     }
 }

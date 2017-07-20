@@ -3,8 +3,8 @@
     <div class="row">
         <div class="col-md-4">
             <a href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">
-<!--                <img class="img-responsive" src="--><?php //echo base_url("assets/img/clients/" . $clients_item['name'] . ".png"); ?><!--" alt="">-->
-                <img class="img-responsive" src="http://placehold.it/300x200" alt="">
+                <img class="img-responsive" src="<?php echo base_url("assets/img/clients/" . $clients_item['name'] . ".png"); ?>" alt="">
+<!--                <img class="img-responsive" src="http://placehold.it/300x200" alt="">-->
             </a>
         </div>
         <div class="col-md-8">

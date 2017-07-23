@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?php echo $title; ?> | <?php echo $this->config->item('portal_title'); ?></title>
+    <title><?php echo $title; ?> | <?php echo $this->lang->line('gp_portal_title'); ?></title>
     <!--link the bootstrap css file-->
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css"); ?>">
@@ -32,7 +32,7 @@
             <a class="navbar-brand" target="_blank" href="<?php echo $this->config->item('company_url'); ?>">
                 <img height="32px" src="<?php echo base_url("assets/img/header_logo.png"); ?>" alt="">
             </a>
-            <a class="navbar-brand" href="<?php echo base_url(); ?>"><?php echo $this->config->item('portal_title'); ?></a>
+            <a class="navbar-brand" href="<?php echo base_url(); ?>"><?php echo $this->lang->line('gp_portal_title'); ?></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar1">

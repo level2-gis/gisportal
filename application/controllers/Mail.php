@@ -61,7 +61,7 @@ class Mail extends CI_Controller
     private function sendMailWithResponse($data)
     {
         $this->email->to($data->mailto);
-        $this->email->from($this->config->item('gmail_account'), $this->config->item('portal_title') . " ". $_SERVER['HTTP_HOST']);
+        $this->email->from($this->config->item('gmail_account'), $this->lang->line('gp_portal_title') . " ". $_SERVER['HTTP_HOST']);
         $this->email->subject($data->subject);
         $this->email->message($data->body);
 

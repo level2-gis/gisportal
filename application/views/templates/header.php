@@ -39,10 +39,10 @@
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($this->session->userdata('user_is_logged_in')){ ?>
                     <li><a href="<?php echo base_url(); ?>index.php/profile"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?></a></li>
-                    <li><a href="<?php echo base_url(); ?>index.php/home/logout">Log Out</a></li>
+                    <li><a href="<?php echo base_url(); ?>index.php/home/logout"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
                 <?php } else { ?>
-                    <li><a href="<?php echo base_url(); ?>index.php/login">Login</a></li>
-                    <li><a href="<?php echo base_url(); ?>index.php/signup">Signup</a></li>
+                    <li><a href="<?php echo base_url(); ?>index.php/login"><?php echo $this->lang->line('gp_login'); ?></a></li>
+                    <li><a href="<?php echo base_url(); ?>index.php/signup"><?php echo $this->lang->line('gp_register'); ?></a></li>
                 <?php } ?>
             </ul>
         </div>

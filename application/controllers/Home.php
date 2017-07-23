@@ -8,12 +8,13 @@ class Home extends CI_Controller
         $this->load->model('user_model');
         $this->load->helper(array('url', 'html'));
 		$this->load->library('session');
+        $this->lang->load('gisportal_lang');
 	}
 	
 	function index()
 	{
         if ($this->session->userdata('user_is_logged_in')){
-            $data['title'] = 'Clients';
+            $data['title'] = $this->lang->line('gp_clients_title');
 
             $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
@@ -22,7 +23,7 @@ class Home extends CI_Controller
             $this->load->view('clients', $data);
             $this->load->view('templates/footer', $data);
         } else {
-            $data['title'] = 'Home';
+            $data['title'] = $this->lang->line('gp_home');
 
             $this->load->view('templates/header', $data);
             $this->load->view('home_view');

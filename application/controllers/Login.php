@@ -9,6 +9,7 @@ class Login extends CI_Controller
 		$this->load->library(array('session', 'form_validation'));
 		$this->load->database();
 		$this->load->model('user_model');
+        $this->lang->load('gisportal_lang');
 	}
     public function index()
     {
@@ -23,7 +24,7 @@ class Login extends CI_Controller
 		if ($this->form_validation->run() == FALSE)
         {
 			// validation fail
-            $data['title'] = 'Login';
+            $data['title'] = $this->lang->line('gp_login');
 
             $this->load->view('templates/header', $data);
             $this->load->view('login_view');
@@ -47,7 +48,8 @@ class Login extends CI_Controller
 			}
 			else
 			{
-				$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Wrong Username or password!</div>');
+				$msg = $this->lang->line('gp_login_wrong');
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">' . $msg . '</div>');
 				redirect('login/index');
 			}
 		}

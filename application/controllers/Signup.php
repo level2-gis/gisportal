@@ -8,6 +8,7 @@ class Signup extends CI_Controller
 		$this->load->library(array('session', 'form_validation'));
 		$this->load->database();
 		$this->load->model('user_model');
+        $this->lang->load('gisportal_lang');
 	}
 	
 	function index()
@@ -24,7 +25,7 @@ class Signup extends CI_Controller
 		if ($this->form_validation->run() == FALSE)
         {
 			// fails
-            $data['title'] = 'Signup';
+            $data['title'] = $this->lang->line('gp_register');
 
             $this->load->view('templates/header', $data);
             $this->load->view('signup_view');
@@ -42,13 +43,15 @@ class Signup extends CI_Controller
 			
 			if ($this->user_model->insert_user($data))
 			{
-				$this->session->set_flashdata('msg','<div class="alert alert-success text-center">You are Successfully Registered! Please login to access your Profile!</div>');
+                $msg = $this->lang->line('gp_register_success');
+                $this->session->set_flashdata('msg','<div class="alert alert-success text-center">' . $msg . '</div>');
 				redirect('login/index');
 			}
 			else
 			{
 				// error
-				$this->session->set_flashdata('msg','<div class="alert alert-danger text-center">Oops! Error.  Please try again later!!!</div>');
+                $msg = $this->lang->line('gp_register_error');
+				$this->session->set_flashdata('msg','<div class="alert alert-danger text-center">' . $msg . '</div>');
 				redirect('signup/index');
 			}
 		}

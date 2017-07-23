@@ -8,6 +8,7 @@ class Profile extends CI_Controller
 		$this->load->library('session');
 		$this->load->database();
 		$this->load->model('user_model');
+        $this->lang->load('gisportal_lang');
 	}
 	
 	function index()
@@ -15,7 +16,7 @@ class Profile extends CI_Controller
 		$details = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 		$data['user'] = $details[0];
 
-        $data['title'] = 'My profile';
+        $data['title'] = $this->lang->line('gp_profile_title');;
 
         $this->load->view('templates/header', $data);
         $this->load->view('profile_view', $data);

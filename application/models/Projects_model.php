@@ -8,9 +8,11 @@ class Projects_model extends CI_Model {
 
     public function get_projects($client_id = FALSE, $user_projects = FALSE)
     {
+        $this->db->order_by('client', 'ASC');
         $this->db->order_by('display_name', 'ASC');
         if ($client_id === FALSE)
         {
+            $this->db->where("id = ANY('".$user_projects."')");
             $query = $this->db->get('projects_view');
             return $query->result_array();
         }

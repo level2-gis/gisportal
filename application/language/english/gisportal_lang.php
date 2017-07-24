@@ -27,6 +27,7 @@ $lang['gp_open_project'] = 'Open project';
 
 $lang['gp_profile_title'] = 'My profile';
 $lang['gp_clients_title'] = 'Clients';
+$lang['gp_projects_title'] = 'Projects';
 $lang['gp_home'] = 'Home';
 $lang['gp_portal_title'] = 'GIS PORTAL';
 

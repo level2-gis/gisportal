@@ -33,7 +33,7 @@ class Projects extends CI_Controller {
         }
 
         if ($this->session->userdata('user_is_logged_in')){
-            $data['title'] = 'Projects';
+            $data['title'] = $this->lang->line('gp_projects_title');
 
             $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
@@ -43,7 +43,8 @@ class Projects extends CI_Controller {
             $this->load->view('projects', $data);
             $this->load->view('templates/footer', $data);
         } else {
-            $data['title'] = 'Home';
+
+            $data['title'] = $this->lang->line('gp_home');
 
             $this->load->view('templates/header', $data);
             $this->load->view('home_view');

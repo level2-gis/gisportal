@@ -30,3 +30,19 @@ $lang['gp_clients_title'] = 'Stranke';
 $lang['gp_projects_title'] = 'Projekti';
 $lang['gp_home'] = 'Domov';
 $lang['gp_portal_title'] = 'GIS PORTAL';
+
+$lang['gp_user_projects'] = 'Projekti uporabnika';
+$lang['gp_public_projects'] = 'Javni projekti';
+$lang['gp_client'] = 'področje';
+$lang['gp_project'] = 'projekt';
+$lang['gp_public'] = 'javen';
+$lang['gp_crs'] = 'crs';
+$lang['gp_contact'] = 'kontakt';
+$lang['gp_description'] = 'opis';
+
+$lang['gp_registered'] = 'Registracija';
+$lang['gp_last_login'] = 'Zadnja prijava';
+$lang['gp_count_login'] = 'Št. prijav';
+
+$lang['gp_no_projects'] = 'Zaenkrat ni projektov dodeljenih tebi!';
+$lang['gp_no_public_projects'] = 'Zaenkrat ni javnih projektov za ogled!';

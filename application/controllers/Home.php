@@ -6,6 +6,7 @@ class Home extends CI_Controller
 		parent::__construct();
         $this->load->model('clients_model');
         $this->load->model('user_model');
+        $this->load->model('projects_model');
         $this->load->helper(array('url', 'html'));
 		$this->load->library('session');
         $this->lang->load('gisportal_lang');
@@ -20,7 +21,20 @@ class Home extends CI_Controller
 
             $data['clients'] = $this->clients_model->get_clients($user[0]->project_ids);
             $this->load->view('templates/header', $data);
-            $this->load->view('clients', $data);
+
+            if (($data['clients'] === null) or (empty($data['clients'])) ) {
+                $data['projects_public'] = $this->projects_model->get_public_projects();
+                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' =>'warning'));
+
+                if (($data['projects_public'] === null) or (empty($data['projects_public'])) ) {
+                    $this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' =>'info'));
+                } else {
+                    $this->load->view('public_projects_view', $data);
+                }
+            }
+            else {
+                $this->load->view('clients', $data);
+            }
             $this->load->view('templates/footer', $data);
         } else {
             $data['title'] = $this->lang->line('gp_home');

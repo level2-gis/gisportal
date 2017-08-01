@@ -21,14 +21,24 @@ class Profile extends CI_Controller
             $data['user'] = $details[0];
             $data['title'] = $this->lang->line('gp_profile_title');
             $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids);
+            $data['projects_public'] = $this->projects_model->get_public_projects();
 
             $this->load->view('templates/header', $data);
             $this->load->view('profile_view', $data);
+
+            if (($data['projects'] === null) or (empty($data['projects'])) ) {
+                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' =>'warning'));
+            } else {
+                $this->load->view('user_projects_view', $data);
+            }
+
+            if (($data['projects_public'] === null) or (empty($data['projects_public'])) ) {
+                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' =>'info'));
+            } else {
+                $this->load->view('public_projects_view', $data);
+            }
+
             $this->load->view('templates/footer', $data);
-            //TODO
-            //last_login
-            //count_login
-            //project_ids
 
         } else {
 

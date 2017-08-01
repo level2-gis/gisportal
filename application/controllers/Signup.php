@@ -9,6 +9,7 @@ class Signup extends CI_Controller
 		$this->load->database();
 		$this->load->model('user_model');
         $this->lang->load('gisportal_lang');
+        $this->load->helper('date');
 	}
 	
 	function index()
@@ -38,7 +39,8 @@ class Signup extends CI_Controller
                 'display_name' => $this->input->post('fname') . ' ' . $this->input->post('lname'),
                 'user_name' => $this->input->post('username'),
 				'user_email' => $this->input->post('email'),
-				'user_password_hash' => password_hash($this->input->post('password'), PASSWORD_DEFAULT)
+				'user_password_hash' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+                'registered' => unix_to_human(now())
 			);
 			
 			if ($this->user_model->insert_user($data))

@@ -30,3 +30,19 @@ $lang['gp_clients_title'] = 'Clients';
 $lang['gp_projects_title'] = 'Projects';
 $lang['gp_home'] = 'Home';
 $lang['gp_portal_title'] = 'GIS PORTAL';
+
+$lang['gp_user_projects'] = 'User projects';
+$lang['gp_public_projects'] = 'Public projects';
+$lang['gp_client'] = 'client';
+$lang['gp_project'] = 'project';
+$lang['gp_public'] = 'public';
+$lang['gp_crs'] = 'crs';
+$lang['gp_contact'] = 'contact';
+$lang['gp_description'] = 'description';
+
+$lang['gp_registered'] = 'Registered';
+$lang['gp_last_login'] = 'Last login';
+$lang['gp_count_login'] = 'Count login';
+
+$lang['gp_no_projects'] = 'Currently no private projects for you!';
+$lang['gp_no_public_projects'] = 'Currently no public projects to browse!';

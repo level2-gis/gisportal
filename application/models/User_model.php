@@ -35,4 +35,17 @@ class User_model extends CI_Model
     {
 		return $this->db->insert('users', $data);
 	}
+
+    function update_user($id)
+    {
+        $sql = "last_login = now(), count_login = count_login + 1";
+
+        //$this->db->where('user_id', $id);
+        //$this->db->update('users', $data);
+
+        $sql.= " WHERE user_id = ".$id;
+
+        //returns bool
+        $result = $this->db->query('UPDATE users SET '.$sql);
+    }
 }?>

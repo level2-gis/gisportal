@@ -2,6 +2,7 @@ Web portal for QGIS projects published by EQWC
 ==============================================
 
 This is start page - Web portal for browsing and opening QGIS projects published with [Extended QGIS Web Client.](https://github.com/uprel/gisapp)
+
 User registration and login is now part of this. Next steps are planned to have complete web administration part for publishing projects and layers,
 delegating user permissions...
 
@@ -17,9 +18,11 @@ You go through this after you setup EQWC!
 4. Edit header_logo.png in assets/img folder
 5. To preserve session information from gisapp to gisportal you have to edit php.ini and change line
 
+```
 session.name = PHPSESSID
 to
 session.name = sess_
+```
 
 This means that you login to gisportal and then browse all public projects or projects you have permission without
 new login.

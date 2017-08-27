@@ -8,26 +8,30 @@ delegating user permissions...
 
 Built with Codeigniter and Bootstrap.
 
+## Demo
+Visit **<a target="_blank" href="http://test.level2.si">Demo by Level2</a>**
+
 ## Setup
 
 You go through this after you setup EQWC!
 
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
-2. Setup database connection in application/config/database.php
-3. Setup base_site and other EQWC settings at bottom of application/config/config.php
-4. Edit header_logo.png in assets/img folder
-5. To preserve session information from gisapp to gisportal you have to edit php.ini and change line
+1. Setup database connection in application/config/database.php
+1. Setup base_site and other EQWC settings at bottom of application/config/config.php
+1. Edit header_logo.png in assets/img folder.
+1. Enable integration with gisportal in gisapp/client_common/settings.js
+1. To preserve session information from gisapp to gisportal you have to edit php.ini and change line
 
-```
-session.name = PHPSESSID
-to
-session.name = sess_
-```
+    ```
+    session.name = PHPSESSID
+    to
+    session.name = sess_
+    ```
 
-This means that you login to gisportal and then browse all public projects or projects you have permission without
-new login.
+    This means that you login to gisportal and then browse all public projects or projects you have permission without
+    new login.
 
-6. Email service
+## Email service
 If you entered correct gmail info at the bottom of config.php you enabled email service. This service can be used to sending
 emails from gisapp or gisportal.
 

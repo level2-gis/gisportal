@@ -1,48 +1,48 @@
 <?php
 
-$lang['gp_welcome_title'] = 'Welcome!';
-$lang['gp_welcome_message'] = 'Please login to browse projects...';
+$lang['gp_welcome_title'] = 'Välkommen!';
+$lang['gp_welcome_message'] = 'Logga in för att komma till projekt...';
 
-$lang['gp_login'] = 'Login';
-$lang['gp_register'] = 'Sign Up';
-$lang['gp_register_success'] = 'You are Successfully Registered! Please login to continue!';
-$lang['gp_register_error'] = 'Oops! Error.  Please try again later!!!';
-$lang['gp_log_out'] = 'Log out';
-$lang['gp_user'] = 'User';
-$lang['gp_password'] = 'Password';
-$lang['gp_cancel'] = 'Cancel';
-$lang['gp_login_wrong'] = 'Wrong Username or password!';
-$lang['gp_new_user'] = 'New User?';
-$lang['gp_already_registered'] = 'Already Registered?';
-$lang['gp_first_name'] = 'First Name';
-$lang['gp_last_name'] = 'Last Name';
-$lang['gp_email'] = 'E-mail';
-$lang['gp_username'] = 'Username';
-$lang['gp_username_placeholder'] = 'Username or Email';
-$lang['gp_confirm'] = 'Confirm';
-$lang['gp_here'] = 'here';
+$lang['gp_login'] = 'Inloggning';
+$lang['gp_register'] = 'Registrera';
+$lang['gp_register_success'] = 'Din registrering lyckades! Vänligen logga in för att fortsätta!';
+$lang['gp_register_error'] = 'Ett fel har uppstått, vänligen försök senare.';
+$lang['gp_log_out'] = 'Logga ut';
+$lang['gp_user'] = 'Användare';
+$lang['gp_password'] = 'Lösenord';
+$lang['gp_cancel'] = 'Ångra';
+$lang['gp_login_wrong'] = 'Fel användarnamn eller lösenord!';
+$lang['gp_new_user'] = 'Ny användare?';
+$lang['gp_already_registered'] = 'Redan registrerad?';
+$lang['gp_first_name'] = 'Förnamn';
+$lang['gp_last_name'] = 'Efternamn';
+$lang['gp_email'] = 'E-post';
+$lang['gp_username'] = 'Användarnamn';
+$lang['gp_username_placeholder'] = 'Användarnamn';
+$lang['gp_confirm'] = 'Bekräfta';
+$lang['gp_here'] = 'hit';
 
-$lang['gp_view_projects'] = 'View projects';
-$lang['gp_open_project'] = 'Open project';
+$lang['gp_view_projects'] = 'Visa projekt';
+$lang['gp_open_project'] = 'Öppna projekt';
 
-$lang['gp_profile_title'] = 'My profile';
-$lang['gp_clients_title'] = 'Clients';
-$lang['gp_projects_title'] = 'Projects';
-$lang['gp_home'] = 'Home';
-$lang['gp_portal_title'] = 'GIS PORTAL';
+$lang['gp_profile_title'] = 'Min profil';
+$lang['gp_clients_title'] = 'Kunder';
+$lang['gp_projects_title'] = 'Projekt';
+$lang['gp_home'] = 'Hem';
+$lang['gp_portal_title'] = 'Kartportalen';
 
-$lang['gp_user_projects'] = 'User projects';
-$lang['gp_public_projects'] = 'Public projects';
-$lang['gp_client'] = 'client';
-$lang['gp_project'] = 'project';
-$lang['gp_public'] = 'public';
-$lang['gp_crs'] = 'crs';
-$lang['gp_contact'] = 'contact';
-$lang['gp_description'] = 'description';
+$lang['gp_user_projects'] = 'Användarens projekt';
+$lang['gp_public_projects'] = 'Publika projekt';
+$lang['gp_client'] = 'Kunder';
+$lang['gp_project'] = 'projekt';
+$lang['gp_public'] = 'publika';
+$lang['gp_crs'] = 'koordinatsysyem';
+$lang['gp_contact'] = 'kontakt';
+$lang['gp_description'] = 'beskrivning';
 
-$lang['gp_registered'] = 'Registered';
-$lang['gp_last_login'] = 'Last login';
-$lang['gp_count_login'] = 'Count login';
+$lang['gp_registered'] = 'Registrerad';
+$lang['gp_last_login'] = 'Senaste inlggning';
+$lang['gp_count_login'] = 'Antal inloggningar';
 
-$lang['gp_no_projects'] = 'Currently no private projects for you!';
-$lang['gp_no_public_projects'] = 'Currently no public projects to browse!';
+$lang['gp_no_projects'] = 'Du har inte tillgång till några privata projekt!';
+$lang['gp_no_public_projects'] = 'Det finns inte några publika projekt tillgängliga!';

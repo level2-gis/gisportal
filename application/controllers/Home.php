@@ -17,15 +17,20 @@ class Home extends CI_Controller
         if ($this->session->userdata('user_is_logged_in')){
             $data['title'] = $this->lang->line('gp_clients_title');
 
-            $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+            if($this->session->userdata('uid') !== null) {
+                $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+                $data['clients'] = $this->clients_model->get_clients($user[0]->project_ids);
+            } else {
+                $data['clients'] = null;
+            }
 
-            $data['clients'] = $this->clients_model->get_clients($user[0]->project_ids);
             $this->load->view('templates/header', $data);
 
             if (($data['clients'] === null) or (empty($data['clients'])) ) {
                 $data['projects_public'] = $this->projects_model->get_public_projects();
-                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' =>'warning'));
-
+                if ($this->session->userdata('user_name') !== 'guest') {
+                    $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+                }
                 if (($data['projects_public'] === null) or (empty($data['projects_public'])) ) {
                     $this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' =>'info'));
                 } else {

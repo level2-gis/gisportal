@@ -18,16 +18,25 @@ class Profile extends CI_Controller
 
             $details = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
-            $data['user'] = $details[0];
             $data['title'] = $this->lang->line('gp_profile_title');
-            $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids);
             $data['projects_public'] = $this->projects_model->get_public_projects();
 
             $this->load->view('templates/header', $data);
-            $this->load->view('profile_view', $data);
 
-            if (($data['projects'] === null) or (empty($data['projects'])) ) {
-                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' =>'warning'));
+            if($this->session->userdata('uid') !== null) {
+                $data['user'] = $details[0];
+                $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids);
+
+                $this->load->view('profile_view', $data);
+            } else {
+                $data['user'] = null;
+                $data['projects'] = null;
+            }
+
+            if (($data['projects'] === null) or (empty($data['projects']))) {
+                if ($this->session->userdata('user_name') !== 'guest') {
+                    $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+                }
             } else {
                 $this->load->view('user_projects_view', $data);
             }

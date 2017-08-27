@@ -43,7 +43,7 @@ It is planned to be used with gisportal (for sending emails to users) and for ot
 ## Thumbnail images
 
 gisportal uses thumbnail images for client and project display. Copy images to assets/img/clients or assets/img/projects
-folder with client or project alis as name and in PNG format.
+folder with client or project name as it is in database in PNG format.
 
 ## Support
 

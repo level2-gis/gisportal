@@ -2,9 +2,7 @@ This is start page - portal for browsing and opening QGIS projects defined to us
 User registration and login is now part of this.
 Built with Codeigniter and Bootstrap.
 
-*******************
-Setup
-*******************
+## Setup
 
 1. Checkout into gisportal folder beside gisapp folder (EQWC)
 2. Setup database connection in application/config/database.php
@@ -19,9 +17,7 @@ session.name = sess_
 This means that you login to gisportal and then browse all public projects or projects you have permission without
 new login.
 
-*******************
-Support
-*******************
+## Support
 
 Contact us for:
 - support

@@ -3,8 +3,7 @@ Web portal for QGIS projects published by EQWC
 
 This is start page - Web portal for browsing and opening QGIS projects published with [Extended QGIS Web Client.](https://github.com/uprel/gisapp)
 
-User registration and login is now part of this. Next steps are planned to have complete web administration part for publishing projects and layers,
-delegating user permissions...
+User registration and login is now part of this. Next steps are planned to have complete web administration part for publishing projects and layers, delegating user permissions...
 
 Built with Codeigniter and Bootstrap.
 
@@ -32,8 +31,7 @@ You go through this after you setup EQWC!
     new login.
 
 ## Email service
-If you entered correct gmail info at the bottom of config.php you enabled email service. This service can be used to sending
-emails from gisapp or gisportal.
+If you entered correct gmail info at the bottom of config.php you enabled email service using Google SMTP server. That means you don't need to setup own mail server. This service can be used to sending emails from gisapp or gisportal.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
 
@@ -42,7 +40,7 @@ It is planned to be used with gisportal (for sending emails to users) and for ot
 
 ## Thumbnail images
 
-gisportal uses thumbnail images for client and project display. Copy images to assets/img/clients or assets/img/projects
+gisportal uses thumbnail images for client and project display. Copy images to assets/img/clients and assets/img/projects
 folder with client or project name as it is in database in PNG format.
 
 ## Support

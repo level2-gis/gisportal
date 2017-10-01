@@ -38,6 +38,11 @@ If you entered correct gmail info at the bottom of config.php you enabled email 
 Email service is currently used with new User Feedback control in gisapp and with Editor plugin.
 It is planned to be used with gisportal (for sending emails to users) and for other tasks in gisapp.
 
+If you have problems sending email check this settings for your Google account:
+1. Login to Google My account and go to the My Account page. Click the Signing in to Google link from Sign-in & security section.
+[![google1](http://level2.si/wp-content/uploads/2017/10/google_account1.png)
+
+
 ## Thumbnail images
 
 gisportal uses thumbnail images for client and project display. Copy images to assets/img/clients and assets/img/projects

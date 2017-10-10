@@ -41,7 +41,8 @@ class Login extends CI_Controller
                     'user_name' => $uresult[0]->user_name,
                     'uid' => $uresult[0]->user_id,
                     'user_email' => $uresult[0]->user_email,
-                    'user_is_logged_in' => true
+                    'user_is_logged_in' => true,
+                    'admin' => $uresult[0]->admin
                     );
 				$this->session->set_userdata($sess_data);
                 $this->user_model->update_user($uresult[0]->user_id);

@@ -37,7 +37,7 @@ class Projects extends CI_Controller {
 
             $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
-            $data['projects'] = $this->projects_model->get_projects($client_id, $user[0]->project_ids);
+            $data['projects'] = $this->projects_model->get_projects($client_id, $user[0]->project_ids, $user[0]->admin);
 
             $this->load->view('templates/header', $data);
             $this->load->view('projects', $data);

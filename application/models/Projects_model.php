@@ -6,9 +6,9 @@ class Projects_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_projects($client_id = FALSE, $user_projects = FALSE)
+    public function get_projects($client_id = FALSE, $user_projects = FALSE, $user_admin = FALSE)
     {
-        if($user_projects === NULL) {
+        if($user_projects === NULL && !$user_admin) {
             return null;
         }
 
@@ -16,13 +16,21 @@ class Projects_model extends CI_Model {
         $this->db->order_by('display_name', 'ASC');
         if ($client_id === FALSE)
         {
-            $this->db->where("id = ANY('".$user_projects."')");
+
+			if (!$user_admin){
+		        $this->db->where("id = ANY('".$user_projects."')");
+			}
             $query = $this->db->get('projects_view');
             return $query->result_array();
         }
 
+		$where = "client_id = ".$client_id;
         //$user_projects
-        $this->db->where("client_id = ".$client_id." AND id = ANY('".$user_projects."')");
+		if (!$user_admin){
+			$where = $where . " AND id = ANY('".$user_projects."')";
+		}
+
+		$this->db->where($where);
         $query = $this->db->get('projects_view');
         return $query->result_array();
     }

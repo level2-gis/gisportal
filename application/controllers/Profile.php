@@ -25,7 +25,7 @@ class Profile extends CI_Controller
 
             if($this->session->userdata('uid') !== null) {
                 $data['user'] = $details[0];
-                $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids);
+                $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids, $details[0]->admin);
 
                 $this->load->view('profile_view', $data);
             } else {

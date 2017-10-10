@@ -6,7 +6,7 @@ class Clients_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_clients($user_projects = FALSE)
+    public function get_clients($user_projects = FALSE, $user_admin = FALSE)
     {
         $this->db->order_by('display_name', 'ASC');
 
@@ -15,12 +15,15 @@ class Clients_model extends CI_Model {
         //    return $query->result_array();
         //}
 
-        if($user_projects === NULL) {
+        if($user_projects === NULL && !$user_admin) {
             return null;
         }
 
         //$user_projects
-        $this->db->where("project_ids && '".$user_projects."'");
+		if (!$user_admin){
+			$this->db->where("project_ids && '".$user_projects."'");
+		}
+
         $query = $this->db->get('clients_view');
         return $query->result_array();
     }

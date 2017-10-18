@@ -38,13 +38,7 @@ If you entered correct gmail info at the bottom of config.php you enabled email 
 Email service is currently used with new User Feedback control in gisapp and with Editor plugin.
 It is planned to be used with gisportal (for sending emails to users) and for other tasks in gisapp.
 
-If you have problems sending email check this settings for your Google account:
-1. Login to Google My account and go to the My Account page. Click the Signing in to Google link from Sign-in & security section.
-![google1](http://level2.si/wp-content/uploads/2017/10/google_account1.png)
-1. Scroll down the Password & sign-in method section and turn Off the 2-Step Verification. 
-![google2](http://level2.si/wp-content/uploads/2017/10/google_account2.png)
-1. Scroll down the Connected apps & sites section and turn On Allow less secure apps.
-![google3](http://level2.si/wp-content/uploads/2017/10/google_account3.png)
+If you have problems sending email check this settings for your Google account: [Google-account-configuration](/wiki/Google-account-configuration)
 
 ## Thumbnail images
 

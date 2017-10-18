@@ -33,6 +33,7 @@ $lang['gp_portal_title'] = 'GIS PORTAL';
 
 $lang['gp_user_projects'] = 'Projekti uporabnika';
 $lang['gp_public_projects'] = 'Javni projekti';
+$lang['gp_all_projects'] = 'Vsi projekti';
 $lang['gp_client'] = 'področje';
 $lang['gp_project'] = 'projekt';
 $lang['gp_public'] = 'javen';

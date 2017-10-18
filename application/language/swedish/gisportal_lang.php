@@ -33,6 +33,7 @@ $lang['gp_portal_title'] = 'Kartportalen';
 
 $lang['gp_user_projects'] = 'Användarens projekt';
 $lang['gp_public_projects'] = 'Publika projekt';
+$lang['gp_all_projects'] = 'Allt projekt';
 $lang['gp_client'] = 'Kunder';
 $lang['gp_project'] = 'projekt';
 $lang['gp_public'] = 'publika';

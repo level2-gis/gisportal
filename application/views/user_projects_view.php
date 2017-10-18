@@ -1,5 +1,5 @@
 <table class="table table-hover table-condensed">
-    <caption><span class="glyphicon glyphicon-lock" aria-hidden='true'></span><?php echo $this->lang->line('gp_user_projects'); ?></caption>
+    <caption><span class="glyphicon glyphicon-lock" aria-hidden='true'></span><?php echo $user->admin ? $this->lang->line('gp_all_projects') : $this->lang->line('gp_user_projects'); ?></caption>
     <th class="text-uppercase"><?php echo $this->lang->line('gp_client'); ?></th>
     <th class="text-uppercase"><?php echo $this->lang->line('gp_project'); ?></th>
     <!--        <th class="text-uppercase">--><?php //echo $this->lang->line('gp_public'); ?><!--</th>-->

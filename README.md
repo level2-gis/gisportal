@@ -38,7 +38,7 @@ If you entered correct gmail info at the bottom of config.php you enabled email 
 Email service is currently used with new User Feedback control in gisapp and with Editor plugin.
 It is planned to be used with gisportal (for sending emails to users) and for other tasks in gisapp.
 
-If you have problems sending email check this settings for your Google account: [Google-account-configuration](/wiki/Google-account-configuration)
+If you have problems sending email check this settings for your Google account: [Google-account-configuration](./wiki/Google-account-configuration)
 
 ## Thumbnail images
 

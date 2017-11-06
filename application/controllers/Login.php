@@ -39,6 +39,7 @@ class Login extends CI_Controller
 				// set session
 				$sess_data = array(
                     'user_name' => $uresult[0]->user_name,
+                    'user_display_name' => $uresult[0]->display_name,
                     'uid' => $uresult[0]->user_id,
                     'user_email' => $uresult[0]->user_email,
                     'user_is_logged_in' => true,

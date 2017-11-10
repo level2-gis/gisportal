@@ -21,6 +21,12 @@ class User_model extends CI_Model
             return null;
         }
     }
+	function get_user_by_name($key) {
+		$this->db->where('user_name', $key);
+		$query = $this->db->get('users');
+
+		return $query->result();	
+	}
 
 	// get user
 	function get_user_by_id($id)

@@ -16,7 +16,7 @@ You go through this after you setup EQWC!
 
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
 1. Setup database connection in application/config/database.php
-1. Setup base_site and other EQWC settings at bottom of application/config/config.php
+1. Setup base_site, default language and other EQWC settings at bottom of application/config/config.php
 1. Edit header_logo.png in assets/img folder.
 1. Enable integration with gisportal in gisapp/client_common/settings.js
 1. To preserve session information from gisapp to gisportal you have to edit php.ini and change line
@@ -46,7 +46,11 @@ gisportal uses thumbnail images for client and project display. Images should be
 
 ## Translations
 
-TODO
+1. Check if your language exists in [system folder](https://github.com/uprel/gisportal/tree/master/system/language). 
+1. If not get it from [Codeigniter Translations](https://github.com/bcit-ci/codeigniter3-translations)
+1. Create folder with language name in [application/language](https://github.com/uprel/gisportal/tree/master/application/language) folder.
+1. Copy gisportal_lang.php from any other languages to new language folder and translate contents.
+1. If you wish you can change default language in application/config/config.php.
 
 ## Support
 

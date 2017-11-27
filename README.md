@@ -44,6 +44,10 @@ If you have problems sending email check this settings for your Google account: 
 
 gisportal uses thumbnail images for client and project display. Images should be in 3:2 proportions, for example 300 px width X 200 px height. Copy images to assets/img/clients and assets/img/projects folder with client or project name as it is in database in PNG format.
 
+## Translations
+
+TODO
+
 ## Support
 
 Contact us for:

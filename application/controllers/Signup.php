@@ -4,23 +4,21 @@ class Signup extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper(array('form','url'));
-		$this->load->library(array('session', 'form_validation'));
+		$this->load->helper(array('form','url','date'));
+		$this->load->library(array('form_validation'));
 		$this->load->database();
 		$this->load->model('user_model');
-        $this->lang->load('gisportal_lang');
-        $this->load->helper('date');
 	}
 	
 	function index()
 	{
 		// set form validation rules
-		$this->form_validation->set_rules('fname', 'First Name', 'trim|required|min_length[3]|max_length[30]');
-		$this->form_validation->set_rules('lname', 'Last Name', 'trim|required|min_length[3]|max_length[30]');
-		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[users.user_email]');
-        $this->form_validation->set_rules('username', 'Username', 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
-        $this->form_validation->set_rules('cpassword', 'Confirm Password', 'trim|required|min_length[3]|matches[password]');
+		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|min_length[3]|max_length[30]');
+		$this->form_validation->set_rules('lname', $this->lang->line('gp_last_name'), 'trim|required|min_length[3]|max_length[30]');
+		$this->form_validation->set_rules('email', $this->lang->line('gp_email'), 'trim|required|valid_email|is_unique[users.user_email]');
+        $this->form_validation->set_rules('username', $this->lang->line('gp_username'), 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');
+        $this->form_validation->set_rules('password', $this->lang->line('gp_password'), 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('cpassword', $this->lang->line('gp_confirm') . ' ' . $this->lang->line('gp_password'), 'trim|required|min_length[3]|matches[password]');
 		
 		// submit
 		if ($this->form_validation->run() == FALSE)

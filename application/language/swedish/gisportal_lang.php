@@ -37,13 +37,14 @@ $lang['gp_all_projects'] = 'Allt projekt';
 $lang['gp_client'] = 'Kunder';
 $lang['gp_project'] = 'projekt';
 $lang['gp_public'] = 'publika';
-$lang['gp_crs'] = 'koordinatsysyem';
+$lang['gp_crs'] = 'koordinatsystem';
 $lang['gp_contact'] = 'kontakt';
 $lang['gp_description'] = 'beskrivning';
 
 $lang['gp_registered'] = 'Registrerad';
 $lang['gp_last_login'] = 'Senaste inlggning';
 $lang['gp_count_login'] = 'Antal inloggningar';
+$lang['gp_language'] = 'Language';
 
 $lang['gp_no_projects'] = 'Du har inte tillgång till några privata projekt!';
 $lang['gp_no_public_projects'] = 'Det finns inte några publika projekt tillgängliga!';

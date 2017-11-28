@@ -5,13 +5,12 @@ class Profile extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper(array('url','html'));
-		$this->load->library('session');
 		$this->load->database();
 		$this->load->model('user_model');
 		$this->load->model('projects_model');
-        $this->lang->load('gisportal_lang');
+
 	}
-	
+
 	function index()
 	{
 		if ($this->session->userdata('user_is_logged_in')){
@@ -20,6 +19,8 @@ class Profile extends CI_Controller
 
             $data['title'] = $this->lang->line('gp_profile_title');
             $data['projects_public'] = $this->projects_model->get_public_projects();
+            $data['available_languages'] = get_languages();
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
             $this->load->view('templates/header', $data);
 

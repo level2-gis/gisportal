@@ -4,13 +4,14 @@ class Login extends CI_Controller
 {
 	public function __construct()
 	{
-		parent::__construct();
+        parent::__construct();
 		$this->load->helper(array('form','url','html'));
 		$this->load->library(array('session', 'form_validation'));
 		$this->load->database();
 		$this->load->model('user_model');
-        $this->lang->load('gisportal_lang');
+
 	}
+
     public function index()
     {
 		// get form input
@@ -36,6 +37,10 @@ class Login extends CI_Controller
 			$uresult = $this->user_model->get_user($key, $password);
 			if (count($uresult) > 0)
 			{
+				//default language code for session if it is not set in database for user
+                $def = $this->config->item('language');
+                $code = array_search($def, $this->codes);
+
 				// set session
 				$sess_data = array(
                     'user_name' => $uresult[0]->user_name,
@@ -43,10 +48,11 @@ class Login extends CI_Controller
                     'uid' => $uresult[0]->user_id,
                     'user_email' => $uresult[0]->user_email,
                     'user_is_logged_in' => true,
-                    'admin' => $uresult[0]->admin
+                    'admin' => $uresult[0]->admin,
+                    'lang' => $uresult[0]->lang == null ? $code : $uresult[0]->lang
                     );
 				$this->session->set_userdata($sess_data);
-                $this->user_model->update_user($uresult[0]->user_id);
+                $this->user_model->update_user($uresult[0]->user_id, 'last_login = now(), count_login = count_login + 1');
 				redirect("home/index");
 			}
 			else

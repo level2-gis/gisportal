@@ -8,8 +8,6 @@ class Home extends CI_Controller
         $this->load->model('user_model');
         $this->load->model('projects_model');
         $this->load->helper(array('url', 'html'));
-		$this->load->library('session');
-        $this->lang->load('gisportal_lang');
 	}
 	
 	function index()

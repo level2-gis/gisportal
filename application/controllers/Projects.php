@@ -10,8 +10,6 @@ class Projects extends CI_Controller {
         $this->load->model('projects_model');
         $this->load->model('user_model');
         $this->load->helper(array('url', 'html'));
-        $this->load->library('session');
-        $this->lang->load('gisportal_lang');
     }
 
     //TODO what to do with default view, list all projects or redirect

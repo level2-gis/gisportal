@@ -24,6 +24,16 @@
                     <th><?php echo $this->lang->line('gp_count_login'); ?></th>
                     <td><?php echo $user->count_login; ?></td>
                 </tr>
+                <tr>
+                    <th><?php echo $this->lang->line('gp_language'); ?></th>
+                    <td>
+                        <select onchange="javascript:window.location.href='<?php echo base_url(); ?>index.php/language/switchlang/'+this.value;">
+                            <?php foreach ($available_languages as $lang_key => $lang_value): ?>
+                                <option value="<?php echo $lang_key?>" <?php if($lang_key == $lang) echo 'selected="selected"'; ?>><?php echo $lang_value['native']?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 		</div>

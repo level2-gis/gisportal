@@ -100,7 +100,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -526,7 +526,7 @@ $config['proxy_ips'] = '';
 
 /*
 |--------------------------------------------------------------------------
-| EQWC own configs
+| GISPORTAL and EQWC own configs
 |--------------------------------------------------------------------------
 |
 */
@@ -534,8 +534,52 @@ $config['proxy_ips'] = '';
 $config['company'] = 'Level2';
 $config['company_url'] = 'http://level2.si';
 $config['company_email'] = 'info@level2.si';  //also for receiving system emails
-$config['portal_title'] = 'GIS PORTAL';
 $config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
+
+//Set which languages show up for user selection.
+//New languages must be added to array (translation must exist)
+//Unwanted languages can be removed
+//key= 2 letter iso language code,
+//name= english language name as it is in CI
+//native = native language name displayed
+$config['available_languages'] = array(
+    'en' => array(
+        'name' => 'english',
+        'native' => 'English'
+    ),
+//    'de' => array(
+//        'name' => 'german',
+//        'native' => 'Deutsch'
+//    ),
+//    'it' => array(
+//        'name' => 'italian',
+//        'native' => 'Italiano'
+//    ),
+    'no' => array(
+        'name' => 'norwegian',
+        'native' => 'norsk'
+    ),
+    'pl' => array(
+        'name' => 'polish',
+        'native' => 'polski'
+    ),
+//    'sk' => array(
+//        'name' => 'slovak',
+//        'native' => 'slovenský'
+//    ),
+    'sl' => array(
+        'name' => 'slovenian',
+        'native' => 'slovenščina'
+    ),
+    'es' => array(
+        'name' => 'spanish',
+        'native' => 'Español'
+    ),
+    'sv' => array(
+        'name' => 'swedish',
+        'native' => 'svenska'
+    )
+);
 
 //Gmail account for sending mails from through Google SMTP
 $config['gmail_account'] = 'gmail email';

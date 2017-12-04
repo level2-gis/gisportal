@@ -1,10 +1,20 @@
-<?php foreach ($clients as $clients_item): ?>
+<?php foreach ($clients as $clients_item):
+
+    $client_img = "assets/img/clients/" . $clients_item['name'] . ".png";
+    $img_title = $this->lang->line('gp_open_project');
+    if (file_exists(FCPATH . $client_img)) {
+        $project_img = base_url($client_img);
+    } else {
+        $img_title = "No file: ". $client_img . " (300x200)";
+        $client_img = "http://dummyimage.com/300x200/e0e0e0/706e70?text=".$clients_item['name'] . ".png";
+    }
+
+    ?>
 
     <div class="row">
         <div class="col-md-4">
             <a href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">
-                <img title="<?php echo $this->lang->line('gp_view_projects'); ?>" class="img-responsive" src="<?php echo base_url("assets/img/clients/" . $clients_item['name'] . ".png"); ?>" alt="">
-<!--                <img class="img-responsive" src="http://placehold.it/300x200" alt="">-->
+                <img title="<?php echo $img_title; ?>" class="img-responsive" src="<?php echo $client_img; ?>" alt="">
             </a>
         </div>
         <div class="col-md-8">

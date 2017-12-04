@@ -3,7 +3,7 @@
     $client_img = "assets/img/clients/" . $clients_item['name'] . ".png";
     $img_title = $this->lang->line('gp_open_project');
     if (file_exists(FCPATH . $client_img)) {
-        $project_img = base_url($client_img);
+        $client_img = base_url($client_img);
     } else {
         $img_title = "No file: ". $client_img . " (300x200)";
         $client_img = "http://dummyimage.com/300x200/e0e0e0/706e70?text=".$clients_item['name'] . ".png";

@@ -14,6 +14,10 @@ class Login extends CI_Controller
 
     public function index()
     {
+        if ($this->session->userdata('user_is_logged_in')) {
+            redirect("home/index");
+        }
+
 		// get form input
 		$key = $this->input->post("user");
         $password = $this->input->post("password");

@@ -53,6 +53,15 @@ gisportal uses thumbnail images for client and project display. Images should be
 1. Add new language in config/config.php at the bottom: $config['available_languages']. Here you can also remove unwanted languages.
 1. If you wish you can change default language in application/config/config.php.
 
+## Contributing
+
+Support this project by [**DONATING**](http://level2.si/product/donation-extended-qgis-web-client/).
+
+You are also welcome to contribute to the project by testing, requesting new features, translating, submitting code, ...
+Read this [tutorial about making changes to repositories](https://help.github.com/articles/fork-a-repo/).
+
+Thank you!
+
 ## Support
 
 Contact us for:

@@ -1,7 +1,7 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4 well">
 			<?php $attributes = array("name" => "signupform");
-			echo form_open("signup/index", $attributes);?>
+			echo form_open("signup/", $attributes);?>
 			<legend><?php echo $this->lang->line('gp_register'); ?></legend>
 			
 			<div class="form-group">
@@ -50,6 +50,6 @@
 	</div>
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4 text-center">
-            <?php echo $this->lang->line('gp_already_registered'); ?> <a href="<?php echo base_url(); ?>index.php/login"><?php echo $this->lang->line('gp_login'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+            <?php echo $this->lang->line('gp_already_registered'); ?> <a href="<?php echo site_url('/login') ?>"><?php echo $this->lang->line('gp_login'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
 		</div>
 	</div>

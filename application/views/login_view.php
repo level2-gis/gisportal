@@ -1,7 +1,7 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4 well">
 		<?php $attributes = array("name" => "loginform");
-			echo form_open("login/index", $attributes);?>
+			echo form_open("login/", $attributes);?>
 			<legend><?php echo $this->lang->line('gp_login'); ?></legend>
 			<div class="form-group">
 				<label for="name"><?php echo $this->lang->line('gp_user'); ?></label>
@@ -23,7 +23,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4 text-center">
-            <?php echo $this->lang->line('gp_new_user'); ?> <a href="<?php echo base_url(); ?>index.php/signup"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+            <?php echo $this->lang->line('gp_new_user'); ?> <a href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
 		</div>
 	</div>
 

@@ -40,16 +40,16 @@ It is planned to be used with gisportal (for sending emails to users) and for ot
 
 If you have problems sending email check this settings for your Google account: [Google-account-configuration](../../wiki/Google-account-configuration)
 
-## URL Shortening
+## Shortening URL
 Now your gisportal URL looks like this:
 
 ```http://localhost/gisportal/index.php/login```
 
-Read here how you can shorten URL with removing "/gisportal/index.php", like this:
+Read [Shortening URL on Wiki](https://github.com/uprel/gisportal/wiki/Shortening-URL) to remove "/gisportal/index.php", like this:
 
 ```http://localhost/login```
 
-Test this also on provided Demo link above!
+> You can test this on provided Demo link above!
 
 
 ## Thumbnail images

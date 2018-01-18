@@ -12,7 +12,7 @@ Visit **<a target="_blank" href="http://test.level2.si">Demo by Level2</a>**
 
 ## Setup
 
-You go through this after you setup EQWC!
+> You go through this after you setup EQWC!
 
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
 1. Setup database connection in application/config/database.php
@@ -39,6 +39,14 @@ Email service is currently used with new User Feedback control in gisapp and wit
 It is planned to be used with gisportal (for sending emails to users) and for other tasks in gisapp.
 
 If you have problems sending email check this settings for your Google account: [Google-account-configuration](../../wiki/Google-account-configuration)
+
+## URL Shortening
+Now your gisportal URL looks like this: 
+```http://localhost/gisportal/index.php/login```
+Read here how you can shorten URL with removing "/gisportal/index.php", like this:
+```http://localhost/login```
+Test this also on provided Demo link above!
+
 
 ## Thumbnail images
 

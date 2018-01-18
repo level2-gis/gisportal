@@ -41,10 +41,14 @@ It is planned to be used with gisportal (for sending emails to users) and for ot
 If you have problems sending email check this settings for your Google account: [Google-account-configuration](../../wiki/Google-account-configuration)
 
 ## URL Shortening
-Now your gisportal URL looks like this: 
+Now your gisportal URL looks like this:
+
 ```http://localhost/gisportal/index.php/login```
+
 Read here how you can shorten URL with removing "/gisportal/index.php", like this:
+
 ```http://localhost/login```
+
 Test this also on provided Demo link above!
 
 

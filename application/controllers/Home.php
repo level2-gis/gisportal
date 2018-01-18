@@ -15,7 +15,7 @@ class Home extends CI_Controller
     {
         if (!$this->session->userdata('user_is_logged_in')) {
             $this->session->set_flashdata('msg','<div class="alert alert-info text-center">' . $this->lang->line('gp_welcome_message') . '</div>');
-            redirect('login/index');
+            redirect('login/');
         }
 
         $data['title'] = $this->lang->line('gp_clients_title');
@@ -53,7 +53,7 @@ class Home extends CI_Controller
         $data = array('login' => '', 'uname' => '', 'uid' => '');
         $this->session->unset_userdata($data);
         $this->session->sess_destroy();
-        redirect('login/index');
+        redirect('login/');
     }
 }
 

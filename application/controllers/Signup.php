@@ -45,14 +45,14 @@ class Signup extends CI_Controller
 			{
                 $msg = $this->lang->line('gp_register_success');
                 $this->session->set_flashdata('msg','<div class="alert alert-success text-center">' . $msg . '</div>');
-				redirect('login/index');
+				redirect('login/');
 			}
 			else
 			{
 				// error
                 $msg = $this->lang->line('gp_register_error');
 				$this->session->set_flashdata('msg','<div class="alert alert-danger text-center">' . $msg . '</div>');
-				redirect('signup/index');
+				redirect('signup/');
 			}
 		}
 	}

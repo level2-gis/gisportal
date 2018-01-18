@@ -22,17 +22,17 @@ class Projects extends CI_Controller
 //        $this->load->view('templates/header', $data);
 //        $this->load->view('projects', $data);
 //        $this->load->view('templates/footer', $data);
-        redirect("home/index");
+        redirect("home/");
     }
 
     public function view($client_id = false)
     {
         if ($client_id === FALSE) {
-            redirect("home/index");
+            redirect("home/");
         }
 
         if (!$this->session->userdata('user_is_logged_in')) {
-            redirect('login/index');
+            redirect('login/');
         }
 
         $data['title'] = $this->lang->line('gp_projects_title');

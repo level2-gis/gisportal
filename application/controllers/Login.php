@@ -15,7 +15,7 @@ class Login extends CI_Controller
     public function index()
     {
         if ($this->session->userdata('user_is_logged_in')) {
-            redirect("home/index");
+            redirect("home/");
         }
 
 		// get form input
@@ -57,13 +57,13 @@ class Login extends CI_Controller
                     );
 				$this->session->set_userdata($sess_data);
                 $this->user_model->update_user($uresult[0]->user_id, 'last_login = now(), count_login = count_login + 1');
-				redirect("home/index");
+				redirect("/");
 			}
 			else
 			{
 				$msg = $this->lang->line('gp_login_wrong');
                 $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">' . $msg . '</div>');
-				redirect('login/index');
+				redirect('login/');
 			}
 		}
     }

@@ -48,3 +48,7 @@ $lang['gp_language'] = 'Språk';
 
 $lang['gp_no_projects'] = 'Ingen private prosjekter!';
 $lang['gp_no_public_projects'] = 'Ingen offentlige prosjekter!';
+
+$lang['gp_uploaded_files'] = 'Uploaded files';
+$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config.php: ';
+$lang['gp_upload_success'] = 'Your file was successfully uploaded!';

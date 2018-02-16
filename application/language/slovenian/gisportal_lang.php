@@ -48,3 +48,7 @@ $lang['gp_language'] = 'Jezik';
 
 $lang['gp_no_projects'] = 'Zaenkrat ni projektov dodeljenih tebi!';
 $lang['gp_no_public_projects'] = 'Zaenkrat ni javnih projektov za ogled!';
+
+$lang['gp_uploaded_files'] = 'Uploaded files';
+$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config.php: ';
+$lang['gp_upload_success'] = 'Your file was successfully uploaded!';

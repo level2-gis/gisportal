@@ -49,6 +49,10 @@ $lang['gp_language'] = 'Language';
 $lang['gp_no_projects'] = 'Currently no private projects for you!';
 $lang['gp_no_public_projects'] = 'Currently no public projects to browse!';
 
+$lang['gp_uploaded_files'] = 'Uploaded files';
+$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config.php: ';
+$lang['gp_upload_success'] = 'Your file was successfully uploaded!';
+
 
 
 

@@ -18,7 +18,9 @@
             </a>
         </div>
         <div class="col-md-8">
-            <h3 class="top"><?php echo $clients_item['display_name']; ?></h3>
+             <h3 class="top">
+                    <a style="text-decoration: none" href="<?php echo site_url('clients/view/'.$clients_item['id']); ?>"><?php echo $clients_item['display_name']; ?></a>
+            </h3>
 <!--            <h4>--><?php //echo $clients_item['name']; ?><!--</h4>-->
             <p class="client_description"><?php echo $clients_item['description']; ?></p>
             <a class="btn btn-primary bottomaligned" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>

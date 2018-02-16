@@ -31,7 +31,7 @@ class Clients_model extends CI_Model {
     public function get_client_by_id($id)
     {
         $this->db->where('id', $id);
-        $query = $this->db->get('clients');
+        $query = $this->db->get('clients_view');
         return $query->result();
     }
 }

@@ -70,6 +70,8 @@ class Projects extends CI_Controller
 
             $config['upload_path']          = $dir;
             $config['allowed_types']        = 'gif|jpg|png|pdf';
+            $config['overwrite']            = true;
+            $config['file_ext_tolower']     = true;            
             //$config['max_size']             = 100;
             //$config['max_width']            = 1024;
             //$config['max_height']           = 768;
@@ -79,10 +81,10 @@ class Projects extends CI_Controller
             if ( ! $this->upload->do_upload('userfile'))
             {
                 $this->output
-                    ->set_content_type('application/json')
+                    ->set_content_type('text/html')
                     ->set_status_header(500)
                     ->set_output(json_encode(array(
-                        'success' => 'false',
+                        'success' => false,
                         'message' => $this->upload->display_errors()
                     )));
 
@@ -90,10 +92,10 @@ class Projects extends CI_Controller
             else
             {
                 $this->output
-                    ->set_content_type('application/json')
+                    ->set_content_type('text/html')
                     ->set_status_header(200)
                     ->set_output(json_encode(array(
-                        'success' => 'true',
+                        'success' => true,
                         'message' => $this->lang->line('gp_upload_success') . ': '.$this->upload->file_name
                     )));
 
@@ -105,7 +107,7 @@ class Projects extends CI_Controller
                 ->set_content_type('application/json')
                 ->set_status_header(500)
                 ->set_output(json_encode(array(
-                    'success' => 'false',
+                    'success' => false,
                     'message' => $e->getMessage()
                 )));
         }

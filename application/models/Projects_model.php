@@ -13,6 +13,7 @@ class Projects_model extends CI_Model {
         }
 
         $this->db->order_by('client', 'ASC');
+        $this->db->order_by('ordr', 'ASC');
         $this->db->order_by('display_name', 'ASC');
         if ($client_id === FALSE)
         {
@@ -43,5 +44,12 @@ class Projects_model extends CI_Model {
         $query = $this->db->get('projects_view');
 
         return $query->result_array();
+    }
+
+    public function get_project_by_id($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('projects_view');
+        return $query->result();
     }
 }

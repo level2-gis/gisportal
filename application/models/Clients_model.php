@@ -8,6 +8,7 @@ class Clients_model extends CI_Model {
 
     public function get_clients($user_projects = FALSE, $user_admin = FALSE)
     {
+        $this->db->order_by('ordr', 'ASC');
         $this->db->order_by('display_name', 'ASC');
 
         //if ($user_projects === FALSE) {

@@ -20,7 +20,7 @@ class Clients extends CI_Controller
     public function view($client_id = false)
     {
         if ($client_id === FALSE) {
-            redirect("home/");
+            redirect("/");
         }
 
         if (!$this->session->userdata('user_is_logged_in')) {
@@ -61,7 +61,7 @@ class Clients extends CI_Controller
     public function upload($client_id = false)
     {
         if ($client_id === FALSE) {
-            redirect("home/");
+            redirect("/");
         }
 
         $client = $this->clients_model->get_client_by_id($client_id)[0];
@@ -93,9 +93,5 @@ class Clients extends CI_Controller
             $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
             redirect('clients/view/'.$client_id);
         }
-
-
-
-
     }
 }

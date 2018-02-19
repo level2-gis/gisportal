@@ -15,7 +15,7 @@ class Login extends CI_Controller
     public function index()
     {
         if ($this->session->userdata('user_is_logged_in')) {
-            redirect("home/");
+            redirect("/");
         }
 
 		// get form input
@@ -49,7 +49,8 @@ class Login extends CI_Controller
                     'user_email' => $uresult[0]->user_email,
                     'user_is_logged_in' => true,
                     'admin' => $uresult[0]->admin,
-                    'lang' => $uresult[0]->lang
+                    'lang' => $uresult[0]->lang,
+                    'upload_dir' => $this->config->item('main_upload_dir')
                     );
 				$this->session->set_userdata($sess_data);
                 $this->user_model->update_user($uresult[0]->user_id, 'last_login = now(), count_login = count_login + 1');

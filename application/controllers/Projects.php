@@ -62,7 +62,7 @@ class Projects extends CI_Controller
             $project_name = $project[0]->name;
 
             $dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), false) . $client_name, false);
-            $dir .= DIRECTORY_SEPARATOR . $project_name;
+            $dir .= DIRECTORY_SEPARATOR . $project_name . DIRECTORY_SEPARATOR;
 
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
@@ -91,12 +91,18 @@ class Projects extends CI_Controller
             }
             else
             {
+                //create thumb if upload is image
+                if(strpos($this->upload->file_type,'image/')>-1) {
+                    self::imageResize($dir, $this->upload->file_name);
+                }
+
                 $this->output
                     ->set_content_type('text/html')
                     ->set_status_header(200)
                     ->set_output(json_encode(array(
                         'success' => true,
-                        'message' => $this->lang->line('gp_upload_success') . ': '.$this->upload->file_name
+                        'message' => $this->lang->line('gp_upload_success'),
+                        'file'    => $this->upload->file_name
                     )));
 
             }
@@ -113,5 +119,27 @@ class Projects extends CI_Controller
         }
 
 
+    }
+
+    private function imageResize($dir, $fn) {
+
+        if (!file_exists($dir . 'thumb')) {
+            mkdir($dir . 'thumb', 0777, true);
+        }
+
+        $config['image_library']    = 'gd2';
+        $config['source_image']     = $dir . $fn;
+        $config['new_image']        = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
+        $config['maintain_ratio']   = TRUE;
+        $config['width']            = 225;
+        $config['height']           = 150;
+
+        $this->load->library('image_lib', $config);
+
+        if ( ! $this->image_lib->resize())
+        {
+            //log error
+            log_message('error', $this->image_lib->display_errors());
+        }
     }
 }

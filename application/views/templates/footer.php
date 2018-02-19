@@ -4,7 +4,7 @@
 <footer>
     <div class="row">
         <div class="col-lg-12">
-            <p>&copy; <?php echo $this->config->item('company'); ?> 2017</p>
+            <p>&copy; <?php echo $this->config->item('company'); ?> 2018</p>
         </div>
     </div>
     <!-- /.row -->

@@ -85,7 +85,7 @@ class Projects extends CI_Controller
                     ->set_status_header(500)
                     ->set_output(json_encode(array(
                         'success' => false,
-                        'message' => $this->upload->display_errors()
+                        'message' => $this->upload->display_errors('','')
                     )));
 
             }

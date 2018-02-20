@@ -12,7 +12,8 @@ Visit **<a target="_blank" href="http://test.level2.si">Demo by Level2</a>**
 
 ## Setup
 
-> You go through this after you setup EQWC!
+> You go through this after you setup gisapp!
+> This code relies on database from gisapp. Make sure you are running latest database version.
 
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
 1. Setup database connection in application/config/database.php

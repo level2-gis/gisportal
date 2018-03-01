@@ -13,7 +13,7 @@ if (!function_exists('check_main_upload_dir')) {
         if ($exist) {
             return '';
         } else {
-            return '<div class="alert alert-danger">' . $ci->lang->line('gp_upload_no_folder') . '<b>'.$dir . '</b></div>';
+            return $ci->lang->line('gp_upload_no_folder') . '<b>'.$dir . '</b>';
         }
     }
 }

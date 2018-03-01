@@ -54,6 +54,9 @@ class Clients extends CI_Controller
         if ($upload['test'] === '') {
             $this->load->view('client_upload_form', array('client_id' => $client_id));
         }
+        else {
+            $this->load->view('message_view', array('message' => $upload['test'], 'type' => 'danger'));
+        }
         $this->load->view('templates/footer', $data);
 
     }

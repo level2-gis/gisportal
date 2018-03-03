@@ -551,10 +551,10 @@ $config['available_languages'] = array(
         'name' => 'german',
         'native' => 'Deutsch'
     ),
-    'it' => array(
-        'name' => 'italian',
-        'native' => 'Italiano'
-    ),
+//    'it' => array(
+//        'name' => 'italian',
+//        'native' => 'Italiano'
+//    ),
     'no' => array(
         'name' => 'norwegian',
         'native' => 'norsk'
@@ -563,10 +563,10 @@ $config['available_languages'] = array(
         'name' => 'polish',
         'native' => 'polski'
     ),
-    'sk' => array(
-        'name' => 'slovak',
-        'native' => 'slovenský'
-    ),
+//    'sk' => array(
+//        'name' => 'slovak',
+//        'native' => 'slovenský'
+//    ),
     'sl' => array(
         'name' => 'slovenian',
         'native' => 'slovenščina'
@@ -585,5 +585,18 @@ $config['available_languages'] = array(
 $config['gmail_account'] = 'gmail email';
 $config['gmail_password'] = 'gmail password';
 
-//file upload main directory, must exist on disk with full permission (chmod 777)
-$config['main_upload_dir'] = './uploads/';
+/*
+ File upload main directory, must exist on disk with full permission (chmod 777)
+ Can be outside of gisportal application
+ You have to put absolute file path like below, and also  make proper Apache configuration
+
+    Alias /uploads /home/uploads
+
+    <Directory /home/uploads/>
+            Options Indexes FollowSymLinks
+            AllowOverride None
+            Require all granted
+    </Directory>
+ */
+$config['main_upload_dir'] = '/home/uploads/';  //FILE PATH
+$config['main_upload_web'] = './uploads/';      //WEB PATH

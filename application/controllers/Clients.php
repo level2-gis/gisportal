@@ -44,7 +44,7 @@ class Clients extends CI_Controller
         $upload['test'] = check_main_upload_dir();
 
         $upload['files'] = get_dir_file_info($upload_dir.$client_name);
-        $upload['dir'] = $this->config->item('main_upload_dir') . $client_name . DIRECTORY_SEPARATOR;
+        $upload['dir'] = $this->config->item('main_upload_web') . $client_name . DIRECTORY_SEPARATOR;
 
         if($upload['files']) {
             $this->load->view('client_files', $upload);

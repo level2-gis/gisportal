@@ -8,7 +8,7 @@ class Profile extends CI_Controller
         $this->load->helper(array('url', 'html'));
         $this->load->database();
         $this->load->model('user_model');
-        $this->load->model('projects_model');
+        $this->load->model('project_model');
 
     }
 
@@ -21,7 +21,7 @@ class Profile extends CI_Controller
         $details = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
         $data['title'] = $this->lang->line('gp_profile_title');
-        $data['projects_public'] = $this->projects_model->get_public_projects();
+        $data['projects_public'] = $this->project_model->get_public_projects();
         $data['available_languages'] = get_languages();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
@@ -32,7 +32,7 @@ class Profile extends CI_Controller
             if ($details[0]->admin) {
                 $data['user']->display_name .= ' (Administrator)';
             }
-            $data['projects'] = $this->projects_model->get_projects(false, $details[0]->project_ids, $details[0]->admin);
+            $data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
 
             $this->load->view('profile_view', $data);
         } else {

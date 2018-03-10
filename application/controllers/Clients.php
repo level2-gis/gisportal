@@ -4,17 +4,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Clients extends CI_Controller
 {
 
-
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('clients_model');
+        $this->load->model('client_model');
         $this->load->helper(array('form', 'url', 'html', 'path', 'upload', 'file', 'date', 'number'));
     }
 
     public function index()
     {
-        redirect("home/");
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $data['title'] = $this->lang->line('gp_clients_title');
+        $data['clients'] = $this->client_model->get_clients();
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('clients_admin', $data);
+        $this->load->view('templates/footer', $data);
     }
 
     public function view($client_id = false)
@@ -27,7 +35,7 @@ class Clients extends CI_Controller
             redirect('login/');
         }
 
-        $client = $this->clients_model->get_client_by_id($client_id)[0];
+        $client = $this->client_model->get_client($client_id);
         $client_name = $client->name;
         $upload_dir = set_realpath($this->config->item('main_upload_dir'), false);
 
@@ -61,13 +69,111 @@ class Clients extends CI_Controller
 
     }
 
+    public function edit($client_id = false)
+    {
+        //if (!$this->session->userdata('user_is_logged_in') || !$this->session->userdata('admin')){
+        //    redirect('/login?ru=/' . uri_string());
+        //}
+
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
+        $this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
+        $this->form_validation->set_rules('ordr','lang:gp_order','integer');
+        $this->form_validation->set_rules('url', 'lang:gp_url', 'valid_url');
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $data['title'] = $this->lang->line('gp_create').' '.$this->lang->line('gp_new').' '.$this->lang->line('gp_client');
+            $data['creating'] = true;
+
+            $em = $this->extractPostData();
+            if(sizeof($_POST) > 0){
+                $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_client') .' '. $em['display_name'];
+                $data['creating'] = false;
+            } else {
+                if ($client_id !== false){
+                    $dq = $this->client_model->get_client($client_id);
+                    if ($dq->id != null){
+                        $em = (array)$dq;
+                        $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_client') .' '. $em['display_name'];
+                        $data['creating'] = false;
+                    }
+                }
+            }
+            $data['client'] = $em;
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('client_edit', $data);
+            //$this->load->view('templates/footer', $data);
+        } else {
+
+            $client = $this->extractPostData();
+            try {
+                $client_id = $this->client_model->upsert_client($client);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_client').' <strong>' . $client['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
+            }
+            catch (Exception $e){
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+            }
+
+            if($this->input->post('return') == null){
+                redirect('/clients/edit/' . $client_id);
+            } else {
+                redirect('/clients');
+            }
+        }
+
+    }
+
+    /*
+     * Deleting client
+     */
+    function remove($id)
+    {
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $client = (array)$this->client_model->get_client($id);
+
+        // check if the client exists before trying to delete it
+        if(isset($client['id']))
+        {
+            try {
+                $this->client_model->delete_client($id);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_client').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
+                redirect('/clients');
+            }
+            catch (Exception $e){
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+                redirect('/clients/edit/'.$id);
+            }
+        }
+        else
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The client you are trying to delete does not exist.</div>');
+    }
+
     public function upload($client_id = false)
     {
         if ($client_id === FALSE) {
             redirect("/");
         }
 
-        $client = $this->clients_model->get_client_by_id($client_id)[0];
+        $client = $this->client_model->get_client($client_id);
         $client_name = $client->name;
 
         $dir = set_realpath(set_realpath($this->config->item('main_upload_dir'),false) . $client_name, false);
@@ -99,4 +205,31 @@ class Clients extends CI_Controller
             redirect('clients/view/'.$client_id);
         }
     }
+
+    private function extractPostData(){
+        return array(
+            'id' => $this->input->post('id'),
+            //'theme_id' => '1',
+            'name' => $this->input->post('name'),
+            'url' => $this->input->post('url'),
+            'ordr' => $this->input->post('ordr'),
+            'display_name' => $this->input->post('display_name'),
+            'description' => $this->input->post('description')
+        );
+    }
+
+    public function _unique_name($name) {
+
+        //test if we already have name in database
+        $exist = $this->client_model->client_exists($name);
+        $id = $this->input->post('id');
+
+        if ($exist && empty($id)) {
+            $this->form_validation->set_message('_unique_name', $this->lang->line('gp_client').' '.$name.$this->lang->line('gp_exists').'!');
+            return false;
+        }
+
+        return true;
+    }
+
 }

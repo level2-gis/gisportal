@@ -5,9 +5,9 @@ class Home extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('clients_model');
-        $this->load->model('user_model');
-        $this->load->model('projects_model');
+        $this->load->model('Client_model');
+        $this->load->model('User_model');
+        $this->load->model('Project_model');
         $this->load->helper(array('url', 'html'));
     }
 
@@ -21,8 +21,8 @@ class Home extends CI_Controller
         $data['title'] = $this->lang->line('gp_clients_title');
 
         if ($this->session->userdata('uid') !== null) {
-            $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
-            $data['clients'] = $this->clients_model->get_clients($user[0]->project_ids, $user[0]->admin);
+            $user = $this->User_model->get_user_by_id($this->session->userdata('uid'));
+            $data['clients'] = $this->Client_model->get_clients($user->project_ids, $user->admin, false);
         } else {
             $data['clients'] = null;
         }
@@ -30,7 +30,7 @@ class Home extends CI_Controller
         $this->load->view('templates/header', $data);
 
         if (($data['clients'] === null) or (empty($data['clients']))) {
-            $data['projects_public'] = $this->projects_model->get_public_projects();
+            $data['projects_public'] = $this->Project_model->get_public_projects();
             if ($this->session->userdata('user_name') !== 'guest') {
                 $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
             }

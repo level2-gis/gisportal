@@ -13,8 +13,8 @@
     <!--link the bootstrap css file-->
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
     <link rel="stylesheet" href="<?php echo site_url('assets/css/font-awesome.min.css');?>">
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css"); ?>">
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20180310"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20180310"); ?>">
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 </head>

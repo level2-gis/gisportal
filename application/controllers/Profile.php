@@ -28,8 +28,8 @@ class Profile extends CI_Controller
         $this->load->view('templates/header', $data);
 
         if ($this->session->userdata('uid') !== null) {
-            $data['user'] = $details[0];
-            if ($details[0]->admin) {
+            $data['user'] = $details;
+            if ($details->admin) {
                 $data['user']->display_name .= ' (Administrator)';
             }
             $data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);

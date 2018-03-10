@@ -1,19 +1,7 @@
-<hr>
-
-<!-- Footer -->
-<footer>
-    <div class="row">
-        <div class="col-lg-12">
-            <p>&copy; <?php echo $this->config->item('company'); ?> 2018</p>
-        </div>
+<footer class="footer">
+    <div class="container text-center">
+        <p style="-webkit-text-fill-color: grey">&copy; <?php echo $this->config->item('company'); ?> 2018, Created with <a href="https://github.com/uprel/gisportal" target="_blank">GisPortal!</a></p>
     </div>
-    <!-- /.row -->
 </footer>
-
-</div>
-<!-- /.container -->
-
-<script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
-<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 </body>
 </html>

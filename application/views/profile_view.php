@@ -1,7 +1,10 @@
+<div class="page-header clearfix">
+    <h1 class="col-md-8"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $user->display_name; ?></h1>
+</div>
+
 	<div class="row">
 		<div class="col-md-8">
-			<h3><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $user->display_name; ?></h3>
-			<hr/>
+
             <table class="table table-hover table-condensed">
                 <tbody>
                 <tr>

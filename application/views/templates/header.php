@@ -11,9 +11,12 @@
 
     <title><?php echo $title; ?> | <?php echo $this->lang->line('gp_portal_title'); ?></title>
     <!--link the bootstrap css file-->
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css") ?>">
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css") ?>">
-
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
+    <link rel="stylesheet" href="<?php echo site_url('assets/css/font-awesome.min.css');?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css"); ?>">
+    <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 </head>
 
 <body>
@@ -32,14 +35,27 @@
             <a class="navbar-brand" target="_blank" href="<?php echo $this->config->item('company_url'); ?>">
                 <img height="32px" src="<?php echo base_url("assets/img/header_logo.png"); ?>" alt="">
             </a>
-            <a class="navbar-brand" href="<?php echo base_url() ?>"><?php echo $this->lang->line('gp_portal_title'); ?></a>
+            <a class="navbar-brand" href="<?php echo base_url(); ?>"><?php echo $this->lang->line('gp_portal_title'); ?></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar1">
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($this->session->userdata('user_is_logged_in')){ ?>
-                    <li><a href="<?php echo site_url('/profile') ?>"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?></a></li>
-                    <li><a href="<?php echo site_url('/home/logout') ?>"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
+
+                    <?php if ($this->session->userdata('admin')){ ?>
+                        <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span>Clients</span></a></li>
+                        <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span>Projects</span></a></li>
+                        <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span>Layers</span></a></li>
+                        <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span>Users</span></a></li>
+                    <?php } ?>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?php echo site_url('/profile') ?>"><?php echo $this->lang->line('gp_profile_title'); ?></a></li>
+                            <li><a href="<?php echo site_url('/home/logout') ?>"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
+                        </ul>
+                    </li>
                 <?php } else { ?>
                     <li><a href="<?php echo site_url('/login') ?>"><?php echo $this->lang->line('gp_login'); ?></a></li>
                     <li><a href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?></a></li>
@@ -50,4 +66,4 @@
     </div>
     <!-- /.container -->
 </nav>
-<div class="container">
+<div class="container body-content">

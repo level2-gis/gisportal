@@ -28,6 +28,8 @@ $lang['gp_open_project'] = 'Otwórz projekt';
 $lang['gp_profile_title'] = 'Mój profil';
 $lang['gp_clients_title'] = 'Klienci';
 $lang['gp_projects_title'] = 'Projekty';
+$lang['gp_layers_title'] = 'Layers';
+$lang['gp_users_title'] = 'Users';
 $lang['gp_home'] = 'Strona główna';
 $lang['gp_portal_title'] = 'Portal GIS';
 
@@ -35,6 +37,7 @@ $lang['gp_user_projects'] = 'Projekty użytkownika';
 $lang['gp_public_projects'] = 'Projekty publiczne';
 $lang['gp_client'] = 'Klient';
 $lang['gp_project'] = 'projekt';
+$lang['gp_layer'] = 'Layer';
 $lang['gp_public'] = 'publiczny';
 $lang['gp_crs'] = 'Układ';
 $lang['gp_contact'] = 'kontakt';
@@ -54,3 +57,15 @@ $lang['gp_upload_success'] = 'Your file was successfully uploaded!';
 
 $lang['gp_edit'] = 'Edit';
 $lang['gp_delete'] = 'Delete';
+$lang['gp_create'] = 'Create';
+$lang['gp_new'] = 'New';
+$lang['gp_saved'] = ' has been saved';
+$lang['gp_deleted'] = ' has been deleted';
+$lang['gp_exists'] = ' already exists';
+
+//database fields
+$lang['gp_name'] = 'Name';
+$lang['gp_display_name'] = 'Display Name';
+$lang['gp_order'] = 'Display Order';
+$lang['gp_url'] = 'Web Site';
+

@@ -28,14 +28,17 @@ $lang['gp_open_project'] = 'Odpri projekt';
 $lang['gp_profile_title'] = 'Moj profil';
 $lang['gp_clients_title'] = 'Stranke';
 $lang['gp_projects_title'] = 'Projekti';
+$lang['gp_layers_title'] = 'Sloji';
+$lang['gp_users_title'] = 'Uporabniki';
 $lang['gp_home'] = 'Domov';
 $lang['gp_portal_title'] = 'GIS PORTAL';
 
 $lang['gp_user_projects'] = 'Projekti uporabnika';
 $lang['gp_public_projects'] = 'Javni projekti';
 $lang['gp_all_projects'] = 'Vsi projekti';
-$lang['gp_client'] = 'področje';
-$lang['gp_project'] = 'projekt';
+$lang['gp_client'] = 'Stranka';
+$lang['gp_project'] = 'Projekt';
+$lang['gp_layer'] = 'Sloj';
 $lang['gp_public'] = 'javen';
 $lang['gp_crs'] = 'crs';
 $lang['gp_contact'] = 'kontakt';
@@ -55,3 +58,15 @@ $lang['gp_upload_success'] = 'Datoteka je bila uspešno prenesena na strežnik!'
 
 $lang['gp_edit'] = 'Uredi';
 $lang['gp_delete'] = 'Briši';
+$lang['gp_create'] = 'Ustvari';
+$lang['gp_new'] = 'Nov';
+$lang['gp_saved'] = ' je shranjen';
+$lang['gp_deleted'] = ' je izbrisan';
+$lang['gp_exists'] = ' že obstaja';
+
+//database fields
+$lang['gp_name'] = 'Name';
+$lang['gp_display_name'] = 'Display Name';
+$lang['gp_order'] = 'Display Order';
+$lang['gp_url'] = 'Web Site';
+

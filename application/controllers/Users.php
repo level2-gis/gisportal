@@ -8,7 +8,7 @@ class Users extends CI_Controller {
         parent::__construct();
         $this->load->model('project_model');
         $this->load->model('user_model');
-        $this->load->helper(array('url', 'html'));
+        $this->load->helper(array('url', 'html', 'eqwc_parse'));
     }
 
     public function index()

@@ -11,14 +11,28 @@
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab">Properties</a></li>
-			  <li><a href="#edit-project-layers" data-toggle="tab">Layers</a></li>
+			  <li><a href="#edit-project-layers" data-toggle="tab">Base Layers</a></li>
+			  <li><a href="#edit-project-extra-layers" data-toggle="tab">Overlay Layers</a></li>
 			  <li><a href="#edit-project-users" data-toggle="tab">Users</a></li>
 			</ul>
 
 			<div class="tab-content">
 
 				<fieldset id="edit-project-meta" class="tab-pane active">
-					<div class="form-group">
+
+                    <div class="form-group">
+                        <label for="client_id" class="control-label col-md-3">Client</label>
+                        <div class="col-md-4">
+                            <select class="form-control" name="client_id">
+                                <option value="">Select Client</option>
+                                <?php foreach ($clients as $client_item): ?>
+                                    <option <?php if ($client_item['id'] == $project['client_id']) { echo "selected='selected'"; }; ?> value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" .$client_item['name'] . ")"; ?></option>							<?php endforeach; ?>
+                            </select>
+                            <span class="text-danger"><?php echo form_error('client_id'); ?></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
 						<label for="name" class="control-label col-md-3">Name</label>
 						<div class="col-md-4">
 							<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $project['name']; ?>" />
@@ -27,15 +41,23 @@
 					</div>	
 
 					<div class="form-group">
-						<label for="project_path" class="control-label col-md-3">QGIS Project</label>
+						<label for="qgis_check" class="control-label col-md-3">QGIS Project</label>
 						<div class="col-md-4">
-							<select class="form-control" name="project_path">
-								<option value="">Select Project</option>
-								<?php foreach ($project_paths as $path_item): ?>
-									<option <?php if ($path_item == $project['project_path']) { echo "selected='selected'"; }; ?> value="<?php echo $path_item; ?>"><?php echo $path_item ?></option>							
-								<?php endforeach; ?>
-							</select>
-							<span class="text-danger"><?php echo form_error('project_path'); ?></span>
+                            <?php if ($qgis_check['valid']) {
+                                ?>
+                                <div class="alert alert-success">
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    <?php echo $qgis_check['name']?>
+                                </div>
+                                <?php
+                            } else {
+                               ?>
+                                <div class="alert alert-danger">
+                                    <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+                                    <?php echo $qgis_check['name']?>
+                                </div>
+                                <?php
+                            }?>
 						</div>
 					</div>
 
@@ -48,24 +70,28 @@
                         </div>
 
 					</div>	
-					<div class="form-group">
-						<label for="client_id" class="control-label col-md-3">Client</label>
-						<div class="col-md-4">
-							<select class="form-control" name="client_id">
-								<option value="">Select Client</option>
-								<?php foreach ($clients as $client_item): ?>
-									<option <?php if ($client_item['id'] == $project['client_id']) { echo "selected='selected'"; }; ?> value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" .$client_item['name'] . ")"; ?></option>							<?php endforeach; ?>
-							</select>
-							<span class="text-danger"><?php echo form_error('client_id'); ?></span>
-						</div>
-					</div>
+
 					<div class="form-group">
 						<label for="crs" class="control-label col-md-3">CRS</label>
 						<div class="col-md-4">
 							<input class="form-control" name="crs" placeholder="" readonly="readonly" type="text" value="<?php echo $project['crs']; ?>" />
 							<span class="text-danger"><?php echo form_error('crs'); ?></span>
 						</div>	
-					</div>	
+					</div>
+
+                    <div class="form-group">
+                        <label for="overview_layer_id" class="control-label col-md-3">Overview Layer</label>
+                        <div class="col-md-4">
+                            <select class="form-control" name="overview_layer_id">
+                                <option value="">Select Layer</option>
+                                <?php foreach ($base_layers as $layer_item): ?>
+                                    <option <?php if ($layer_item['id'] == $project['overview_layer_id']) { echo "selected='selected'"; }; ?> value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name'] . " (" .$layer_item['name'] . ")"; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="text-danger"><?php echo form_error('overview_layer_id'); ?></span>
+                        </div>
+                    </div>
+
 					<div class="form-group">
 						<label for="contact" class="control-label col-md-3">Contact</label>
 						<div class="col-md-4">
@@ -110,20 +136,20 @@
 								<input type="checkbox" name="feedback" value="true" <?php if ($project['feedback']) { echo "checked='checked'"; }; ?> /> Feedback
 							</div>
 							<div class="control">
-								<input type="checkbox" name="measurements" value="true" <?php if ($project['measurements']) { echo "checked='checked'"; }; ?> />Measurements
+								<input type="checkbox" name="measurements" value="true" <?php if ($project['measurements']) { echo "checked='checked'"; }; ?> /> Measurements
 							</div>
 
                             <div class="control">
-                                <input type="checkbox" name="print" value="true" <?php if ($project['print']) { echo "checked='checked'"; }; ?> />Print
+                                <input type="checkbox" name="print" value="true" <?php if ($project['print']) { echo "checked='checked'"; }; ?> /> Print
                             </div>
                             <div class="control">
-                                <input type="checkbox" name="zoom_back_forward" value="true" <?php if ($project['zoom_back_forward']) { echo "checked='checked'"; }; ?> />Zoom back - forward
+                                <input type="checkbox" name="zoom_back_forward" value="true" <?php if ($project['zoom_back_forward']) { echo "checked='checked'"; }; ?> /> Zoom back - forward
                             </div>
                             <div class="control">
-                                <input type="checkbox" name="identify_mode" value="true" <?php if ($project['identify_mode']) { echo "checked='checked'"; }; ?> />Identify mode
+                                <input type="checkbox" name="identify_mode" value="true" <?php if ($project['identify_mode']) { echo "checked='checked'"; }; ?> /> Identify mode
                             </div>
                             <div class="control">
-                                <input type="checkbox" name="permalink" value="true" <?php if ($project['permalink']) { echo "checked='checked'"; }; ?> />Permalink
+                                <input type="checkbox" name="permalink" value="true" <?php if ($project['permalink']) { echo "checked='checked'"; }; ?> /> Permalink
                             </div>
 						</div>
                     </div>
@@ -131,25 +157,14 @@
 
 				<fieldset id="edit-project-layers" class="tab-pane">
 					<div class="form-group">
-						<label for="overview_layer_id" class="control-label col-md-3">Overview Layer</label>
-						<div class="col-md-4">
-							<select class="form-control" name="overview_layer_id">
-								<option value="">Select Layer</option>
-								<?php foreach ($base_layers as $layer_item): ?>
-									<option <?php if ($layer_item['id'] == $project['overview_layer_id']) { echo "selected='selected'"; }; ?> value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name'] . " (" .$layer_item['name'] . ")"; ?></option>							
-								<?php endforeach; ?>
-							</select>
-							<span class="text-danger"><?php echo form_error('overview_layer_id'); ?></span>
-						</div>
-					</div>
-					<div class="form-group">
 						<label for="base_layers_ids" class="control-label col-md-3">Base Layers</label>
 						<div class="col-md-4">
 							<table class="table table-condensed table-striped">
 							  <tr>
 								<th>Enabled</th>
-								<th>Code</th>
+								<th>Display Name</th>
 								<th>Name</th>
+								<th>Type</th>
 							  </tr>
 								<?php foreach ($base_layers as $layer_item): ?>
 									<tr>
@@ -158,6 +173,7 @@
                                         </td>
 										<td><?php echo $layer_item['display_name']; ?></td>
 										<td><?php echo $layer_item['name']; ?></td>
+										<td><?php echo $layer_item['type']; ?></td>
 									</tr>
 								<?php endforeach; ?>
 							</table>
@@ -165,9 +181,35 @@
 							<span class="text-danger"><?php echo form_error('base_layers_ids'); ?></span>
 						</div>
 					</div>
-
-
 				</fieldset>
+
+                <fieldset id="edit-project-extra-layers" class="tab-pane">
+                    <div class="form-group">
+                        <label for="extra_layers_ids" class="control-label col-md-3">Overlay Layers</label>
+                        <div class="col-md-4">
+                            <table class="table table-condensed table-striped">
+                                <tr>
+                                    <th>Enabled</th>
+                                    <th>Display Name</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                </tr>
+                                <?php foreach ($extra_layers as $layer_item): ?>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="extra_layers_ids[]" value="<?php echo $layer_item['id']; ?>" <?php if ($layer_item['selected']) { echo "checked='checked'"; }; ?> />
+                                        </td>
+                                        <td><?php echo $layer_item['display_name']; ?></td>
+                                        <td><?php echo $layer_item['name']; ?></td>
+                                        <td><?php echo $layer_item['type']; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
+
+                            <span class="text-danger"><?php echo form_error('extra_layers_ids'); ?></span>
+                        </div>
+                    </div>
+                </fieldset>
 
 				<fieldset id="edit-project-users" class="tab-pane">
 					<table class="table table-condensed table-striped">

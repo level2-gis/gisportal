@@ -8,7 +8,7 @@ class Clients extends CI_Controller
     {
         parent::__construct();
         $this->load->model('client_model');
-        $this->load->helper(array('form', 'url', 'html', 'path', 'upload', 'file', 'date', 'number'));
+        $this->load->helper(array('form', 'url', 'html', 'path', 'eqwc_dir', 'file', 'date', 'number'));
     }
 
     public function index()

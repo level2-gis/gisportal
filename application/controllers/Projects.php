@@ -12,7 +12,7 @@ class Projects extends CI_Controller
         $this->load->model('project_model');
         $this->load->model('user_model');
         $this->load->model('layer_model');
-        $this->load->helper(array('url', 'html', 'path', 'parse'));
+        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir'));
     }
 
     public function index()
@@ -137,7 +137,7 @@ class Projects extends CI_Controller
         $this->load->library('form_validation');
 
         $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
-        $this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
+        //$this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
         $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('ordr','lang:gp_order','integer');
 
@@ -165,6 +165,7 @@ class Projects extends CI_Controller
 
             $data['project'] = $em;
             $this->loadmeta($data);
+            $this->qgisinfo($data);
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_edit', $data);
@@ -192,7 +193,7 @@ class Projects extends CI_Controller
         }
     }
 
-    function remove($id)
+    public function remove($id)
     {
         if (!$this->session->userdata('admin')){
             redirect('/');
@@ -219,6 +220,20 @@ class Projects extends CI_Controller
         }
         else
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The project you are trying to delete does not exist.</div>');
+    }
+
+    public function _unique_name($name) {
+
+        //test if we already have name in database
+        $exist = $this->project_model->project_exists($name);
+        $id = $this->input->post('id');
+
+        if ($exist && empty($id)) {
+            $this->form_validation->set_message('_unique_name', $this->lang->line('gp_project').' '.$name.$this->lang->line('gp_exists').'!');
+            return false;
+        }
+
+        return true;
     }
 
     private function imageResize($dir, $fn) {
@@ -248,8 +263,8 @@ class Projects extends CI_Controller
             'id'                        => $this->input->post('id'),
             'name'                      => $this->input->post('name'),
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
-            'base_layers_ids'           => $this->input->post('base_layers_ids'),
-            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
+            'base_layers_ids'           => set_arr($this->input->post('base_layers_ids')),
+            'extra_layers_ids'          => set_arr($this->input->post('extra_layers_ids')),
             'client_id'                 => set_null($this->input->post('client_id')),
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),
@@ -265,17 +280,17 @@ class Projects extends CI_Controller
             'zoom_back_forward'         => set_bool($this->input->post('zoom_back_forward')),
             'identify_mode'             => set_bool($this->input->post('identify_mode')),
             'permalink'                 => set_bool($this->input->post('permalink')),
-            'ordr'                      => ($this->input->post('ordr')),
-            'project_path'              => $this->input->post('project_path')
+            'ordr'                      => ($this->input->post('ordr'))
+            //'project_path'              => $this->input->post('project_path')
         );
 
-        //TODO move to helper foo
-        if ($this->input->post('base_layers_ids') != null){
-            $blids = implode($this->input->post('base_layers_ids'),',');
-            if ($blids != ''){
-                $data['base_layers_ids'] = '{' . $blids . '}';
-            }
-        }
+//        //TODO move to helper foo
+//        if ($this->input->post('base_layers_ids') != null){
+//            $blids = implode($this->input->post('base_layers_ids'),',');
+//            if ($blids != ''){
+//                $data['base_layers_ids'] = '{' . $blids . '}';
+//            }
+//        }
 
         return $data;
     }
@@ -293,7 +308,7 @@ class Projects extends CI_Controller
         $data['clients'] = $this->client_model->get_clients();
         $data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
         $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
-        $data['project_paths'] = array();
+        $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
 
 //        $directory = new RecursiveDirectoryIterator(PROJECT_PATH);
 //        $iterator  = new RecursiveIteratorIterator($directory);
@@ -304,17 +319,19 @@ class Projects extends CI_Controller
 //        }
     }
 
-    public function _unique_name($name) {
-
-        //test if we already have name in database
-        $exist = $this->project_model->project_exists($name);
-        $id = $this->input->post('id');
-
-        if ($exist && empty($id)) {
-            $this->form_validation->set_message('_unique_name', $this->lang->line('gp_project').' '.$name.$this->lang->line('gp_exists').'!');
-            return false;
+    private function qgisinfo(&$data){
+        if ($data['project']['id'] == null) {
+            $data['qgis_check'] =  ["valid" => false, "name" => ""];
+            return;
         }
 
-        return true;
+        $project_name = $data['project']['name'];
+        $project_path = $data['project']['project_path'];
+        $client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
+        $client_name = $data['clients'][$client_key]['name'];
+
+        $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
     }
+
+
 }

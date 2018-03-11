@@ -23,14 +23,10 @@
 		  <td class="col-md-2"><?php echo $user_item['user_name']; ?></td>
 		  <td class="col-md-2"><?php echo $user_item['user_email']; ?></td>
 		  <td class="col-md-2"><?php echo $user_item['display_name']; ?></td>
-		  <td class="col-md-2"><?php echo date_format(date_create($user_item['registered']),'Y-m-d H:i:s'); ?></td>
+		  <td class="col-md-2"><?php echo set_datestr($user_item['registered']); ?></td>
 		  <td class="col-md-2"><?php echo $user_item['count_login']; ?></td>
-		  <td class="col-md-2"><?php echo date_format(date_create($user_item['last_login']),'Y-m-d H:i:s'); ?></td>
-		  <td class="col-md-2"><?php if ($user_item['admin']) {
-                                    echo "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
-                                } else {
-                                    echo "<span class='glyphicon glyphicon-minus' aria-hidden='true'></span>";
-                                }; ?></td>
+		  <td class="col-md-2"><?php echo set_datestr($user_item['last_login']); ?></td>
+		  <td class="col-md-2"><?php echo set_check_icon($user_item['admin']); ?></td>
 		  <td class="col-md-2">
 			<a class="btn btn-primary" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>">
 				<?php echo $this->lang->line('gp_edit'); ?>

@@ -62,7 +62,11 @@ class Projects extends CI_Controller
             if ($project == null) {
                 throw new Exception('Project not found!');
             }
-            $client_name = $project->client_name;
+            $client = $this->client_model->get_client($project->client_id);
+            if ($client == null) {
+                throw new Exception('Client not found!');
+            }
+            $client_name = $client->name;
             $project_name = $project->name;
 
             $dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), false) . $client_name, false);
@@ -265,7 +269,7 @@ class Projects extends CI_Controller
             'name'                      => $this->input->post('name'),
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
             'base_layers_ids'           => $this->input->post('base_layers_ids'),
-            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
+//            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
             'client_id'                 => set_null($this->input->post('client_id')),
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),

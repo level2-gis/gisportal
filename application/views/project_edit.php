@@ -12,7 +12,7 @@
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab">Properties</a></li>
 			  <li><a href="#edit-project-layers" data-toggle="tab">Base Layers</a></li>
-			  <li><a href="#edit-project-extra-layers" data-toggle="tab">Overlay Layers</a></li>
+<!--			  <li><a href="#edit-project-extra-layers" data-toggle="tab">Overlay Layers</a></li>-->
 			  <li><a href="#edit-project-users" data-toggle="tab">Users</a></li>
 			</ul>
 
@@ -267,7 +267,7 @@
 				<div class="form-actions col-md-offset-2 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 					<input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
-					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
+<!--					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">-->
 
 					<input type="submit" class="btn btn-primary" onclick="checkValues()" value="Save" >
 					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value="Save &amp; Return">

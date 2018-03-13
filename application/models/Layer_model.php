@@ -52,7 +52,7 @@ class Layer_model extends CI_Model {
 
     public function get_layers_with_project_flag($ids) {
 
-        $sql = "id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
+        $sql = "SELECT id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
         if (empty($ids)) {
             $sql.="0 AS idx ";
         } else {

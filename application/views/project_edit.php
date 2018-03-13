@@ -1,4 +1,4 @@
-	<div class="page-header clearfix">
+    <div class="page-header clearfix">
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
 	</div>
 
@@ -37,6 +37,7 @@
 						<div class="col-md-4">
 							<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $project['name']; ?>" />
 							<span class="text-danger"><?php echo form_error('name'); ?></span>
+                            <p class="help-block">This is QGIS Project file name without .qgs!</p>
 						</div>	
 					</div>	
 
@@ -158,28 +159,55 @@
 				<fieldset id="edit-project-layers" class="tab-pane">
 					<div class="form-group">
 						<label for="base_layers_ids" class="control-label col-md-3">Base Layers</label>
-						<div class="col-md-4">
-							<table class="table table-condensed table-striped">
-							  <tr>
-								<th>Enabled</th>
-								<th>Display Name</th>
-								<th>Name</th>
-								<th>Type</th>
-							  </tr>
-								<?php foreach ($base_layers as $layer_item): ?>
-									<tr>
-										<td>
-											<input type="checkbox" name="base_layers_ids[]" value="<?php echo $layer_item['id']; ?>" <?php if ($layer_item['selected']) { echo "checked='checked'"; }; ?> />
-                                        </td>
-										<td><?php echo $layer_item['display_name']; ?></td>
-										<td><?php echo $layer_item['name']; ?></td>
-										<td><?php echo $layer_item['type']; ?></td>
-									</tr>
-								<?php endforeach; ?>
-							</table>
 
-							<span class="text-danger"><?php echo form_error('base_layers_ids'); ?></span>
-						</div>
+                        <div class="row style-select">
+                            <div class="col-md-8">
+                                <div class="subject-info-box-1">
+                                    <label>Available layers</label>
+                                    <select multiple class="form-control" id="lstBox1">
+                                        <?php foreach ($base_layers as $layer_item): ?>
+                                            <?php if ($layer_item['idx'] == 0) {?>
+                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
+                                            <?php } ?>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="subject-info-arrows text-center">
+                                    <br /><br />
+                                    <input type='button' id='btnRight' value='>' class="btn btn-default" /><br />
+                                    <input type='button' id='btnLeft' value='<' class="btn btn-default" /><br />
+                                    <input type='button' id='btnAllLeft' value='<<' class="btn btn-default" />
+                                </div>
+
+                                <div class="subject-info-box-2">
+                                    <label>Layers in project</label>
+                                    <select multiple class="form-control" id="lstBox2">
+                                        <?php foreach ($base_layers as $layer_item): ?>
+                                            <?php if ($layer_item['idx'] > 0) {?>
+                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
+                                            <?php } ?>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="selected-right">
+                                    <button type="button" class="btn btn-default btn-sm" id="btnShieldUp">
+                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-sm" id="btnShieldDown">
+                                        <span class="glyphicon glyphicon-chevron-down"></span>
+                                    </button>
+                                </div>
+
+<!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
+<!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
+<!--                                </div>-->
+
+<!--                                <div class="clearfix"></div>-->
+                            </div>
+                        </div>
+
 					</div>
 				</fieldset>
 
@@ -238,9 +266,11 @@
 			<div id="fixed-actions">
 				<div class="form-actions col-md-offset-2 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
+					<input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
+					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
 
-					<input type="submit" class="btn btn-primary" value="Save">
-					<input type="submit" class="btn btn-primary" name="return" value="Save &amp; Return">
+					<input type="submit" class="btn btn-primary" onclick="checkValues()" value="Save" >
+					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value="Save &amp; Return">
 					<a class="btn btn-default" href="<?php echo site_url('projects/'); ?>">Return</a>
 				
 				<?php if ( $creating === false ) : ?>

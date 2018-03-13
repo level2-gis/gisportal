@@ -15,8 +15,6 @@
         return result;
     };
 
-
-
     //Moves selected item(s) from sourceList to destinationList
     $.fn.moveToList = function (sourceList, destinationList) {
         var opts = $(sourceList + ' option:selected');

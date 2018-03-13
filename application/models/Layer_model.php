@@ -52,13 +52,13 @@ class Layer_model extends CI_Model {
 
     public function get_layers_with_project_flag($ids) {
 
-        $sql = "select id, name, display_name, type, ";
-        if ($ids == null) {
-            $sql.="false AS selected ";
+        $sql = "id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
+        if (empty($ids)) {
+            $sql.="0 AS idx ";
         } else {
-            $sql.= "CASE WHEN idx('".$ids."',id) > 0 THEN true ELSE false END AS selected ";
+            $sql.= "idx('".$ids."',id) ";
         }
-        $sql.= "FROM layers ORDER by name;";
+        $sql.= "FROM layers ORDER by idx,name;";
         $query = $this->db->query($sql);
 
         return $query->result_array();

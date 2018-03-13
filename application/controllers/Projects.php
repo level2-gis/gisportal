@@ -169,6 +169,7 @@ class Projects extends CI_Controller
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_edit', $data);
+            $this->load->view('project_edit_layers_func');
             //$this->load->view('templates/footer', $data);
         } else {
 
@@ -263,8 +264,8 @@ class Projects extends CI_Controller
             'id'                        => $this->input->post('id'),
             'name'                      => $this->input->post('name'),
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
-            'base_layers_ids'           => set_arr($this->input->post('base_layers_ids')),
-            'extra_layers_ids'          => set_arr($this->input->post('extra_layers_ids')),
+            'base_layers_ids'           => $this->input->post('base_layers_ids'),
+            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
             'client_id'                 => set_null($this->input->post('client_id')),
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),

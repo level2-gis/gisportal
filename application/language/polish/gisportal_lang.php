@@ -28,8 +28,8 @@ $lang['gp_open_project'] = 'Otwórz projekt';
 $lang['gp_profile_title'] = 'Mój profil';
 $lang['gp_clients_title'] = 'Klienci';
 $lang['gp_projects_title'] = 'Projekty';
-$lang['gp_layers_title'] = 'Layers';
-$lang['gp_users_title'] = 'Users';
+$lang['gp_layers_title'] = 'Warstwy';
+$lang['gp_users_title'] = 'Użytkownicy';
 $lang['gp_home'] = 'Strona główna';
 $lang['gp_portal_title'] = 'Portal GIS';
 
@@ -37,7 +37,7 @@ $lang['gp_user_projects'] = 'Projekty użytkownika';
 $lang['gp_public_projects'] = 'Projekty publiczne';
 $lang['gp_client'] = 'Klient';
 $lang['gp_project'] = 'projekt';
-$lang['gp_layer'] = 'Layer';
+$lang['gp_layer'] = 'Warstwa';
 $lang['gp_public'] = 'publiczny';
 $lang['gp_crs'] = 'Układ';
 $lang['gp_contact'] = 'kontakt';
@@ -51,21 +51,21 @@ $lang['gp_language'] = 'Język';
 $lang['gp_no_projects'] = 'Nie masz dostępu do projektów!';
 $lang['gp_no_public_projects'] = 'Nie są dostępne żadne publiczne projekty!';
 
-$lang['gp_uploaded_files'] = 'Uploaded files';
-$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config.php: ';
-$lang['gp_upload_success'] = 'Your file was successfully uploaded!';
+$lang['gp_uploaded_files'] = 'Wczytane pliki';
+$lang['gp_upload_no_folder'] = 'Utwórz na dysku folder dla wczytywanych plików, zdefiniowany w config.php:';
+$lang['gp_upload_success'] = 'Plik został wczytany!';
 
-$lang['gp_edit'] = 'Edit';
-$lang['gp_delete'] = 'Delete';
-$lang['gp_create'] = 'Create';
-$lang['gp_new'] = 'New';
-$lang['gp_saved'] = ' has been saved';
-$lang['gp_deleted'] = ' has been deleted';
-$lang['gp_exists'] = ' already exists';
+$lang['gp_edit'] = 'Edytuj';
+$lang['gp_delete'] = 'Usuń';
+$lang['gp_create'] = 'Utwórz';
+$lang['gp_new'] = 'Nowy';
+$lang['gp_saved'] = ' zapisano';
+$lang['gp_deleted'] = ' usunięto';
+$lang['gp_exists'] = ' już istnieje';
 
-//database fields
-$lang['gp_name'] = 'Name';
-$lang['gp_display_name'] = 'Display Name';
-$lang['gp_order'] = 'Display Order';
-$lang['gp_url'] = 'Web Site';
+//pola bazy danych
+$lang['gp_name'] = 'Nazwa';
+$lang['gp_display_name'] = 'Nazwa wyświetlana';
+$lang['gp_order'] = 'Kolejność wyświetlania';
+$lang['gp_url'] = 'Link';
 

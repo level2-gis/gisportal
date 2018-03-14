@@ -76,6 +76,13 @@ Read this [tutorial about making changes to repositories](https://help.github.co
 
 Thank you!
 
+## Credits
+
+Special thanks to following companies for supporting this project:
+* GEL Consulting group, USA
+* Geonord, Norway
+* Swescan, Sweden
+
 ## Support
 
 Contact us for:

@@ -1,13 +1,13 @@
-Web portal for QGIS projects published by EQWC
-==============================================
+GIS portal and Administration for QGIS projects published by EQWC
+=================================================================
 
 This is start page - Web portal for browsing and opening QGIS projects published with [**Extended QGIS Web Client.**](https://github.com/uprel/gisapp)
 
-User registration and login is now part of this. Next steps are planned to have complete web administration part for publishing projects and layers, delegating user permissions...
+For administrators (user with admin=true in database) this is complete administration to manage clients, projects, delegate user permissions and much more. Currently work in progress.
 
 Built with Codeigniter and Bootstrap.
 
-## Demo
+## Demo for users
 Visit **<a target="_blank" href="http://test.level2.si">Demo by Level2</a>**
 
 ## Setup

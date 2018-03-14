@@ -78,7 +78,7 @@ Thank you!
 
 ## Credits
 
-Special thanks to following companies for supporting this project:
+Thanks to all translators, donators and special thanks to following companies for supporting this project:
 * GEL Consulting group, USA
 * Geonord, Norway
 * Swescan, Sweden

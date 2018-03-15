@@ -12,7 +12,7 @@
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab">Properties</a></li>
 			  <li><a href="#edit-project-layers" data-toggle="tab">Base Layers</a></li>
-<!--			  <li><a href="#edit-project-extra-layers" data-toggle="tab">Overlay Layers</a></li>-->
+			  <li><a href="#edit-project-extra-layers" data-toggle="tab">Overlay Layers</a></li>
 			  <li><a href="#edit-project-users" data-toggle="tab">Users</a></li>
 			</ul>
 
@@ -159,12 +159,11 @@
 				<fieldset id="edit-project-layers" class="tab-pane">
 					<div class="form-group">
 <!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
-
                         <div class="row style-select">
                             <div class="col-md-offset-1 col-md-10">
                                 <div class="subject-info-box-1">
                                     <label>Available Base layers</label>
-                                    <select multiple class="form-control" id="lstBox1">
+                                    <select multiple class="form-control" id="lstBase1">
                                         <?php foreach ($base_layers as $layer_item): ?>
                                             <?php if ($layer_item['idx'] == 0) {?>
                                                 <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
@@ -175,14 +174,14 @@
 
                                 <div class="subject-info-arrows text-center">
                                     <br /><br />
-                                    <input type='button' id='btnRight' value='>' class="btn btn-default" /><br />
-                                    <input type='button' id='btnLeft' value='<' class="btn btn-default" /><br />
-                                    <input type='button' id='btnAllLeft' value='<<' class="btn btn-default" />
+                                    <input type='button' onclick="moveItem('#lstBase1','#lstBase2')" value='>' class="btn btn-default" /><br />
+                                    <input type='button' onclick="moveItem('#lstBase2','#lstBase1')" value='<' class="btn btn-default" /><br />
+                                    <input type='button' onclick="moveAllItems('#lstBase2','#lstBase1')" value='<<' class="btn btn-default" />
                                 </div>
 
                                 <div class="subject-info-box-2">
                                     <label>Base Layers in project</label>
-                                    <select multiple class="form-control" id="lstBox2">
+                                    <select multiple class="form-control" id="lstBase2">
                                         <?php foreach ($base_layers as $layer_item): ?>
                                             <?php if ($layer_item['idx'] > 0) {?>
                                                 <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
@@ -192,10 +191,10 @@
                                 </div>
 
                                 <div class="selected-right">
-                                    <button type="button" class="btn btn-default btn-sm" id="btnShieldUp">
+                                    <button onclick="moveUp('#lstBase2')" type="button" class="btn btn-default btn-sm">
                                         <span class="glyphicon glyphicon-chevron-up"></span>
                                     </button>
-                                    <button type="button" class="btn btn-default btn-sm" id="btnShieldDown">
+                                    <button onclick="moveDown('#lstBase2')" type="button" class="btn btn-default btn-sm">
                                         <span class="glyphicon glyphicon-chevron-down"></span>
                                     </button>
                                 </div>
@@ -213,29 +212,55 @@
 
                 <fieldset id="edit-project-extra-layers" class="tab-pane">
                     <div class="form-group">
-                        <label for="extra_layers_ids" class="control-label col-md-3">Overlay Layers</label>
-                        <div class="col-md-4">
-                            <table class="table table-condensed table-striped">
-                                <tr>
-                                    <th>Enabled</th>
-                                    <th>Display Name</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                </tr>
-                                <?php foreach ($extra_layers as $layer_item): ?>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="extra_layers_ids[]" value="<?php echo $layer_item['id']; ?>" <?php if ($layer_item['selected']) { echo "checked='checked'"; }; ?> />
-                                        </td>
-                                        <td><?php echo $layer_item['display_name']; ?></td>
-                                        <td><?php echo $layer_item['name']; ?></td>
-                                        <td><?php echo $layer_item['type']; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
+                        <!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
+                        <div class="row style-select">
+                            <div class="col-md-offset-1 col-md-10">
+                                <div class="subject-info-box-1">
+                                    <label>Available Overlay layers</label>
+                                    <select multiple class="form-control" id="lstExtra1">
+                                        <?php foreach ($extra_layers as $layer_item): ?>
+                                            <?php if ($layer_item['idx'] == 0) {?>
+                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
+                                            <?php } ?>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
 
-                            <span class="text-danger"><?php echo form_error('extra_layers_ids'); ?></span>
+                                <div class="subject-info-arrows text-center">
+                                    <br /><br />
+                                    <input type='button' onclick="moveItem('#lstExtra1','#lstExtra2')" value='>' class="btn btn-default" /><br />
+                                    <input type='button' onclick="moveItem('#lstExtra2','#lstExtra1')" value='<' class="btn btn-default" /><br />
+                                    <input type='button' onclick="moveAllItems('#lstExtra2','#lstExtra1')" value='<<' class="btn btn-default" />
+                                </div>
+
+                                <div class="subject-info-box-2">
+                                    <label>Overlay Layers in project</label>
+                                    <select multiple class="form-control" id="lstExtra2">
+                                        <?php foreach ($extra_layers as $layer_item): ?>
+                                            <?php if ($layer_item['idx'] > 0) {?>
+                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
+                                            <?php } ?>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="selected-right">
+                                    <button onclick="moveUp('#lstExtra2')" type="button" class="btn btn-default btn-sm">
+                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                    </button>
+                                    <button onclick="moveDown('#lstExtra2')" type="button" class="btn btn-default btn-sm">
+                                        <span class="glyphicon glyphicon-chevron-down"></span>
+                                    </button>
+                                </div>
+
+                                <!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
+                                <!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
+                                <!--                                </div>-->
+
+                                <!--                                <div class="clearfix"></div>-->
+                            </div>
                         </div>
+
                     </div>
                 </fieldset>
 
@@ -267,7 +292,7 @@
 				<div class="form-actions col-md-offset-1 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 					<input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
-<!--					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">-->
+					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
 
 					<input type="submit" class="btn btn-primary" onclick="checkValues()" value="Save" >
 					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value="Save &amp; Return">

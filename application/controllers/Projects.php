@@ -269,7 +269,7 @@ class Projects extends CI_Controller
             'name'                      => $this->input->post('name'),
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
             'base_layers_ids'           => $this->input->post('base_layers_ids'),
-//            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
+            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
             'client_id'                 => set_null($this->input->post('client_id')),
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),

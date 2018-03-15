@@ -45,6 +45,12 @@
                         <span class="text-danger"><?php echo form_error('ordr'); ?></span>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">Image</label>
+                    <div class="col-md-5">
+                        <?php echo $image; ?>
+                    </div>
+                </div>
             </fieldset>
 
 

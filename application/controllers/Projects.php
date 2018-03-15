@@ -168,6 +168,8 @@ class Projects extends CI_Controller
 
 
             $data['project'] = $em;
+            $data['image'] = $this->getImage($em['name']);
+
             $this->loadmeta($data);
             $this->qgisinfo($data);
 
@@ -299,6 +301,22 @@ class Projects extends CI_Controller
 
         return $data;
     }
+
+
+    private function getImage($name) {
+        $path = 'assets/img/projects/'.$name.'.png';
+        $fn = set_realpath(FCPATH.$path, false);
+
+        if (is_file($fn)) {
+            return "<img class='img-responsive' src='" . base_url($path) . "'>";
+        }
+        else {
+            return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (250x177px)</br>".$fn."</div>";
+        }
+    }
+
+
+
 
     private function extractUserProjectData(){
 

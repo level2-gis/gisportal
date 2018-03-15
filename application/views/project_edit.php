@@ -154,6 +154,12 @@
                             </div>
 						</div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Image</label>
+                        <div class="col-md-5">
+                            <?php echo $image; ?>
+                        </div>
+                    </div>
     			</fieldset>
 
 				<fieldset id="edit-project-layers" class="tab-pane">

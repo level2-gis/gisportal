@@ -107,6 +107,7 @@ class Clients extends CI_Controller
                 }
             }
             $data['client'] = $em;
+            $data['image'] = $this->getImage($em['name']);
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);
@@ -217,6 +218,19 @@ class Clients extends CI_Controller
             'description' => $this->input->post('description')
         );
     }
+
+    private function getImage($name) {
+        $path = 'assets/img/clients/'.$name.'.png';
+        $fn = set_realpath(FCPATH.$path, false);
+
+        if (is_file($fn)) {
+            return "<img class='img-responsive' src='" . base_url($path) . "'>";
+        }
+        else {
+            return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (300x200px)</br>".$fn."</div>";
+        }
+    }
+
 
     public function _unique_name($name) {
 

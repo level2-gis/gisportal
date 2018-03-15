@@ -11,7 +11,9 @@ class Layer_model extends CI_Model {
     */
     function get_layer($id)
     {
-        return $this->db->get_where('layers',array('id'=>$id))->row_array();
+        $this->db->where('id', $id);
+        $query = $this->db->get('layers');
+        return $query->result()[0];
     }
 
     function get_layers()
@@ -23,22 +25,37 @@ class Layer_model extends CI_Model {
         return $query->result_array();
     }
 
-    /*
-     * function to add new layer
-     */
-    function add_layer($params)
+    function layer_exists($name)
     {
-        $this->db->insert('layers',$params);
-        return $this->db->insert_id();
+        $this->db->where('name', $name);
+        $query = $this->db->get('layers');
+        $row = $query->row();
+
+        return isset($row);
     }
 
     /*
-     * function to update layer
-     */
-    function update_layer($id,$params)
+    * function to insert/update
+    */
+    function upsert_layer($data)
     {
-        $this->db->where('id',$id);
-        return $this->db->update('layers',$params);
+        $id = $data['id'];
+
+        if ($id != null){
+            $this->db->where('id',$id);
+            $q = $this->db->get('layers');
+            if ( $q->num_rows() > 0 )
+            {
+                $this->db->where('id',$id);
+                $this->db->update('layers',$data);
+                return $id;
+            }
+        }
+
+        unset($data['id']);
+        $this->db->insert('layers', $data);
+
+        return $this->db->insert_id();
     }
 
     /*

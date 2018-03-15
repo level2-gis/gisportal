@@ -18,28 +18,28 @@
 
 				<fieldset id="edit-user-meta" class="tab-pane active">
 					<div class="form-group">
-						<label for="user_name" class="control-label col-md-3">Username</label>
-						<div class="col-md-4">
+						<label for="user_name" class="control-label col-md-2">Username</label>
+						<div class="col-md-5">
 							<input class="form-control" name="user_name" placeholder="" readonly="readonly" type="text" value="<?php echo $user['user_name']; ?>" />
 							<span class="text-danger"><?php echo form_error('user_name'); ?></span>
 						</div>	
 					</div>	
 					<div class="form-group">
-						<label for="user_email" class="control-label col-md-3">Email</label>
-						<div class="col-md-4">
+						<label for="user_email" class="control-label col-md-2">Email</label>
+						<div class="col-md-5">
 							<input class="form-control" name="user_email" placeholder="" readonly="readonly" type="text" value="<?php echo $user['user_email']; ?>" />
 							<span class="text-danger"><?php echo form_error('user_email'); ?></span>
 						</div>	
 					</div>	
 					<div class="form-group">
-						<label for="display_name" class="control-label col-md-3">Name</label>
-						<div class="col-md-4">
+						<label for="display_name" class="control-label col-md-2">Name</label>
+						<div class="col-md-5">
 							<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $user['display_name']; ?>" />
 							<span class="text-danger"><?php echo form_error('display_name'); ?></span>
 						</div>	
 					</div>	
 					<div class="form-group">
-						<div class="col-md-offset-3 col-md-4">
+						<div class="col-md-offset-2 col-md-4">
 							<div class="control">
 								<input type="checkbox" name="admin" value="true" <?php if ($user['admin']) { echo "checked='checked'"; }; ?> /> Make user admin
 							</div>
@@ -49,9 +49,11 @@
 		
 				</fieldset>
 
-
 				<fieldset id="edit-user-projects" class="tab-pane">
-					<?php if ($user['admin']) { echo "<h4>User is admin and has access to all projects</h4>"; }; ?>
+					<?php if ($user['admin']) : ?>
+                        <div class="alert alert-info col-md-9" role="alert">User is admin and has access to all projects!</div>
+                    <?php endif; ?>
+                    <?php if (!$user['admin']) : ?>
 					<table class="table table-condensed table-striped">
 					  <tr>
 						<th>Access</th>
@@ -71,14 +73,14 @@
 						</tr>
 						<?php endforeach; ?>
 					</table>
-
+                    <?php endif; ?>
 
 
 				</fieldset>
 
 			</div>
 			<div id="fixed-actions">
-				<div class="form-actions col-md-offset-2 col-md-8">
+				<div class="form-actions col-md-offset-1 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
 					<input type="submit" class="btn btn-primary" value="Save">

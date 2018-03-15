@@ -130,4 +130,24 @@ class Project_model extends CI_Model {
         $this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
         $query = $this->db->delete('projects');
     }
+
+
+    public function get_projects_with_layer($id) {
+
+        if (empty($id)) {
+            return [];
+        }
+
+        $sql = "SELECT * FROM ";
+        $sql.= "(SELECT id,name, ";
+        $sql.= "idx(base_layers_ids,".$id.") AS is_base, ";
+        $sql.= "idx(extra_layers_ids,".$id.") AS is_extra, ";
+        $sql.= "CASE when overview_layer_id=".$id." THEN true ELSE false END AS is_overview ";
+        $sql.= "FROM public.projects) AS test ";
+        $sql.= "WHERE is_base>0 or is_extra>0 OR is_overview ORDER BY name;";
+
+        $query = $this->db->query($sql);
+
+        return $query->result_array();
+    }
 }

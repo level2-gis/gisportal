@@ -67,7 +67,8 @@ class Mail extends CI_Controller
 
         //Send email
         if (!$this->email->send()) {
-            //log_message('error', 'Mail sending error: '. implode(',', $config));
+            //i don't get this to write to error log so commenting out
+            //log_message('error', 'GISPORTAL Mail sending error: '. $this->email->print_debugger(array('headers')););
 
             $this->output
                 ->set_content_type('application/json')

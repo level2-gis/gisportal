@@ -21,8 +21,8 @@
 				<fieldset id="edit-project-meta" class="tab-pane active">
 
                     <div class="form-group">
-                        <label for="client_id" class="control-label col-md-3">Client</label>
-                        <div class="col-md-4">
+                        <label for="client_id" class="control-label col-md-2">Client</label>
+                        <div class="col-md-5">
                             <select class="form-control" name="client_id">
                                 <option value="">Select Client</option>
                                 <?php foreach ($clients as $client_item): ?>
@@ -33,8 +33,8 @@
                     </div>
 
                     <div class="form-group">
-						<label for="name" class="control-label col-md-3">Name</label>
-						<div class="col-md-4">
+						<label for="name" class="control-label col-md-2">Name</label>
+						<div class="col-md-5">
 							<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $project['name']; ?>" />
 							<span class="text-danger"><?php echo form_error('name'); ?></span>
                             <p class="help-block">This is QGIS Project file name without .qgs!</p>
@@ -42,8 +42,8 @@
 					</div>	
 
 					<div class="form-group">
-						<label for="qgis_check" class="control-label col-md-3">QGIS Project</label>
-						<div class="col-md-4">
+						<label for="qgis_check" class="control-label col-md-2">QGIS Project</label>
+						<div class="col-md-5">
                             <?php if ($qgis_check['valid']) {
                                 ?>
                                 <div class="alert alert-success">
@@ -63,8 +63,8 @@
 					</div>
 
 					<div class="form-group">
-						<label for="display_name" class="control-label col-md-3">Display Name</label>
-						<div class="col-md-4">
+						<label for="display_name" class="control-label col-md-2">Display Name</label>
+						<div class="col-md-5">
 							<input class="form-control" name="display_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['display_name']; ?>" />
 							<span class="text-danger"><?php echo form_error('display_name'); ?></span>
                             <p class="help-block">This is set from QGIS Project properties!</p>
@@ -73,16 +73,16 @@
 					</div>	
 
 					<div class="form-group">
-						<label for="crs" class="control-label col-md-3">CRS</label>
-						<div class="col-md-4">
+						<label for="crs" class="control-label col-md-2">CRS</label>
+						<div class="col-md-5">
 							<input class="form-control" name="crs" placeholder="" readonly="readonly" type="text" value="<?php echo $project['crs']; ?>" />
 							<span class="text-danger"><?php echo form_error('crs'); ?></span>
 						</div>	
 					</div>
 
                     <div class="form-group">
-                        <label for="overview_layer_id" class="control-label col-md-3">Overview Layer</label>
-                        <div class="col-md-4">
+                        <label for="overview_layer_id" class="control-label col-md-2">Overview Layer</label>
+                        <div class="col-md-5">
                             <select class="form-control" name="overview_layer_id">
                                 <option value="">Select Layer</option>
                                 <?php foreach ($base_layers as $layer_item): ?>
@@ -94,36 +94,36 @@
                     </div>
 
 					<div class="form-group">
-						<label for="contact" class="control-label col-md-3">Contact</label>
-						<div class="col-md-4">
+						<label for="contact" class="control-label col-md-2">Contact</label>
+						<div class="col-md-5">
 							<input class="form-control" name="contact" placeholder="" type="text" value="<?php echo $project['contact']; ?>" />
 							<span class="text-danger"><?php echo form_error('contact'); ?></span>
 						</div>	
 					</div>	
 					<div class="form-group">
-						<label for="feedback_email" class="control-label col-md-3">Feedback Email</label>
-						<div class="col-md-4">
+						<label for="feedback_email" class="control-label col-md-2">Feedback Email</label>
+						<div class="col-md-5">
 							<input class="form-control" name="feedback_email" placeholder="" type="text" value="<?php echo $project['feedback_email']; ?>" />
 							<span class="text-danger"><?php echo form_error('feedback_email'); ?></span>
 						</div>	
 					</div>
                     <div class="form-group">
-                        <label for="ordr" class="control-label col-md-3">Display order</label>
-                        <div class="col-md-4">
+                        <label for="ordr" class="control-label col-md-2">Display order</label>
+                        <div class="col-md-5">
                             <input class="form-control" name="ordr" placeholder="" type="text" value="<?php echo $project['ordr']; ?>" />
                             <span class="text-danger"><?php echo form_error('ordr'); ?></span>
                         </div>
                     </div>
 					<div class="form-group">
-						<label for="description" class="control-label col-md-3">Description</label>
-						<div class="col-md-6">
+						<label for="description" class="control-label col-md-2">Description</label>
+						<div class="col-md-5">
 							<textarea class="form-control" cols="20" rows="4" name="description" placeholder="" type="text"><?php echo $project['description']; ?></textarea>
 							<span class="text-danger"><?php echo form_error('description'); ?></span>
 						</div>	
 					</div>	
 
 					<div class="form-group">
-						<div class="col-md-offset-3 col-md-4">
+						<div class="col-md-offset-2 col-md-5">
 							<div class="control">
 								<input type="checkbox" name="public" value="true" <?php if ($project['public']) { echo "checked='checked'"; }; ?> /> Public
 							</div>
@@ -158,12 +158,12 @@
 
 				<fieldset id="edit-project-layers" class="tab-pane">
 					<div class="form-group">
-						<label for="base_layers_ids" class="control-label col-md-3">Base Layers</label>
+<!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
 
                         <div class="row style-select">
-                            <div class="col-md-8">
+                            <div class="col-md-offset-1 col-md-10">
                                 <div class="subject-info-box-1">
-                                    <label>Available layers</label>
+                                    <label>Available Base layers</label>
                                     <select multiple class="form-control" id="lstBox1">
                                         <?php foreach ($base_layers as $layer_item): ?>
                                             <?php if ($layer_item['idx'] == 0) {?>
@@ -181,7 +181,7 @@
                                 </div>
 
                                 <div class="subject-info-box-2">
-                                    <label>Layers in project</label>
+                                    <label>Base Layers in project</label>
                                     <select multiple class="form-control" id="lstBox2">
                                         <?php foreach ($base_layers as $layer_item): ?>
                                             <?php if ($layer_item['idx'] > 0) {?>
@@ -264,7 +264,7 @@
 				</fieldset>
 
 			<div id="fixed-actions">
-				<div class="form-actions col-md-offset-2 col-md-8">
+				<div class="form-actions col-md-offset-1 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 					<input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
 <!--					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">-->
@@ -273,7 +273,7 @@
 					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value="Save &amp; Return">
 					<a class="btn btn-default" href="<?php echo site_url('projects/'); ?>">Return</a>
 				
-				<?php if ( $creating === false ) : ?>
+				<?php if ( $creating === false && !empty($project['id'])) : ?>
 				<div class="pull-right">
                     <a class="btn btn-danger" href="<?php echo site_url('projects/remove/'.$project['id']); ?>">Delete</a>
                 </div>

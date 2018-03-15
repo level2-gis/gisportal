@@ -5,7 +5,8 @@ class Layers extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('layer_model');
-        $this->load->helper(array('url'));
+        $this->load->model('project_model');
+        $this->load->helper(array('form', 'url'));
     } 
 
     /*
@@ -28,86 +29,185 @@ class Layers extends CI_Controller{
     /*
      * Adding a new layer
      */
-    function add()
-    {   
-        $this->load->library('form_validation');
-
-		$this->form_validation->set_rules('type','Type','required');
-		$this->form_validation->set_rules('name','Name','required|max_length[100]|is_unique[true]');
-		$this->form_validation->set_rules('definition','Definition','required');
-		
-		if($this->form_validation->run())     
-        {   
-            $params = array(
-				'type' => $this->input->post('type'),
-				'name' => $this->input->post('name'),
-				'display_name' => $this->input->post('display_name'),
-				'definition' => $this->input->post('definition'),
-            );
-            
-            $layer_id = $this->Layer_model->add_layer($params);
-            redirect('layer/index');
-        }
-        else
-        {            
-            $data['_view'] = 'layer/add';
-            $this->load->view('layouts/main',$data);
-        }
-    }  
+//    function add()
+//    {
+//        if (!$this->session->userdata('admin')){
+//            redirect('/');
+//        }
+//
+//        $this->load->helper('form');
+//        $this->load->library('form_validation');
+//
+//		$this->form_validation->set_rules('type','Type','required');
+//		$this->form_validation->set_rules('name','Name','required|max_length[100]|is_unique[true]');
+//		$this->form_validation->set_rules('definition','Definition','required');
+//
+//		if($this->form_validation->run())
+//        {
+//            $params = array(
+//				'type' => $this->input->post('type'),
+//				'name' => $this->input->post('name'),
+//				'display_name' => $this->input->post('display_name'),
+//				'definition' => $this->input->post('definition'),
+//            );
+//
+//            $layer_id = $this->layer_model->add_layer($params);
+//            redirect('layers');
+//        }
+//        else
+//        {
+//            $this->load->view('templates/header', $data);
+//            $this->load->view('layer_edit', $data);
+//        }
+//    }
 
     /*
-     * Editing a layer
+     * Adding/Editing a layer
      */
-    function edit($id)
-    {   
-        // check if the layer exists before trying to edit it
-        $data['layer'] = $this->Layer_model->get_layer($id);
-        
-        if(isset($data['layer']['id']))
-        {
-            $this->load->library('form_validation');
+    function edit($layer_id = false)
+    {
+        if (!$this->session->userdata('admin')) {
+            redirect('/');
+        }
 
-			$this->form_validation->set_rules('type','Type','required');
-			$this->form_validation->set_rules('name','Name','required|max_length[100]|is_unique[true]');
-			$this->form_validation->set_rules('definition','Definition','required');
-		
-			if($this->form_validation->run())     
-            {   
-                $params = array(
-					'type' => $this->input->post('type'),
-					'name' => $this->input->post('name'),
-					'display_name' => $this->input->post('display_name'),
-					'definition' => $this->input->post('definition'),
-                );
+        $this->load->helper('form');
+        $this->load->library('form_validation');
 
-                $this->Layer_model->update_layer($id,$params);            
-                redirect('layer/index');
+        $this->form_validation->set_rules('type', 'Type', 'required');
+        $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
+        $this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
+        $this->form_validation->set_rules('definition', 'Definition', 'required|callback__check_definition');
+
+        $data['types'] = array('Bing', 'Google', 'OSM', 'WMS', 'WMTS', 'XYZ');
+
+        if ($this->form_validation->run() == FALSE) {
+            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_layer');
+            $data['creating'] = true;
+
+            $em = $this->extractPostData();
+            if (sizeof($_POST) > 0) {
+                $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_layer') . ' ' . $em['display_name'];
+                $data['creating'] = false;
+            } else {
+                if ($layer_id !== false) {
+                    $dq = $this->layer_model->get_layer($layer_id);
+                    if ($dq->id != null) {
+                        $em = (array)$dq;
+                        $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_layer') . ' ' . $em['display_name'];
+                        $data['creating'] = false;
+                    }
+                }
             }
-            else
-            {
-                $data['_view'] = 'layer/edit';
-                $this->load->view('layouts/main',$data);
+            $data['layer'] = $em;
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('layer_edit', $data);
+            //$this->load->view('templates/footer', $data);
+        } else {
+            $layer = $this->extractPostData();
+            try {
+                $layer_id = $this->layer_model->upsert_layer($layer);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_layer') . ' <strong>' . $layer['name'] . '</strong>' . $this->lang->line('gp_saved') . '</div>');
+            } catch (Exception $e) {
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+            }
+
+            if ($this->input->post('return') == null) {
+                redirect('/layers/edit/' . $layer_id);
+            } else {
+                redirect('/layers');
             }
         }
-        else
-            show_error('The layer you are trying to edit does not exist.');
-    } 
+    }
 
     /*
      * Deleting layer
      */
     function remove($id)
     {
-        $layer = $this->Layer_model->get_layer($id);
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $layer = (array)$this->layer_model->get_layer($id);
 
         // check if the layer exists before trying to delete it
         if(isset($layer['id']))
         {
-            $this->Layer_model->delete_layer($id);
-            redirect('layer/index');
+            try {
+                //before deleting check if layers exist as as base or extra layer in project
+                $test = $this->project_model->get_projects_with_layer($id);
+                if(count($test)>0)  {
+                    throw new Exception('Cannot delete. Layer exists in ' . count($test) . ' projects.');
+                }
+
+                $this->layer_model->delete_layer($id);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_layer').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
+                redirect('/layers');
+            }
+            catch (Exception $e){
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+                redirect('/layers/edit/'.$id);
+            }
         }
         else
-            show_error('The layer you are trying to delete does not exist.');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The client you are trying to delete does not exist.</div>');
     }
-    
+
+    private function extractPostData() {
+        //remove crs or srs  property from WMS definition
+        $type = $this->input->post('type');
+        $def = $this->input->post('definition');
+        $obj = json_decode($def);
+        if($type == 'WMS') {
+            unset($obj->params->{"srs"});
+            unset($obj->params->{"SRS"});
+            unset($obj->params->{"crs"});
+            unset($obj->params->{"CRS"});
+        }
+        $def = json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+
+        return array(
+            'id' => $this->input->post('id'),
+            'type' => $type,
+            'name' => $this->input->post('name'),
+            'display_name' => $this->input->post('display_name'),
+            'definition' => $def
+        );
+    }
+
+    public function _unique_name($name) {
+
+        //test if we already have name in database
+        $exist = $this->layer_model->layer_exists($name);
+        $id = $this->input->post('id');
+
+        if ($exist && empty($id)) {
+            $this->form_validation->set_message('_unique_name', $this->lang->line('gp_layer').' '.$name.$this->lang->line('gp_exists').'!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function _check_definition($text) {
+        //if we have to check definition by type
+        //$type = $this->input->post('type');
+        $x = json_decode($text);
+
+        if (empty($x)) {
+            $this->form_validation->set_message('_check_definition', 'Definition not valid JSON string');
+            return false;
+        }
+
+        return true;
+    }
 }

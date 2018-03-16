@@ -53,11 +53,6 @@ Read [Shortening URL on Wiki](https://github.com/uprel/gisportal/wiki/Shortening
 
 > You can test this on provided Demo link above!
 
-
-## Thumbnail images
-
-gisportal uses thumbnail images for client and project display. Images should be in 3:2 proportions, for example 300 px width X 200 px height. Copy images to assets/img/clients and assets/img/projects folder with client or project name as it is in database in PNG format.
-
 ## Translations
 
 1. Check if your language exists in [system folder](https://github.com/uprel/gisportal/tree/master/system/language). 

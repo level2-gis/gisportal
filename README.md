@@ -1,14 +1,26 @@
-GIS portal and Administration for QGIS projects published by EQWC
+GIS portal and Administration part of Extended QGIS Web Client
 =================================================================
-
-This is start page - Web portal for browsing and opening QGIS projects published with [**Extended QGIS Web Client.**](https://github.com/uprel/gisapp)
-
-For administrators (user with admin=true in database) this is complete administration to manage clients, projects, delegate user permissions and much more. Currently work in progress.
-
 Built with Codeigniter and Bootstrap.
 
-## Demo for users
-Visit **<a target="_blank" href="http://test.level2.si">Demo by Level2</a>**
+Client part of EQWC is [**gisapp**](https://github.com/uprel/gisapp)
+
+## Users
+
+- start page
+- registration
+- single login, browse projects with permission
+- profile page, set own language
+
+Visit **<a target="_blank" href="http://test.level2.si">Demo for users by Level2</a>**
+
+## Administrators
+
+Administrator is every user with admin=true in database.
+
+- view/create/edit/delete clients/projects/layers
+- set base or overlay layers for project (with order)
+- view/edit/delete users
+- delegate users to projects
 
 ## Setup
 

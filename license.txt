@@ -1,5 +1,3 @@
-Gisportal Copyright (c) 2017-2018, Level2 Uroš Preložnik s.p. 
-
 The MIT License (MIT)
 
 Copyright (c) 2014 - 2017, British Columbia Institute of Technology

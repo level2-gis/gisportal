@@ -97,3 +97,7 @@ Contact us for:
 * custom development
 
 Uroš Preložnik, http://level2.si
+
+## Copyright
+
+Gisportal (c) 2017 - 2018, Level2 Uroš Preložnik s.p. 

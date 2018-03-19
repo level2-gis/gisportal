@@ -109,7 +109,12 @@ class User_model extends CI_Model
 	public function delete_user($id)
     {
         $this->db->where('user_id', $id);
-        $query = $this->db->delete('users');
+        $this->db->delete('users');
     }
 
+    public function clear_print($name)
+    {
+        $this->db->where('user_name', $name);
+        $this->db->delete('users_print');
+    }
 }

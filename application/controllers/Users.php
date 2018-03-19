@@ -97,10 +97,11 @@ class Users extends CI_Controller {
 
         $user = (array)$this->user_model->get_user_by_id($id);
 
-        // check if the project exists before trying to delete it
+        // check if the user exists before trying to delete it
         if(isset($user['user_id']))
         {
             try {
+                $this->user_model->clear_print($user['user_name']);
                 $this->user_model->delete_user($id);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {

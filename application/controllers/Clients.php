@@ -184,7 +184,7 @@ class Clients extends CI_Controller
         }
 
         $config['upload_path']          = $dir;
-        $config['allowed_types']        = 'gif|jpg|png|pdf';
+        $config['allowed_types']        = 'gif|jpg|png|pdf|zip';
         $config['overwrite']            = true;
         $config['file_ext_tolower']     = true;
         //$config['max_size']             = 100;

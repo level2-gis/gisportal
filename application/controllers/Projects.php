@@ -76,54 +76,47 @@ class Projects extends CI_Controller
                 mkdir($dir, 0777, true);
             }
 
-            $config['upload_path']          = $dir;
-            $config['allowed_types']        = 'gif|jpg|png|pdf';
-            $config['overwrite']            = true;
-            $config['file_ext_tolower']     = true;            
+            $config['upload_path'] = $dir;
+            $config['allowed_types'] = 'gif|jpg|png|pdf';
+            $config['overwrite'] = true;
+            $config['file_ext_tolower'] = true;
             //$config['max_size']             = 100;
             //$config['max_width']            = 1024;
             //$config['max_height']           = 768;
 
             $this->load->library('upload', $config);
 
-            if ( ! $this->upload->do_upload('userfile'))
-            {
-                $this->output
-                    ->set_content_type('text/html')
-                    ->set_status_header(500)
-                    ->set_output(json_encode(array(
-                        'success' => false,
-                        'message' => $this->upload->display_errors('','')
-                    )));
-
+            if (!$this->upload->do_upload('userfile')) {
+                throw new Exception ($this->upload->display_errors('', ''));
             }
-            else
-            {
-                //create thumb if upload is image
-                if(strpos($this->upload->file_type,'image/')>-1) {
-                    self::imageResize($dir, $this->upload->file_name);
+
+            //create thumb if upload is image
+            if (strpos($this->upload->file_type, 'image/') > -1) {
+                $res = self::imageResize($dir, $this->upload->file_name);
+                if (!$res) {
+                    throw new Exception ($dir.$this->upload->file_name.' '.$this->image_lib->display_errors('', ''));
                 }
-
-                $this->output
-                    ->set_content_type('text/html')
-                    ->set_status_header(200)
-                    ->set_output(json_encode(array(
-                        'success' => true,
-                        'message' => $this->lang->line('gp_upload_success'),
-                        'file'    => $this->upload->file_name
-                    )));
-
             }
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(200)
+                ->set_output(json_encode(array(
+                    'success' => true,
+                    'message' => $this->lang->line('gp_upload_success'),
+                    'file' => $this->upload->file_name
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+
 
         } catch (Exception $e) {
 
             $this->output
-                ->set_content_type('application/json')
+                ->set_content_type('text/html')
                 ->set_status_header(500)
                 ->set_output(json_encode(array(
                     'success' => false,
                     'message' => $e->getMessage()
-                )));
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
     }
 
@@ -245,23 +238,24 @@ class Projects extends CI_Controller
 
     private function imageResize($dir, $fn) {
 
-        if (!file_exists($dir . 'thumb')) {
-            mkdir($dir . 'thumb', 0777, true);
+        try {
+            if (!file_exists($dir . 'thumb')) {
+                mkdir($dir . 'thumb', 0777, true);
+            }
+
+            $config['image_library'] = 'gd2';
+            $config['source_image'] = $dir . $fn;
+            $config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
+            $config['maintain_ratio'] = TRUE;
+            $config['width'] = 225;
+            $config['height'] = 150;
+
+            $this->load->library('image_lib', $config);
+
+            return $this->image_lib->resize();
         }
-
-        $config['image_library']    = 'gd2';
-        $config['source_image']     = $dir . $fn;
-        $config['new_image']        = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
-        $config['maintain_ratio']   = TRUE;
-        $config['width']            = 225;
-        $config['height']           = 150;
-
-        $this->load->library('image_lib', $config);
-
-        if ( ! $this->image_lib->resize())
-        {
-            //log error
-            log_message('error', $this->image_lib->display_errors());
+        catch (Exception $e){
+            return false;
         }
     }
 

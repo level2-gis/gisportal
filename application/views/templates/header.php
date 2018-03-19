@@ -44,10 +44,10 @@
                 <?php if ($this->session->userdata('user_is_logged_in')){ ?>
 
                     <?php if ($this->session->userdata('admin')){ ?>
-                        <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span>Clients</span></a></li>
-                        <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span>Projects</span></a></li>
-                        <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span>Layers</span></a></li>
-                        <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span>Users</span></a></li>
+                        <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo $this->lang->line('gp_clients_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span><?php echo $this->lang->line('gp_layers_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span><?php echo $this->lang->line('gp_users_title'); ?></span></a></li>
                     <?php } ?>
 
                     <li class="dropdown">

@@ -8,14 +8,14 @@
 
 	<table class="table table-condensed table-striped">
 	  <tr>
-		<th>Username</th>
-		<th>Email</th>
-		<th>Name</th>
-		<th>Registered</th>
-		<th>Count login</th>
-		<th>Last login</th>
+		<th><?php echo $this->lang->line('gp_username'); ?></th>
+		<th><?php echo $this->lang->line('gp_email'); ?></th>
+		<th><?php echo $this->lang->line('gp_name'); ?></th>
+		<th><?php echo $this->lang->line('gp_registered'); ?></th>
+		<th><?php echo $this->lang->line('gp_count_login'); ?></th>
+		<th><?php echo $this->lang->line('gp_last_login'); ?></th>
 		<th>Admin</th>
-		<th>Action</th>
+		<th><?php echo $this->lang->line('gp_action'); ?></th>
 	  </tr>
 	  <?php foreach ($users as $user_item): ?>
 

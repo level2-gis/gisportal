@@ -1,7 +1,7 @@
 <div class="page-header clearfix">
     <h1 class="col-md-8"><?php echo $title; ?></h1>
     <div class="actions  pull-right">
-        <a href="<?php echo site_url('clients/edit/'); ?>" class="btn btn-mini btn-success ">New Client</a>
+        <a href="<?php echo site_url('clients/edit/'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_client'); ?></a>
     </div>
 </div>
 
@@ -12,10 +12,10 @@
     <table class="table table-condensed table-striped">
         <tr>
             <th></th>
-            <th>Name</th>
-            <th>Display name</th>
-            <th>Project Count</th>
-            <th>Action</th>
+            <th><?php echo $this->lang->line('gp_name'); ?></th>
+            <th><?php echo $this->lang->line('gp_display_name'); ?></th>
+            <th><?php echo $this->lang->line('gp_project_count'); ?></th>
+            <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         <?php foreach ($clients as $clients_item): ?>
 

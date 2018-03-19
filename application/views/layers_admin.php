@@ -2,7 +2,7 @@
 <div class="page-header clearfix">
     <h1 class="col-md-8"><?php echo $title; ?></h1>
     <div class="actions  pull-right">
-        <a href="<?php echo site_url('layers/edit/'); ?>" class="btn btn-mini btn-success ">New Layer</a>
+        <a href="<?php echo site_url('layers/edit/'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_layer'); ?></a>
     </div>
 </div>
 
@@ -12,10 +12,10 @@
 
     <table class="table table-condensed table-striped">
         <tr>
-            <th>Name</th>
-            <th>Display name</th>
-            <th>Type</th>
-            <th>Action</th>
+            <th><?php echo $this->lang->line('gp_name'); ?></th>
+            <th><?php echo $this->lang->line('gp_display_name'); ?></th>
+            <th><?php echo $this->lang->line('gp_type'); ?></th>
+            <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         <?php foreach ($layers as $layers_item): ?>
 

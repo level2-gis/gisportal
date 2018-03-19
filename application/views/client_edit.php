@@ -11,42 +11,42 @@
 
 			<fieldset id="edit-location-meta">
 				<div class="form-group">
-					<label for="name" class="control-label col-md-2">Name</label>
+					<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $client['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
-					<label for="display_name" class="control-label col-md-2">Display name</label>
+					<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $client['display_name']; ?>" />
 						<span class="text-danger"><?php echo form_error('display_name'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
-					<label for="url" class="control-label col-md-2">Web site</label>
+					<label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_url'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="url" placeholder="" type="text" value="<?php echo $client['url']; ?>" />
 						<span class="text-danger"><?php echo form_error('url'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
-					<label for="description" class="control-label col-md-2">Description</label>
+					<label for="description" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_description')); ?></label>
 					<div class="col-md-5">
 						<textarea class="form-control" cols="20" rows="3" name="description" placeholder="" type="text"><?php echo $client['description']; ?></textarea>
 						<span class="text-danger"><?php echo form_error('description'); ?></span>
 					</div>	
 				</div>
                 <div class="form-group">
-                    <label for="url" class="control-label col-md-2">Display order</label>
+                    <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_order'); ?></label>
                     <div class="col-md-5">
                         <input class="form-control" name="ordr" placeholder="" type="integer" value="<?php echo $client['ordr']; ?>" />
                         <span class="text-danger"><?php echo form_error('ordr'); ?></span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-2">Image</label>
+                    <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
                     <div class="col-md-5">
                         <?php echo $image; ?>
                     </div>
@@ -58,13 +58,13 @@
 				<div class="form-actions col-md-offset-1 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
-					<input type="submit" class="btn btn-primary" value="Save">
-					<input type="submit" class="btn btn-primary" name="return" value="Save &amp; Return">
-					<a class="btn btn-default" href="<?php echo site_url('clients/'); ?>">Return</a>
+					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>
+					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
+					<a class="btn btn-default" href="<?php echo site_url('clients/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
 				
 				<?php if ( $creating === false && !empty($client['id'])) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" href="<?php echo site_url('clients/remove/'.$client['id']); ?>">Delete</a>
+                    <a class="btn btn-danger" href="<?php echo site_url('clients/remove/'.$client['id']); ?>"><?php echo $this->lang->line('gp_delete'); ?></a>
 				</div>
 				 <?php endif; ?>
 				</div>

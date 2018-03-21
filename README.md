@@ -22,6 +22,8 @@ Administrator is every user with admin=true in database.
 - view/edit/delete users
 - delegate users to projects
 
+![admin1](wiki/images/admin_projects_view.png)
+
 ## Setup
 
 > You go through this after you setup gisapp!

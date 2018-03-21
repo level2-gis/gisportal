@@ -22,7 +22,7 @@ Administrator is every user with admin=true in database.
 - view/edit/delete users
 - delegate users to projects
 
-![admin1](../../wiki/images/admin_projects_view1.png)
+![admin1](https://github.com/uprel/gisportal/wiki/images/admin_projects_view1.png)
 
 ## Setup
 

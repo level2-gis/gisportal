@@ -49,6 +49,14 @@ Administrator is every user with admin=true in database.
     session.name = sess_
     ```
 
+    To match default session time from gisportal (7200 sec) edit line
+    
+    ```
+    session.gc_maxlifetime = 1440
+    to
+    session.gc_maxlifetime = 7200
+    ```
+    
     This means that you login to gisportal and then browse all public projects or projects you have permission without
     new login.
 

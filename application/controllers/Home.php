@@ -19,6 +19,7 @@ class Home extends CI_Controller
         }
 
         $data['title'] = $this->lang->line('gp_clients_title');
+        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
 
         if ($this->session->userdata('uid') !== null) {
             $user = $this->User_model->get_user_by_id($this->session->userdata('uid'));

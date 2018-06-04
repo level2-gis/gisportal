@@ -12,7 +12,7 @@ class Projects extends CI_Controller
         $this->load->model('project_model');
         $this->load->model('user_model');
         $this->load->model('layer_model');
-        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir'));
+        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file'));
     }
 
     public function index()
@@ -40,6 +40,7 @@ class Projects extends CI_Controller
         }
 
         $data['title'] = $this->lang->line('gp_projects_title');
+        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
@@ -107,6 +108,82 @@ class Projects extends CI_Controller
                     'file' => $this->upload->file_name
                 ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
+
+        } catch (Exception $e) {
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(500)
+                ->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+    public function files($project_id = false)
+    {
+        $scheme = $_SERVER["REQUEST_SCHEME"];
+
+        if ($project_id === FALSE) {
+            redirect("/");
+        }
+
+        try {
+            $project = $this->project_model->get_project($project_id);
+            if ($project == null) {
+                throw new Exception('Project not found!');
+            }
+            $client = $this->client_model->get_client($project->client_id);
+            if ($client == null) {
+                throw new Exception('Client not found!');
+            }
+            $client_name = $client->name;
+            $project_name = $project->name;
+
+            $dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), false) . $client_name, false);
+            $dir .= DIRECTORY_SEPARATOR . $project_name . DIRECTORY_SEPARATOR;
+
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            $files = get_dir_file_info($dir);
+
+            $webdir = $this->config->item('main_upload_web') . $client_name . DIRECTORY_SEPARATOR. $project_name . DIRECTORY_SEPARATOR;
+
+            $report = new stdClass();
+            $report->files = [];
+            foreach ($files as $key => $value)
+            {
+                if (is_dir($value["server_path"])) {
+                    continue;
+                }
+
+                $extension = strtoupper(substr(strrchr($value["name"], '.'), 1));
+
+                $thumb='';
+                $url = base_url($webdir.$value['name']);
+                if(file_exists($dir.'thumb'.DIRECTORY_SEPARATOR . $value["name"])) {
+                    $thumb = base_url($webdir.'thumb'.DIRECTORY_SEPARATOR .$value['name']);
+                } else {
+                    $thumb = $scheme . "://dummyimage.com/225x150/e0e0e0/706e70?text=".$extension;
+                }
+
+                $newVal = array(
+                    "name" => $value["name"],
+                    "size" => $value["size"],
+                    "lastmod" => $value["date"],
+                    "thumb" => $thumb
+                );
+
+                array_push($report->files, $newVal);
+            }
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(200)
+                ->set_output(json_encode($report, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK));
 
         } catch (Exception $e) {
 

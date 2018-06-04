@@ -6,7 +6,7 @@
         $client_img = base_url($client_img);
     } else {
         $img_title = "No file: ". $client_img . " (300x200)";
-        $client_img = "http://dummyimage.com/300x200/e0e0e0/706e70?text=".$clients_item['name'] . ".png";
+        $client_img = $scheme . "://dummyimage.com/300x200/e0e0e0/706e70?text=".$clients_item['name'] . ".png";
     }
 
     ?>

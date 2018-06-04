@@ -7,7 +7,7 @@
         $project_img = base_url($project_img);
     } else {
         $img_title = "No file: ". $project_img . " (225x150)";
-        $project_img = "http://dummyimage.com/225x150/e0e0e0/706e70?text=".$projects_item['name'] . ".png";
+        $project_img = $scheme . "://dummyimage.com/225x150/e0e0e0/706e70?text=".$projects_item['name'] . ".png";
     }
 
     ?>

@@ -90,6 +90,17 @@ Read [Shortening URL on Wiki](https://github.com/uprel/gisportal/wiki/Shortening
 1. Add new language in config/config.php at the bottom: $config['available_languages']. Here you can also remove unwanted languages.
 1. If you wish you can change default language in application/config/config.php.
 
+## Styling top menu (navbar)
+
+You can change black background to default gray by changing 
+
+```
+navbar-inverse
+to
+navbar-default
+```
+in [/application/views/templates/header.php](https://github.com/uprel/gisportal/blob/9a657cf05c7fb6d6b9b6d38f561143656804eb57/application/views/templates/header.php#L26)
+
 ## Contributing
 
 Support this project by [**DONATING**](http://level2.si/product/donation-extended-qgis-web-client/).

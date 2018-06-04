@@ -101,6 +101,16 @@ navbar-default
 ```
 in [/application/views/templates/header.php](https://github.com/uprel/gisportal/blob/9a657cf05c7fb6d6b9b6d38f561143656804eb57/application/views/templates/header.php#L26)
 
+Or add lines below to /assets/css/style.css:
+
+```
+.navbar-inverse {
+    background-color: #222;
+    border-color: #080808;
+}
+```
+And change colors as you wish.
+
 ## Contributing
 
 Support this project by [**DONATING**](http://level2.si/product/donation-extended-qgis-web-client/).

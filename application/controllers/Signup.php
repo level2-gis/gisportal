@@ -25,6 +25,7 @@ class Signup extends CI_Controller
         {
 			// fails
             $data['title'] = $this->lang->line('gp_register');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
             $this->load->view('templates/header', $data);
             $this->load->view('signup_view');

@@ -19,6 +19,7 @@ class Clients extends CI_Controller
 
         $data['title'] = $this->lang->line('gp_clients_title');
         $data['clients'] = $this->client_model->get_clients();
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $this->load->view('templates/header', $data);
         $this->load->view('clients_admin', $data);
@@ -41,6 +42,7 @@ class Clients extends CI_Controller
 
         $data['client'] = $client;
         $data['title'] = $client->display_name;
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $this->load->view('templates/header', $data);
 
@@ -90,6 +92,7 @@ class Clients extends CI_Controller
         if ($this->form_validation->run() == FALSE)
         {
             $data['title'] = $this->lang->line('gp_create').' '.$this->lang->line('gp_new').' '.$this->lang->line('gp_client');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 
             $em = $this->extractPostData();

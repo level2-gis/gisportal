@@ -23,6 +23,7 @@ class Projects extends CI_Controller
 
 		$data['title'] = $this->lang->line('gp_projects_title');
         $data['projects'] = $this->project_model->get_projects(false, false, true);
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects_admin', $data);
@@ -41,6 +42,7 @@ class Projects extends CI_Controller
 
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
 
@@ -218,6 +220,7 @@ class Projects extends CI_Controller
         if ($this->form_validation->run() === FALSE)
         {
             $data['title'] = $this->lang->line('gp_create').' '.$this->lang->line('gp_new').' '.$this->lang->line('gp_project');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 
             $em = $this->project_model->new_project();

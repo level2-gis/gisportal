@@ -9,14 +9,16 @@
 
 <div class="col-md-12">
 
-    <table class="table table-condensed table-striped">
+    <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
+        <thead>
         <tr>
             <th></th>
-            <th><?php echo $this->lang->line('gp_name'); ?></th>
-            <th><?php echo $this->lang->line('gp_display_name'); ?></th>
-            <th><?php echo $this->lang->line('gp_project_count'); ?></th>
+            <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+            <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+            <th data-sortable="true" data-field="gp_project_count"><?php echo $this->lang->line('gp_project_count'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
+        </thead>
         <?php foreach ($clients as $clients_item): ?>
 
             <tr>

@@ -20,6 +20,7 @@ class Layers extends CI_Controller{
 
         $data['title'] = $this->lang->line('gp_layers_title');
         $data['layers'] = $this->layer_model->get_layers();
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $this->load->view('templates/header', $data);
         $this->load->view('layers_admin', $data);
@@ -82,6 +83,7 @@ class Layers extends CI_Controller{
 
         if ($this->form_validation->run() == FALSE) {
             $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_layer');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 
             $em = $this->extractPostData();

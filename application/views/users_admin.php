@@ -6,17 +6,19 @@
 
 <div class="col-md-12">
 
-	<table class="table table-condensed table-striped">
-	  <tr>
-		<th><?php echo $this->lang->line('gp_username'); ?></th>
-		<th><?php echo $this->lang->line('gp_email'); ?></th>
-		<th><?php echo $this->lang->line('gp_name'); ?></th>
-		<th><?php echo $this->lang->line('gp_registered'); ?></th>
-		<th><?php echo $this->lang->line('gp_count_login'); ?></th>
-		<th><?php echo $this->lang->line('gp_last_login'); ?></th>
-		<th>Admin</th>
-		<th><?php echo $this->lang->line('gp_action'); ?></th>
-	  </tr>
+    <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
+        <thead>
+        <tr>
+            <th data-sortable="true" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
+            <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
+            <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+            <th data-sortable="true" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
+            <th data-sortable="true" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
+            <th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
+            <th data-sortable="true" data-field="gp_admin">Admin</th>
+            <th><?php echo $this->lang->line('gp_action'); ?></th>
+        </tr>
+        </thead>
 	  <?php foreach ($users as $user_item): ?>
 
 		<tr>

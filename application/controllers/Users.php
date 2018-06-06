@@ -23,6 +23,7 @@ class Users extends CI_Controller {
 		
 		$data['title'] = $this->lang->line('gp_users_title');
         $data['users'] = $this->user_model->get_users();
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
         $this->load->view('templates/header', $data);
         $this->load->view('users_admin', $data);
@@ -48,6 +49,7 @@ class Users extends CI_Controller {
 			$em = array ( 'user_id' => '', 'user_name' => '', 'user_email' => '', 'display_name' => '','project_ids' => array());
 
 			$data['title'] = 'Create New User';
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 			$data['creating'] = true;
 
 			if(sizeof($_POST) > 0){

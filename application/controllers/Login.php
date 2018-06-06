@@ -30,6 +30,7 @@ class Login extends CI_Controller
         {
 			// validation fail
             $data['title'] = $this->lang->line('gp_login');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
             $this->load->view('templates/header', $data);
             $this->load->view('login_view');

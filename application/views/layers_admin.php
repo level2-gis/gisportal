@@ -10,13 +10,15 @@
 
 <div class="col-md-12">
 
-    <table class="table table-condensed table-striped">
+    <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
+        <thead>
         <tr>
-            <th><?php echo $this->lang->line('gp_name'); ?></th>
-            <th><?php echo $this->lang->line('gp_display_name'); ?></th>
-            <th><?php echo $this->lang->line('gp_type'); ?></th>
+            <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+            <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+            <th data-sortable="true" data-field="gp_type"><?php echo $this->lang->line('gp_type'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
+        </thead>
         <?php foreach ($layers as $layers_item): ?>
 
             <tr>

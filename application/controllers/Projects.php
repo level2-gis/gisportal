@@ -98,7 +98,7 @@ class Projects extends CI_Controller
                 $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
                 redirect('projects/edit/'.$project_id);
             } else {
-                $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
+                //$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
                 //pass qgis project name and client_id
                 $file_name = $this->upload->file_name;
                 $ext = $this->upload->file_ext;
@@ -110,13 +110,8 @@ class Projects extends CI_Controller
 
         } catch (Exception $e) {
 
-            $this->output
-                ->set_content_type('text/html')
-                ->set_status_header(500)
-                ->set_output(json_encode(array(
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $e->getMessage() . '</div>');
+            redirect('projects/edit/'.$project_id);
         }
     }
 

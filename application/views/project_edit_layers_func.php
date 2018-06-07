@@ -7,13 +7,21 @@
 
         var editingProject = $('#project_name')[0].value;
         var file = $('#userfile')[0].files[0].name;
+
         var newProject = file.split('.')[0];
+        var ext = file.split('.')[1];
 
         form.action = form.action+client;
 
         //client side validation
+        if (ext.toLowerCase() !== 'qgs') {
+            alert ("Only QGS project file allowed!");
+            form.reset();
+            return false;
+        }
         if (editingProject && editingProject !== newProject) {
             alert("Different projects "+editingProject+ ": "+newProject);
+            form.reset();
             return false;
         }
     }

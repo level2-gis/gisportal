@@ -1,9 +1,3 @@
-    <div class="page-header clearfix">
-		<h1 class="col-md-8"><?php echo $title; ?></h1>
-	</div>
-
-	<?php echo $this->session->flashdata('alert'); ?>
-
 	<div class="col-md-12">
 		<?php $attributes = array("class" => "form-horizontal", "id" => "edit");
 		echo form_open('projects/edit/' . $project['id'], $attributes); ?>
@@ -33,6 +27,15 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="display_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['display_name']; ?>" />
+                            <span class="text-danger"><?php echo form_error('display_name'); ?></span>
+                            <p class="help-block"><?php echo $this->lang->line('gp_display_name_tip'); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
 						<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 						<div class="col-md-5">
 							<input class="form-control" name="name" id="project_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['name']; ?>" />
@@ -40,40 +43,6 @@
                             <p class="help-block"><?php echo $this->lang->line('gp_name_tip'); ?></p>
 						</div>	
 					</div>
-
-                    <div class="form-group">
-                        <label for="qgis_check"
-                               class="control-label col-md-2"><?php echo $this->lang->line('gp_qgis_project'); ?></label>
-
-                        <div class="col-md-5">
-                            <?php if ($qgis_check['valid']) {
-                                ?>
-                                <div class="alert alert-success">
-                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    <?php echo $qgis_check['name'] ?>
-                                </div>
-                            <?php
-                            } else {
-                                if ($qgis_check['name'] > '') { ?>
-                                    <div class="alert alert-danger">
-                                        <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-                                        <?php echo $qgis_check['name'] ?>
-                                    </div>
-                                <?php
-                                }
-                            } ?>
-                        </div>
-                    </div>
-
-					<div class="form-group">
-						<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="display_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['display_name']; ?>" />
-							<span class="text-danger"><?php echo form_error('display_name'); ?></span>
-                            <p class="help-block"><?php echo $this->lang->line('gp_display_name_tip'); ?></p>
-                        </div>
-
-					</div>	
 
 					<div class="form-group">
 						<label for="crs" class="control-label col-md-2"><?php echo $this->lang->line('gp_crs'); ?></label>

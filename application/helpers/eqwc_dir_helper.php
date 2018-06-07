@@ -50,3 +50,11 @@ if (!function_exists('check_qgis_project')) {
         return ["valid" => $valid, "name" => "Project not found:</br>".PROJECT_PATH . $fn.'<br>'.PROJECT_PATH . $client . DIRECTORY_SEPARATOR . $fn];
     }
 }
+
+if (!function_exists('get_qgis_project_path')) {
+
+    function get_qgis_project_path()
+    {
+        return set_realpath(PROJECT_PATH);
+    }
+}

@@ -1,5 +1,35 @@
 <script>
 
+    function onUploadFormSubmit() {
+
+        var form = $('#uploadForm')[0];
+        var client = $('#client_id')[0].value;
+
+        var editingProject = $('#project_name')[0].value;
+        var file = $('#userfile')[0].files[0].name;
+        var newProject = file.split('.')[0];
+
+        form.action = form.action+client;
+
+        //client side validation
+        if (editingProject && editingProject !== newProject) {
+            alert("Different projects "+editingProject+ ": "+newProject);
+            return false;
+        }
+    }
+
+
+    function onClientChange(sel)
+    {
+        var val = sel.value;
+        var upload = $('#uploadDiv');
+        if (val > 0) {
+            upload.show();
+        } else {
+            upload.hide();
+        }
+    }
+
     function checkValues() {
         var baseList = $('#lstBase2').getValues();
         var baseIds = document.getElementById('base_ids');

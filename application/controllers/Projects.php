@@ -54,6 +54,74 @@ class Projects extends CI_Controller
 
     }
 
+    public function upload_admin($client_id = false) {
+
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        try {
+            if ($client_id === FALSE) {
+                throw new Exception('Client not found!');
+            }
+
+            $project_id = $this->input->post('project_id');
+            if ($project_id) {
+                //editing existing project
+                $project = $this->project_model->get_project($project_id);
+            }
+
+            //TODO pri obstoječih moraš nastaviti project_id in shraniti v project_path če obstaja
+
+            $client = $this->client_model->get_client($client_id);
+            if ($client == null) {
+                throw new Exception('Client not found!');
+            }
+            $client_name = $client->name;
+            //$project_name = $project->name;
+
+            //put project to client subfolder, by default
+            $dir = set_realpath(get_qgis_project_path() . $client_name);
+
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            $config['upload_path'] = $dir;
+            $config['allowed_types'] = 'qgs';
+            $config['overwrite'] = true;
+            $config['file_ext_tolower'] = true;
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('userfile')) {
+                $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
+                redirect('projects/edit/'.$project_id);
+            } else {
+                $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
+                //pass qgis project name and client_id
+                $file_name = $this->upload->file_name;
+                $ext = $this->upload->file_ext;
+                $project_name = str_replace($ext,'',$file_name);
+                $this->session->set_flashdata('project_name',$project_name);
+                $this->session->set_flashdata('client_id',$client_id);
+                redirect('projects/edit/'.$project_id);
+            }
+
+        } catch (Exception $e) {
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(500)
+                ->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+
+
     public function upload($project_id = false)
     {
         if ($project_id === FALSE) {
@@ -224,6 +292,9 @@ class Projects extends CI_Controller
             $data['creating'] = true;
 
             $em = $this->project_model->new_project();
+            //pass data from uploaded project
+            $em["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : '';
+            $em["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : null;
             if(sizeof($_POST) > 0){
                 $em = $this->extractProjectData();
                 $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
@@ -247,6 +318,7 @@ class Projects extends CI_Controller
             $this->qgisinfo($data);
 
             $this->load->view('templates/header', $data);
+            $this->load->view('project_upload_form', $data);
             $this->load->view('project_edit', $data);
             $this->load->view('project_edit_layers_func');
             //$this->load->view('templates/footer', $data);
@@ -417,7 +489,7 @@ class Projects extends CI_Controller
     }
 
     private function qgisinfo(&$data){
-        if ($data['project']['id'] == null) {
+        if ($data['project']['name'] == '') {
             $data['qgis_check'] =  ["valid" => false, "name" => ""];
             return;
         }

@@ -5,7 +5,7 @@
 	<?php echo $this->session->flashdata('alert'); ?>
 
 	<div class="col-md-12">
-		<?php $attributes = array("class" => "form-horizontal");
+		<?php $attributes = array("class" => "form-horizontal", "id" => "edit");
 		echo form_open('projects/edit/' . $project['id'], $attributes); ?>
 			<input name="id" type="hidden" value="<?php echo $project['id']; ?>" />
 
@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
                         <div class="col-md-5">
-                            <select class="form-control" name="client_id">
+                            <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this);">
                                 <option value=""><?php echo $this->lang->line('gp_select_client'); ?></option>
                                 <?php foreach ($clients as $client_item): ?>
                                     <option <?php if ($client_item['id'] == $project['client_id']) { echo "selected='selected'"; }; ?> value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" .$client_item['name'] . ")"; ?></option>							<?php endforeach; ?>
@@ -35,32 +35,35 @@
                     <div class="form-group">
 						<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 						<div class="col-md-5">
-							<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $project['name']; ?>" />
+							<input class="form-control" name="name" id="project_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['name']; ?>" />
 							<span class="text-danger"><?php echo form_error('name'); ?></span>
                             <p class="help-block"><?php echo $this->lang->line('gp_name_tip'); ?></p>
 						</div>	
-					</div>	
+					</div>
 
-					<div class="form-group">
-						<label for="qgis_check" class="control-label col-md-2"><?php echo $this->lang->line('gp_qgis_project'); ?></label>
-						<div class="col-md-5">
+                    <div class="form-group">
+                        <label for="qgis_check"
+                               class="control-label col-md-2"><?php echo $this->lang->line('gp_qgis_project'); ?></label>
+
+                        <div class="col-md-5">
                             <?php if ($qgis_check['valid']) {
                                 ?>
                                 <div class="alert alert-success">
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    <?php echo $qgis_check['name']?>
+                                    <?php echo $qgis_check['name'] ?>
                                 </div>
-                                <?php
+                            <?php
                             } else {
-                               ?>
-                                <div class="alert alert-danger">
-                                    <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-                                    <?php echo $qgis_check['name']?>
-                                </div>
+                                if ($qgis_check['name'] > '') { ?>
+                                    <div class="alert alert-danger">
+                                        <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+                                        <?php echo $qgis_check['name'] ?>
+                                    </div>
                                 <?php
-                            }?>
-						</div>
-					</div>
+                                }
+                            } ?>
+                        </div>
+                    </div>
 
 					<div class="form-group">
 						<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>

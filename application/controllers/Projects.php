@@ -65,23 +65,24 @@ class Projects extends CI_Controller
                 throw new Exception('Client not found!');
             }
 
-            $project_id = $this->input->post('project_id');
-            if ($project_id) {
-                //editing existing project
-                $project = $this->project_model->get_project($project_id);
-            }
-
-            //TODO pri obstoječih moraš nastaviti project_id in shraniti v project_path če obstaja
-
             $client = $this->client_model->get_client($client_id);
             if ($client == null) {
                 throw new Exception('Client not found!');
             }
             $client_name = $client->name;
-            //$project_name = $project->name;
 
             //put project to client subfolder, by default
             $dir = set_realpath(get_qgis_project_path() . $client_name);
+
+            $project_id = $this->input->post('project_id');
+            if ($project_id) {
+                //editing existing project, get project directory
+                $project = $this->project_model->get_project($project_id);
+                $qgis = check_qgis_project($project->name, $project->project_path, $client_name);
+                if ($qgis["valid"]) {
+                    $dir = set_realpath(dirname($qgis["name"]));
+                }
+            }
 
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
@@ -98,7 +99,7 @@ class Projects extends CI_Controller
                 $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
                 redirect('projects/edit/'.$project_id);
             } else {
-                //$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
+                $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
                 //pass qgis project name and client_id
                 $file_name = $this->upload->file_name;
                 $ext = $this->upload->file_ext;

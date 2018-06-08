@@ -6,8 +6,13 @@
         var client = $('#client_id')[0].value;
 
         var editingProject = $('#project_name')[0].value;
-        var file = $('#userfile')[0].files[0].name;
 
+        if ($('#userfile')[0].files.length==0) {
+            alert('No file!');
+            return false;
+        }
+
+        var file = $('#userfile')[0].files[0].name;
         var newProject = file.split('.')[0];
         var ext = file.split('.')[1];
 

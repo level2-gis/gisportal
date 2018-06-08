@@ -29,9 +29,9 @@
                     <div class="form-group">
                         <label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
                         <div class="col-md-5">
-                            <input class="form-control" name="display_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['display_name']; ?>" />
+                            <input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $project['display_name']; ?>" />
                             <span class="text-danger"><?php echo form_error('display_name'); ?></span>
-                            <p class="help-block"><?php echo $this->lang->line('gp_display_name_tip'); ?></p>
+<!--                            <p class="help-block">--><?php //echo $this->lang->line('gp_display_name_tip'); ?><!--</p>-->
                         </div>
                     </div>
 

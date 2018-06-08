@@ -3,7 +3,7 @@
 </div>
 
 <?php echo $this->session->flashdata('alert'); ?>
-
+<?php echo $this->session->flashdata('upload_msg'); ?>
 
 <div class="form-group">
     <label for="qgis_check"
@@ -36,14 +36,12 @@
 $style = 'none';
 if ($project['client_id']) {
     $style = 'block';
-}
-
-echo $this->session->flashdata('upload_msg'); ?>
+}?>
 
 <div style="display: <?php echo $style; ?>" id="uploadDiv" class="form-inline">
     <?php echo form_open_multipart('projects/upload_admin/', array("id" => "uploadForm", "onsubmit" => " return onUploadFormSubmit()")); ?>
 
-    <input type="file" id="userfile" name="userfile" class="filestyle" data-buttonBefore="true" data-buttonText="Add QGIS File">
+    <input type="file" id="userfile" name="userfile" class="filestyle" data-buttonBefore="true" data-buttonText="QGIS File">
 
     <input class="btn btn-mini btn-success" type="submit" value=<?php echo $this->lang->line('gp_upload'); ?>>
     <input name="project_id" type="hidden" value="<?php echo $project['id']; ?>">

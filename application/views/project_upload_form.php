@@ -13,8 +13,10 @@
         <?php if ($qgis_check['valid']) {
             ?>
             <div class="alert alert-success">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                <?php echo $qgis_check['name'] ?>
+                <a class="btn" href="<?php echo site_url('projects/download/'.$project['id']); ?>" role="button">
+                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                </a>
+                <?php echo $qgis_check['name'] ?> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             </div>
         <?php
         } else {

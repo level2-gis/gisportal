@@ -12,7 +12,7 @@ class Projects extends CI_Controller
         $this->load->model('project_model');
         $this->load->model('user_model');
         $this->load->model('layer_model');
-        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file'));
+        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file', 'download'));
     }
 
     public function index()
@@ -261,6 +261,50 @@ class Projects extends CI_Controller
                     'message' => $e->getMessage()
                 ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
+    }
+
+    public function download($project_id = false)
+    {
+        if (!$this->session->userdata('admin')) {
+            redirect('/');
+        }
+
+        if ($project_id === FALSE) {
+            redirect("/");
+        }
+
+        try {
+            $project = $this->project_model->get_project($project_id);
+            $client = $this->client_model->get_client($project->client_id);
+
+            if ($client == null) {
+                throw new Exception('Client not found!');
+            }
+
+            $client_name = $client->name;
+            $qgs_file = '';
+            $check = check_qgis_project($project->name, $project->project_path, $client_name);
+
+            if($check['valid']) {
+                $qgs_file = $check["name"];
+            } else {
+                throw new Exception($check['name']);
+            }
+
+            force_download($qgs_file, NULL);
+
+        } catch (Exception $e) {
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(500)
+                ->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+
+
     }
 
     public function edit($project_id = false)

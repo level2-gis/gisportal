@@ -21,6 +21,7 @@ Administrator is every user with admin=true in database.
 - set base or overlay layers for project (with order)
 - view/edit/delete users
 - delegate users to projects
+- upload/download QGIS Project file for QGIS Server
 
 ![admin1](https://github.com/uprel/gisportal/wiki/images/admin_projects_view1.png)
 

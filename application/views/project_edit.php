@@ -7,6 +7,7 @@
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
 			  <li><a href="#edit-project-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
 			  <li><a href="#edit-project-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
+			  <li><a href="#edit-project-plugins" data-toggle="tab"><?php echo $this->lang->line('gp_plugins'); ?></a></li>
 			  <li><a href="#edit-project-users" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
 			</ul>
 
@@ -241,6 +242,24 @@
 
                     </div>
                 </fieldset>
+
+                <fieldset id="edit-project-plugins" class="tab-pane">
+                    <table class="table table-condensed table-striped">
+                        <tr>
+                            <th><?php echo $this->lang->line('gp_access'); ?></th>
+                            <th><?php echo $this->lang->line('gp_name'); ?></th>
+                        </tr>
+                        <?php foreach ($plugins as $plugin_item): ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="plugin_ids[]" value="<?php echo $plugin_item['id']; ?>" <?php if ($plugin_item['idx'] > 0) { echo "checked='checked'"; }; ?> />
+                                </td>
+                                <td><?php echo $plugin_item['name']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </fieldset>
+
 
 				<fieldset id="edit-project-users" class="tab-pane">
 					<table class="table table-condensed table-striped">

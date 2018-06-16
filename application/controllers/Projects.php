@@ -12,6 +12,7 @@ class Projects extends CI_Controller
         $this->load->model('project_model');
         $this->load->model('user_model');
         $this->load->model('layer_model');
+        $this->load->model('plugin_model');
         $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file', 'download'));
     }
 
@@ -473,17 +474,17 @@ class Projects extends CI_Controller
             'zoom_back_forward'         => set_bool($this->input->post('zoom_back_forward')),
             'identify_mode'             => set_bool($this->input->post('identify_mode')),
             'permalink'                 => set_bool($this->input->post('permalink')),
-            'ordr'                      => ($this->input->post('ordr'))
+            'ordr'                      => ($this->input->post('ordr')),
+            'plugin_ids'                => $this->input->post('plugin_ids')
             //'project_path'              => $this->input->post('project_path')
         );
 
-//        //TODO move to helper foo
-//        if ($this->input->post('base_layers_ids') != null){
-//            $blids = implode($this->input->post('base_layers_ids'),',');
-//            if ($blids != ''){
-//                $data['base_layers_ids'] = '{' . $blids . '}';
-//            }
-//        }
+        if ($this->input->post('plugin_ids') != null){
+            $blids = implode($this->input->post('plugin_ids'),',');
+            if ($blids != ''){
+                $data['plugin_ids'] = '{' . $blids . '}';
+            }
+        }
 
         return $data;
     }
@@ -518,6 +519,7 @@ class Projects extends CI_Controller
         $data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
         $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
         $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
+        $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
 
 //        $directory = new RecursiveDirectoryIterator(PROJECT_PATH);
 //        $iterator  = new RecursiveIteratorIterator($directory);

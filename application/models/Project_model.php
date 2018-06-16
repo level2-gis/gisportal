@@ -32,7 +32,8 @@ class Project_model extends CI_Model {
             'identify_mode'             => false,
             'permalink'                 => true,
             'ordr'                      => 0,
-            'project_path'              => ''
+            'project_path'              => '',
+            'plugin_ids'                => null
         );
     }
 

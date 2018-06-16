@@ -109,3 +109,4 @@ $lang['gp_code'] = 'Kod projektu';
 $lang['gp_add_new_file'] = 'Dodaj nowy plik';
 $lang['gp_upload'] = 'Wczytaj';
 $lang['gp_info_demo'] = 'To jest tylko wersja pokazująca repozytorium wczytanych plików dla każdego klienta. Wczytane pliki znajdują się w podfolderach projektów.';
+$lang['gp_plugins'] = 'Plugins';

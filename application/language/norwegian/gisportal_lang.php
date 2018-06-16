@@ -109,3 +109,4 @@ $lang['gp_add_new_file'] = 'Add new file';
 $lang['gp_upload'] = 'Upload';
 $lang['gp_info_demo'] = 'This is now only demonstration for each client web repository for user uploaded files.
         Files uploaded from projects are in projects subfolders.';
+$lang['gp_plugins'] = 'Plugins';

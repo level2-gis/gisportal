@@ -180,5 +180,7 @@ return array(
 	'odm'	=>	'application/vnd.oasis.opendocument.text-master',
 	'ott'	=>	'application/vnd.oasis.opendocument.text-template',
 	'oth'	=>	'application/vnd.oasis.opendocument.text-web',
-    'qgs'   =>  'text/html'
+    'qgs'   =>  'text/html',
+    'dxf'   =>  'text/plain',
+    'geojson'  =>	'text/plain'
 );

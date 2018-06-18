@@ -58,3 +58,11 @@ if (!function_exists('get_qgis_project_path')) {
         return set_realpath(PROJECT_PATH);
     }
 }
+
+if (!function_exists('get_ogr')) {
+
+    function get_ogr()
+    {
+        return str_replace('ogr2ogr','',OGR2OGR);
+    }
+}

@@ -8,6 +8,8 @@ class Clients extends CI_Controller
     {
         parent::__construct();
         $this->load->model('client_model');
+        $this->load->model('project_model');
+        $this->load->model('qgisproject_model');
         $this->load->helper(array('form', 'url', 'html', 'path', 'eqwc_dir', 'file', 'date', 'number'));
     }
 
@@ -208,6 +210,138 @@ class Clients extends CI_Controller
             $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
             redirect('clients/view/'.$client_id);
         }
+    }
+
+    public function import($client_id = false)
+    {
+        try {
+            $client = $this->client_model->get_client($client_id);
+            if ($client == null) {
+                throw new Exception('Client not found!');
+            }
+
+            $client_name = $client->name;
+            $dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), false) . $client_name, false);
+
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            $config['upload_path'] = $dir;
+            $config['allowed_types'] = 'kml|dxf|geojson|zip';
+            $config['overwrite'] = true;
+            $config['file_ext_tolower'] = true;
+            //$config['max_size']             = 100;
+            //$config['max_width']            = 1024;
+            //$config['max_height']           = 768;
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('userfile')) {
+                throw new Exception ($this->upload->display_errors('', ''));
+            }
+
+            //proceed to import
+            $count = $this->importData($client_name);
+
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(200)
+                ->set_output(json_encode(array(
+                    'success'   => true,
+                    'message'   => $this->lang->line('gp_upload_success'),
+                    'file'      => $this->upload->file_name,
+                    'count'     => $count
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+
+        } catch (Exception $e) {
+
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(500)
+                ->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+    private function importData($client_name) {
+        $file_name = $this->upload->file_name;
+
+        $dir = $this->upload->upload_path;
+        $project_id = $this->input->post('project_id');
+        $layer_id = $this->input->post('layer_id');
+
+        $project = $this->project_model->get_project($project_id);
+        $qgs_file = '';
+        $check = check_qgis_project($project->name, $project->project_path, $client_name);
+
+        if($check['valid']) {
+            $qgs_file = $check["name"];
+        } else {
+           throw new Exception($check['name']);
+        }
+
+        $qgs = $this->qgisproject_model;
+        $qgs->qgs_file = $qgs_file;
+        if(!$qgs->read_qgs_file()) {
+            throw new Exception($qgs->error);
+        }
+
+        //get layer xml element from qgis file
+        if(!$qgs_lay = $qgs->get_layer_by_id($layer_id)) {
+            throw new Exception($qgs->error);
+        }
+
+        $qgs_lay_info = $qgs->get_layer_info($qgs_lay);
+
+        $format_name = 'PostgreSQL'; //TODO
+        $conn = $qgs_lay->datasource;
+        $srid = (string)$qgs_lay->srs->spatialrefsys->srid;
+        //removing text sslmode and all after that
+        $conn = "PG:" . rtrim(substr($conn, 0, strpos($conn, 'sslmode')));
+
+        $table = $qgs_lay_info['table'];
+        //$sql = $qgs_lay_info['sql'];
+
+        $cnt_before = $qgs->get_layer_feature_count($conn, $table);
+        if($cnt_before == -1) {
+            throw new Exception($qgs->error);
+        }
+
+        $user_file = $dir . $file_name;
+        //special case for zip files, assuming inside .shp, .shx, .dbf
+        if ($this->upload->file_ext=='.zip') {
+            $user_file = '/vsizip/' . $dir . $file_name . DIRECTORY_SEPARATOR . str_replace('.zip', '.shp', $file_name);
+        }
+
+        //special case for kml (add target EPSG)
+        $target_srs = '';
+        if ($this->upload->file_ext=='.kml') {
+            $target_srs = ' -t_srs EPSG:' . $srid . ' ';
+        }
+
+        //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $mycmd = get_ogr() . 'ogr2ogr ' . $target_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $output = shell_exec($mycmd);
+
+        $cnt_after = $qgs->get_layer_feature_count($conn, $table);
+        if($cnt_after == -1) {
+            throw new Exception($qgs->error);
+        }
+
+        if($cnt_after<=$cnt_before) {
+            throw new Exception('No data imported!');
+        }
+
+        return $cnt_after - $cnt_before;
+
+        //if ($output==null) {
+        //    error_log("EQWC Data Import Failed: ".$mycmd);
+        //    throw new Exception("Import failed. Details in Apache error log!");
+        //}
     }
 
     private function extractPostData(){

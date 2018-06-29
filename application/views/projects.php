@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-3">
             <a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$projects_item['name']); ?>">
-                <img title="<?php echo $img_title; ?>" height="150px" width="225px" src="<?php echo $project_img; ?>" alt="">
+                <img title="<?php echo $img_title; ?>" class="img-responsive" src="<?php echo $project_img; ?>" alt="">
             </a>
         </div>
         <div class="col-md-9">

@@ -28,6 +28,12 @@
                 <span class="text-danger"><?php echo form_error('username'); ?></span>
             </div>
 
+            <div class="form-group">
+                <label for="organization"><?php echo $this->lang->line('gp_organization'); ?></label>
+                <input class="form-control" name="organization" placeholder="" type="text" value="<?php echo set_value('organization'); ?>" />
+                <span class="text-danger"><?php echo form_error('organization'); ?></span>
+            </div>
+
 			<div class="form-group">
 				<label for="subject"><?php echo $this->lang->line('gp_password'); ?></label>
 				<input class="form-control" name="password" placeholder="" type="password" />

@@ -128,6 +128,7 @@ class Users extends CI_Controller {
 			'user_email' => $this->input->post('user_email'),
 			'display_name' => $this->input->post('display_name'),
 			'admin' => $this->input->post('admin'),
+            'organization' => $this->input->post('organization')
 		);
 
 		$data['admin'] = $data['admin'] != '' ? $data['admin'] : 'false';

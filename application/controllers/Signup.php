@@ -39,7 +39,8 @@ class Signup extends CI_Controller
                 'user_name' => $this->input->post('username'),
 				'user_email' => $this->input->post('email'),
 				'user_password_hash' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
-                'registered' => unix_to_human(now())
+                'registered' => unix_to_human(now()),
+                'organization' => $this->input->post('organization')
 			);
 			
 			if ($this->user_model->insert_user($data))

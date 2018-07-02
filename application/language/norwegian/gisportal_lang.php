@@ -18,6 +18,7 @@ $lang['gp_first_name'] = 'Fornavn';
 $lang['gp_last_name'] = 'Etternavn';
 $lang['gp_email'] = 'Epost';
 $lang['gp_username'] = 'Brukernavn';
+$lang['gp_organization'] = 'Organisasjon';
 $lang['gp_username_placeholder'] = 'Brukernavn eller epost';
 $lang['gp_confirm'] = 'Forsett?';
 $lang['gp_here'] = 'here';

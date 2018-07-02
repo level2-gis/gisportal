@@ -37,8 +37,15 @@
 							<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $user['display_name']; ?>" />
 							<span class="text-danger"><?php echo form_error('display_name'); ?></span>
 						</div>	
-					</div>	
-					<div class="form-group">
+					</div>
+                    <div class="form-group">
+                        <label for="organization" class="control-label col-md-2"><?php echo $this->lang->line('gp_organization'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="organization" placeholder="" type="text" value="<?php echo $user['organization']; ?>" />
+                            <span class="text-danger"><?php echo form_error('organization'); ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
 						<div class="col-md-offset-2 col-md-4">
 							<div class="control">
 								<input type="checkbox" name="admin" value="true" <?php if ($user['admin']) { echo "checked='checked'"; }; ?> /> <?php echo $this->lang->line('gp_make_admin'); ?>

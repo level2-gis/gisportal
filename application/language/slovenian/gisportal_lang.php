@@ -18,6 +18,7 @@ $lang['gp_first_name'] = 'Ime';
 $lang['gp_last_name'] = 'Priimek';
 $lang['gp_email'] = 'E-pošta';
 $lang['gp_username'] = 'Uporabniško ime';
+$lang['gp_organization'] = 'Organizacija';
 $lang['gp_username_placeholder'] = 'Up. ime ali e-pošta';
 $lang['gp_confirm'] = 'Potrdite';
 $lang['gp_here'] = 'tukaj';

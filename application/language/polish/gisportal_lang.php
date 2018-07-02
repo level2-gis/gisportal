@@ -18,6 +18,7 @@ $lang['gp_first_name'] = 'Imię';
 $lang['gp_last_name'] = 'Nazwisko';
 $lang['gp_email'] = 'E-mail';
 $lang['gp_username'] = 'Login';
+$lang['gp_organization'] = 'Organizacja';
 $lang['gp_username_placeholder'] = 'Login lub Email';
 $lang['gp_confirm'] = 'Potwierdź';
 $lang['gp_here'] = 'tutaj';

@@ -107,6 +107,7 @@ class Projects extends CI_Controller
                 $project_name = str_replace($ext,'',$file_name);
                 $this->session->set_flashdata('project_name',$project_name);
                 $this->session->set_flashdata('client_id',$client_id);
+                $this->clearCurrentUserProjectSession();
                 redirect('projects/edit/'.$project_id);
             }
 
@@ -374,6 +375,7 @@ class Projects extends CI_Controller
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $project['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
+                $this->clearCurrentUserProjectSession();
             }
             catch (Exception $e){
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -544,5 +546,18 @@ class Projects extends CI_Controller
         $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
     }
 
+    private function clearCurrentUserProjectSession() {
+        $sess_items = array(
+            'client_path',
+            'project',
+            'project_path',
+            'data',
+            'settings',
+            'description',
+            'gis_projects',
+            'qgs'
+        );
 
+        $this->session->unset_userdata($sess_items);
+    }
 }

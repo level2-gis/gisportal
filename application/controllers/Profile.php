@@ -15,7 +15,7 @@ class Profile extends CI_Controller
     function index()
     {
         if (!$this->session->userdata('user_is_logged_in')) {
-            redirect('login/');
+            redirect('/login?ru=/' . uri_string());
         }
 
         $details = $this->user_model->get_user_by_id($this->session->userdata('uid'));

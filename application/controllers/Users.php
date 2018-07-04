@@ -14,13 +14,9 @@ class Users extends CI_Controller {
     public function index()
     {
         if (!$this->session->userdata('admin')){
-            redirect('/');
+            redirect('/login?ru=/' . uri_string());
         }
 
-//        if (!$this->session->userdata('user_is_logged_in') || !$this->session->userdata('admin')){
-//			redirect('/login?ru=/' . uri_string());
-//		}
-		
 		$data['title'] = $this->lang->line('gp_users_title');
         $data['users'] = $this->user_model->get_users();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
@@ -33,7 +29,7 @@ class Users extends CI_Controller {
     public function edit($user_id = false)
     {
         if (!$this->session->userdata('admin')){
-            redirect('/');
+            redirect('/login?ru=/' . uri_string());
         }
 
 		$this->load->helper('form');

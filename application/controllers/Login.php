@@ -6,7 +6,7 @@ class Login extends CI_Controller
 	{
         parent::__construct();
 		$this->load->helper(array('form','url','html'));
-		$this->load->library(array('session', 'form_validation'));
+		$this->load->library(array('session', 'form_validation', 'user_agent'));
 		$this->load->database();
 		$this->load->model('user_model');
 
@@ -14,8 +14,24 @@ class Login extends CI_Controller
 
     public function index()
     {
+        $ru = $this->input->get('ru');
+        $get = $this->input->get();
+        $get2 = [];
+        if(count($get)>1) {
+            $get2 = array_splice($get,1,count($get)-1);
+            $ru .= "&".http_build_query($get2);
+        }
+        $ref = '';
+        if (!empty($ru)) {
+            $this->session->set_flashdata('ru', $ru);
+        } else {
+            if ($this->session->flashdata('ru')) {
+                $ref = $this->session->flashdata('ru');
+            }
+        }
+
         if ($this->session->userdata('user_is_logged_in')) {
-            redirect("/");
+            empty($ref) ? redirect("/") : redirect($ref);
         }
 
 		// get form input
@@ -55,7 +71,7 @@ class Login extends CI_Controller
                     );
 				$this->session->set_userdata($sess_data);
                 $this->user_model->update_user($uresult[0]->user_id, 'last_login = now(), count_login = count_login + 1');
-				redirect("/");
+                empty($ref) ? redirect("/") : redirect($ref);
 			}
 			else
 			{

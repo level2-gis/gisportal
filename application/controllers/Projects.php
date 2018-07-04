@@ -19,7 +19,7 @@ class Projects extends CI_Controller
     public function index()
     {
         if (!$this->session->userdata('admin')){
-            redirect('/');
+            redirect('/login?ru=/' . uri_string());
         }
 
 		$data['title'] = $this->lang->line('gp_projects_title');
@@ -38,7 +38,7 @@ class Projects extends CI_Controller
         }
 
         if (!$this->session->userdata('user_is_logged_in')) {
-            redirect('login/');
+            redirect('/login?ru=/' . uri_string());
         }
 
         $data['title'] = $this->lang->line('gp_projects_title');
@@ -316,7 +316,7 @@ class Projects extends CI_Controller
 //        }
 
         if (!$this->session->userdata('admin')){
-            redirect('/');
+            redirect('/login?ru=/' . uri_string());
         }
 
         $this->load->helper('form');

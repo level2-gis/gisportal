@@ -67,8 +67,6 @@ if (!function_exists('get_qgis_project_templates_path')) {
     }
 }
 
-
-
 if (!function_exists('get_ogr')) {
 
     function get_ogr()

@@ -77,6 +77,7 @@ $lang['gp_qgis_project'] = 'Projekt QGIS';
 $lang['gp_display_name_tip'] = 'Ustawiona zgodnie z projektem QGIS!';
 $lang['gp_select_client'] = 'Wybierz klienta';
 $lang['gp_select_layer'] = 'Wybierz warstwę';
+$lang['gp_select_template'] = 'Select Template';
 $lang['gp_new_layer'] = 'Nowa warstwa';
 $lang['gp_new_project'] = 'Nowy projekt';
 $lang['gp_project_count'] = 'Ilość projektów';

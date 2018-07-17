@@ -119,7 +119,10 @@ class Projects extends CI_Controller
     }
 
 
-
+    /**
+     * Public upload files
+     * Used in Editor plugin
+     */
     public function upload($project_id = false)
     {
         if ($project_id === FALSE) {
@@ -265,6 +268,9 @@ class Projects extends CI_Controller
         }
     }
 
+    /**
+     * Method to download QGIS project file for administrators
+     */
     public function download($project_id = false)
     {
         if (!$this->session->userdata('admin')) {
@@ -355,6 +361,7 @@ class Projects extends CI_Controller
 
             $data['project'] = $em;
             $data['image'] = $this->getImage($em['name']);
+            $data['templates'] = get_filenames(get_qgis_project_templates_path());
 
             $this->loadmeta($data);
             $this->qgisinfo($data);

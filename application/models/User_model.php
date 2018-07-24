@@ -59,7 +59,10 @@ class User_model extends CI_Model
 	{
 		$this->db->where('user_id', $id);
         $query = $this->db->get('users');
-		return $query->result()[0];
+        if ($query->result()) {
+            return $query->result()[0];
+        }
+        return null;
 	}
 	
 	// insert

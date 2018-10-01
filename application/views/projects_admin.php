@@ -25,8 +25,8 @@
 		  <td class="col-md-1">
 			<img class="img-responsive" src="<?php echo base_url("assets/img/projects/" . $project_item['name'] . ".png"); ?>" alt="">
 		  </td>
-		  <td class="col-md-2"><?php echo $project_item['name']; ?></td>
-		  <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
+		  <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
+          <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
 		  <td class="col-md-2"><?php echo $project_item['client']; ?></td>
 		  <td class="col-md-2">
 			<a class="btn btn-primary" href="<?php echo site_url('projects/edit/'.$project_item['id']); ?>">

@@ -91,6 +91,7 @@ Read [Shortening URL on Wiki](https://github.com/uprel/gisportal/wiki/Shortening
 1. Copy gisportal_lang.php from any other languages to new language folder and translate contents.
 1. Add new language in config/config.php at the bottom: $config['available_languages']. Here you can also remove unwanted languages.
 1. If you wish you can change default language in application/config/config.php.
+1. Get your language also for [Bootstrap Table plugin](https://github.com/wenzhixin/bootstrap-table/tree/develop/src/locale) and copy file to /assets/js/locale/ folder. Rename it to only contain language code, as other files in the folder (remove country code).
 
 ## Styling top menu (navbar)
 

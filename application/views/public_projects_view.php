@@ -9,7 +9,7 @@
     <?php foreach ($projects_public as $projects_item): ?>
         <tr>
             <td><?php echo $projects_item['client']; ?></td>
-            <td><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$projects_item['name']); ?>"><?php echo $projects_item['display_name']; ?></a></td>
+            <td><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$projects_item['name']) . '?public=on'; ?>"><?php echo $projects_item['display_name']; ?></a></td>
             <td><?php echo $projects_item['crs']; ?></td>
             <td><?php echo $projects_item['contact']; ?></td>
             <td><?php echo $projects_item['description']; ?></td>

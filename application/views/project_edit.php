@@ -39,7 +39,7 @@
                     <div class="form-group">
 						<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 						<div class="col-md-5">
-							<input class="form-control" name="name" id="project_name" placeholder="" type="text" value="<?php echo $project['name']; ?>" />
+							<input class="form-control" name="name" id="project_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['name']; ?>" />
 							<span class="text-danger"><?php echo form_error('name'); ?></span>
                             <p class="help-block"><?php echo $this->lang->line('gp_name_tip'); ?></p>
 						</div>	

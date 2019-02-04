@@ -97,7 +97,7 @@ class Projects extends CI_Controller
             $this->load->library('upload', $config);
 
             if (!$this->upload->do_upload('userfile')) {
-                $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
+                $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $dir . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
                 redirect('projects/edit/'.$project_id);
             } else {
                 $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');

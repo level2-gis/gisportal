@@ -273,6 +273,7 @@ class Clients extends CI_Controller
         $dir = $this->upload->upload_path;
         $project_id = $this->input->post('project_id');
         $layer_id = $this->input->post('layer_id');
+        $file_crs = $this->input->post('crs_code');
 
         $project = $this->project_model->get_project($project_id);
         $qgs_file = '';
@@ -317,14 +318,11 @@ class Clients extends CI_Controller
             $user_file = '/vsizip/' . $dir . $file_name . DIRECTORY_SEPARATOR . str_replace('.zip', '.shp', $file_name);
         }
 
-        //special case for kml (add target EPSG)
-        $target_srs = '';
-        if ($this->upload->file_ext=='.kml') {
-            $target_srs = ' -t_srs EPSG:' . $srid . ' ';
-        }
+        $source_srs = ' -s_srs ' . $file_crs . ' ';
+        $target_srs = ' -t_srs EPSG:' . $srid . ' ';
 
         //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
-        $mycmd = get_ogr() . 'ogr2ogr ' . $target_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $mycmd = get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
         $output = shell_exec($mycmd);
 
         $cnt_after = $qgs->get_layer_feature_count($conn, $table);

@@ -1,7 +1,14 @@
 <div class="page-header clearfix">
 	<h1 class="col-md-8"><?php echo $title; ?></h1>
-	<div class="actions  pull-right">
-		<a href="<?php echo site_url('projects/edit/'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_project'); ?></a>
+	<div class="btn-group actions  pull-right">
+        <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <?php echo $this->lang->line('gp_new_project'); ?> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#">Use template</a></li>
+            <li><a href="#">Upload QGIS project</a></li>
+            <li><a href="#">Manual</a></li>
+        </ul>
 	</div>
 </div>
 

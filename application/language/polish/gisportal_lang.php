@@ -112,3 +112,8 @@ $lang['gp_add_new_file'] = 'Dodaj nowy plik';
 $lang['gp_upload'] = 'Wczytaj';
 $lang['gp_info_demo'] = 'To jest tylko wersja pokazująca repozytorium wczytanych plików dla każdego klienta. Wczytane pliki znajdują się w podfolderach projektów.';
 $lang['gp_plugins'] = 'Plugins';
+
+$lang['gp_download'] = 'Download';
+$lang['gp_template'] = 'Template';
+$lang['gp_new_template'] = 'Blank or from template';
+$lang['gp_new_upload'] = 'Upload QGIS project';

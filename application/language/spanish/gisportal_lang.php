@@ -111,3 +111,8 @@ $lang['gp_upload'] = 'Upload';
 $lang['gp_info_demo'] = 'This is now only demonstration for each client web repository for user uploaded files.
         Files uploaded from projects are in projects subfolders.';
 $lang['gp_plugins'] = 'Plugins';
+
+$lang['gp_download'] = 'Download';
+$lang['gp_template'] = 'Template';
+$lang['gp_new_template'] = 'Blank or from template';
+$lang['gp_new_upload'] = 'Upload QGIS project';

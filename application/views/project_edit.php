@@ -2,6 +2,7 @@
 		<?php $attributes = array("class" => "form-horizontal", "id" => "edit");
 		echo form_open('projects/edit/' . $project['id'], $attributes); ?>
 			<input name="id" type="hidden" value="<?php echo $project['id']; ?>" />
+			<input id="project_name" name="name" type="hidden" value="<?php echo $project['name']; ?>" />
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
@@ -15,7 +16,7 @@
 
 				<fieldset id="edit-project-meta" class="tab-pane active">
 
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
                         <div class="col-md-5">
                             <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this);">
@@ -27,33 +28,15 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
                         <div class="col-md-5">
                             <input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $project['display_name']; ?>" />
                             <span class="text-danger"><?php echo form_error('display_name'); ?></span>
-<!--                            <p class="help-block">--><?php //echo $this->lang->line('gp_display_name_tip'); ?><!--</p>-->
                         </div>
                     </div>
 
-                    <div class="form-group">
-						<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="name" id="project_name" placeholder="" readonly="readonly" type="text" value="<?php echo $project['name']; ?>" />
-							<span class="text-danger"><?php echo form_error('name'); ?></span>
-                            <p class="help-block"><?php echo $this->lang->line('gp_name_tip'); ?></p>
-						</div>	
-					</div>
-
-					<div class="form-group">
-						<label for="crs" class="control-label col-md-2"><?php echo $this->lang->line('gp_crs'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="crs" placeholder="" readonly="readonly" type="text" value="<?php echo $project['crs']; ?>" />
-							<span class="text-danger"><?php echo form_error('crs'); ?></span>
-						</div>	
-					</div>
-
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label for="overview_layer_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_overview_layer'); ?></label>
                         <div class="col-md-5">
                             <select class="form-control" name="overview_layer_id">
@@ -66,28 +49,28 @@
                         </div>
                     </div>
 
-					<div class="form-group">
+					<div class="row form-group">
 						<label for="contact" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_contact')); ?></label>
 						<div class="col-md-5">
 							<input class="form-control" name="contact" placeholder="" type="text" value="<?php echo $project['contact']; ?>" />
 							<span class="text-danger"><?php echo form_error('contact'); ?></span>
 						</div>	
 					</div>	
-					<div class="form-group">
+					<div class="row form-group">
 						<label for="feedback_email" class="control-label col-md-2"><?php echo $this->lang->line('gp_feedback_email'); ?></label>
 						<div class="col-md-5">
 							<input class="form-control" name="feedback_email" placeholder="" type="text" value="<?php echo $project['feedback_email']; ?>" />
 							<span class="text-danger"><?php echo form_error('feedback_email'); ?></span>
 						</div>	
 					</div>
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label for="ordr" class="control-label col-md-2"><?php echo $this->lang->line('gp_order'); ?></label>
                         <div class="col-md-5">
                             <input class="form-control" name="ordr" placeholder="" type="text" value="<?php echo $project['ordr']; ?>" />
                             <span class="text-danger"><?php echo form_error('ordr'); ?></span>
                         </div>
                     </div>
-					<div class="form-group">
+					<div class="row form-group">
 						<label for="description" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_description')); ?></label>
 						<div class="col-md-5">
 							<textarea class="form-control" cols="20" rows="4" name="description" placeholder="" type="text"><?php echo $project['description']; ?></textarea>
@@ -95,7 +78,7 @@
 						</div>	
 					</div>	
 
-					<div class="form-group">
+					<div class="row form-group">
 						<div class="col-md-offset-2 col-md-5">
 							<div class="control">
 								<input type="checkbox" name="public" value="true" <?php if ($project['public']) { echo "checked='checked'"; }; ?> /> <?php echo ucfirst($this->lang->line('gp_public')); ?>
@@ -127,7 +110,7 @@
                             </div>
 						</div>
                     </div>
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
                         <div class="col-md-5">
                             <?php echo $image; ?>
@@ -137,7 +120,6 @@
 
 				<fieldset id="edit-project-layers" class="tab-pane">
 					<div class="form-group">
-<!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
                         <div class="row style-select">
                             <div class="col-md-offset-1 col-md-10">
                                 <div class="subject-info-box-1">
@@ -297,7 +279,7 @@
 				
 				<?php if ( $creating === false && !empty($project['id'])) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" href="<?php echo site_url('projects/remove/'.$project['id']); ?>"><?php echo $this->lang->line('gp_delete'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink('<?php echo site_url('projects/remove/'.$project['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
                 </div>
 				 <?php endif; ?>
 				</div>

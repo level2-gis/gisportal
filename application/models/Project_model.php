@@ -113,6 +113,7 @@ class Project_model extends CI_Model {
         }
 
         unset($data['id']);
+        unset($data['template']);
         $this->db->insert('projects', $data);
 
         $id = $this->db->insert_id();
@@ -150,5 +151,40 @@ class Project_model extends CI_Model {
         $query = $this->db->query($sql);
 
         return $query->result_array();
+    }
+
+    /*
+     * get array of QGIS project templates for use when creating new project in database
+     */
+    function get_templates()
+    {
+        $ret = [];
+        $dir = get_qgis_project_templates_path();
+        if(is_dir($dir)) {
+            $arr = get_dir_file_info($dir);
+
+            foreach($arr as $name => $fileinfo) {
+                $fn = $fileinfo["server_path"];
+                if(is_readable($fn)) {
+                    $ext = pathinfo($fn, PATHINFO_EXTENSION);
+                    if(strtolower($ext) == 'qgs') {
+                        array_push($ret,$name);
+                    }
+                }
+            }
+        }
+        return $ret;
+    }
+
+    function copy_template($template, $project_name, $client_name)
+    {
+        $dir = set_realpath(get_qgis_project_templates_path());
+        $dir2= set_realpath(get_qgis_project_path($client_name));
+
+        $source = $dir . $template;
+        $target = $dir2. $project_name;
+        if(is_readable($source)) {
+            copy($source,$target.'.qgs');
+        }
     }
 }

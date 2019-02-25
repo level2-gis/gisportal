@@ -5,9 +5,8 @@
             <?php echo $this->lang->line('gp_new_project'); ?> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="#">Use template</a></li>
-            <li><a href="#">Upload QGIS project</a></li>
-            <li><a href="#">Manual</a></li>
+            <li><a href="<?php echo site_url('projects/create/1'); ?>"><?php echo $this->lang->line('gp_new_template'); ?></a></li>
+            <li><a href="<?php echo site_url('projects/create/2'); ?>"><?php echo $this->lang->line('gp_new_upload'); ?></a></li>
         </ul>
 	</div>
 </div>

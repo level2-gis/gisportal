@@ -55,6 +55,9 @@ class Projects extends CI_Controller
 
     }
 
+    /**
+     * Upload QGIS project file
+     */
     public function upload_admin($client_id = false) {
 
         if (!$this->session->userdata('admin')){
@@ -72,8 +75,8 @@ class Projects extends CI_Controller
             }
             $client_name = $client->name;
 
-            //put project to client subfolder, by default
-            $dir = set_realpath(get_qgis_project_path() . $client_name);
+            //put project to which subfolder, from config
+            $dir = set_realpath(get_qgis_project_path($client_name));
 
             $project_id = $this->input->post('project_id');
             if ($project_id) {
@@ -98,23 +101,43 @@ class Projects extends CI_Controller
 
             if (!$this->upload->do_upload('userfile')) {
                 $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $dir . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
-                redirect('projects/edit/'.$project_id);
+                if(!empty($project_id)) {
+                    redirect('projects/edit/'.$project_id);
+                } else {
+                    redirect('projects/create/'.NEW_UPLOAD);
+                }
             } else {
                 $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
                 //pass qgis project name and client_id
                 $file_name = $this->upload->file_name;
                 $ext = $this->upload->file_ext;
                 $project_name = str_replace($ext,'',$file_name);
+
                 $this->session->set_flashdata('project_name',$project_name);
                 $this->session->set_flashdata('client_id',$client_id);
+
+                //set permission to 777
+                if(is_file($dir . $file_name))
+                {
+                    chmod($dir . $file_name, 0777);
+                }
+
                 $this->clearCurrentUserProjectSession();
-                redirect('projects/edit/'.$project_id);
+                if(!empty($project_id)) {
+                    redirect('projects/edit/'.$project_id);
+                } else {
+                    redirect('projects/create/'.NEW_UPLOAD);
+                }
             }
 
         } catch (Exception $e) {
 
             $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $e->getMessage() . '</div>');
-            redirect('projects/edit/'.$project_id);
+            if(!empty($project_id)) {
+                redirect('projects/edit/'.$project_id);
+            } else {
+                redirect('projects/create/'.NEW_UPLOAD);
+            }
         }
     }
 
@@ -328,10 +351,11 @@ class Projects extends CI_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
+        //$this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
         //$this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
         $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('ordr','lang:gp_order','integer');
+        $this->form_validation->set_rules('feedback_email', 'lang:gp_feedback_email', 'valid_email');
 
         if ($this->form_validation->run() === FALSE)
         {
@@ -343,6 +367,7 @@ class Projects extends CI_Controller
             //pass data from uploaded project
             $em["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : '';
             $em["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : null;
+
             if(sizeof($_POST) > 0){
                 $em = $this->extractProjectData();
                 $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
@@ -358,24 +383,101 @@ class Projects extends CI_Controller
                 }
             }
 
-
             $data['project'] = $em;
             $data['image'] = $this->getImage($em['name']);
-            $data['templates'] = get_filenames(get_qgis_project_templates_path());
+            $data['clients'] = $this->client_model->get_clients();
 
             $this->loadmeta($data);
             $this->qgisinfo($data);
 
             $this->load->view('templates/header', $data);
+            $this->load->view('project_title', $data);
+            $this->load->view('project_check', $data);
             $this->load->view('project_upload_form', $data);
             $this->load->view('project_edit', $data);
-            $this->load->view('project_edit_layers_func');
             //$this->load->view('templates/footer', $data);
         } else {
 
             $project = $this->extractProjectData();
             $users = $this->extractUserProjectData();
             try {
+                $project_id = $this->project_model->upsert_project($project, $users);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $project['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
+                $this->clearCurrentUserProjectSession();
+            }
+            catch (Exception $e){
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+            }
+            if($this->input->post('return') == null){
+                redirect('/projects/edit/' . $project_id);
+            } else {
+                redirect('/projects');
+            }
+        }
+    }
+
+    public function create($action) {
+
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
+        $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+
+        if ($this->form_validation->run() === FALSE) {
+            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_project');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+            $data['creating'] = true;
+
+            $em = $this->project_model->new_project();
+
+            //pass data from uploaded project or session
+            $em["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : $this->input->post('name');
+            $em["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : $this->input->post('client_id');
+            $em["display_name"] = $this->input->post('display_name');
+
+            $data['project'] = $em;
+            $data['templates'] = $this->project_model->get_templates();
+            $data['action'] = $action;
+            $data['clients'] = $this->client_model->get_clients();
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('project_title', $data);
+
+            if($action==NEW_UPLOAD) {
+                $this->load->view('project_upload_form', $data);
+            }
+
+            $this->load->view('project_create', $data);
+
+        } else {
+
+            $project = $this->project_model->new_project();
+
+            //pass data from uploaded project or session
+            $project["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : $this->input->post('name');
+            $project["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : $this->input->post('client_id');
+            $project["display_name"] = $this->input->post('display_name');
+            $project["template"] = $this->input->post('template');
+
+            $client = $this->client_model->get_client($project["client_id"]);
+
+            $users = $this->extractUserProjectData();
+            $project_id = null;
+            try {
+                //copy template if selected
+                if(!empty($project["template"])) {
+                    $this->project_model->copy_template($project["template"],$project["name"],$client->name);
+                }
+
                 $project_id = $this->project_model->upsert_project($project, $users);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {
@@ -524,7 +626,6 @@ class Projects extends CI_Controller
     }
 
     private function loadmeta(&$data){
-        $data['clients'] = $this->client_model->get_clients();
         $data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
         $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
         $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
@@ -546,7 +647,11 @@ class Projects extends CI_Controller
         }
 
         $project_name = $data['project']['name'];
-        $project_path = $data['project']['project_path'];
+
+        $project_path = null;
+        if(isset($data['project']['project_path'])) {
+            $project_path = $data['project']['project_path'];
+        }
         $client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
         $client_name = $data['clients'][$client_key]['name'];
 

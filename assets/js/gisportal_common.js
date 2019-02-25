@@ -1,14 +1,28 @@
 //gisportal common JS stuff
+//TODO create client language files and extract text strings below
+
+function showError(msg) {
+    bootbox.alert({
+        title: "Error",
+        message: msg,
+        size: 'small'
+    });
+}
 
 function onUploadFormSubmit() {
 
     var form = $('#uploadForm')[0];
     var client = $('#client_id')[0].value;
 
+    if(client=='') {
+        showError("Client required!");
+        return false;
+    }
+
     var editingProject = $('#project_name')[0].value;
 
     if ($('#userfile')[0].files.length==0) {
-        alert('No file!');
+        showError('No file!');
         return false;
     }
 
@@ -20,32 +34,39 @@ function onUploadFormSubmit() {
 
     //client side validation
     if (ext.toLowerCase() !== 'qgs') {
-        alert ("Only QGS project file allowed!");
+        showError("Only QGS project file allowed!");
         form.reset();
         return false;
     }
     if (editingProject && editingProject !== newProject) {
-        alert("Different projects "+editingProject+ ": "+newProject);
+        showError("Different projects "+editingProject+ ": "+newProject);
         form.reset();
         return false;
     }
 }
 
-
-function onClientChange(sel)
-{
-    var val = sel.value;
-    var upload = $('#uploadDiv');
-    if (val > 0) {
-        upload.show();
-    } else {
-        upload.hide();
-    }
+function confirmLink(url) {
+    bootbox.confirm("Are you sure you want to remove project from database?</br></br>Note: No files will be deleted from server!", function(doIt){
+        if(doIt) {
+            window.location = url;
+        }
+    });
 }
 
-function onTemplateCopy(x)
+function onClientChange(sel,action)
 {
-    console.log('templ');
+    var val = sel.value;
+    var div = $('#templateDiv');
+
+    if(action == 2) {
+        div = $('#uploadDiv');
+    }
+
+    if (val > 0) {
+        div.show();
+    } else {
+        div.hide();
+    }
 }
 
 function checkValues() {

@@ -53,9 +53,25 @@ if (!function_exists('check_qgis_project')) {
 
 if (!function_exists('get_qgis_project_path')) {
 
-    function get_qgis_project_path()
+    /**
+     * Default location of QGIS project file when uploading or using template
+     * Depends on settings
+     */
+    function get_qgis_project_path($first)
     {
-        return set_realpath(PROJECT_PATH);
+        $ci =& get_instance();
+        $config = $ci->config->item('qgis_project_default_location');
+
+        switch($config) {
+            case QGS_MAIN :
+                return set_realpath(PROJECT_PATH);
+            case QGS_CLIENT :
+                return set_realpath(PROJECT_PATH . $first);
+            default :
+                return set_realpath(PROJECT_PATH);
+        }
+
+
     }
 }
 

@@ -83,3 +83,14 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+/*
+ * GISPORTAL constants
+ */
+
+defined('QGS_MAIN')         OR define('QGS_MAIN', 0);       // QGIS project files location in main projects folder from settings.php
+defined('QGS_CLIENT')       OR define('QGS_CLIENT', 1);     // QGIS project files location in main projects/client_name subfolder
+defined('QGS_GROUP')        OR define('QGS_GROUP', 2);      // QGIS project files location in main projects/client_name/project_group subfolder
+
+defined('NEW_TEMPLATE')     OR define('NEW_TEMPLATE', 1);   // Create new project with template
+defined('NEW_UPLOAD')       OR define('NEW_UPLOAD', 2);     // Create new project with upload from client

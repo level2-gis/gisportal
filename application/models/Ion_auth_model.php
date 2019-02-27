@@ -200,8 +200,7 @@ class Ion_auth_model extends CI_Model
 	public function __construct()
 	{
 		$this->config->load('ion_auth', TRUE);
-		$this->load->helper('cookie');
-		$this->load->helper('date');
+		$this->load->helper('cookie', 'date');
 		$this->lang->load('ion_auth');
 
 		// initialize the database
@@ -854,9 +853,9 @@ class Ion_auth_model extends CI_Model
 		// Users table.
 		$data = [
 			$this->identity_column => $identity,
-			'user_name' => $identity,
-			'user_password_hash' => $password,
-			'user_email' => $email,
+			'username' => $identity,
+			'password' => $password,
+			'email' => $email,
 			'ip_address' => $ip_address,
 			'created_on' => time(),
 			'active' => ($manual_activation === FALSE ? 1 : 0)
@@ -914,10 +913,10 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select($this->identity_column . ', user_email, user_id, user_password_hash, active, last_login')
+		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login')
 						  ->where($this->identity_column, $identity)
 						  ->limit(1)
-						  ->order_by('user_id', 'desc')
+						  ->order_by('id', 'desc')
 						  ->get($this->tables['users']);
 
 		if ($this->is_max_login_attempts_exceeded($identity))

@@ -6,7 +6,7 @@ class Login extends CI_Controller
 	{
         parent::__construct();
 		$this->load->helper(array('form','url','html'));
-		$this->load->library(array('session', 'form_validation', 'user_agent'));
+		$this->load->library(array('ion_auth', 'form_validation', 'user_agent'));
 		$this->load->database();
 		$this->load->model('user_model');
 

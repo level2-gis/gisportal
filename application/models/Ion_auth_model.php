@@ -857,7 +857,8 @@ class Ion_auth_model extends CI_Model
 			'password' => $password,
 			'email' => $email,
 			'ip_address' => $ip_address,
-			'created_on' => time(),
+			//'created_on' => time(),
+            'registered' => unix_to_human(now()),
 			'active' => ($manual_activation === FALSE ? 1 : 0)
 		];
 
@@ -913,7 +914,7 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login')
+		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login, lang, count_login, user_display_name')
 						  ->where($this->identity_column, $identity)
 						  ->limit(1)
 						  ->order_by('id', 'desc')
@@ -946,7 +947,7 @@ class Ion_auth_model extends CI_Model
 
 				$this->set_session($user);
 
-				$this->update_last_login($user->id);
+				$this->update_last_login($user->id, $user->count_login);
 
 				$this->clear_login_attempts($identity);
 				$this->clear_forgotten_password_code($identity);
@@ -1530,7 +1531,7 @@ class Ion_auth_model extends CI_Model
 		// if no id was passed use the current users id
 		$id || $id = $this->session->userdata('user_id');
 
-		return $this->db->select($this->tables['users_groups'].'.'.$this->join['groups'].' as id, '.$this->tables['groups'].'.name, '.$this->tables['groups'].'.description')
+		return $this->db->select($this->tables['users_groups'].'.'.$this->join['groups'].' as id, '.$this->tables['groups'].'.name, '.$this->tables['groups'].'.display_name')
 		                ->where($this->tables['users_groups'].'.'.$this->join['users'], $id)
 		                ->join($this->tables['groups'], $this->tables['users_groups'].'.'.$this->join['groups'].'='.$this->tables['groups'].'.id')
 		                ->get($this->tables['users_groups']);
@@ -1884,7 +1885,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 */
-	public function update_last_login($id)
+	public function update_last_login($id, $count_login)
 	{
 		$this->trigger_events('update_last_login');
 
@@ -1892,9 +1893,10 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$this->db->update($this->tables['users'], ['last_login' => time()], ['id' => $id]);
+        //update directly users table because of different type for last_login
+        $this->db->update('users', ['last_login' => unix_to_human(now()), 'count_login' => $count_login + 1], ['user_id' => $id]);
 
-		return $this->db->affected_rows() == 1;
+        return $this->db->affected_rows() == 1;
 	}
 
 	/**
@@ -1948,6 +1950,10 @@ class Ion_auth_model extends CI_Model
 		    'user_id'              => $user->id, //everyone likes to overwrite id so we'll use user_id
 		    'old_last_login'       => $user->last_login,
 		    'last_check'           => time(),
+            'user_is_logged_in'    => true,
+            'user_display_name'    => $user->user_display_name,
+            'lang'                 => $user->lang,
+            'upload_dir'           => $this->config->item('main_upload_dir')
 		];
 
 		$this->session->set_userdata($session_data);
@@ -2039,7 +2045,7 @@ class Ion_auth_model extends CI_Model
 
 		// get the user with the selector
 		$this->trigger_events('extra_where');
-		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login')
+		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login, lang, count_login, user_display_name')
 						  ->where('remember_selector', $token->selector)
 						  ->where('active', 1)
 						  ->limit(1)
@@ -2055,7 +2061,7 @@ class Ion_auth_model extends CI_Model
 			$identity = $user->{$this->identity_column};
 			if ($this->verify_password($token->validator, $user->remember_code, $identity))
 			{
-				$this->update_last_login($user->id);
+				$this->update_last_login($user->id, $user->count_login);
 
 				$this->set_session($user);
 
@@ -2108,7 +2114,7 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
-		$data = ['name'=>$group_name,'description'=>$group_description];
+		$data = ['name'=>$group_name,'display_name'=>$group_description];
 
 		// filter out any data passed that doesnt have a matching column in the groups table
 		// and merge the set group data and the additional data

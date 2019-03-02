@@ -38,7 +38,7 @@ $config['database_group_name'] = 'default';
 | -------------------------------------------------------------------------
 | Database table names.
 */
-$config['tables']['users']           = 'users';
+$config['tables']['users']           = 'users_auth';
 $config['tables']['groups']          = 'roles';
 $config['tables']['users_groups']    = 'users_roles';
 $config['tables']['login_attempts']  = 'login_attempts';
@@ -134,7 +134,7 @@ $config['site_title']                 = "Example.com";       // Site Title, exam
 $config['admin_email']                = "admin@example.com"; // Admin Email, admin@example.com
 $config['default_group']              = 'members';           // Default group, use name
 $config['admin_group']                = 'admin';             // Default administrators group, use name
-$config['identity']                   = 'user_name';         /* You can use any unique column in your table as identity column.
+$config['identity']                   = 'username';         /* You can use any unique column in your table as identity column.
 															    The values in this column, alongside password, will be used for login purposes
 															    IMPORTANT: If you are changing it from the default (email),
 															    		   update the UNIQUE constraint in your DB */

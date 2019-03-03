@@ -69,10 +69,6 @@ $config['available_languages'] = array(
     )
 );
 
-//Gmail account for sending mails from through Google SMTP
-$config['gmail_account'] = 'gmail email';
-$config['gmail_password'] = 'gmail password';
-
 /*
 File upload main directory, must exist on disk with full permission (chmod 777)
 Can be outside of gisportal application

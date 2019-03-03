@@ -9,20 +9,6 @@ class Mail extends CI_Controller
 
         //Load email library
         $this->load->library('email');
-
-        $config = array(
-            'protocol' => 'smtp',
-            'smtp_host' => 'ssl://smtp.googlemail.com',
-            'smtp_port' => 465,
-            'smtp_user' => $this->config->item('gmail_account'),
-            'smtp_pass' => $this->config->item('gmail_password'),
-            'charset' => 'utf-8'
-        );
-
-        $this->email->initialize($config);
-        $this->email->set_mailtype("text");
-        $this->email->set_newline("\r\n");
-
     }
 
 
@@ -61,7 +47,7 @@ class Mail extends CI_Controller
     private function sendMailWithResponse($data)
     {
         $this->email->to($data->mailto);
-        $this->email->from($this->config->item('gmail_account'), $this->lang->line('gp_portal_title') . " ". $_SERVER['HTTP_HOST']);
+        $this->email->from($this->config->item('company_email'), $this->lang->line('gp_portal_title') . " ". $_SERVER['HTTP_HOST']);
         $this->email->subject($data->subject);
         $this->email->message($data->body);
 

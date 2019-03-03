@@ -224,6 +224,10 @@ class Ion_auth_model extends CI_Model
 		$this->identity_column = $this->config->item('identity', 'ion_auth');
 		$this->join = $this->config->item('join', 'ion_auth');
 
+        // alt identity, user or email
+        $this->load->helper('email');
+        $this->identity_alt_column = $this->config->item('identity_alt', 'ion_auth');
+
 		// initialize hash method options (Bcrypt)
 		$this->hash_method = $this->config->item('hash_method', 'ion_auth');
 
@@ -914,8 +918,10 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login, lang, count_login, user_display_name')
-						  ->where($this->identity_column, $identity)
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
+		$query = $this->db->select($this->identity_column . ', ' . $this->identity_alt_column . ', id, password, active, last_login, lang, count_login, username, user_display_name')
+						  ->where($identity_column, $identity)
 						  ->limit(1)
 						  ->order_by('id', 'desc')
 						  ->get($this->tables['users']);
@@ -1950,10 +1956,12 @@ class Ion_auth_model extends CI_Model
 		    'user_id'              => $user->id, //everyone likes to overwrite id so we'll use user_id
 		    'old_last_login'       => $user->last_login,
 		    'last_check'           => time(),
-            'user_is_logged_in'    => true,
-            'user_display_name'    => $user->user_display_name,
-            'lang'                 => $user->lang,
-            'upload_dir'           => $this->config->item('main_upload_dir')
+            'user_is_logged_in'    => true,  //gisportal
+            'user_display_name'    => $user->user_display_name, //gisportal
+            'user_name'            => $user->username,  //gisportal
+            'lang'                 => $user->lang,                           //gisportal
+            'upload_dir'           => $this->config->item('main_upload_dir'), //gisportal
+            'admin'                => $this->ion_auth->is_admin($user->id)
 		];
 
 		$this->session->set_userdata($session_data);
@@ -2045,7 +2053,7 @@ class Ion_auth_model extends CI_Model
 
 		// get the user with the selector
 		$this->trigger_events('extra_where');
-		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login, lang, count_login, user_display_name')
+		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login, lang, count_login, username, user_display_name')
 						  ->where('remember_selector', $token->selector)
 						  ->where('active', 1)
 						  ->limit(1)

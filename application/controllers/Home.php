@@ -13,17 +13,18 @@ class Home extends CI_Controller
 
     function index()
     {
-        if (!$this->session->userdata('user_is_logged_in')) {
+        if (!$this->ion_auth->logged_in())
+        {
             $this->session->set_flashdata('msg','<div class="alert alert-info text-center">' . $this->lang->line('gp_welcome_message') . '</div>');
-            redirect('login/');
+            redirect('auth/login', 'refresh');
         }
 
         $data['title'] = $this->lang->line('gp_clients_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
-        if ($this->session->userdata('uid') !== null) {
-            $user = $this->User_model->get_user_by_id($this->session->userdata('uid'));
+        if ($this->session->userdata('user_id') !== null) {
+            $user = $this->User_model->get_user_by_id($this->session->userdata('user_id'));
             $data['clients'] = $this->Client_model->get_clients($user->project_ids, $user->admin, false);
         } else {
             $data['clients'] = null;
@@ -47,15 +48,6 @@ class Home extends CI_Controller
             $this->load->view('clients', $data);
         }
         $this->load->view('templates/footer', $data);
-    }
-
-    function logout()
-    {
-        // destroy session
-        $data = array('login' => '', 'uname' => '', 'uid' => '');
-        $this->session->unset_userdata($data);
-        $this->session->sess_destroy();
-        redirect('login/');
     }
 }
 

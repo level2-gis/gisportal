@@ -1,28 +1,46 @@
-<h1><?php echo lang('login_heading');?></h1>
-<p><?php echo lang('login_subheading');?></p>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 well">
 
-<div id="infoMessage"><?php echo $message;?></div>
+        <?php echo form_open("auth/login"); ?>
 
-<?php echo form_open("auth/login");?>
+        <legend><?php echo $this->lang->line('gp_login'); ?></legend>
+        <div class="form-group">
+            <label for="identity"><?php echo $this->lang->line('gp_user'); ?></label>
+            <input class="form-control" name="<?php echo $identity['name']; ?>"
+                   placeholder="<?php echo $this->lang->line('gp_username_placeholder'); ?>" type="text"
+                   value="<?php echo set_value($identity['name']); ?>"/>
+            <span class="text-danger"><?php echo form_error($identity['name']); ?></span>
+        </div>
 
-  <p>
-    <?php echo lang('login_identity_label', 'identity');?>
-    <?php echo form_input($identity);?>
-  </p>
+        <div class="form-group">
+            <label for="name"><?php echo $this->lang->line('gp_password'); ?></label>
+            <input class="form-control" name="password" placeholder="<?php echo $this->lang->line('gp_password'); ?>"
+                   type="password" value="<?php echo set_value('password'); ?>"/>
+            <span class="text-danger"><?php echo form_error('password'); ?></span>
+        </div>
 
-  <p>
-    <?php echo lang('login_password_label', 'password');?>
-    <?php echo form_input($password);?>
-  </p>
+        <div class="checkbox">
+            <label><input name="remember" id="remember" type="checkbox" value="1"><?php echo rtrim($this->lang->line('login_remember_label'),':'); ?></label>
+        </div>
 
-  <p>
-    <?php echo lang('login_remember_label', 'remember');?>
-    <?php echo form_checkbox('remember', '1', FALSE, 'id="remember"');?>
-  </p>
-
-
-  <p><?php echo form_submit('submit', lang('login_submit_btn'));?></p>
-
-<?php echo form_close();?>
-
-<p><a href="forgot_password"><?php echo lang('login_forgot_password');?></a></p>
+        <div class="form-group">
+            <button name="submit" type="submit"
+                    class="btn btn-info"><?php echo $this->lang->line('gp_login'); ?></button>
+            <button name="cancel" type="reset"
+                    class="btn btn-info"><?php echo $this->lang->line('gp_cancel'); ?></button>
+        </div>
+        <?php echo form_close(); ?>
+        <?php echo $this->session->flashdata('message'); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 text-center">
+        <?php echo $this->lang->line('gp_new_user'); ?> <a
+            href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 text-center">
+        <a href="forgot_password"><?php echo lang('login_forgot_password'); ?></a>
+    </div>
+</div>

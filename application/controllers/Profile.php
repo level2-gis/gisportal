@@ -15,10 +15,10 @@ class Profile extends CI_Controller
     function index()
     {
         if (!$this->session->userdata('user_is_logged_in')) {
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
-        $details = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+        $details = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
 
         $data['title'] = $this->lang->line('gp_profile_title');
         $data['projects_public'] = $this->project_model->get_public_projects();
@@ -27,7 +27,7 @@ class Profile extends CI_Controller
 
         $this->load->view('templates/header', $data);
 
-        if ($this->session->userdata('uid') !== null) {
+        if ($this->session->userdata('user_id') !== null) {
             $data['user'] = $details;
             if ($details->admin) {
                 $data['user']->display_name .= ' (Administrator)';

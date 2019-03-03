@@ -15,7 +15,7 @@ class Language extends CI_Controller
     {
         $this->session->set_userdata('lang', $code);
 
-        $id = $this->session->userdata('uid');
+        $id = $this->session->userdata('user_id');
         $sql = 'lang=\''.$code . '\'';
         $this->user_model->update_user($id, $sql);
 

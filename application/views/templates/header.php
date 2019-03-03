@@ -60,11 +60,11 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo site_url('/profile') ?>"><?php echo $this->lang->line('gp_profile_title'); ?></a></li>
-                            <li><a href="<?php echo site_url('/home/logout') ?>"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
+                            <li><a href="<?php echo site_url('/auth/logout') ?>"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
                         </ul>
                     </li>
                 <?php } else { ?>
-                    <li><a href="<?php echo site_url('/login') ?>"><?php echo $this->lang->line('gp_login'); ?></a></li>
+                    <li><a href="<?php echo site_url('/auth/login') ?>"><?php echo $this->lang->line('gp_login'); ?></a></li>
                     <li><a href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?></a></li>
                 <?php } ?>
             </ul>

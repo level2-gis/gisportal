@@ -22,7 +22,7 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * Redirect if needed, otherwise display the user list
+	 * FIX
 	 */
 	public function index()
 	{
@@ -64,9 +64,31 @@ class Auth extends CI_Controller
 	 */
 	public function login()
 	{
-		$this->data['title'] = $this->lang->line('login_heading');
+        $ru = $this->input->get('ru');
+        $get = $this->input->get();
+        $get2 = [];
+        if(count($get)>1) {
+            $get2 = array_splice($get,1,count($get)-1);
+            $ru .= "&".http_build_query($get2);
+        }
+        $ref = '';
+        if (!empty($ru)) {
+            $this->session->set_flashdata('ru', $ru);
+        } else {
+            if ($this->session->flashdata('ru')) {
+                $ref = $this->session->flashdata('ru');
+            }
+        }
 
-		// validate form input
+        if ($this->session->userdata('user_is_logged_in')) {
+            empty($ref) ? redirect("/") : redirect($ref);
+        }
+
+        $this->data['title'] = $this->lang->line('login_heading');
+        $this->data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+
+
+        // validate form input
 		$this->form_validation->set_rules('identity', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
 		$this->form_validation->set_rules('password', str_replace(':', '', $this->lang->line('login_password_label')), 'required');
 
@@ -80,14 +102,14 @@ class Auth extends CI_Controller
 			{
 				//if the login is successful
 				//redirect them back to the home page
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect('/', 'refresh');
+				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
+                empty($ref) ? redirect("/", 'refresh') : redirect($ref, 'refresh');
 			}
 			else
 			{
 				// if the login was un-successful
 				// redirect them back to the login page
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
@@ -125,7 +147,7 @@ class Auth extends CI_Controller
 		$this->ion_auth->logout();
 
 		// redirect them to the login page
-		$this->session->set_flashdata('message', $this->ion_auth->messages());
+		$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 		redirect('auth/login', 'refresh');
 	}
 
@@ -188,12 +210,12 @@ class Auth extends CI_Controller
 			if ($change)
 			{
 				//if the password was successfully changed
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 				$this->logout();
 			}
 			else
 			{
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 				redirect('auth/change_password', 'refresh');
 			}
 		}
@@ -256,7 +278,7 @@ class Auth extends CI_Controller
 					$this->ion_auth->set_error('forgot_password_email_not_found');
 				}
 
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 				redirect("auth/forgot_password", 'refresh');
 			}
 
@@ -266,12 +288,12 @@ class Auth extends CI_Controller
 			if ($forgotten)
 			{
 				// if there were no errors
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 				redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
 			}
 			else
 			{
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 				redirect("auth/forgot_password", 'refresh');
 			}
 		}
@@ -354,12 +376,12 @@ class Auth extends CI_Controller
 					if ($change)
 					{
 						// if the password was successfully changed
-						$this->session->set_flashdata('message', $this->ion_auth->messages());
+						$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 						redirect("auth/login", 'refresh');
 					}
 					else
 					{
-						$this->session->set_flashdata('message', $this->ion_auth->errors());
+						$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 						redirect('auth/reset_password/' . $code, 'refresh');
 					}
 				}
@@ -368,7 +390,7 @@ class Auth extends CI_Controller
 		else
 		{
 			// if the code is invalid then send them back to the forgot password page
-			$this->session->set_flashdata('message', $this->ion_auth->errors());
+			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 			redirect("auth/forgot_password", 'refresh');
 		}
 	}
@@ -395,13 +417,13 @@ class Auth extends CI_Controller
 		if ($activation)
 		{
 			// redirect them to the auth page
-			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 			redirect("auth", 'refresh');
 		}
 		else
 		{
 			// redirect them to the forgot password page
-			$this->session->set_flashdata('message', $this->ion_auth->errors());
+			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 			redirect("auth/forgot_password", 'refresh');
 		}
 	}
@@ -506,7 +528,7 @@ class Auth extends CI_Controller
 		{
 			// check to see if we are creating the user
 			// redirect them back to the admin page
-			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 			redirect("auth", 'refresh');
 		}
 		else
@@ -658,14 +680,14 @@ class Auth extends CI_Controller
 				if ($this->ion_auth->update($user->id, $data))
 				{
 					// redirect them back to the admin page if admin, or to the base url if non admin
-					$this->session->set_flashdata('message', $this->ion_auth->messages());
+					$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 					$this->redirectUser();
 
 				}
 				else
 				{
 					// redirect them back to the admin page if admin, or to the base url if non admin
-					$this->session->set_flashdata('message', $this->ion_auth->errors());
+					$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 					$this->redirectUser();
 
 				}
@@ -744,7 +766,7 @@ class Auth extends CI_Controller
 			{
 				// check to see if we are creating the group
 				// redirect them back to the admin page
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
 				redirect("auth", 'refresh');
 			}
 		}
@@ -804,11 +826,11 @@ class Auth extends CI_Controller
 
 				if ($group_update)
 				{
-					$this->session->set_flashdata('message', $this->lang->line('edit_group_saved'));
+					$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->lang->line('edit_group_saved') . '</div>');
 				}
 				else
 				{
-					$this->session->set_flashdata('message', $this->ion_auth->errors());
+					$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">' . $this->ion_auth->errors() . '</div>');
 				}
 				redirect("auth", 'refresh');
 			}
@@ -877,7 +899,9 @@ class Auth extends CI_Controller
 
 		$viewdata = (empty($data)) ? $this->data : $data;
 
-		$view_html = $this->load->view($view, $viewdata, $returnhtml);
+        $this->load->view('templates/header', $viewdata);
+        $view_html = $this->load->view($view, $viewdata, $returnhtml);
+        $this->load->view('templates/footer', $viewdata);
 
 		// This will return html on 3rd argument being true
 		if ($returnhtml)

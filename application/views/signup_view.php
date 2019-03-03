@@ -56,6 +56,6 @@
 	</div>
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4 text-center">
-            <?php echo $this->lang->line('gp_already_registered'); ?> <a href="<?php echo site_url('/login') ?>"><?php echo $this->lang->line('gp_login'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+            <?php echo $this->lang->line('gp_already_registered'); ?> <a href="<?php echo site_url('/auth/login') ?>"><?php echo $this->lang->line('gp_login'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
 		</div>
 	</div>

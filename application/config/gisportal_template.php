@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['company'] = 'Company name';
 $config['company_url'] = 'company url';
-$config['company_email'] = 'info@company.com';  //also for receiving system emails
+
 $config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
 
 //Set which languages show up for user selection.

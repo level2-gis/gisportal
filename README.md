@@ -23,6 +23,7 @@ Administrator is every user with admin=true in database.
 - delegate users to project
 - activate available plugins for project
 - upload/download QGIS Project file for QGIS Server
+- use QGIS project templates
 
 ![admin1](https://github.com/uprel/gisportal/wiki/images/admin_projects_view1.png)
 
@@ -40,7 +41,9 @@ Administrator is every user with admin=true in database.
 	```
 	
 1. Setup database connection in application/config/database.php
-1. Setup base_site, default language and other EQWC settings at bottom of application/config/config.php
+1. Setup base site URL and default language in application/config/config.php
+1. Copy gisportal_template.php to gisportal.php in application/config/.
+1. Adjust gisportal specific settings in new gisportal.php file.
 1. Edit header_logo.png in assets/img folder.
 1. Enable integration with gisportal in gisapp/client_common/settings.js
 1. To preserve session information from gisapp to gisportal you have to edit php.ini and change line

@@ -1,4 +1,7 @@
-<h2><a style="text-decoration: none" href="<?php echo site_url('clients/view/'.$projects[0]['client_id']); ?>"><?php echo $projects[0]['client'] ?></a></h2>
+<h2>
+    <?php echo $projects[0]['client'] ?>
+<!--    <a style="text-decoration: none" href="--><?php //echo site_url('clients/view/'.$projects[0]['client_id']); ?><!--">--><?php //echo $projects[0]['client'] ?><!--</a>-->
+</h2>
 <?php foreach ($projects as $projects_item):
 
     $project_img = "assets/img/projects/" . $projects_item['name'] . ".png";

@@ -19,7 +19,8 @@
         </div>
         <div class="col-md-8">
              <h3 class="top">
-                    <a style="text-decoration: none" href="<?php echo site_url('clients/view/'.$clients_item['id']); ?>"><?php echo $clients_item['display_name']; ?></a>
+                 <?php echo $clients_item['display_name']; ?>
+<!--                    <a style="text-decoration: none" href="--><?php //echo site_url('clients/view/'.$clients_item['id']); ?><!--">--><?php //echo $clients_item['display_name']; ?><!--</a>-->
             </h3>
 <!--            <h4>--><?php //echo $clients_item['name']; ?><!--</h4>-->
             <p class="client_description"><?php echo $clients_item['description']; ?></p>

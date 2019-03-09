@@ -22,6 +22,8 @@
               <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
               <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
               <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
+              <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
+              <th data-sortable="true" data-field="gp_contact"><?php echo $this->lang->line('gp_contact'); ?></th>
               <th><?php echo $this->lang->line('gp_action'); ?></th>
           </tr>
       </thead>
@@ -34,12 +36,16 @@
 		  <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
           <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
 		  <td class="col-md-2"><?php echo $project_item['client']; ?></td>
-		  <td class="col-md-2">
-			<a class="btn btn-primary" href="<?php echo site_url('projects/edit/'.$project_item['id']); ?>">
-				<?php echo $this->lang->line('gp_edit'); ?>
-			</a>
-
-		  </td>
+          <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
+          <td class="col-md-2"><?php echo $project_item['contact']; ?></td>
+            <td class="col-md-2">
+                <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
+                    <?php echo $this->lang->line('gp_edit'); ?>
+                </a>
+                <a class="btn btn-info" href="<?php echo site_url('projects/services/' . $project_item['id']); ?>">
+                    <?php echo $this->lang->line('gp_publish'); ?>
+                </a>
+            </td>
 		</tr>
 		<?php endforeach; ?>
 	</table>

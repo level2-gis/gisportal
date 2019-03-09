@@ -116,3 +116,9 @@ $lang['gp_download'] = 'Download';
 $lang['gp_template'] = 'Template';
 $lang['gp_new_template'] = 'Blank or from template';
 $lang['gp_new_upload'] = 'Upload QGIS project';
+
+$lang['gp_publish'] = 'Publish';
+$lang['gp_publish_public'] = 'Publish public';
+$lang['gp_publish_private'] = 'Publish private';
+$lang['gp_stop'] = 'Stop';
+$lang['gp_services_info'] = 'Apache configuration is required for setup publishing, refer to project documentation!<br/>Publish project using QGIS Server as OGC Web Services for use in other GIS Sofware.<br/>WMS - Web Map Service<br/>WFS - Web Feature Service (transactions disabled)';

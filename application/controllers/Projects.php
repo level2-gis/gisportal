@@ -420,7 +420,7 @@ class Projects extends CI_Controller
         }
     }
 
-    public function create($action) {
+    public function create($action = FALSE) {
 
         if (!$this->session->userdata('admin')){
             redirect('/');
@@ -526,6 +526,139 @@ class Projects extends CI_Controller
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The project you are trying to delete does not exist.</div>');
     }
 
+    /**
+     * Method to list available services for project
+     */
+    public function services($project_id = false)
+    {
+        if (!$this->session->userdata('admin')){
+            redirect('/');
+        }
+
+        $project = $this->project_model->get_project($project_id);
+        if(!$project) {
+            redirect('/');
+        }
+
+        $data['title'] = $this->lang->line('gp_publish').' '. strtolower($this->lang->line('gp_project')) .' '.$project->display_name;
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['project'] = (array)$project;
+        $data['clients'] = $this->client_model->get_clients();
+        $data['services'] = [];
+
+        $this->qgisinfo($data);
+        if($data['qgis_check']['valid']) {
+            $data['services'] = self::get_project_services($data['qgis_check']['name']);
+        } else {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> '.$data['qgis_check']['name'].'</div>');
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('project_services', $data);
+        $this->load->view('templates/footer', $data);
+
+    }
+
+    public function publish_service($project_id = FALSE, $name = null, $type = null) {
+        if(!$project_id || !$name || !$type) {
+            redirect('/projects');
+        }
+
+        $project = $this->project_model->get_project($project_id);
+        if(!$project) {
+            redirect('/');
+        }
+
+        $this->load->model('qgisproject_model');
+
+        $data['project'] = (array)$project;
+        $data['clients'] = $this->client_model->get_clients();
+
+        $this->qgisinfo($data);
+
+        $project_full_path = $data['qgis_check']['name'];
+
+        $service = self::check_service($name, $type, basename($project_full_path));
+        $service_path = set_realpath($service['path']);
+        $project_new_name = $service['file_name'];
+
+        try {
+            $qgs = $this->qgisproject_model;
+            $qgs->qgs_file = $project_full_path;
+            if(!$qgs->read_qgs_file()) {
+                throw new Exception($qgs->error);
+            }
+
+            //setting advertised service url in the project qgs
+            if($name == 'wms') {
+                $qgs->qgs_xml->properties->WMSUrl = base_url($service['url']);
+            } else if ($name == 'wfs') {
+                $qgs->qgs_xml->properties->WFSUrl = base_url($service['url']);
+                //wfs is without transactions so remove that
+                $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
+                $qgs->qgs_xml->properties->WFSTLayers->Update = null;
+                $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
+            }
+
+            //write qgs to new location
+            if(!$qgs->write_qgs_file($service_path . $project_new_name)) {
+                throw new Exception($qgs->error);
+            }
+
+            //set permission to 777
+            if(is_file($service_path . $project_new_name))
+            {
+                chmod($service_path . $project_new_name, 0777);
+            }
+
+            //if(!copy($project_full_path, $service_path . $project_new_name)) {
+            //    throw new Exception ("Copy project failed to ". $service_path);
+            //}
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('/projects/services/'.$project_id);
+        }
+
+    }
+
+    public function stop_service($project_id = FALSE, $name = null, $type = null)
+    {
+        if (!$project_id || !$name || !$type) {
+            redirect('/projects');
+        }
+
+        $project = $this->project_model->get_project($project_id);
+        if (!$project) {
+            redirect('/');
+        }
+
+        $data['project'] = (array)$project;
+        $data['clients'] = $this->client_model->get_clients();
+
+        $this->qgisinfo($data);
+
+        $project_full_path = $data['qgis_check']['name'];
+
+        $service = self::check_service($name, $type, basename($project_full_path));
+        $service_path = set_realpath($service['path']);
+        $project_new_name = $service['file_name'];
+
+        try {
+            if(!unlink($service_path . $project_new_name)) {
+                throw new Exception ("Stop service failed in ". $service_path);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('/projects/services/'.$project_id);
+        }
+    }
+
     public function _unique_name($name) {
 
         //test if we already have name in database
@@ -538,6 +671,86 @@ class Projects extends CI_Controller
         }
 
         return true;
+    }
+
+    private function get_project_services($project_full_path)
+    {
+        $ret = [];
+
+        $main_dir = $this->config->item('main_services_dir');
+        if (!self::check_dir($main_dir)) {
+            return $ret;
+        }
+
+        $file = basename($project_full_path);
+        //TODO add client code to file from db
+        //WMS private
+        $wms_private = self::check_service('wms', 'private', $file);
+        if ($wms_private) {
+            $ret['wms'] = $wms_private;
+        }
+        //WMS public only if private is not published
+        if (!$wms_private['published']) {
+            $wms_public = self::check_service('wms', 'public', $file);
+            if ($wms_public) {
+                $ret['wms'] = $wms_public;
+            }
+        }
+
+        //WFS private
+        $wfs_private = self::check_service('wfs', 'private', $file);
+        if ($wfs_private) {
+            $ret['wfs'] = $wfs_private;
+        }
+        //WFS public only if private is not published
+        if (!$wfs_private['published']) {
+            $wfs_public = self::check_service('wfs', 'public', $file);
+            if ($wfs_public) {
+                $ret['wfs'] = $wfs_public;
+            }
+        }
+
+        return $ret;
+    }
+
+    private function check_dir($path) {
+        if(!is_dir($path) || !is_writable($path)) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Directory does not exist or not writable: <strong>'.$path.'</strong></div>');
+            return false;
+        }
+        return true;
+    }
+
+    private function check_service($name, $type, $fn) {
+        $main_dir = $this->config->item('main_services_dir');
+
+        $dir1 = set_realpath($main_dir . DIRECTORY_SEPARATOR . $type);
+        $dir2 = set_realpath($dir1 . $name);
+
+        if(!self::check_dir($dir2)) {
+            return false;   //['name' => $name, 'type' => $type, 'published' => false];
+        }
+
+        $project = basename($fn,'.qgs');
+        if($type=='private') {
+            $project .= '__'.crc32($project);
+            $fn = $project.'.qgs';
+        }
+        $url = $name.'-'.$type.'/'.$project;
+        $cap = http_build_query([
+            "SERVICE" => strtoupper($name),
+            "VERSION" => $name=='wms' ? '1.3.0' : '1.1.0',
+            "REQUEST" => 'GetCapabilities'
+        ]);
+
+        $icon = $type =='public' ? 'fa fa-group' : 'glyphicon glyphicon-lock';
+
+        if(file_exists($dir2.$fn) && is_readable($dir2.$fn)) {
+            $info = get_file_info($dir2.$fn);
+            return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => true, 'date' => $info["date"], 'url' => $url, 'capabilities' => $url.'?'.$cap];
+        } else {
+            return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => false, 'url' => $url];
+        }
     }
 
     private function imageResize($dir, $fn) {

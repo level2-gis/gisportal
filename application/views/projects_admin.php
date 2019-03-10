@@ -1,14 +1,16 @@
 <div class="page-header clearfix">
 	<h1 class="col-md-8"><?php echo $title; ?></h1>
-	<div class="btn-group actions  pull-right">
-        <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $this->lang->line('gp_new_project'); ?> <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="<?php echo site_url('projects/create/1'); ?>"><?php echo $this->lang->line('gp_new_template'); ?></a></li>
-            <li><a href="<?php echo site_url('projects/create/2'); ?>"><?php echo $this->lang->line('gp_new_upload'); ?></a></li>
-        </ul>
-	</div>
+    <?php if ($this->session->userdata('admin')){ ?>
+        <div class="btn-group actions  pull-right">
+            <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?php echo $this->lang->line('gp_new_project'); ?> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="<?php echo site_url('projects/create/1'); ?>"><?php echo $this->lang->line('gp_new_template'); ?></a></li>
+                <li><a href="<?php echo site_url('projects/create/2'); ?>"><?php echo $this->lang->line('gp_new_upload'); ?></a></li>
+            </ul>
+        </div>
+    <?php } ?>
 </div>
 
 <?php echo $this->session->flashdata('alert'); ?>
@@ -24,7 +26,9 @@
               <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
               <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
               <th data-sortable="true" data-field="gp_contact"><?php echo ucfirst($this->lang->line('gp_contact')); ?></th>
-              <th><?php echo $this->lang->line('gp_action'); ?></th>
+              <?php if ($this->session->userdata('admin')){ ?>
+                <th><?php echo $this->lang->line('gp_action'); ?></th>
+              <?php } ?>
           </tr>
       </thead>
 	  <?php foreach ($projects as $project_item): ?>
@@ -38,6 +42,7 @@
 		  <td class="col-md-2"><?php echo $project_item['client']; ?></td>
           <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
           <td class="col-md-2"><?php echo $project_item['contact']; ?></td>
+          <?php if ($this->session->userdata('admin')){ ?>
             <td class="col-md-2">
                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
                     <?php echo $this->lang->line('gp_edit'); ?>
@@ -46,6 +51,7 @@
                     <?php echo $this->lang->line('gp_publish'); ?>
                 </a>
             </td>
+          <?php } ?>
 		</tr>
 		<?php endforeach; ?>
 	</table>

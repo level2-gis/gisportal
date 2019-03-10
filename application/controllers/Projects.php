@@ -18,13 +18,17 @@ class Projects extends CI_Controller
 
     public function index()
     {
-        if (!$this->session->userdata('admin')){
+        //allow viewing of projects to every logged in user, not only admin (user sees only projects with permission)
+        if (!$this->session->userdata('user_is_logged_in')){
             redirect('/login?ru=/' . uri_string());
         }
 
 		$data['title'] = $this->lang->line('gp_projects_title');
-        $data['projects'] = $this->project_model->get_projects(false, false, true);
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+
+        $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+
+        $data['projects'] = $this->project_model->get_projects(false, $user->project_ids, $user->admin);
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects_admin', $data);

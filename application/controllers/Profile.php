@@ -32,7 +32,7 @@ class Profile extends CI_Controller
             if ($details->admin) {
                 $data['user']->display_name .= ' (Administrator)';
             }
-            $data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
+            //$data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
 
             $this->load->view('profile_view', $data);
         } else {
@@ -40,13 +40,13 @@ class Profile extends CI_Controller
             $data['projects'] = null;
         }
 
-        if (($data['projects'] === null) or (empty($data['projects']))) {
-            if ($this->session->userdata('user_name') !== 'guest') {
-                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
-            }
-        } else {
-            $this->load->view('user_projects_view', $data);
-        }
+//        if (($data['projects'] === null) or (empty($data['projects']))) {
+//            if ($this->session->userdata('user_name') !== 'guest') {
+//                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+//            }
+//        } else {
+//            $this->load->view('user_projects_view', $data);
+//        }
 
         if (($data['projects_public'] === null) or (empty($data['projects_public']))) {
             $this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' => 'info'));

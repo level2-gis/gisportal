@@ -20,12 +20,14 @@ $config['company_url'] = 'company url';
 $config['company_email'] = 'info@company.com';  //also for receiving system emails
 $config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
 
-//Set which languages show up for user selection.
-//New languages must be added to array (translation must exist)
-//Unwanted languages can be removed
-//key= 2 letter iso language code,
-//name= english language name as it is in CI
-//native = native language name displayed
+/*
+ * Set which languages show up for user selection.
+ * New languages must be added to array (translation must exist)
+ * Unwanted languages can be removed
+ * key= 2 letter iso language code,
+ * name= english language name as it is in CI
+ * native = native language name displayed
+ */
 $config['available_languages'] = array(
     'en' => array(
         'name' => 'english',
@@ -89,5 +91,28 @@ Require all granted
 $config['main_upload_dir'] = '/home/uploads/';
 $config['main_upload_web'] = './uploads/';
 
-//possible values QGS_MAIN, QGS_CLIENT
+/*
+ * Default saving location of QGIS project file when uploading new project or when creating new project using template
+ * Possible values:
+ * QGS_MAIN     = QGIS project files location in main projects folder defined in /gisapp/admin/settings.php (PROJECT_PATH)
+ * QGS_CLIENT   = QGIS project files location in main projects/client_name subfolder
+ */
 $config['qgis_project_default_location'] = QGS_MAIN;
+
+/*
+ * Show Publish button in projects administrator view
+ * Before setting this to true, prepare folders and Apache configuration
+ */
+$config['enable_project_publishing'] = FALSE;
+
+/*
+ * Main folder for published projects
+ * Needs read/write permissions and following structure
+ * - private
+ *      - wfs
+ *      - wms
+ * - public
+ *      - wfs
+ *      - wms
+ */
+$config['main_services_dir'] = '/home/services/';

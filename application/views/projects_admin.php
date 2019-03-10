@@ -47,9 +47,11 @@
                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
                     <?php echo $this->lang->line('gp_edit'); ?>
                 </a>
-                <a class="btn btn-info" href="<?php echo site_url('projects/services/' . $project_item['id']); ?>">
-                    <?php echo $this->lang->line('gp_publish'); ?>
-                </a>
+                <?php if ($this->config->item('enable_project_publishing')) { ?>
+                    <a class="btn btn-info" href="<?php echo site_url('projects/services/' . $project_item['id']); ?>">
+                        <?php echo $this->lang->line('gp_publish'); ?>
+                    </a>
+                <?php } ?>
             </td>
           <?php } ?>
 		</tr>

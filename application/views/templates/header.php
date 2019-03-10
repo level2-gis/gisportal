@@ -23,7 +23,20 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190205"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190310"); ?>"></script>
+    <script type="text/javascript">
+        var GP = {
+            clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
+            noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',
+            onlyQgs:                '<?php echo $this->lang->line('gp_only_qgs'); ?>',
+            differentProjects:      '<?php echo $this->lang->line('gp_diff_proj'); ?>',
+            deleteProject:          '<?php echo $this->lang->line('gp_del_proj'); ?>',
+            deleteUser:             '<?php echo $this->lang->line('gp_del_user'); ?>',
+            stopService:            '<?php echo $this->lang->line('gp_stop_service'); ?>',
+            publishPublicService:   '<?php echo $this->lang->line('gp_publish_public_service'); ?>',
+            publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>'
+        };
+    </script>
 </head>
 
 <body>

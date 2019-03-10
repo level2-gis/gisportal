@@ -23,7 +23,7 @@
               <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
               <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
               <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
-              <th data-sortable="true" data-field="gp_contact"><?php echo $this->lang->line('gp_contact'); ?></th>
+              <th data-sortable="true" data-field="gp_contact"><?php echo ucfirst($this->lang->line('gp_contact')); ?></th>
               <th><?php echo $this->lang->line('gp_action'); ?></th>
           </tr>
       </thead>

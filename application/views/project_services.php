@@ -17,7 +17,7 @@
                     <i class="<?php echo $service['icon']; ?>"></i>
                 </div>
                 <div class="col-md-1">
-                    <p><?php echo $service['type']; ?></p>
+                    <p><?php echo ucfirst($service['type']); ?></p>
                 </div>
                 <div class="col-md-1">
                     <p><a target="_blank" href="<?php echo base_url($service['url']); ?>">URL</a></p>
@@ -26,14 +26,14 @@
                     <p><a target="_blank" href="<?php echo base_url($service['capabilities']); ?>">GetCapabilities</a></p>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-danger" href="<?php echo site_url('projects/stop_service/'.$project['id'].'/'.$service['name'].'/'.$service['type']); ?>"><?php echo $this->lang->line('gp_stop'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink(GP.stopService,'<?php echo strtoupper($service['name']).' '.ucfirst($service['type']).' '.$project['name']; ?>','<?php echo site_url('projects/stop_service/'.$project['id'].'/'.$service['name'].'/'.$service['type']); ?>')"><?php echo $this->lang->line('gp_stop'); ?></a>
                 </div>
                 <?php else: ?>
                 <div class="col-md-2">
-                    <a class="btn btn-default" href="<?php echo site_url('projects/publish_service/'.$project['id'].'/'.$service['name'].'/public'); ?>"><i class="fa fa-group"></i> <?php echo $this->lang->line('gp_publish_public'); ?></a>
+                    <a class="btn btn-default" onclick="confirmLink(GP.publishPublicService,'<?php echo strtoupper($service['name']).' '.$project['name']; ?>','<?php echo site_url('projects/publish_service/'.$project['id'].'/'.$service['name'].'/public'); ?>')"><i class="fa fa-group"></i> <?php echo $this->lang->line('gp_publish_public'); ?></a>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-default" href="<?php echo site_url('projects/publish_service/'.$project['id'].'/'.$service['name'].'/private'); ?>"><i class="glyphicon glyphicon-lock"></i> <?php echo $this->lang->line('gp_publish_private'); ?></a>
+                    <a class="btn btn-default" onclick="confirmLink(GP.publishPrivateService,'<?php echo strtoupper($service['name']).' '.$project['name']; ?>','<?php echo site_url('projects/publish_service/'.$project['id'].'/'.$service['name'].'/private'); ?>')"><i class="glyphicon glyphicon-lock"></i> <?php echo $this->lang->line('gp_publish_private'); ?></a>
                 </div>
             <?php endif; ?>
         </div>

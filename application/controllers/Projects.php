@@ -18,7 +18,8 @@ class Projects extends CI_Controller
 
     public function index()
     {
-        if (!$this->session->userdata('admin')){
+        //allow viewing of projects to every logged in user, not only admin (user sees only projects with permission)
+        if (!$this->session->userdata('user_is_logged_in')){
             redirect('/auth/login?ru=/' . uri_string());
         }
 

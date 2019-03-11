@@ -13,7 +13,7 @@
 				<div class="form-group">
 					<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 					<div class="col-md-5">
-						<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $client['name']; ?>" />
+						<input class="form-control" name="name" placeholder="" type="text" <?php if (isset($client['count']) && $client['count']>0) { echo "readonly='readonly'"; }; ?> value="<?php echo $client['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
 					</div>	
 				</div>	

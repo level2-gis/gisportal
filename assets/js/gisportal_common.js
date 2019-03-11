@@ -1,10 +1,9 @@
 //gisportal common JS stuff
-//TODO create client language files and extract text strings below
 
 function showError(msg) {
     bootbox.alert({
         title: "Error",
-        message: msg,
+        message: msg+"!",
         size: 'small'
     });
 }
@@ -15,14 +14,14 @@ function onUploadFormSubmit() {
     var client = $('#client_id')[0].value;
 
     if(client=='') {
-        showError("Client required!");
+        showError(GP.clientRequired);
         return false;
     }
 
     var editingProject = $('#project_name')[0].value;
 
     if ($('#userfile')[0].files.length==0) {
-        showError('No file!');
+        showError(GP.noFile);
         return false;
     }
 
@@ -34,19 +33,19 @@ function onUploadFormSubmit() {
 
     //client side validation
     if (ext.toLowerCase() !== 'qgs') {
-        showError("Only QGS project file allowed!");
+        showError(GP.onlyQgs);
         form.reset();
         return false;
     }
     if (editingProject && editingProject !== newProject) {
-        showError("Different projects "+editingProject+ ": "+newProject);
+        showError(GP.differentProjects+" "+editingProject+ ": "+newProject);
         form.reset();
         return false;
     }
 }
 
-function confirmLink(url) {
-    bootbox.confirm("Are you sure you want to remove project from database?</br></br>Note: No files will be deleted from server!", function(doIt){
+function confirmLink(msg,name,url) {
+    bootbox.confirm(msg.replace('{name}',name), function(doIt){
         if(doIt) {
             window.location = url;
         }

@@ -32,6 +32,16 @@ class Qgisproject_model extends CI_Model
         return true;
     }
 
+    public function write_qgs_file($file) {
+        if(empty($this->qgs_xml)) {
+            return false;
+        }
+        if(!empty($this->error)) {
+            return false;
+        }
+        return $this->qgs_xml->asXml($file);
+    }
+
     public function get_layer_by_id($id) {
         try {
             $xpath = '//maplayer/id[.="' . $id . '"]/parent::*';

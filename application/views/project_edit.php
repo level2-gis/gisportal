@@ -279,7 +279,7 @@
 				
 				<?php if ( $creating === false && !empty($project['id'])) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" onclick="confirmLink('<?php echo site_url('projects/remove/'.$project['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink(GP.deleteProject,'<?php echo $project['name']; ?>','<?php echo site_url('projects/remove/'.$project['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
                 </div>
 				 <?php endif; ?>
 				</div>

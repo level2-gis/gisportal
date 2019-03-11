@@ -23,7 +23,20 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190205"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190310"); ?>"></script>
+    <script type="text/javascript">
+        var GP = {
+            clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
+            noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',
+            onlyQgs:                '<?php echo $this->lang->line('gp_only_qgs'); ?>',
+            differentProjects:      '<?php echo $this->lang->line('gp_diff_proj'); ?>',
+            deleteProject:          '<?php echo $this->lang->line('gp_del_proj'); ?>',
+            deleteUser:             '<?php echo $this->lang->line('gp_del_user'); ?>',
+            stopService:            '<?php echo $this->lang->line('gp_stop_service'); ?>',
+            publishPublicService:   '<?php echo $this->lang->line('gp_publish_public_service'); ?>',
+            publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>'
+        };
+    </script>
 </head>
 
 <body>
@@ -51,7 +64,11 @@
 
                     <?php if ($this->session->userdata('admin')){ ?>
                         <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo $this->lang->line('gp_clients_title'); ?></span></a></li>
-                        <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>
+                    <?php } ?>
+
+                    <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>
+
+                    <?php if ($this->session->userdata('admin')){ ?>
                         <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span><?php echo $this->lang->line('gp_layers_title'); ?></span></a></li>
                         <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span><?php echo $this->lang->line('gp_users_title'); ?></span></a></li>
                     <?php } ?>

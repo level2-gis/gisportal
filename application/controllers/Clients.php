@@ -156,6 +156,11 @@ class Clients extends CI_Controller
         if(isset($client['id']))
         {
             try {
+                //before deleting check if client has any projects
+                if($client['count']>0)  {
+                    throw new Exception('Cannot delete. Client has ' . $client['count'] . ' projects.');
+                }
+
                 $this->client_model->delete_client($id);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {

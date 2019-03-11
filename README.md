@@ -33,6 +33,7 @@ Administrator is every user with admin=true in database.
 
 > This code relies on database from gisapp. Make sure you are running latest [database version](https://github.com/uprel/gisapp/wiki/3.-Managing-Database#upgrading)!
 
+1. Read release info first - https://github.com/uprel/gisportal/releases/tag/v1.0.0
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
 
 	```

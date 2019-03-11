@@ -66,7 +66,7 @@ Administrator is every user with admin=true in database.
     new login.
 
 ## Email service
-If you entered correct gmail info at the bottom of config.php you enabled email service using Google SMTP server. That means you don't need to setup own mail server. This service can be used to sending emails from gisapp or gisportal.
+If you entered correct gmail info at config/gisportal.php you enabled email service using Google SMTP server. That means you don't need to setup own mail server. This service can be used to sending emails from gisapp or gisportal.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
 
@@ -129,9 +129,10 @@ Thank you!
 ## Credits
 
 Thanks to all translators, donators and special thanks to following companies for supporting this project:
+* Swescan, Sweden
 * GEL Consulting group, USA
 * Geonord, Norway
-* Swescan, Sweden
+* soljoy, Austria
 
 ## Support
 
@@ -143,4 +144,4 @@ Uroš Preložnik, http://level2.si
 
 ## Copyright
 
-Gisportal (c) 2017 - 2018, Level2 Uroš Preložnik s.p. 
+Gisportal (c) 2017 - 2019, Level2 Uroš Preložnik s.p. 

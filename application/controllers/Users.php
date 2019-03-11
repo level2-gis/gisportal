@@ -14,7 +14,7 @@ class Users extends CI_Controller {
     public function index()
     {
         if (!$this->session->userdata('admin')){
-            redirect('/login?ru=/' . uri_string());
+            redirect('auth//login?ru=/' . uri_string());
         }
 
 		$data['title'] = $this->lang->line('gp_users_title');
@@ -29,7 +29,7 @@ class Users extends CI_Controller {
     public function edit($user_id = false)
     {
         if (!$this->session->userdata('admin')){
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
 		$this->load->helper('form');

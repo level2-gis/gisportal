@@ -15,7 +15,7 @@ class Layers extends CI_Controller{
     function index()
     {
         if (!$this->session->userdata('admin')){
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
         $data['title'] = $this->lang->line('gp_layers_title');
@@ -68,7 +68,7 @@ class Layers extends CI_Controller{
     function edit($layer_id = false)
     {
         if (!$this->session->userdata('admin')) {
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
         $this->load->helper('form');

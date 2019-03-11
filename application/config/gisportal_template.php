@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['company'] = 'Company name';
 $config['company_url'] = 'company url';
-$config['company_email'] = 'info@company.com';  //also for receiving system emails
+
 $config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
 
 /*
@@ -70,10 +70,6 @@ $config['available_languages'] = array(
         'native' => 'русский'
     )
 );
-
-//Gmail account for sending mails from through Google SMTP
-$config['gmail_account'] = 'gmail email';
-$config['gmail_password'] = 'gmail password';
 
 /*
 File upload main directory, must exist on disk with full permission (chmod 777)

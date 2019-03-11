@@ -9,20 +9,6 @@ class Mail extends CI_Controller
 
         //Load email library
         $this->load->library('email');
-
-        $config = array(
-            'protocol' => 'smtp',
-            'smtp_host' => 'ssl://smtp.googlemail.com',
-            'smtp_port' => 465,
-            'smtp_user' => $this->config->item('gmail_account'),
-            'smtp_pass' => $this->config->item('gmail_password'),
-            'charset' => 'utf-8'
-        );
-
-        $this->email->initialize($config);
-        $this->email->set_mailtype("text");
-        $this->email->set_newline("\r\n");
-
     }
 
 
@@ -39,7 +25,7 @@ class Mail extends CI_Controller
 
         //temp
         $data = new  stdClass();
-        $data->mailto = $this->config->item('company_email');
+        $data->mailto = $this->config->item('admin_email', 'ion_auth');
         $data->subject = 'Test mail';
         $data->body = 'This is just test mail to verify mail configuration is correct.';
 
@@ -51,7 +37,7 @@ class Mail extends CI_Controller
     function send()
     {
         $data = new  stdClass();
-        $data->mailto = $this->input->post("mailto") == null ? $this->config->item('company_email') : $this->input->post("mailto");
+        $data->mailto = $this->input->post("mailto") == null ? $this->config->item('admin_email', 'ion_auth') : $this->input->post("mailto");
         $data->subject = $this->input->post("subject");
         $data->body = $this->input->post("body");
 
@@ -61,7 +47,7 @@ class Mail extends CI_Controller
     private function sendMailWithResponse($data)
     {
         $this->email->to($data->mailto);
-        $this->email->from($this->config->item('gmail_account'), $this->lang->line('gp_portal_title') . " ". $_SERVER['HTTP_HOST']);
+        $this->email->from($this->config->item('admin_email', 'ion_auth'), $this->lang->line('gp_portal_title') . " ". $_SERVER['HTTP_HOST']);
         $this->email->subject($data->subject);
         $this->email->message($data->body);
 

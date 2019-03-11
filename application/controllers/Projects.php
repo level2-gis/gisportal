@@ -42,14 +42,14 @@ class Projects extends CI_Controller
         }
 
         if (!$this->session->userdata('user_is_logged_in')) {
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
-        $user = $this->user_model->get_user_by_id($this->session->userdata('uid'));
+        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
 
         $data['projects'] = $this->project_model->get_projects($client_id, $user->project_ids, $user->admin);
 
@@ -349,7 +349,7 @@ class Projects extends CI_Controller
 //        }
 
         if (!$this->session->userdata('admin')){
-            redirect('/login?ru=/' . uri_string());
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
         $this->load->helper('form');

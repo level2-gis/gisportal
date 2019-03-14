@@ -121,7 +121,7 @@ $lang['gp_publish'] = 'Publish';
 $lang['gp_publish_public'] = 'Publish public';
 $lang['gp_publish_private'] = 'Publish private';
 $lang['gp_stop'] = 'Stop';
-$lang['gp_services_info'] = 'Publish project using QGIS Server as OGC Web Services for use in other GIS Sofware.<br/>Apache configuration is required for setup publishing, refer to project documentation!<br/>WMS - Web Map Service<br/>WFS - Web Feature Service (transactions disabled)';
+$lang['gp_services_info'] = 'Publish project using QGIS Server as OGC Web Services for use in other GIS Sofware.<br/>Apache configuration is required for setup publishing, refer to project documentation!<br/>WMS - Web Map Service<br/>WFS - Web Feature Service';
 
 //client side strings, must be added to /views/templates/header.php
 $lang['gp_client_required'] = 'Client required';

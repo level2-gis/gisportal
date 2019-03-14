@@ -106,6 +106,12 @@ $config['qgis_project_default_location'] = QGS_MAIN;
 $config['enable_project_publishing'] = FALSE;
 
 /*
+ * When WFS service is published clear editing capabilities from published layers (default, FALSE)
+ * or keep them as set in QGIS project (TRUE)
+ */
+$config['keep_wfs-t_from_qgs'] = FALSE;
+
+/*
  * Main folder for published projects
  * Needs read/write permissions and following structure
  * - private

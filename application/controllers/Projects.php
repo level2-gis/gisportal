@@ -598,10 +598,12 @@ class Projects extends CI_Controller
                 $qgs->qgs_xml->properties->WMSUrl = base_url($service['url']);
             } else if ($name == 'wfs') {
                 $qgs->qgs_xml->properties->WFSUrl = base_url($service['url']);
-                //wfs is without transactions so remove that
-                $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
-                $qgs->qgs_xml->properties->WFSTLayers->Update = null;
-                $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
+                //remove transactions in case of setting
+                if($keep_wfst === FALSE) {
+                    $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
+                    $qgs->qgs_xml->properties->WFSTLayers->Update = null;
+                    $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
+                }
             }
 
             //write qgs to new location

@@ -5,9 +5,9 @@ class Home extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Client_model');
-        $this->load->model('User_model');
-        $this->load->model('Project_model');
+        $this->load->model('client_model');
+        $this->load->model('user_model');
+        $this->load->model('project_model');
         $this->load->helper(array('url', 'html'));
     }
 
@@ -23,9 +23,12 @@ class Home extends CI_Controller
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 
+        $admin = $this->ion_auth->is_admin();
+
         if ($this->session->userdata('user_id') !== null) {
-            $user = $this->User_model->get_user_by_id($this->session->userdata('user_id'));
-            $data['clients'] = $this->Client_model->get_clients($user->project_ids, $user->admin, false);
+            $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+            $groups = $this->user_model->get_project_group_ids($user->user_id);
+            $data['clients'] = $this->client_model->get_clients($groups, $admin, false);
         } else {
             $data['clients'] = null;
         }
@@ -33,7 +36,7 @@ class Home extends CI_Controller
         $this->load->view('templates/header', $data);
 
         if (($data['clients'] === null) or (empty($data['clients']))) {
-            $data['projects_public'] = $this->Project_model->get_public_projects();
+            $data['projects_public'] = $this->project_model->get_public_projects();
             if ($this->session->userdata('user_name') !== 'guest') {
                 $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
             }

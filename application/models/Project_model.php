@@ -37,9 +37,9 @@ class Project_model extends CI_Model {
         );
     }
 
-    public function get_projects($client_id = FALSE, $user_projects = FALSE, $user_admin = FALSE)
+    public function get_projects($client_id = FALSE, $groups = FALSE, $user_admin = FALSE)
     {
-        if($user_projects === NULL && !$user_admin) {
+        if($groups === NULL && !$user_admin) {
             return null;
         }
 
@@ -49,7 +49,7 @@ class Project_model extends CI_Model {
         if ($client_id === FALSE)
         {
 			if (!$user_admin){
-		        $this->db->where("id = ANY('".$user_projects."')");
+		        $this->db->where("group_id = ANY('".$groups."')");
 			}
             $query = $this->db->get('projects_view');
             return $query->result_array();
@@ -58,7 +58,7 @@ class Project_model extends CI_Model {
 		$where = "client_id = ".$client_id;
         //$user_projects
 		if (!$user_admin){
-			$where = $where . " AND id = ANY('".$user_projects."')";
+			$where = $where . " AND group_id = ANY('".$groups."')";
 		}
 
 		$this->db->where($where);

@@ -28,7 +28,7 @@ class Client_model extends CI_Model {
     /*
     * Get clients with projects count that user is allowed to get or get all in case of admin
     */
-    function get_clients($user_projects = FALSE, $user_admin = TRUE, $blanks = TRUE)
+    function get_clients($groups = FALSE, $user_admin = TRUE, $blanks = TRUE)
     {
         $this->db->order_by('ordr', 'ASC');
         $this->db->order_by('display_name', 'ASC');
@@ -38,13 +38,13 @@ class Client_model extends CI_Model {
         //    return $query->result_array();
         //}
 
-        if($user_projects === NULL && !$user_admin) {
+        if($groups === NULL && !$user_admin) {
             return null;
         }
 
-        //$user_projects
+        //$user_groups
 		if (!$user_admin){
-			$this->db->where("project_ids && '".$user_projects."'");
+			$this->db->where("project_group_ids && '".$groups."'");
 		}
 
         if (!$blanks) {

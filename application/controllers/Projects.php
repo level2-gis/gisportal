@@ -586,6 +586,8 @@ class Projects extends CI_Controller
         $service_path = set_realpath($service['path']);
         $project_new_name = $service['file_name'];
 
+        $keep_wfst = $this->config->item('keep_wfs-t_from_qgs');
+
         try {
             $qgs = $this->qgisproject_model;
             $qgs->qgs_file = $project_full_path;
@@ -598,10 +600,12 @@ class Projects extends CI_Controller
                 $qgs->qgs_xml->properties->WMSUrl = base_url($service['url']);
             } else if ($name == 'wfs') {
                 $qgs->qgs_xml->properties->WFSUrl = base_url($service['url']);
-                //wfs is without transactions so remove that
-                $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
-                $qgs->qgs_xml->properties->WFSTLayers->Update = null;
-                $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
+                //remove transactions in case of setting
+                if($keep_wfst === FALSE) {
+                    $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
+                    $qgs->qgs_xml->properties->WFSTLayers->Update = null;
+                    $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
+                }
             }
 
             //write qgs to new location

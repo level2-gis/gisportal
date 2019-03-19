@@ -54,6 +54,17 @@ class User_model extends CI_Model
 //		return $query->result();
 //	}
 
+    function get_project_group_ids($id) {
+        $this->db->select('array_agg(project_group_id) AS project_group_ids');
+        $this->db->where('user_id', $id);
+        $this->db->where('project_group_id !=', null);
+        $query = $this->db->get('users_roles');
+        if ($query->result()) {
+            return $query->result()[0]->project_group_ids;
+        }
+        return null;
+    }
+
 	// get user
 	function get_user_by_id($id)
 	{

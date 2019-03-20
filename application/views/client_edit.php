@@ -15,6 +15,7 @@
 					<div class="col-md-5">
 						<input class="form-control" name="name" placeholder="" type="text" <?php if (isset($client['count']) && $client['count']>0) { echo "readonly='readonly'"; }; ?> value="<?php echo $client['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
+                        <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
 					</div>	
 				</div>	
 				<div class="form-group">
@@ -64,7 +65,7 @@
 				
 				<?php if ( $creating === false && !empty($client['id'])) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" href="<?php echo site_url('clients/remove/'.$client['id']); ?>"><?php echo $this->lang->line('gp_delete'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'Client: <?php echo $client['display_name'].' ('.$client['name'].')'; ?>','<?php echo site_url('clients/remove/'.$client['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
 				</div>
 				 <?php endif; ?>
 				</div>

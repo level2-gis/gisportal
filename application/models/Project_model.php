@@ -14,8 +14,8 @@ class Project_model extends CI_Model {
             'id'                        => null,
             'name'                      => '',
             'overview_layer_id'         => null,
-            'base_layers_ids'           => null,
-            'extra_layers_ids'          => null,
+            //'base_layers_ids'           => null,
+            //'extra_layers_ids'          => null,
             'client_id'                 => null,
             'public'                    => false,
             'display_name'              => '',
@@ -33,7 +33,8 @@ class Project_model extends CI_Model {
             'permalink'                 => true,
             'ordr'                      => 0,
             'project_path'              => '',
-            'plugin_ids'                => null
+            'plugin_ids'                => null,
+            'project_group_id'          => null
         );
     }
 
@@ -92,7 +93,7 @@ class Project_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function upsert_project($data, $users)
+    public function upsert_project($data)
     {
         $id = $data['id'];
 
@@ -103,11 +104,12 @@ class Project_model extends CI_Model {
             {
                 $this->db->where('id',$id);
                 $this->db->update('projects',$data);
+                //todo remove
                 //TODO move this to user model and call from project controller
-                $this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
-                if ($users != null){
-                    $this->db->query('update users set project_ids = array_append(project_ids, ' . $id. ') where user_id in (' . $users . ')');
-                }
+                //$this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
+                //if ($users != null){
+                //    $this->db->query('update users set project_ids = array_append(project_ids, ' . $id. ') where user_id in (' . $users . ')');
+                //}
                 return $id;
             }
         }
@@ -118,10 +120,10 @@ class Project_model extends CI_Model {
 
         $id = $this->db->insert_id();
         //TODO move this to user model and call from project controller
-        $this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
-        if ($users != null){
-            $this->db->query('update users set project_ids = array_append(project_ids, ' . $id. ') where user_id in (' . $users . ')');
-        }
+        //$this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
+        //if ($users != null){
+        //    $this->db->query('update users set project_ids = array_append(project_ids, ' . $id. ') where user_id in (' . $users . ')');
+        // }
 
         return $id;
     }
@@ -129,28 +131,8 @@ class Project_model extends CI_Model {
     public function delete_project($id)
     {
         $this->db->where('id', $id);
-        $this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
+        //$this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
         $query = $this->db->delete('projects');
-    }
-
-
-    public function get_projects_with_layer($id) {
-
-        if (empty($id)) {
-            return [];
-        }
-
-        $sql = "SELECT * FROM ";
-        $sql.= "(SELECT id,name, ";
-        $sql.= "idx(base_layers_ids,".$id.") AS is_base, ";
-        $sql.= "idx(extra_layers_ids,".$id.") AS is_extra, ";
-        $sql.= "CASE when overview_layer_id=".$id." THEN true ELSE false END AS is_overview ";
-        $sql.= "FROM public.projects) AS test ";
-        $sql.= "WHERE is_base>0 or is_extra>0 OR is_overview ORDER BY name;";
-
-        $query = $this->db->query($sql);
-
-        return $query->result_array();
     }
 
     /*

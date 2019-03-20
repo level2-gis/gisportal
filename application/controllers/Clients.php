@@ -378,7 +378,15 @@ class Clients extends CI_Controller
         $exist = $this->client_model->client_exists($name);
         $id = $this->input->post('id');
 
-        if ($exist && empty($id)) {
+        if ($exist) {
+            if(!empty($id)) {
+                //have to check if user is editing name to another existing name
+                $client = $this->client_model->get_client($id);
+                if($name != $client->name) {
+                    $this->form_validation->set_message('_unique_name', $this->lang->line('gp_client').' '.$name.$this->lang->line('gp_exists').'!');
+                    return false;
+                }
+            }
             $this->form_validation->set_message('_unique_name', $this->lang->line('gp_client').' '.$name.$this->lang->line('gp_exists').'!');
             return false;
         }

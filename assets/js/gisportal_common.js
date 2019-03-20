@@ -1,5 +1,10 @@
 //gisportal common JS stuff
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 function showError(msg) {
     bootbox.alert({
         title: "Error",
@@ -45,17 +50,38 @@ function onUploadFormSubmit() {
 }
 
 function confirmLink(msg,name,url) {
-    bootbox.confirm(msg.replace('{name}',name), function(doIt){
+    bootbox.confirm(msg.replaceAll('{name}',name), function(doIt){
         if(doIt) {
             window.location = url;
         }
     });
 }
 
+function onProjectGroupEditClick() {
+    var group = $('#project_group_id').val();
+    if(group) {
+        var url = window.location.origin + '/project_groups/edit/' + group;
+        window.location = url;
+    }
+}
+
+function onGroupChange(id,sel) {
+    var btn = $('#projectGroupEditBtn');
+    var val = sel.value;
+    if(id==val) {
+        btn.removeClass('disabled');
+    } else {
+        btn.addClass('disabled');
+    }
+}
+
 function onClientChange(sel,action)
 {
     var val = sel.value;
     var div = $('#templateDiv');
+    var group = $('#project_group_id');
+    var groupDiv = $('#groupDiv');
+    var url = window.location.origin+'/project_groups/get_list/'+val;
 
     if(action == 2) {
         div = $('#uploadDiv');
@@ -63,8 +89,23 @@ function onClientChange(sel,action)
 
     if (val > 0) {
         div.show();
+
+        //get new client groups
+        group.empty();
+        group.append('<option selected="true" disabled>'+GP.selectGroup+'</option>');
+        group.prop('selectedIndex', 0);
+
+        $.getJSON(url, function (data) {
+            $.each(data, function (key, entry) {
+                group.append($('<option></option>').attr('value', entry.id).text(entry.name));
+            })
+        });
+
+        groupDiv.show();
+
     } else {
         div.hide();
+        groupDiv.hide();
     }
 }
 

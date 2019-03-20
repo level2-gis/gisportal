@@ -5,7 +5,7 @@ class Layers extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('layer_model');
-        $this->load->model('project_model');
+        $this->load->model('project_group_model');
         $this->load->helper(array('form', 'url'));
     } 
 
@@ -142,10 +142,10 @@ class Layers extends CI_Controller{
         if(isset($layer['id']))
         {
             try {
-                //before deleting check if layers exist as as base or extra layer in project
-                $test = $this->project_model->get_projects_with_layer($id);
+                //before deleting check if layers exist as as base or extra layer in project groups
+                $test = $this->project_group_model->get_project_groups_with_layer($id);
                 if(count($test)>0)  {
-                    throw new Exception('Cannot delete. Layer exists in ' . count($test) . ' projects.');
+                    throw new Exception('Cannot delete. Layer exists in ' . count($test) . ' project groups.');
                 }
 
                 $this->layer_model->delete_layer($id);
@@ -162,7 +162,7 @@ class Layers extends CI_Controller{
             }
         }
         else
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The client you are trying to delete does not exist.</div>');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The layer you are trying to delete does not exist.</div>');
     }
 
     private function extractPostData() {
@@ -193,7 +193,15 @@ class Layers extends CI_Controller{
         $exist = $this->layer_model->layer_exists($name);
         $id = $this->input->post('id');
 
-        if ($exist && empty($id)) {
+        if ($exist) {
+            if(!empty($id)) {
+                //have to check if user is editing name to another existing name
+                $layer = $this->layer_model->get_layer($id);
+                if($name != $layer->name) {
+                    $this->form_validation->set_message('_unique_name', $this->lang->line('gp_layer').' '.$name.$this->lang->line('gp_exists').'!');
+                    return false;
+                }
+            }
             $this->form_validation->set_message('_unique_name', $this->lang->line('gp_layer').' '.$name.$this->lang->line('gp_exists').'!');
             return false;
         }

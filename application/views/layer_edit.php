@@ -15,6 +15,7 @@
 					<div class="col-md-5">
 						<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $layer['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
+                        <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
 					</div>	
 				</div>	
 				<div class="form-group">
@@ -56,7 +57,7 @@
 				
 				<?php if ( $creating === false && !empty($layer['id']) ) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" href="<?php echo site_url('layers/remove/'.$layer['id']); ?>"><?php echo $this->lang->line('gp_delete'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'Layer: <?php echo $layer['display_name'].' ('.$layer['name'].')'; ?>','<?php echo site_url('layers/remove/'.$layer['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
 				</div>
 				 <?php endif; ?>
 				</div>

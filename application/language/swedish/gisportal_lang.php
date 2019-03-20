@@ -124,13 +124,21 @@ $lang['gp_publish_private'] = 'Publish private';
 $lang['gp_stop'] = 'Stop';
 $lang['gp_services_info'] = 'Publish project using QGIS Server as OGC Web Services for use in other GIS Sofware.<br/>Apache configuration is required for setup publishing, refer to project documentation!<br/>WMS - Web Map Service<br/>WFS - Web Feature Service';
 
+$lang['gp_groups_title'] = 'Groups';
+$lang['gp_group'] = 'Group';
+$lang['gp_project_group'] = 'project group';
+$lang['gp_sub_group'] = 'sub group';
+$lang['gp_role'] = 'Role';
+$lang['gp_name_help'] = 'Must be unique, alpha numeric name and safe to use on filesystem.';
+
 //client side strings, must be added to /views/templates/header.php
 $lang['gp_client_required'] = 'Client required';
 $lang['gp_no_file'] = 'No file';
 $lang['gp_only_qgs'] = 'Only QGS project file allowed';
 $lang['gp_diff_proj'] = 'Different projects';
 $lang['gp_del_proj'] = 'Are you sure you want to remove project: <b>{name}</b> from database?</br></br>Note: No files will be deleted from server!';
-$lang['gp_del_user'] = 'Are you sure you want to remove user: <b>{name}</b> from database?';
+$lang['gp_del_general'] = 'Are you sure you want to remove <b>{name}</b> from database?</br></br>{name} can only be deleted if it is not related to other elements in database!';
 $lang['gp_stop_service'] = 'Are you sure you want to stop service: <b>{name}</b>?';
 $lang['gp_publish_public_service'] = 'You are about to publish public service: <b>{name}</b></br></br>Everyone with URL link will be able to use service. Continue?';
 $lang['gp_publish_private_service'] = 'You are about to publish private service: <b>{name}</b></br></br>Only users with permission and URL link will be able to use service. Access is done with Apache configuration. Continue?';
+$lang['gp_select_group'] = 'Select project group';

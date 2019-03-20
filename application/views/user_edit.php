@@ -96,7 +96,7 @@
 				
 				<?php if ( $creating === false ) : ?>
 				<div class="pull-right">
-					<a class="btn btn-danger" onclick="confirmLink(GP.deleteUser,'<?php echo $user['user_name'].' ('.$user['user_email'].')'; ?>','<?php echo site_url('users/remove/'.$user['user_id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
+					<a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'User: <?php echo $user['user_name'].' ('.$user['user_email'].')'; ?>','<?php echo site_url('users/remove/'.$user['user_id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
                 </div>
 				 <?php endif; ?>
 				</div>

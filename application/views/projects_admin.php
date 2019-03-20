@@ -24,8 +24,9 @@
               <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
               <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
               <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
+              <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
               <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
-              <th data-sortable="true" data-field="gp_contact"><?php echo ucfirst($this->lang->line('gp_contact')); ?></th>
+<!--              <th data-sortable="true" data-field="gp_contact">--><?php //echo ucfirst($this->lang->line('gp_contact')); ?><!--</th>-->
               <?php if ($this->session->userdata('admin')){ ?>
                 <th><?php echo $this->lang->line('gp_action'); ?></th>
               <?php } ?>
@@ -40,8 +41,9 @@
 		  <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
           <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
 		  <td class="col-md-2"><?php echo $project_item['client']; ?></td>
+		  <td class="col-md-2"><?php echo $project_item['group']; ?></td>
           <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
-          <td class="col-md-2"><?php echo $project_item['contact']; ?></td>
+<!--          <td class="col-md-2">--><?php //echo $project_item['contact']; ?><!--</td>-->
           <?php if ($this->session->userdata('admin')){ ?>
             <td class="col-md-2">
                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">

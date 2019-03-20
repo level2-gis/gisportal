@@ -6,10 +6,7 @@
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-			  <li><a href="#edit-project-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
-			  <li><a href="#edit-project-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
 			  <li><a href="#edit-project-plugins" data-toggle="tab"><?php echo $this->lang->line('gp_plugins'); ?></a></li>
-			  <li><a href="#edit-project-users" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -19,12 +16,33 @@
                     <div class="row form-group">
                         <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
                         <div class="col-md-5">
-                            <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this);">
-                                <option value=""><?php echo $this->lang->line('gp_select_client'); ?></option>
+                            <select class="form-control" disabled="true" name="client_id" id="client_id">
+                                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                                 <?php foreach ($clients as $client_item): ?>
                                     <option <?php if ($client_item['id'] == $project['client_id']) { echo "selected='selected'"; }; ?> value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" .$client_item['name'] . ")"; ?></option>							<?php endforeach; ?>
                             </select>
                             <span class="text-danger"><?php echo form_error('client_id'); ?></span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label for="project_group_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_group'); ?></label>
+                        <div class="col-md-4">
+                            <select class="form-control" name="project_group_id" id="project_group_id" onchange="onGroupChange(<?php echo $project['project_group_id']; ?>, this);">
+                                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_group'); ?></option>
+                                <?php foreach ($groups as $group_item): ?>
+                                    <option <?php if ($group_item['id'] == $project['project_group_id']) { echo "selected='selected'"; }; ?> value="<?php echo $group_item['id']; ?>"><?php echo $group_item['name']; ?></option>							<?php endforeach; ?>
+                            </select>
+                            <span class="text-danger"><?php echo form_error('project_group_id'); ?></span>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick();">
+                                <?php echo $this->lang->line('gp_edit'); ?>
+                            </a>
+<!--                            <a class="btn btn-info"-->
+<!--                               href="--><?php //echo site_url('projects/services/'); ?><!--">-->
+<!--                                --><?php //echo $this->lang->line('gp_publish'); ?>
+<!--                            </a>-->
                         </div>
                     </div>
 
@@ -118,113 +136,6 @@
                     </div>
     			</fieldset>
 
-				<fieldset id="edit-project-layers" class="tab-pane">
-					<div class="form-group">
-                        <div class="row style-select">
-                            <div class="col-md-offset-1 col-md-10">
-                                <div class="subject-info-box-1">
-                                    <label><?php echo $this->lang->line('gp_available')." ".strtolower($this->lang->line('gp_base_layers')); ?></label>
-                                    <select multiple class="form-control" id="lstBase1">
-                                        <?php foreach ($base_layers as $layer_item): ?>
-                                            <?php if ($layer_item['idx'] == 0) {?>
-                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
-                                            <?php } ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="subject-info-arrows text-center">
-                                    <br /><br />
-                                    <input type='button' onclick="moveItem('#lstBase1','#lstBase2')" value='>' class="btn btn-default" /><br />
-                                    <input type='button' onclick="moveItem('#lstBase2','#lstBase1')" value='<' class="btn btn-default" /><br />
-                                    <input type='button' onclick="moveAllItems('#lstBase2','#lstBase1')" value='<<' class="btn btn-default" />
-                                </div>
-
-                                <div class="subject-info-box-2">
-                                    <label><?php echo $this->lang->line('gp_base_layers')." ".strtolower($this->lang->line('gp_in_project')); ?></label>
-                                    <select multiple class="form-control" id="lstBase2">
-                                        <?php foreach ($base_layers as $layer_item): ?>
-                                            <?php if ($layer_item['idx'] > 0) {?>
-                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
-                                            <?php } ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="selected-right">
-                                    <button onclick="moveUp('#lstBase2')" type="button" class="btn btn-default btn-sm">
-                                        <span class="glyphicon glyphicon-chevron-up"></span>
-                                    </button>
-                                    <button onclick="moveDown('#lstBase2')" type="button" class="btn btn-default btn-sm">
-                                        <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button>
-                                </div>
-
-<!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
-<!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
-<!--                                </div>-->
-
-<!--                                <div class="clearfix"></div>-->
-                            </div>
-                        </div>
-
-					</div>
-				</fieldset>
-
-                <fieldset id="edit-project-extra-layers" class="tab-pane">
-                    <div class="form-group">
-                        <!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
-                        <div class="row style-select">
-                            <div class="col-md-offset-1 col-md-10">
-                                <div class="subject-info-box-1">
-                                    <label><?php echo $this->lang->line('gp_available')." ".strtolower($this->lang->line('gp_overlay_layers')); ?></label>
-                                    <select multiple class="form-control" id="lstExtra1">
-                                        <?php foreach ($extra_layers as $layer_item): ?>
-                                            <?php if ($layer_item['idx'] == 0) {?>
-                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
-                                            <?php } ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="subject-info-arrows text-center">
-                                    <br /><br />
-                                    <input type='button' onclick="moveItem('#lstExtra1','#lstExtra2')" value='>' class="btn btn-default" /><br />
-                                    <input type='button' onclick="moveItem('#lstExtra2','#lstExtra1')" value='<' class="btn btn-default" /><br />
-                                    <input type='button' onclick="moveAllItems('#lstExtra2','#lstExtra1')" value='<<' class="btn btn-default" />
-                                </div>
-
-                                <div class="subject-info-box-2">
-                                    <label><?php echo $this->lang->line('gp_overlay_layers')." ".strtolower($this->lang->line('gp_in_project')); ?></label>
-                                    <select multiple class="form-control" id="lstExtra2">
-                                        <?php foreach ($extra_layers as $layer_item): ?>
-                                            <?php if ($layer_item['idx'] > 0) {?>
-                                                <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
-                                            <?php } ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="selected-right">
-                                    <button onclick="moveUp('#lstExtra2')" type="button" class="btn btn-default btn-sm">
-                                        <span class="glyphicon glyphicon-chevron-up"></span>
-                                    </button>
-                                    <button onclick="moveDown('#lstExtra2')" type="button" class="btn btn-default btn-sm">
-                                        <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button>
-                                </div>
-
-                                <!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
-                                <!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
-                                <!--                                </div>-->
-
-                                <!--                                <div class="clearfix"></div>-->
-                            </div>
-                        </div>
-
-                    </div>
-                </fieldset>
-
                 <fieldset id="edit-project-plugins" class="tab-pane">
                     <table class="table table-condensed table-striped">
                         <tr>
@@ -242,39 +153,12 @@
                     </table>
                 </fieldset>
 
-
-				<fieldset id="edit-project-users" class="tab-pane">
-					<table class="table table-condensed table-striped">
-					  <tr>
-						<th><?php echo $this->lang->line('gp_access'); ?></th>
-						<th><?php echo $this->lang->line('gp_username'); ?></th>
-						<th><?php echo $this->lang->line('gp_email'); ?></th>
-						<th><?php echo $this->lang->line('gp_name'); ?></th>
-					  </tr>
-						<?php foreach ($user_projects as $user_item): ?>
-							<tr>
-								<td>
-									<input type="checkbox" name="user_projects_ids[]" value="<?php echo $user_item['user_id']; ?>" <?php if ($user_item['selected']) { echo "checked='checked'"; }; ?> />
-								</td>
-								<td><?php echo $user_item['user_name']; ?></td>
-								<td><?php echo $user_item['user_email']; ?></td>
-								<td><?php echo $user_item['display_name']; ?></td>
-							</tr>
-						<?php endforeach; ?>
-					</table>
-
-
-
-				</fieldset>
-
 			<div id="fixed-actions">
 				<div class="form-actions col-md-offset-1 col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
-					<input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
-					<input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
 
-					<input type="submit" class="btn btn-primary" onclick="checkValues()" value=<?php echo $this->lang->line('gp_save'); ?> >
-					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
+					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?> >
+					<input type="submit" class="btn btn-primary" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
 					<a class="btn btn-default" href="<?php echo site_url('projects/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
 				
 				<?php if ( $creating === false && !empty($project['id'])) : ?>

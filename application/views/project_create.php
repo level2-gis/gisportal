@@ -5,7 +5,7 @@
 
         <div class="col-md-5">
             <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,<?php echo $action; ?>);">
-                <option value=""><?php echo $this->lang->line('gp_select_client'); ?></option>
+                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                 <?php foreach ($clients as $client_item): ?>
                     <option <?php if ($client_item['id'] == $project['client_id']) {
                         echo "selected='selected'";
@@ -16,9 +16,23 @@
         </div>
     </div>
 
+    <div class="row form-group">
+        <label for="project_group_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_group'); ?></label>
+        <div class="col-md-5">
+            <div <?php if (empty($project["client_id"])) { echo "style='display:none'"; } ?> id="groupDiv" class="form-inline">
+                <select class="form-control" name="project_group_id" id="project_group_id">
+                    <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_group'); ?></option>
+                    <?php foreach ($groups as $group_item): ?>
+                        <option <?php if ($group_item['id'] == $project['project_group_id']) { echo "selected='selected'"; }; ?> value="<?php echo $group_item['id']; ?>"><?php echo $group_item['name']; ?></option>							<?php endforeach; ?>
+                </select>
+                <span class="text-danger"><?php echo form_error('project_group_id'); ?></span>
+            </div>
+        </div>
+    </div>
+
     <?php if ($action==1) { ?>
     <div class="row form-group">
-        <label for="display_name"
+        <label for="templateDiv"
                class="control-label col-md-2"><?php echo $this->lang->line('gp_template'); ?></label>
 
         <div class="col-md-5">
@@ -36,17 +50,6 @@
     <?php } ?>
 
     <div class="row form-group">
-        <label for="display_name"
-               class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
-
-        <div class="col-md-5">
-            <input class="form-control" name="display_name" placeholder="" type="text"
-                   value="<?php echo $project['display_name']; ?>"/>
-            <span class="text-danger"><?php echo form_error('display_name'); ?></span>
-        </div>
-    </div>
-
-    <div class="row form-group">
         <label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 
         <div class="col-md-5">
@@ -55,6 +58,17 @@
             <span class="text-danger"><?php echo form_error('name'); ?></span>
 
             <p class="help-block"><?php echo $this->lang->line('gp_name_tip'); ?></p>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <label for="display_name"
+               class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
+
+        <div class="col-md-5">
+            <input class="form-control" name="display_name" placeholder="" type="text"
+                   value="<?php echo $project['display_name']; ?>"/>
+            <span class="text-danger"><?php echo form_error('display_name'); ?></span>
         </div>
     </div>
 

@@ -94,3 +94,6 @@ defined('QGS_GROUP')        OR define('QGS_GROUP', 2);      // QGIS project file
 
 defined('NEW_TEMPLATE')     OR define('NEW_TEMPLATE', 1);   // Create new project with template
 defined('NEW_UPLOAD')       OR define('NEW_UPLOAD', 2);     // Create new project with upload from client
+
+defined('PROJECT_GROUP')    OR define('PROJECT_GROUP', 0);  // Group contains projects only
+defined('SUB_GROUP')        OR define('SUB_GROUP', 1);      // Group contains sub-groups only

@@ -13,7 +13,7 @@ class Users extends CI_Controller {
 
     public function index()
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('auth//login?ru=/' . uri_string());
         }
 
@@ -28,7 +28,7 @@ class Users extends CI_Controller {
 
     public function edit($user_id = false)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -89,7 +89,7 @@ class Users extends CI_Controller {
 
     function remove($id)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 

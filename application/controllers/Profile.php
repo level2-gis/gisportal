@@ -14,7 +14,7 @@ class Profile extends CI_Controller
 
     function index()
     {
-        if (!$this->session->userdata('user_is_logged_in')) {
+        if (!$this->ion_auth->logged_in()) {
             redirect('/auth/login?ru=/' . uri_string());
         }
 

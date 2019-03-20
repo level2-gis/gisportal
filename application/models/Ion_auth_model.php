@@ -1956,12 +1956,12 @@ class Ion_auth_model extends CI_Model
 		    'user_id'              => $user->id, //everyone likes to overwrite id so we'll use user_id
 		    'old_last_login'       => $user->last_login,
 		    'last_check'           => time(),
-            'user_is_logged_in'    => true,  //gisportal
+            'user_is_logged_in'    => true,  //gisportal for old gisapp
             'user_display_name'    => $user->user_display_name, //gisportal
             'user_name'            => $user->username,  //gisportal
             'lang'                 => $user->lang,                           //gisportal
             'upload_dir'           => $this->config->item('main_upload_dir'), //gisportal
-            'admin'                => $this->ion_auth->is_admin($user->id)
+            'admin'                => $this->ion_auth->is_admin($user->id)  //gisportal for old gisapp
 		];
 
 		$this->session->set_userdata($session_data);

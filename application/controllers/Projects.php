@@ -20,7 +20,7 @@ class Projects extends CI_Controller
     public function index()
     {
         //allow viewing of projects to every logged in user, not only admin (user sees only projects with permission)
-        if (!$this->session->userdata('user_is_logged_in')){
+        if (!$this->ion_auth->logged_in()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -44,7 +44,7 @@ class Projects extends CI_Controller
             redirect("/");
         }
 
-        if (!$this->session->userdata('user_is_logged_in')) {
+        if (!$this->ion_auth->logged_in()) {
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -69,7 +69,7 @@ class Projects extends CI_Controller
      */
     public function upload_admin($client_id = false) {
 
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 
@@ -307,7 +307,7 @@ class Projects extends CI_Controller
      */
     public function download($project_id = false)
     {
-        if (!$this->session->userdata('admin')) {
+        if (!$this->ion_auth->is_admin()) {
             redirect('/');
         }
 
@@ -352,7 +352,7 @@ class Projects extends CI_Controller
 
     public function edit($project_id = false)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -432,7 +432,7 @@ class Projects extends CI_Controller
 
     public function create($action = FALSE) {
 
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 
@@ -517,7 +517,7 @@ class Projects extends CI_Controller
 
     public function remove($id)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 
@@ -549,7 +549,7 @@ class Projects extends CI_Controller
      */
     public function services($project_id = false)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 

@@ -14,7 +14,7 @@ class Layers extends CI_Controller{
      */
     function index()
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -32,7 +32,7 @@ class Layers extends CI_Controller{
      */
 //    function add()
 //    {
-//        if (!$this->session->userdata('admin')){
+//        if (!$this->ion_auth->is_admin()){
 //            redirect('/');
 //        }
 //
@@ -67,7 +67,7 @@ class Layers extends CI_Controller{
      */
     function edit($layer_id = false)
     {
-        if (!$this->session->userdata('admin')) {
+        if (!$this->ion_auth->is_admin()) {
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -132,7 +132,7 @@ class Layers extends CI_Controller{
      */
     function remove($id)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 

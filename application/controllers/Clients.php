@@ -15,7 +15,7 @@ class Clients extends CI_Controller
 
     public function index()
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -34,7 +34,7 @@ class Clients extends CI_Controller
             redirect("/");
         }
 
-        if (!$this->session->userdata('user_is_logged_in')) {
+        if (!$this->ion_auth->logged_in()) {
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -75,11 +75,7 @@ class Clients extends CI_Controller
 
     public function edit($client_id = false)
     {
-        //if (!$this->session->userdata('user_is_logged_in') || !$this->session->userdata('admin')){
-        //    redirect('/login?ru=/' . uri_string());
-        //}
-
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
@@ -146,7 +142,7 @@ class Clients extends CI_Controller
      */
     function remove($id)
     {
-        if (!$this->session->userdata('admin')){
+        if (!$this->ion_auth->is_admin()){
             redirect('/');
         }
 

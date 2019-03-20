@@ -77,8 +77,6 @@ class Project_groups extends CI_Controller
 
     }
 
-
-
     /*
      * Returns array of client project groups for dropdown list
      */
@@ -108,6 +106,41 @@ class Project_groups extends CI_Controller
             ->set_content_type('text/html')
             ->set_status_header(200)
             ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
+    function remove($id)
+    {
+        if (!$this->ion_auth->is_admin()){
+            redirect('/');
+        }
+
+        $group = (array)$this->project_group_model->get_project_group($id);
+
+        // check if exists before trying to delete it
+        if(isset($group['id']))
+        {
+            try {
+                //before deleting check if layers exist as as base or extra layer in project groups
+                //$test = $this->project_group_model->get_project_groups_with_layer($id);
+                //if(count($test)>0)  {
+                //    throw new Exception('Cannot delete. Layer exists in ' . count($test) . ' project groups.');
+                //}
+
+                $this->project_group_model->delete_project_group($id);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_layer').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
+                redirect('/project_groups');
+            }
+            catch (Exception $e){
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+                redirect('/project_groups/edit/'.$id);
+            }
+        }
+        else
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The group you are trying to delete does not exist.</div>');
     }
 
     public function _unique_name($name) {

@@ -80,7 +80,7 @@ class Auth extends CI_Controller
             }
         }
 
-        if ($this->session->userdata('user_is_logged_in')) {
+        if ($this->ion_auth->logged_in()) {
             empty($ref) ? redirect("/") : redirect($ref);
         }
 

@@ -87,7 +87,7 @@
                     <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
                     <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
                     <!--              <th data-sortable="true" data-field="gp_contact">--><?php //echo ucfirst($this->lang->line('gp_contact')); ?><!--</th>-->
-                    <?php if ($this->session->userdata('admin')){ ?>
+                    <?php if ($this->ion_auth->is_admin()){ ?>
                         <th><?php echo $this->lang->line('gp_action'); ?></th>
                     <?php } ?>
                 </tr>
@@ -104,7 +104,7 @@
                         <td class="col-md-2"><?php echo $project_item['group']; ?></td>
                         <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
                         <!--          <td class="col-md-2">--><?php //echo $project_item['contact']; ?><!--</td>-->
-                        <?php if ($this->session->userdata('admin')){ ?>
+                        <?php if ($this->ion_auth->is_admin()){ ?>
                             <td class="col-md-2">
                                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
                                     <?php echo $this->lang->line('gp_edit'); ?>
@@ -277,8 +277,7 @@
 
                 <?php if ($creating === false && !empty($group['id'])) : ?>
                     <div class="pull-right">
-                        <a class="btn btn-danger"
-                           href="<?php echo site_url('project_groups/remove/' . $group['id']); ?>"><?php echo $this->lang->line('gp_delete'); ?></a>
+                        <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'Group: <?php echo $group['name']; ?>','<?php echo site_url('project_groups/remove/'.$group['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
                     </div>
                 <?php endif; ?>
             </div>

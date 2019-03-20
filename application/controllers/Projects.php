@@ -10,6 +10,7 @@ class Projects extends CI_Controller
         parent::__construct();
         $this->load->model('client_model');
         $this->load->model('project_model');
+        $this->load->model('project_group_model');
         $this->load->model('user_model');
         $this->load->model('layer_model');
         $this->load->model('plugin_model');
@@ -165,6 +166,7 @@ class Projects extends CI_Controller
             if ($project == null) {
                 throw new Exception('Project not found!');
             }
+            //TODO client_id on project!
             $client = $this->client_model->get_client($project->client_id);
             if ($client == null) {
                 throw new Exception('Client not found!');
@@ -236,6 +238,7 @@ class Projects extends CI_Controller
             if ($project == null) {
                 throw new Exception('Project not found!');
             }
+            //TODO client_id on project!
             $client = $this->client_model->get_client($project->client_id);
             if ($client == null) {
                 throw new Exception('Client not found!');
@@ -314,6 +317,7 @@ class Projects extends CI_Controller
 
         try {
             $project = $this->project_model->get_project($project_id);
+            //TODO client_id on project!
             $client = $this->client_model->get_client($project->client_id);
 
             if ($client == null) {
@@ -348,10 +352,6 @@ class Projects extends CI_Controller
 
     public function edit($project_id = false)
     {
-//        if (!$this->session->userdata('user_is_logged_in') || !$this->session->userdata('admin')){
-//            redirect('/login?ru=/' . uri_string());
-//        }
-
         if (!$this->session->userdata('admin')){
             redirect('/auth/login?ru=/' . uri_string());
         }
@@ -361,7 +361,8 @@ class Projects extends CI_Controller
 
         //$this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
         //$this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
-        $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+        //$this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+        $this->form_validation->set_rules('project_group_id', 'lang:gp_group', 'required');
         $this->form_validation->set_rules('ordr','lang:gp_order','integer');
         $this->form_validation->set_rules('feedback_email', 'lang:gp_feedback_email', 'valid_email');
 
@@ -394,6 +395,7 @@ class Projects extends CI_Controller
             $data['project'] = $em;
             $data['image'] = $this->getImage($em['name']);
             $data['clients'] = $this->client_model->get_clients();
+            $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
 
             $this->loadmeta($data);
             $this->qgisinfo($data);
@@ -407,9 +409,9 @@ class Projects extends CI_Controller
         } else {
 
             $project = $this->extractProjectData();
-            $users = $this->extractUserProjectData();
+            //$users = $this->extractUserProjectData();
             try {
-                $project_id = $this->project_model->upsert_project($project, $users);
+                $project_id = $this->project_model->upsert_project($project);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
@@ -439,6 +441,7 @@ class Projects extends CI_Controller
 
         $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
         $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+        $this->form_validation->set_rules('project_group_id', 'lang:gp_group', 'required');
 
         if ($this->form_validation->run() === FALSE) {
             $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_project');
@@ -456,6 +459,11 @@ class Projects extends CI_Controller
             $data['templates'] = $this->project_model->get_templates();
             $data['action'] = $action;
             $data['clients'] = $this->client_model->get_clients();
+            if($em["client_id"]) {
+                $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
+            } else {
+                $data['groups'] = [];
+            }
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_title', $data);
@@ -474,11 +482,13 @@ class Projects extends CI_Controller
             $project["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : $this->input->post('name');
             $project["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : $this->input->post('client_id');
             $project["display_name"] = $this->input->post('display_name');
+            $project["project_group_id"] = $this->input->post('project_group_id');
             $project["template"] = $this->input->post('template');
 
+            //TODO client_id on project!
             $client = $this->client_model->get_client($project["client_id"]);
 
-            $users = $this->extractUserProjectData();
+            //$users = $this->extractUserProjectData();
             $project_id = null;
             try {
                 //copy template if selected
@@ -486,7 +496,7 @@ class Projects extends CI_Controller
                     $this->project_model->copy_template($project["template"],$project["name"],$client->name);
                 }
 
-                $project_id = $this->project_model->upsert_project($project, $users);
+                $project_id = $this->project_model->upsert_project($project);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
@@ -793,12 +803,12 @@ class Projects extends CI_Controller
             'id'                        => $this->input->post('id'),
             'name'                      => $this->input->post('name'),
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
-            'base_layers_ids'           => $this->input->post('base_layers_ids'),
-            'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
-            'client_id'                 => set_null($this->input->post('client_id')),
+            //'base_layers_ids'           => $this->input->post('base_layers_ids'),
+            //'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
+            //'client_id'                 => set_null($this->input->post('client_id')), //on update we are not changing client
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),
-            'crs'                       => $this->input->post('crs'),
+            //'crs'                       => $this->input->post('crs'),
             'description'               => $this->input->post('description'),
             'contact'                   => $this->input->post('contact'),
             'restrict_to_start_extent'  => set_bool($this->input->post('restrict_to_start_extent')),
@@ -811,7 +821,8 @@ class Projects extends CI_Controller
             'identify_mode'             => set_bool($this->input->post('identify_mode')),
             'permalink'                 => set_bool($this->input->post('permalink')),
             'ordr'                      => ($this->input->post('ordr')),
-            'plugin_ids'                => $this->input->post('plugin_ids')
+            'plugin_ids'                => $this->input->post('plugin_ids'),
+            'project_group_id'          => $this->input->post('project_group_id')
             //'project_path'              => $this->input->post('project_path')
         );
 
@@ -841,19 +852,22 @@ class Projects extends CI_Controller
 
 
 
-    private function extractUserProjectData(){
-
-        if ($this->input->post('user_projects_ids') != null){
-            return implode($this->input->post('user_projects_ids'),',');
-        }
-
-        return null;
-    }
+//    private function extractUserProjectData(){
+//
+//        if ($this->input->post('user_projects_ids') != null){
+//            return implode($this->input->post('user_projects_ids'),',');
+//        }
+//
+//        return null;
+//    }
 
     private function loadmeta(&$data){
-        $data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
-        $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
-        $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
+        //$data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
+
+        //we need baselayer for overview layer
+        //$data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
+        $data['base_layers'] = $this->layer_model->get_layers_with_project_flag(null);
+        //$data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
         $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
 
 //        $directory = new RecursiveDirectoryIterator(PROJECT_PATH);
@@ -877,6 +891,7 @@ class Projects extends CI_Controller
         if(isset($data['project']['project_path'])) {
             $project_path = $data['project']['project_path'];
         }
+        //TODO client_id on project!
         $client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
         $client_name = $data['clients'][$client_key]['name'];
 

@@ -13,6 +13,22 @@ class Project_groups extends CI_Controller
         $this->load->helper(array('eqwc_parse'));
     }
 
+    public function index()
+    {
+        if (!$this->ion_auth->is_admin()){
+            redirect('/auth/login?ru=/' . uri_string());
+        }
+
+        $data['title'] = $this->lang->line('gp_groups_title');
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['groups'] = $this->project_group_model->get_project_groups();
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('project_groups_admin', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+
     public function edit($id = FALSE)
     {
         if (!$this->ion_auth->is_admin()) {
@@ -29,6 +45,7 @@ class Project_groups extends CI_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
 
+        $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('type', 'Type', 'required|integer');
         $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
 
@@ -75,6 +92,61 @@ class Project_groups extends CI_Controller
             }
         }
 
+    }
+
+    public function create()
+    {
+        if (!$this->ion_auth->is_admin()) {
+            redirect('/auth/login?ru=/' . uri_string());
+        }
+
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+        $this->form_validation->set_rules('type', 'Type', 'required|integer');
+        $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
+
+        $data['creating'] = true;
+
+        $group = new stdClass();
+        $group->name = $this->input->post('name');
+        $group->client_id = $this->input->post('client_id');
+        $group->display_name = $this->input->post('display_name');
+        $group->type = $this->input->post('type');
+
+        if ($this->form_validation->run() == FALSE) {
+
+            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_group');
+            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+            $data['group'] = (array)$group;
+            $data['clients'] = $this->client_model->get_clients();
+            $data['types'] = array(
+                ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
+                //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
+            );
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('project_group_create', $data);
+        } else {
+            try {
+                $group_id = $this->project_group_model->upsert_project_group($group);
+                $db_error = $this->db->error();
+                if (!empty($db_error['message'])) {
+                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+                }
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_group') . ' <strong>' . $group->name . '</strong>' . $this->lang->line('gp_saved') . '</div>');
+            } catch (Exception $e) {
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+            }
+
+            if ($this->input->post('return') == null) {
+                redirect('/project_groups/edit/' . $group_id);
+            } else {
+                //TODO save on group succesful, where redirect?
+                redirect('/projects');
+            }
+        }
     }
 
     /*

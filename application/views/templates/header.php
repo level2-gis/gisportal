@@ -65,6 +65,7 @@
 
                     <?php if ($this->ion_auth->is_admin()){ ?>
                         <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo $this->lang->line('gp_clients_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/project_groups'); ?>"><i class="fa fa-list"></i> <span><?php echo $this->lang->line('gp_groups_title'); ?></span></a></li>
                     <?php } ?>
 
                     <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>

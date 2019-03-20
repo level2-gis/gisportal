@@ -38,6 +38,9 @@ class Projects extends CI_Controller
         $this->load->view('templates/footer', $data);
     }
 
+    /*
+     * Portal view
+     */
     public function view($client_id = false)
     {
         if ($client_id === FALSE) {

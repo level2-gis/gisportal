@@ -273,7 +273,7 @@
                 <input type="submit" class="btn btn-primary" onclick="checkValues()" name="return"
                        value=<?php echo $this->lang->line('gp_save') . "&nbsp;&&nbsp;" . strtolower($this->lang->line('gp_return')); ?>>
                 <a class="btn btn-default"
-                   href="<?php echo site_url('projects/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
+                   href="<?php echo site_url('project_groups/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
 
                 <?php if ($creating === false && !empty($group['id'])) : ?>
                     <div class="pull-right">

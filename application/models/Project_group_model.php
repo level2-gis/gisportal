@@ -16,7 +16,7 @@ class Project_group_model extends CI_Model {
         return $query->result()[0];
     }
 
-    function get_project_groups($client_id, $list_only)
+    function get_project_groups($client_id = FALSE, $list_only = FALSE)
     {
         //$this->db->order_by('type', 'ASC');
         $this->db->order_by('name', 'ASC');
@@ -25,9 +25,11 @@ class Project_group_model extends CI_Model {
             $this->db->select("id, CASE WHEN display_name IS NULL THEN name ELSE display_name || ' (' || name || ')' END AS name", FALSE);
         }
 
-        $this->db->where('client_id', $client_id);
+        if($client_id) {
+            $this->db->where('client_id', $client_id);
+        }
 
-        $query = $this->db->get('project_groups');
+        $query = $this->db->get('project_groups_view');
         return $query->result_array();
     }
 
@@ -51,7 +53,10 @@ class Project_group_model extends CI_Model {
     }
 
     function upsert_project_group($data) {
-        $id = $data->id;
+        $id = null;
+        if($data->id) {
+            $id = $data->id;
+        }
 
         if ($id != null){
             $this->db->where('id',$id);
@@ -64,12 +69,12 @@ class Project_group_model extends CI_Model {
                 //todo updating project group also needs update client_id field on projects table
                 $this->db->query('UPDATE projects SET client_id='.$data->client_id.' WHERE project_group_id='.$data->id.';');
 
+                unset($data->id);
 
                 return $id;
             }
         }
 
-        unset($data->id);
         $this->db->insert('project_groups', $data);
 
         return $this->db->insert_id();

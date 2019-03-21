@@ -18,19 +18,19 @@ class User_model extends CI_Model
     /*
      * Return users with selected field (true/false) meaning permission to use given project id
      */
-    public function get_users_with_project_flag($project_id) {
-
-        $sql = "select user_id, user_name, user_email, display_name, ";
-        if ($project_id != null){
-            $sql = $sql . $project_id . " = ANY(project_ids) selected";
-        } else{
-            $sql = $sql . "false selected";
-        }
-        $sql = $sql . " FROM users WHERE admin = false order by user_email";
-        $query = $this->db->query($sql);
-
-        return $query->result_array();
-    }
+//    public function get_users_with_project_flag($project_id) {
+//
+//        $sql = "select user_id, user_name, user_email, display_name, ";
+//        if ($project_id != null){
+//            $sql = $sql . $project_id . " = ANY(project_ids) selected";
+//        } else{
+//            $sql = $sql . "false selected";
+//        }
+//        $sql = $sql . " FROM users WHERE admin = false order by user_email";
+//        $query = $this->db->query($sql);
+//
+//        return $query->result_array();
+//    }
 
     function get_user($key, $pwd)
     {
@@ -119,16 +119,16 @@ class User_model extends CI_Model
 		//return $this->db->insert_id();
 }
     //TODO fix this
-	function get_projectusers($userid)
-	{
-        $sql = "select p.id, p.name, p.display_name, c.display_name client_name, case when  u.user_id is null then false else true end selected
-		from projects p left join clients c on c.id = p.client_id left join users u on p.id = ANY(project_ids) and u.user_id = " . $userid . " order by p.display_name";
-
-		$query = $this->db->query($sql);
-
-        return $query->result_array();
-
-	}
+//	function get_projectusers($userid)
+//	{
+//        $sql = "select p.id, p.name, p.display_name, c.display_name client_name, case when  u.user_id is null then false else true end selected
+//		from projects p left join clients c on c.id = p.client_id left join users u on p.id = ANY(project_ids) and u.user_id = " . $userid . " order by p.display_name";
+//
+//		$query = $this->db->query($sql);
+//
+//        return $query->result_array();
+//
+//	}
 
 	public function delete_user($id)
     {

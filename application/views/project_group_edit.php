@@ -122,7 +122,7 @@
         </fieldset>
 
         <fieldset id="edit-group-users" class="tab-pane">
-            <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
+            <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
                 <thead>
                 <tr>
 
@@ -130,11 +130,10 @@
                     <th data-sortable="true" data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
                     <th data-sortable="true" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
                     <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
-                    <th data-sortable="true" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
-                    <th data-sortable="true" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
-                    <th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
                     <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
-
+                    <?php if ($this->ion_auth->is_admin()){ ?>
+                        <th><?php echo $this->lang->line('gp_action'); ?></th>
+                    <?php } ?>
                 </tr>
                 </thead>
                 <?php foreach ($users as $user_item): ?>
@@ -144,11 +143,8 @@
                         <td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
                         <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
                         <td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-                        <td class="col-md-2"><?php echo set_datestr($user_item['registered']); ?></td>
-                        <td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
-                        <td class="col-md-2"><?php echo set_datestr($user_item['last_login']); ?></td>
                         <td class="col-md-2"><?php echo $user_item['role']; ?></td>
-
+                        <td></td>
 
                     </tr>
                 <?php endforeach; ?>

@@ -42,7 +42,7 @@ class Users extends CI_Controller {
 		if ($this->form_validation->run() === FALSE)
 	    {
 
-			$em = array ( 'user_id' => '', 'user_name' => '', 'user_email' => '', 'display_name' => '','project_ids' => array());
+			$em = array ( 'user_id' => '', 'user_name' => '', 'user_email' => '', 'display_name' => '');
 
 			$data['title'] = 'Create New User';
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
@@ -127,20 +127,21 @@ class Users extends CI_Controller {
             'organization' => $this->input->post('organization')
 		);
 
-		$data['admin'] = $data['admin'] != '' ? $data['admin'] : 'false';
-		$data['project_ids'] = null;
-		if ($this->input->post('project_ids') != null){
-			$blids = implode($this->input->post('project_ids'),',');
-			if ($blids != ''){
-				$data['project_ids'] = '{' . $blids . '}';
-			}
-		}
+//		$data['admin'] = $data['admin'] != '' ? $data['admin'] : 'false';
+//		$data['project_ids'] = null;
+//		if ($this->input->post('project_ids') != null){
+//			$blids = implode($this->input->post('project_ids'),',');
+//			if ($blids != ''){
+//				$data['project_ids'] = '{' . $blids . '}';
+//			}
+//		}
 		
 		return $data;
 	}
 
 	private function loadmeta(&$data){
-		$data['projects'] = $this->user_model->get_projectusers($data['user']['user_id']);
+		//$data['projects'] = $this->user_model->get_projectusers($data['user']['user_id']);
+        $data['groups'] = [];
 	}
 
 

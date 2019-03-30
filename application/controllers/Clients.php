@@ -381,6 +381,8 @@ class Clients extends CI_Controller
                 if($name != $client->name) {
                     $this->form_validation->set_message('_unique_name', $this->lang->line('gp_client').' '.$name.$this->lang->line('gp_exists').'!');
                     return false;
+                } else {
+                    return true;
                 }
             }
             $this->form_validation->set_message('_unique_name', $this->lang->line('gp_client').' '.$name.$this->lang->line('gp_exists').'!');

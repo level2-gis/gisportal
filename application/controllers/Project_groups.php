@@ -228,6 +228,8 @@ class Project_groups extends CI_Controller
                 if($name != $group->name) {
                     $this->form_validation->set_message('_unique_name', $this->lang->line('gp_group').' '.$name.$this->lang->line('gp_exists').'!');
                     return false;
+                } else {
+                    return true;
                 }
             }
             $this->form_validation->set_message('_unique_name', $this->lang->line('gp_group').' '.$name.$this->lang->line('gp_exists').'!');

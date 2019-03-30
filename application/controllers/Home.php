@@ -46,7 +46,7 @@ class Home extends CI_Controller
                 $this->load->view('public_projects_view', $data);
             }
         } else if (count($data['clients']) === 1) {
-            redirect('projects/view/' . $data['clients'][0][id]);
+            redirect('projects/view/' . $data['clients'][0]['id']);
         } else {
             $this->load->view('clients', $data);
         }

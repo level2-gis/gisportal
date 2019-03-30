@@ -200,6 +200,8 @@ class Layers extends CI_Controller{
                 if($name != $layer->name) {
                     $this->form_validation->set_message('_unique_name', $this->lang->line('gp_layer').' '.$name.$this->lang->line('gp_exists').'!');
                     return false;
+                } else {
+                    return true;
                 }
             }
             $this->form_validation->set_message('_unique_name', $this->lang->line('gp_layer').' '.$name.$this->lang->line('gp_exists').'!');

@@ -25,9 +25,7 @@
 
         <div class="form-group">
             <button name="submit" type="submit"
-                    class="btn btn-info"><?php echo $this->lang->line('gp_login'); ?></button>
-            <button name="cancel" type="reset"
-                    class="btn btn-info"><?php echo $this->lang->line('gp_cancel'); ?></button>
+                    class="btn btn-info btn-block"><?php echo $this->lang->line('gp_login'); ?></button>
         </div>
         <?php echo form_close(); ?>
         <?php echo $this->session->flashdata('message'); ?>

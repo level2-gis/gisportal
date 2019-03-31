@@ -55,7 +55,7 @@ class Project_groups extends CI_Controller
             if(sizeof($_POST) > 0) {
                 $group = $this->extractPostData();
             }
-            $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_group') . ' ' . $group->display_name;
+            $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_group') . ' ' . $group->name;
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['group'] = (array)$group;
             $data['clients'] = $this->client_model->get_clients();

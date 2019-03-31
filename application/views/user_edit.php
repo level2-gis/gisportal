@@ -8,7 +8,6 @@
 		<?php $attributes = array("class" => "form-horizontal");
 		echo form_open('users/edit/' . $user['user_id'], $attributes); ?>
 			<input name="user_id" type="hidden" value="<?php echo $user['user_id']; ?>" />
-			<input name="admin" type="hidden" value="<?php echo $user['admin']; ?>" />
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-user-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
@@ -35,14 +34,14 @@
 					<div class="form-group">
 						<label for="first_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_first_name'); ?></label>
 						<div class="col-md-5">
-							<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $user['first_name']; ?>" />
+							<input class="form-control" name="first_name" placeholder="" type="text" value="<?php echo $user['first_name']; ?>" />
 							<span class="text-danger"><?php echo form_error('first_name'); ?></span>
 						</div>	
 					</div>
                     <div class="form-group">
                         <label for="last_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_last_name'); ?></label>
                         <div class="col-md-5">
-                            <input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $user['last_name']; ?>" />
+                            <input class="form-control" name="last_name" placeholder="" type="text" value="<?php echo $user['last_name']; ?>" />
                             <span class="text-danger"><?php echo form_error('last_name'); ?></span>
                         </div>
                     </div>
@@ -65,12 +64,13 @@
 				</fieldset>
 
                 <fieldset id="edit-user-groups" class="tab-pane">
+                    <?php if ($user['admin']) : ?>
+                        <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
+                    <?php endif; ?>
                 </fieldset>
 
 				<fieldset id="edit-user-projects" class="tab-pane">
-					<?php if ($user['admin']) : ?>
-                        <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
-                    <?php endif; ?>
+
                     <?php if (!$user['admin']) : ?>
 					<table class="table table-condensed table-striped">
 					  <tr>

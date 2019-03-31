@@ -37,7 +37,7 @@ class Users extends CI_Controller {
 		
 		$this->form_validation->set_rules('user_name', 'Username', 'trim|required');
 		$this->form_validation->set_rules('user_email', 'Email', 'trim|required');
-		$this->form_validation->set_rules('display_name', 'Name', 'trim|required');
+		//$this->form_validation->set_rules('display_name', 'Name', 'trim|required');
 		
 		if ($this->form_validation->run() === FALSE)
 	    {
@@ -50,7 +50,7 @@ class Users extends CI_Controller {
 
 			if(sizeof($_POST) > 0){
 				$em = $this->extractUserData();
-				$data['title'] = 'Edit User ' . $em['display_name'];
+				$data['title'] = 'Edit User ' . $em['first_name'] . ' ' .  $em['last_name'];
 				$data['creating'] = false;
 			} else {
 				if ($user_id !== false){
@@ -58,7 +58,7 @@ class Users extends CI_Controller {
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
-						$data['title'] = 'Edit User ' . $em['display_name'];
+						$data['title'] = 'Edit User ' . $em['first_name'] . ' ' .  $em['last_name'];
 						$data['creating'] = false;
 					}
 				}
@@ -118,12 +118,16 @@ class Users extends CI_Controller {
     }
 
 	private function extractUserData(){
-		$data = array(
-			'user_id' => $this->input->post('user_id'),
+
+        $id = $this->input->post('user_id');
+
+        $data = array(
+			'user_id' => $id,
 			'user_name' => $this->input->post('user_name'),
 			'user_email' => $this->input->post('user_email'),
-			'display_name' => $this->input->post('display_name'),
-			'admin' => $this->input->post('admin'),
+			'first_name' => $this->input->post('first_name'),
+			'last_name' => $this->input->post('last_name'),
+			'admin' => $this->ion_auth->is_admin($id),
             'organization' => $this->input->post('organization')
 		);
 

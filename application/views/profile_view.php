@@ -1,5 +1,5 @@
 <div class="page-header clearfix">
-    <h1 class="col-md-8"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $user->display_name; ?></h1>
+    <h1 class="col-md-8"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $user->first_name . ' ' . $user->last_name; ?></h1>
 </div>
 
 	<div class="row">

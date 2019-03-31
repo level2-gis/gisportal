@@ -11,7 +11,7 @@ class User_model extends CI_Model
     public function get_users()
     {
         $this->db->order_by('user_name', 'ASC');
-        $query = $this->db->get('users');
+        $query = $this->db->get('users_view');
         return $query->result_array();
     }
 

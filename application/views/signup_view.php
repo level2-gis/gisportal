@@ -51,7 +51,7 @@
 				<button name="cancel" type="reset" class="btn btn-info"><?php echo $this->lang->line('gp_cancel'); ?></button>
 			</div>
 			<?php echo form_close(); ?>
-			<?php echo $this->session->flashdata('msg'); ?>
+			<?php echo $this->session->flashdata('message'); ?>
 		</div>
 	</div>
 	<div class="row">

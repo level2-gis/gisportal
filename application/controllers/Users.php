@@ -67,7 +67,8 @@ class Users extends CI_Controller {
 			}
 			
 			$data['user'] = $em;
-            $data['logged_in'] = true;
+            $data['user']['admin'] = $this->ion_auth->is_admin($user_id);
+			$data['logged_in'] = true;
             $data['is_admin'] = true;
 
 			$this->loadmeta($data);

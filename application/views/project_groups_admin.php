@@ -18,6 +18,7 @@
             <th data-sortable="true" data-field="gp_projects_title"><?php echo $this->lang->line('gp_projects_title'); ?></th>
             <th data-sortable="true" data-field="gp_base_layers"><?php echo $this->lang->line('gp_base_layers'); ?></th>
             <th data-sortable="true" data-field="gp_overlay_layers"><?php echo $this->lang->line('gp_overlay_layers'); ?></th>
+            <th data-sortable="true" data-field="gp_users"><?php echo $this->lang->line('gp_users_title'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
@@ -30,6 +31,7 @@
                 <td class="col-md-1"><?php echo $groups_item['projects']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['base_layers']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['extra_layers']; ?></td>
+                <td class="col-md-1"><?php echo $groups_item['users']; ?></td>
                 <td class="col-md-2">
                     <a class="btn btn-primary" href="<?php echo site_url('project_groups/edit/'.$groups_item['id']); ?>">
                         <?php echo $this->lang->line('gp_edit'); ?>

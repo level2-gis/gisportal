@@ -132,13 +132,13 @@ $config['argon2_admin_params']		= [
  */
 $config['site_title']                 = "GIS PORTAL";       // Site Title,
 $config['admin_email']                = "admin@example.com"; // Admin Email, admin@example.com
-$config['default_group']              = 'members';           // Default group, use name
+$config['default_group']              = 'user';             // Default group, use name
 $config['admin_group']                = 'admin';             // Default administrators group, use name
 $config['identity']                   = 'email';            // You can use any unique column in your table as identity column.
 $config['identity_alt']               = 'username';		     //												    The values in this column, alongside password, will be used for login purposes
 															 //   IMPORTANT: If you are changing it from the default (email),
 															 //   		   update the UNIQUE constraint in your DB */
-$config['min_password_length']        = 8;                   // Minimum Required Length of Password (not enforced by lib - see note above)
+$config['min_password_length']        = 4;                   // Minimum Required Length of Password (not enforced by lib - see note above)
 $config['email_activation']           = FALSE;               // Email Activation for registration
 $config['manual_activation']          = FALSE;               // Manual Activation for registration
 $config['remember_users']             = TRUE;                // Allow users to be remembered and enable auto-login
@@ -146,7 +146,7 @@ $config['user_expire']                = 86500;               // How long to reme
 $config['user_extend_on_login']       = FALSE;               // Extend the users cookies every time they auto-login
 $config['track_login_attempts']       = TRUE;                // Track the number of failed login attempts for each user or ip.
 $config['track_login_ip_address']     = TRUE;                // Track login attempts by IP Address, if FALSE will track based on identity. (Default: TRUE)
-$config['maximum_login_attempts']     = 3;                   // The maximum number of failed login attempts.
+$config['maximum_login_attempts']     = 5;                   // The maximum number of failed login attempts.
 $config['lockout_time']               = 600;                 /* The number of seconds to lockout an account due to exceeded attempts
 																You should not use a value below 60 (1 minute) */
 $config['forgot_password_expiration'] = 1800;                /* The number of seconds after which a forgot password request will expire. If set to 0, forgot password requests will not expire.

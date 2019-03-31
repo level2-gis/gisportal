@@ -21,6 +21,8 @@ class Layers extends CI_Controller{
         $data['title'] = $this->lang->line('gp_layers_title');
         $data['layers'] = $this->layer_model->get_layers();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = true;
 
         $this->load->view('templates/header', $data);
         $this->load->view('layers_admin', $data);
@@ -101,6 +103,8 @@ class Layers extends CI_Controller{
                 }
             }
             $data['layer'] = $em;
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
 
             $this->load->view('templates/header', $data);
             $this->load->view('layer_edit', $data);

@@ -20,6 +20,8 @@ class Users extends CI_Controller {
 		$data['title'] = $this->lang->line('gp_users_title');
         $data['users'] = $this->user_model->get_users();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = true;
 
         $this->load->view('templates/header', $data);
         $this->load->view('users_admin', $data);
@@ -63,9 +65,11 @@ class Users extends CI_Controller {
 					}
 				}
 			}
-
 			
 			$data['user'] = $em;
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
+
 			$this->loadmeta($data);
 
 			$this->load->view('templates/header', $data);

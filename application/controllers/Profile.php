@@ -24,12 +24,14 @@ class Profile extends CI_Controller
         $data['projects_public'] = $this->project_model->get_public_projects();
         $data['available_languages'] = get_languages();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
 
         $this->load->view('templates/header', $data);
 
         if ($this->session->userdata('user_id') !== null) {
             $data['user'] = $details;
-            if ($details->admin) {
+            if ($data['is_admin']) {
                 $data['user']->display_name .= ' (Administrator)';
             }
             //$data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);

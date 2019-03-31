@@ -22,13 +22,13 @@ class Home extends CI_Controller
         $data['title'] = $this->lang->line('gp_clients_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-
-        $admin = $this->ion_auth->is_admin();
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
 
         if ($this->session->userdata('user_id') !== null) {
             $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
             $groups = $this->user_model->get_project_group_ids($user->user_id);
-            $data['clients'] = $this->client_model->get_clients($groups, $admin, false);
+            $data['clients'] = $this->client_model->get_clients($groups, $data['is_admin'], false);
         } else {
             $data['clients'] = null;
         }

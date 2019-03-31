@@ -22,6 +22,8 @@ class Project_groups extends CI_Controller
         $data['title'] = $this->lang->line('gp_groups_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['groups'] = $this->project_group_model->get_project_groups();
+        $data['logged_in'] = true;
+        $data['is_admin'] = true;
 
         $this->load->view('templates/header', $data);
         $this->load->view('project_groups_admin', $data);
@@ -65,6 +67,8 @@ class Project_groups extends CI_Controller
                 ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
                 //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
             );
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
 
             $this->loadmeta($data);
 
@@ -125,6 +129,8 @@ class Project_groups extends CI_Controller
                 ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
                 //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
             );
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_group_create', $data);

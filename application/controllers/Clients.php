@@ -22,6 +22,8 @@ class Clients extends CI_Controller
         $data['title'] = $this->lang->line('gp_clients_title');
         $data['clients'] = $this->client_model->get_clients();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = true;
 
         $this->load->view('templates/header', $data);
         $this->load->view('clients_admin', $data);
@@ -45,6 +47,8 @@ class Clients extends CI_Controller
         $data['client'] = $client;
         $data['title'] = $client->display_name;
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
 
         $this->load->view('templates/header', $data);
 
@@ -109,6 +113,8 @@ class Clients extends CI_Controller
             }
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);

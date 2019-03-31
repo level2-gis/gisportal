@@ -26,15 +26,22 @@ class Projects extends CI_Controller
 
 		$data['title'] = $this->lang->line('gp_projects_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
         $groups = $this->user_model->get_project_group_ids($user->user_id);
-        $admin = $this->ion_auth->is_admin();
 
-        $data['projects'] = $this->project_model->get_projects(false, $groups, $admin);
+        $data['projects'] = $this->project_model->get_projects(false, $groups,  $data['is_admin']);
 
         $this->load->view('templates/header', $data);
-        $this->load->view('projects_admin', $data);
+
+        if(empty($data['projects'])) {
+            $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+        } else {
+            $this->load->view('projects_admin', $data);
+        }
+
         $this->load->view('templates/footer', $data);
     }
 
@@ -54,12 +61,13 @@ class Projects extends CI_Controller
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
         $groups = $this->user_model->get_project_group_ids($user->user_id);
-        $admin = $this->ion_auth->is_admin();
 
-        $data['projects'] = $this->project_model->get_projects($client_id, $groups, $admin);
+        $data['projects'] = $this->project_model->get_projects($client_id, $groups,  $data['is_admin']);
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects', $data);
@@ -399,6 +407,8 @@ class Projects extends CI_Controller
             $data['image'] = $this->getImage($em['name']);
             $data['clients'] = $this->client_model->get_clients();
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
 
             $this->loadmeta($data);
             $this->qgisinfo($data);
@@ -462,6 +472,9 @@ class Projects extends CI_Controller
             $data['templates'] = $this->project_model->get_templates();
             $data['action'] = $action;
             $data['clients'] = $this->client_model->get_clients();
+            $data['logged_in'] = true;
+            $data['is_admin'] = true;
+
             if($em["client_id"]) {
                 $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
             } else {
@@ -566,6 +579,8 @@ class Projects extends CI_Controller
         $data['project'] = (array)$project;
         $data['clients'] = $this->client_model->get_clients();
         $data['services'] = [];
+        $data['logged_in'] = true;
+        $data['is_admin'] = true;
 
         $this->qgisinfo($data);
         if($data['qgis_check']['valid']) {

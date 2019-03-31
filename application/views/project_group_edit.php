@@ -87,7 +87,7 @@
                     <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
                     <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
                     <!--              <th data-sortable="true" data-field="gp_contact">--><?php //echo ucfirst($this->lang->line('gp_contact')); ?><!--</th>-->
-                    <?php if ($this->ion_auth->is_admin()){ ?>
+                    <?php if ($is_admin){ ?>
                         <th><?php echo $this->lang->line('gp_action'); ?></th>
                     <?php } ?>
                 </tr>
@@ -104,7 +104,7 @@
                         <td class="col-md-2"><?php echo $project_item['group']; ?></td>
                         <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
                         <!--          <td class="col-md-2">--><?php //echo $project_item['contact']; ?><!--</td>-->
-                        <?php if ($this->ion_auth->is_admin()){ ?>
+                        <?php if ($is_admin){ ?>
                             <td class="col-md-2">
                                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
                                     <?php echo $this->lang->line('gp_edit'); ?>
@@ -131,7 +131,7 @@
                     <th data-sortable="true" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
                     <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
                     <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
-                    <?php if ($this->ion_auth->is_admin()){ ?>
+                    <?php if ($is_admin){ ?>
                         <th><?php echo $this->lang->line('gp_action'); ?></th>
                     <?php } ?>
                 </tr>

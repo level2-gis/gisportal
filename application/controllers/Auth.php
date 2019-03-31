@@ -22,42 +22,36 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * FIX
+	 * TODO FIX, od tu lahko pobereš aktivacijo/deaktivacijo userja in edit userja ker je drugače kot imaš
 	 */
-	public function index()
-	{
+    public function index()
+    {
 
-		if (!$this->ion_auth->logged_in())
-		{
-			// redirect them to the login page
-			redirect('auth/login', 'refresh');
-		}
-		else if (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
-		{
-			// redirect them to the home page because they must be an administrator to view this
-			show_error('You must be an administrator to view this page.');
-		}
-		else
-		{
-			$this->data['title'] = $this->lang->line('index_heading');
-			
-			// set the flash data error message if there is one
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+        if (!$this->ion_auth->is_admin()) {
+            redirect('/auth/login');
+        }
 
-			//list the users
-			$this->data['users'] = $this->ion_auth->users()->result();
-			
-			//USAGE NOTE - you can do more complicated queries like this
-			//$this->data['users'] = $this->ion_auth->where('field', 'value')->users()->result();
-			
-			foreach ($this->data['users'] as $k => $user)
-			{
-				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
-			}
+        $this->data['title'] = $this->lang->line('index_heading');
 
-			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $this->data);
-		}
-	}
+        // set the flash data error message if there is one
+        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+        //list the users
+        $this->data['users'] = $this->ion_auth->users()->result();
+
+        $this->data['logged_in'] = true;
+        $this->data['is_admin'] = true;
+
+        //USAGE NOTE - you can do more complicated queries like this
+        //$this->data['users'] = $this->ion_auth->where('field', 'value')->users()->result();
+
+        foreach ($this->data['users'] as $k => $user) {
+            $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
+        }
+
+        $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $this->data);
+
+    }
 
 	/**
 	 * Log the user in
@@ -86,7 +80,8 @@ class Auth extends CI_Controller
 
         $this->data['title'] = $this->lang->line('login_heading');
         $this->data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-
+        $this->data['logged_in'] = false;
+        $this->data['is_admin'] = false;
 
         // validate form input
 		$this->form_validation->set_rules('identity', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
@@ -198,6 +193,9 @@ class Auth extends CI_Controller
 				'value' => $user->id,
 			];
 
+            $this->data['logged_in'] = true;
+            $this->data['is_admin'] = $this->ion_auth->is_admin();
+
 			// render
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'change_password', $this->data);
 		}
@@ -256,6 +254,9 @@ class Auth extends CI_Controller
 			{
 				$this->data['identity_label'] = $this->lang->line('forgot_password_email_identity_label');
 			}
+
+            $this->data['logged_in'] = false;
+            $this->data['is_admin'] = false;
 
 			// set any errors and display the form
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
@@ -350,6 +351,9 @@ class Auth extends CI_Controller
 				];
 				$this->data['csrf'] = $this->_get_csrf_nonce();
 				$this->data['code'] = $code;
+
+                $this->data['logged_in'] = true;
+                $this->data['is_admin'] = $this->ion_auth->is_admin();
 
 				// render
 				$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'reset_password', $this->data);
@@ -453,6 +457,9 @@ class Auth extends CI_Controller
 			$this->data['csrf'] = $this->_get_csrf_nonce();
 			$this->data['user'] = $this->ion_auth->user($id)->row();
 
+            $this->data['logged_in'] = true;
+            $this->data['is_admin'] = true;
+
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'deactivate_user', $this->data);
 		}
 		else
@@ -485,10 +492,10 @@ class Auth extends CI_Controller
 	{
 		$this->data['title'] = $this->lang->line('create_user_heading');
 
-		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
-		{
-			redirect('auth', 'refresh');
-		}
+		//if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
+		//{
+		//	redirect('auth', 'refresh');
+		//}
 
 		$tables = $this->config->item('tables', 'ion_auth');
 		$identity_column = $this->config->item('identity', 'ion_auth');
@@ -585,6 +592,9 @@ class Auth extends CI_Controller
 				'type' => 'password',
 				'value' => $this->form_validation->set_value('password_confirm'),
 			];
+
+            $this->data['logged_in'] = $this->ion_auth->logged_in();
+            $this->data['is_admin'] = $this->data['logged_in'] ? $this->ion_auth->is_admin() : false;
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user', $this->data);
 		}
@@ -741,6 +751,9 @@ class Auth extends CI_Controller
 			'type' => 'password'
 		];
 
+        $this->data['logged_in'] = true;
+        $this->data['is_admin'] = true;
+
 		$this->_render_page('auth/edit_user', $this->data);
 	}
 
@@ -788,6 +801,9 @@ class Auth extends CI_Controller
 				'type'  => 'text',
 				'value' => $this->form_validation->set_value('description'),
 			];
+
+            $this->data['logged_in'] = true;
+            $this->data['is_admin'] = true;
 
 			$this->_render_page('auth/create_group', $this->data);
 		}
@@ -857,6 +873,9 @@ class Auth extends CI_Controller
 			'type'  => 'text',
 			'value' => $this->form_validation->set_value('group_description', $group->description),
 		];
+
+        $this->data['logged_in'] = true;
+        $this->data['is_admin'] = true;
 
 		$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'edit_group', $this->data);
 	}

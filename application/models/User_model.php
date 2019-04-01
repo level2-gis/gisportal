@@ -75,6 +75,16 @@ class User_model extends CI_Model
         return $query->result_array();
     }
 
+    function get_project_groups_for_user($user_id) {
+        $this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, p.name, p.display_name, p.client, p.client_name, r.display_name as role');
+        $this->db->from('users_roles ur');
+        $this->db->join('project_groups_view p', 'p.id = ur.project_group_id');
+        $this->db->join('roles r', 'r.id = ur.role_id');
+        $this->db->where('user_id',$user_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
 	// get user
 	function get_user_by_id($id)
 	{

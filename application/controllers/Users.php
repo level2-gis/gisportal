@@ -68,10 +68,9 @@ class Users extends CI_Controller {
 			
 			$data['user'] = $em;
             $data['user']['admin'] = $this->ion_auth->is_admin($user_id);
+            $data['groups'] = $this->user_model->get_project_groups_for_user($user_id);
 			$data['logged_in'] = true;
             $data['is_admin'] = true;
-
-			$this->loadmeta($data);
 
 			$this->load->view('templates/header', $data);
 			$this->load->view('user_edit', $data);
@@ -147,12 +146,4 @@ class Users extends CI_Controller {
 		
 		return $data;
 	}
-
-	private function loadmeta(&$data){
-		//$data['projects'] = $this->user_model->get_projectusers($data['user']['user_id']);
-        $data['groups'] = [];
-	}
-
-
-
 }

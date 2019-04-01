@@ -66,39 +66,35 @@
                 <fieldset id="edit-user-groups" class="tab-pane">
                     <?php if ($user['admin']) : ?>
                         <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
+                    <?php else: ?>
+                        <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
+                            <thead>
+                            <tr>
+                                <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+                                <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                                <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
+                                <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
+                                <?php if ($is_admin){ ?>
+                                    <th><?php echo $this->lang->line('gp_action'); ?></th>
+                                <?php } ?>
+                            </tr>
+                            </thead>
+                            <?php foreach ($groups as $group_item): ?>
+                                <tr>
+                                    <td class="col-md-2"><?php echo $group_item['name']; ?></td>
+                                    <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
+                                    <td class="col-md-2"><?php echo $group_item['client']; ?></td>
+                                    <td class="col-md-2"><?php echo $group_item['role']; ?></td>
+                                    <td></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
                     <?php endif; ?>
                 </fieldset>
-
-				<fieldset id="edit-user-projects" class="tab-pane">
-
-                    <?php if (!$user['admin']) : ?>
-					<table class="table table-condensed table-striped">
-					  <tr>
-						<th><?php echo $this->lang->line('gp_access'); ?></th>
-						<th><?php echo $this->lang->line('gp_code'); ?></th>
-						<th><?php echo $this->lang->line('gp_name'); ?></th>
-						<th><?php echo $this->lang->line('gp_client'); ?></th>
-					  </tr>
-					  <?php foreach ($projects as $project_item): ?>
-
-						<tr>
-<!--						   <td class="col-md-1">-->
-<!--							 <input type="checkbox" name="project_ids[]" value="--><?php //echo $project_item['id']; ?><!--" --><?php //if ($project_item['selected']) { echo "checked='checked'"; }; ?><!-- />-->
-<!--						   </td>-->
-						  <td class="col-md-2"><?php echo $project_item['name']; ?></td>
-						  <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
-						  <td class="col-md-2"><?php echo $project_item['client_name']; ?></td>
-						</tr>
-						<?php endforeach; ?>
-					</table>
-                    <?php endif; ?>
-
-
-				</fieldset>
-
 			</div>
 			<div id="fixed-actions">
-				<div class="form-actions col-md-offset-1 col-md-8">
+				<hr>
+                <div class="form-actions col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
 					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>

@@ -16,7 +16,9 @@ class Home extends CI_Controller
     {
         if (!$this->ion_auth->logged_in())
         {
-            $this->session->set_flashdata('message','<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
+            if(empty($this->session->flashdata('message'))) {
+                $this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
+            }
             redirect('auth/login', 'refresh');
         }
 

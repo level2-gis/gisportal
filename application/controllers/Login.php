@@ -15,7 +15,9 @@ class Login extends CI_Controller
     {
         $ru = $this->input->get('ru');
 
-        $this->session->set_flashdata('message','<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
+        if(empty($this->session->flashdata('message'))) {
+            $this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
+        }
 
         if (empty($ru)) {
             redirect("/auth/login");

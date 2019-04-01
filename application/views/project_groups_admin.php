@@ -7,7 +7,7 @@
 
 <?php echo $this->session->flashdata('alert'); ?>
 
-<div class="col-md-12">
+<div>
 
     <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
         <thead>
@@ -15,6 +15,7 @@
             <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
+            <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
             <th data-sortable="true" data-field="gp_projects_title"><?php echo $this->lang->line('gp_projects_title'); ?></th>
             <th data-sortable="true" data-field="gp_base_layers"><?php echo $this->lang->line('gp_base_layers'); ?></th>
             <th data-sortable="true" data-field="gp_overlay_layers"><?php echo $this->lang->line('gp_overlay_layers'); ?></th>
@@ -28,11 +29,12 @@
                 <td class="col-md-2"><?php echo $groups_item['name']; ?></td>
                 <td class="col-md-2"><?php echo $groups_item['display_name']; ?></td>
                 <td class="col-md-2"><?php echo $groups_item['client']; ?></td>
+                <td class="col-md-1"><?php echo $groups_item['project_crs']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['projects']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['base_layers']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['extra_layers']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['users']; ?></td>
-                <td class="col-md-2">
+                <td class="col-md-1">
                     <a class="btn btn-primary" href="<?php echo site_url('project_groups/edit/'.$groups_item['id']); ?>">
                         <?php echo $this->lang->line('gp_edit'); ?>
                     </a>

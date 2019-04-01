@@ -48,7 +48,8 @@
 
 
 			<div id="fixed-actions">
-				<div class="form-actions col-md-offset-1 col-md-8">
+                <hr>
+                <div class="form-actions col-md-8">
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
 					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>

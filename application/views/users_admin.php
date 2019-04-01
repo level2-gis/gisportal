@@ -4,7 +4,7 @@
 
 <?php echo $this->session->flashdata('alert'); ?>
 
-<div class="col-md-12">
+<div>
 
     <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true" data-show-columns="true">
         <thead>

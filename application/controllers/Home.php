@@ -8,6 +8,7 @@ class Home extends CI_Controller
         $this->load->model('client_model');
         $this->load->model('user_model');
         $this->load->model('project_model');
+        $this->load->model('portal_model');
         $this->load->helper(array('url', 'html'));
     }
 
@@ -15,7 +16,7 @@ class Home extends CI_Controller
     {
         if (!$this->ion_auth->logged_in())
         {
-            $this->session->set_flashdata('msg','<div class="alert alert-info text-center">' . $this->lang->line('gp_welcome_message') . '</div>');
+            $this->session->set_flashdata('message','<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
             redirect('auth/login', 'refresh');
         }
 

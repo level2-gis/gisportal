@@ -13,6 +13,7 @@ class Auth extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
+        $this->load->model('portal_model');
 		$this->load->library(['ion_auth', 'form_validation']);
 		$this->load->helper(['url', 'language']);
 
@@ -77,6 +78,8 @@ class Auth extends CI_Controller
         if ($this->ion_auth->logged_in()) {
             empty($ref) ? redirect("/") : redirect($ref);
         }
+
+        $this->session->set_flashdata('message','<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
 
         $this->data['title'] = $this->lang->line('login_heading');
         $this->data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');

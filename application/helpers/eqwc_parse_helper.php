@@ -44,7 +44,7 @@ if (!function_exists('set_check')) {
         if ($true) {
             return "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
         } else {
-            return "<span class='glyphicon glyphicon-minus' aria-hidden='true'></span>";
+            return "";  //"<span class='glyphicon glyphicon-minus' aria-hidden='true'></span>";
         }
     }
 }

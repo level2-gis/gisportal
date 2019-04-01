@@ -25,7 +25,7 @@
 
 		<tr>
             <td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
-            <td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
+            <td class="col-md-1"><?php echo $user_item['last_name']; ?></td>
             <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
             <td class="col-md-2"><?php echo $user_item['user_email']; ?></td>
             <td class="col-md-1"><?php echo $user_item['organization']; ?></td>

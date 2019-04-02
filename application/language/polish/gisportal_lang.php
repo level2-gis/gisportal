@@ -130,6 +130,7 @@ $lang['gp_sub_group'] = 'sub group';
 $lang['gp_role'] = 'Role';
 $lang['gp_name_help'] = 'Must be unique, alpha numeric name and safe to use on filesystem.';
 $lang['gp_new_group'] = 'New Group';
+$lang['gp_remove'] = 'Remove';
 
 //client side strings, must be added to /views/templates/header.php
 $lang['gp_client_required'] = 'Client required';

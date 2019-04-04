@@ -131,14 +131,24 @@ $lang['gp_role'] = 'Role';
 $lang['gp_name_help'] = 'Must be unique, alpha numeric name and safe to use on filesystem.';
 $lang['gp_new_group'] = 'New Group';
 $lang['gp_remove'] = 'Remove';
+$lang['gp_find_user'] = 'Find user';
+$lang['gp_add'] = 'Add';
+$lang['gp_all'] = 'All';
+$lang['gp_copy'] = 'Copy';
 
 //client side strings, must be added to /views/templates/header.php
+//keep {name} as it is!!
 $lang['gp_client_required'] = 'Client required';
+$lang['gp_user_required'] = 'User required';
 $lang['gp_no_file'] = 'No file';
 $lang['gp_only_qgs'] = 'Only QGS project file allowed';
 $lang['gp_diff_proj'] = 'Different projects';
 $lang['gp_del_proj'] = 'Are you sure you want to remove project: <b>{name}</b> from database?</br></br>Note: No files will be deleted from server!';
 $lang['gp_del_general'] = 'Are you sure you want to remove <b>{name}</b> from database?</br></br>{name} can only be deleted if it is not related to other elements in database!';
+$lang['gp_del_role'] = 'Are you sure you want to remove access for</br><b>{name}</b>?';
+$lang['gp_del_all_roles'] = 'Are you sure you want to remove all access permissions for</br><b>{name}</b>?';
+$lang['gp_copy_title'] = 'Copy user access from selected group to this group.';
+$lang['gp_copy_msg'] = 'Please select group to copy from:';
 $lang['gp_stop_service'] = 'Are you sure you want to stop service: <b>{name}</b>?';
 $lang['gp_publish_public_service'] = 'You are about to publish public service: <b>{name}</b></br></br>Everyone with URL link will be able to use service. Continue?';
 $lang['gp_publish_private_service'] = 'You are about to publish private service: <b>{name}</b></br></br>Only users with permission and URL link will be able to use service. Access is done with Apache configuration. Continue?';

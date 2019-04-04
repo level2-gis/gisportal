@@ -16,27 +16,46 @@
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20180310"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20180315"); ?>">
+
+    <style>
+        /*does not work on Firefox and MS browsers*/
+        input[type="search"]::-webkit-search-cancel-button {
+            -webkit-appearance: searchfield-cancel-button;
+        }
+    </style>
+
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-filestyle.min.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/bootbox.min.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap3-typeahead.min.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/bootbox.all.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190320"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190403"); ?>"></script>
     <script type="text/javascript">
         var GP = {
             clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
+            userRequired:           '<?php echo $this->lang->line('gp_user_required'); ?>',
             noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',
             onlyQgs:                '<?php echo $this->lang->line('gp_only_qgs'); ?>',
             differentProjects:      '<?php echo $this->lang->line('gp_diff_proj'); ?>',
             deleteProject:          '<?php echo $this->lang->line('gp_del_proj'); ?>',
+            deleteRole:             '<?php echo $this->lang->line('gp_del_role'); ?>',
+            deleteAllRoles:         '<?php echo $this->lang->line('gp_del_all_roles'); ?>',
             deleteGeneral:          '<?php echo $this->lang->line('gp_del_general'); ?>',
             stopService:            '<?php echo $this->lang->line('gp_stop_service'); ?>',
             publishPublicService:   '<?php echo $this->lang->line('gp_publish_public_service'); ?>',
             publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>',
-            selectGroup:            '<?php echo $this->lang->line('gp_select_group'); ?>'
+            selectGroup:            '<?php echo $this->lang->line('gp_select_group'); ?>',
+            copyTitle:              '<?php echo $this->lang->line('gp_copy_title'); ?>',
+            copyMsg:                '<?php echo $this->lang->line('gp_copy_msg'); ?>'
         };
+
+        //other stuff, not language strings
+        GP.settings = {};
+        GP.settings.siteUrl = '<?php echo site_url(); ?>';
+
     </script>
 </head>
 

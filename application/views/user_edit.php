@@ -1,4 +1,4 @@
-	<div class="page-header clearfix">
+    <div class="page-header clearfix">
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
 	</div>
 
@@ -11,7 +11,7 @@
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-user-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-			  <li><a href="#edit-user-groups" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
+			  <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -63,7 +63,7 @@
 		
 				</fieldset>
 
-                <fieldset id="edit-user-groups" class="tab-pane">
+                <fieldset id="edit-access" class="tab-pane">
                     <?php if ($user['admin']) : ?>
                         <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
                     <?php else: ?>
@@ -74,9 +74,7 @@
                                 <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
                                 <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
                                 <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
-                                <?php if ($is_admin){ ?>
-                                    <th><?php echo $this->lang->line('gp_action'); ?></th>
-                                <?php } ?>
+                                <th><?php echo $this->lang->line('gp_action'); ?></th>
                             </tr>
                             </thead>
                             <?php foreach ($groups as $group_item): ?>
@@ -84,8 +82,10 @@
                                     <td class="col-md-2"><?php echo $group_item['name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['client']; ?></td>
-                                    <td class="col-md-2"><?php echo $group_item['role']; ?></td>
-                                    <td></td>
+                                    <td class="col-md-3"><a href="#" onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' .  $user['user_id'] . ',' . $group_item['role_id']; ?>,'<?php echo site_url(); ?>','users')"><?php echo $group_item['role']; ?></a></td>
+                                    <td>
+                                        <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'delete msg','<?php echo site_url('users/remove_role/'.$group_item['project_group_id'].'/'.$user['user_id'].'/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>

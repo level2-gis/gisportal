@@ -14,7 +14,7 @@
         <li><a href="#edit-group-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
         <li><a href="#edit-group-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
         <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
-        <li><a href="#edit-group-users" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
+        <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
     </ul>
 
     <div class="tab-content">
@@ -28,7 +28,7 @@
 
                 <div class="col-md-5">
                     <select class="form-control" name="client_id" id="client_id"
-                            onchange="onClientChange(this,<?php echo $action; ?>);">
+                            onchange="onClientChange(this,null);">
                         <?php foreach ($clients as $client_item): ?>
                             <option <?php if ($client_item['id'] == $group['client_id']) {
                                 echo "selected='selected'";
@@ -121,31 +121,52 @@
             </table>
         </fieldset>
 
-        <fieldset id="edit-group-users" class="tab-pane">
-            <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
+        <fieldset id="edit-access" class="tab-pane">
+            <div class="form-inline well">
+                <div class="form-group">
+                    <select class="form-control" id="user_role" name="user_role">
+                        <?php foreach ($roles as $role): ?>
+                            <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="search" id="user_search" class="form-control typeahead" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
+                           autocomplete="off">
+                    <a onclick="addRole(<?php echo $group['id']; ?>,'project_groups')"
+                       class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
+                </div>
+                <div class="pull-right">
+                    <a id="copyBtn" class="btn btn-info" onclick="chooseGroup(<?php echo $group['client_id']; ?>,<?php echo $group['id']; ?>)"><?php echo $this->lang->line('gp_copy'); ?></a>
+                    <a class="btn btn-danger"
+                       onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?> <?php echo $this->lang->line('gp_all'); ?></a>                </div>
+            </div>
+
+              <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
                 <thead>
                 <tr>
-
-                    <th data-sortable="true" data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>
-                    <th data-sortable="true" data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
-                    <th data-sortable="true" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
+                    <th data-sortable="true"
+                        data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>
+                    <th data-sortable="true"
+                        data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
+                    <th data-sortable="true"
+                        data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
                     <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
                     <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
-                    <?php if ($is_admin){ ?>
-                        <th><?php echo $this->lang->line('gp_action'); ?></th>
-                    <?php } ?>
+                    <th><?php echo $this->lang->line('gp_action'); ?></th>
                 </tr>
                 </thead>
                 <?php foreach ($users as $user_item): ?>
-
                     <tr>
                         <td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
                         <td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
                         <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
                         <td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-                        <td class="col-md-2"><?php echo $user_item['role']; ?></td>
-                        <td></td>
-
+                        <td class="col-md-3"><a href="#"
+                                                onclick="switchRole(<?php echo $group['id'] . ',' . $user_item['user_id'] . ',' . $user_item['role_id']; ?>,'project_groups')"><?php echo $user_item['role']; ?></a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger"
+                               onclick="confirmLink(GP.deleteRole,'User: <?php echo $user_item['first_name'] . ' ' . $user_item['last_name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/' . $user_item['user_id'] . '/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
@@ -284,3 +305,30 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $.fn.typeahead.Constructor.prototype.clear = function () { this.$element.data("active", null); };
+
+    $('input.typeahead').typeahead({
+        minLength: 2,
+        autoSelect: false,
+        changeInputOnMove: false,
+        source:  function (query, process) {
+            return $.get(GP.settings.siteUrl + '/users/search', { query: query }, function (data) {
+                //console.log(data);
+                data = $.parseJSON(data);
+                return process(data);
+            });
+        }
+    });
+
+    //dobiš aktivno
+    //$('input.typeahead').typeahead("getActive");
+
+    $('input[type=search]').on('search', function () {
+        // search logic here
+        $('.typeahead').typeahead('clear');
+    });
+
+</script>

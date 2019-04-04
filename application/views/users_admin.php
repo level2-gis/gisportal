@@ -28,17 +28,18 @@
             <td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
             <td class="col-md-1"><?php echo $user_item['last_name']; ?></td>
             <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
-            <td class="col-md-2"><?php echo $user_item['user_email']; ?></td>
+            <td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
             <td class="col-md-1"><?php echo $user_item['organization']; ?></td>
             <td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
             <td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
             <td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>
             <td class="col-md-1"><?php echo set_check_icon($user_item['admin']); ?></td>
+            <td class="col-md-1"><?php echo $user_item['groups']; ?></td>
 		  <td class="col-md-1">
 			<a class="btn btn-primary" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>">
 				<?php echo $this->lang->line('gp_edit'); ?>
 			</a>
-            <td class="col-md-1"><?php echo $user_item['groups']; ?></td>
+
 		  </td>
 		</tr>
 		<?php endforeach; ?>

@@ -18,6 +18,7 @@
             <th data-sortable="true" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
             <th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
             <th data-sortable="true" data-field="gp_admin">Admin</th>
+            <th data-sortable="true" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
@@ -37,7 +38,7 @@
 			<a class="btn btn-primary" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>">
 				<?php echo $this->lang->line('gp_edit'); ?>
 			</a>
-
+            <td class="col-md-1"><?php echo $user_item['groups']; ?></td>
 		  </td>
 		</tr>
 		<?php endforeach; ?>

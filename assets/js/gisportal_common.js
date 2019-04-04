@@ -5,6 +5,18 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+$(function(){
+    var hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+    $('.nav-tabs a').click(function (e) {
+        $(this).tab('show');
+        var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+        window.location.hash = this.hash;
+        $('html,body').scrollTop(scrollmem);
+    });
+});
+
 function showError(msg) {
     bootbox.alert({
         title: "Error",
@@ -57,10 +69,78 @@ function confirmLink(msg,name,url) {
     });
 }
 
+function addRole(group, back) {
+    //get user and role from ui
+    var user = $('input.typeahead').typeahead("getActive");
+    var role_id = $('#user_role').val();
+    if(!user) {
+        showError(GP.userRequired);
+        return false;
+    }
+
+    window.location = GP.settings.siteUrl + "/users/add_role/"+group+"/"+user.id+"/"+role_id+"/"+back;
+}
+
+function chooseGroup(client, target) {
+
+    //disable button
+    $('#copyBtn').css("pointer-events", "none");
+
+    var groups = [];
+
+    var url = GP.settings.siteUrl + '/project_groups/get_list/' + client + '/true';
+
+
+    $.getJSON(url, function (data) {
+        $.each(data, function (key, entry) {
+            if(entry.id == target) {
+                return;
+            }
+            groups.push({"value": entry.id, "text": entry.name});
+        });
+
+        if(groups.length == 0) {
+            showError("No available groups!");
+            return false;
+        }
+
+        bootbox.prompt({
+            title: GP.copyTitle,
+            message: GP.copyMsg,
+            inputType: 'radio',
+            inputOptions: groups,
+            callback: function (source) {
+                //result = group_id or null
+                if(source) {
+                    window.location = GP.settings.siteUrl + "/users/copy_roles/"+source+"/"+target;
+                }
+            }
+        });
+
+        //enable button back
+        $('#copyBtn').css("pointer-events", "auto");
+    });
+}
+
+function switchRole(group, user, role, back) {
+    //assuming we only have roles 20 and 21 to switch between.
+    var newRole = 0;
+
+    if (role == 20) {
+        newRole = 21;
+    } else if (role == 21) {
+        newRole = 20;
+    }
+
+    if(newRole>0) {
+        window.location = GP.settings.siteUrl + "/users/set_role/"+group+"/"+user+"/"+newRole+"/"+back;
+    }
+}
+
 function onProjectGroupEditClick() {
     var group = $('#project_group_id').val();
     if(group) {
-        var url = window.location.origin + '/project_groups/edit/' + group;
+        var url = GP.settings.siteUrl + '/project_groups/edit/' + group;
         window.location = url;
     }
 }
@@ -81,7 +161,7 @@ function onClientChange(sel,action)
     var div = $('#templateDiv');
     var group = $('#project_group_id');
     var groupDiv = $('#groupDiv');
-    var url = window.location.origin+'/project_groups/get_list/'+val;
+    var url = GP.settings.siteUrl+'/project_groups/get_list/'+val;
 
     if(action == 2) {
         div = $('#uploadDiv');

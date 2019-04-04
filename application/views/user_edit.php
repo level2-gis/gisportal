@@ -82,9 +82,9 @@
                                     <td class="col-md-2"><?php echo $group_item['name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['client']; ?></td>
-                                    <td class="col-md-3"><a href="#" onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' .  $user['user_id'] . ',' . $group_item['role_id']; ?>,'<?php echo site_url(); ?>','users')"><?php echo $group_item['role']; ?></a></td>
+                                    <td class="col-md-3"><a href="#" onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' .  $user['user_id'] . ',' . $group_item['role_id']; ?>,'users')"><?php echo $group_item['role']; ?></a></td>
                                     <td>
-                                        <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'delete msg','<?php echo site_url('users/remove_role/'.$group_item['project_group_id'].'/'.$user['user_id'].'/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                                        <a class="btn btn-danger" onclick="confirmLink(GP.deleteRole,'Group: <?php echo $group_item['name']; ?>','<?php echo site_url('users/remove_role/' . $group_item['project_group_id'] . '/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

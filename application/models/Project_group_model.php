@@ -58,7 +58,7 @@ class Project_group_model extends CI_Model {
 
     function upsert_project_group($data) {
         $id = null;
-        if($data->id) {
+        if(isset($data->id)) {
             $id = $data->id;
         }
 

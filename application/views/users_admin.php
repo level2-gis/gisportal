@@ -14,7 +14,7 @@
             <th data-sortable="true" data-visible="false" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
             <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
             <th data-sortable="true" data-field="gp_organization"><?php echo $this->lang->line('gp_organization'); ?></th>
-            <th data-sortable="true" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
+            <th data-sortable="true" data-visible="false" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
             <th data-sortable="true" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
             <th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
             <th data-sortable="true" data-field="gp_admin">Admin</th>

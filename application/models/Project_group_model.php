@@ -16,7 +16,7 @@ class Project_group_model extends CI_Model {
         return $query->result()[0];
     }
 
-    function get_project_groups($client_id = FALSE, $list_only = FALSE)
+    function get_project_groups($client_id = FALSE, $list_only = FALSE, $skip_no_access = FALSE)
     {
         //$this->db->order_by('type', 'ASC');
         $this->db->order_by('name', 'ASC');
@@ -27,6 +27,10 @@ class Project_group_model extends CI_Model {
 
         if($client_id) {
             $this->db->where('client_id', $client_id);
+        }
+
+        if($skip_no_access) {
+            $this->db->where('users >', 0);
         }
 
         $query = $this->db->get('project_groups_view');

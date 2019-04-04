@@ -8,9 +8,35 @@ class User_model extends CI_Model
     }
 
 
-    public function get_users()
+    function get_users()
     {
         $this->db->order_by('user_name', 'ASC');
+        $query = $this->db->get('users_view');
+        return $query->result_array();
+    }
+
+    /**
+     * This method by default does not return administrators
+     *
+     * @param $text
+     * @return mixed
+     */
+    function search($text) {
+
+        //$this->db->like('first_name', $text);
+        //$this->db->or_like('last_name', $text);
+        //$this->db->or_like('user_email', $text);
+
+        //for ilike search we have to use direct sql
+        $where = "(first_name ILIKE '%".$text."%' ESCAPE '!' OR ";
+        $where.= "last_name ILIKE '%".$text."%' ESCAPE '!' OR ";
+        $where.= "user_email ILIKE '%".$text."%' ESCAPE '!')";
+
+        $this->db->select("user_id AS id, last_name || ' ' || first_name || ' (' || user_email || ')' AS name", FALSE);
+        $this->db->where($where);
+        $this->db->where('admin', FALSE);
+        $this->db->order_by('name', 'DESC');
+
         $query = $this->db->get('users_view');
         return $query->result_array();
     }
@@ -54,9 +80,65 @@ class User_model extends CI_Model
 //		return $query->result();
 //	}
 
-    function get_project_group_ids($id) {
+    function insert_project_group_role($data) {
+
+        //TODO check if user already has role for that group
+
+        return $this->db->insert('users_roles', $data);
+    }
+
+    function update_project_group_role($group_id, $user_id, $role_id) {
+
+        $this->db->set('role_id', $role_id);
+        $this->db->where('user_id', $user_id);
+        $this->db->where('project_group_id', $group_id);
+        $this->db->update('users_roles');
+
+        if ($this->db->affected_rows() === 1)
+        {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    function delete_project_group_role($group_id, $user_id) {
+
+        if(!empty($user_id)) {
+            $this->db->where('user_id', $user_id);
+        }
+        $this->db->where('project_group_id', $group_id);
+        $this->db->delete('users_roles');
+
+        if ($this->db->affected_rows() >= 1)
+        {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    function has_project_group_role($user_id, $project_group_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('project_group_id', $project_group_id);
+        $query = $this->db->get('users_roles');
+        $row = $query->row();
+
+        return isset($row);
+    }
+
+    function copy_project_group_roles($source, $destination) {
+        $this->db->select('user_id, role_id,'.$destination.' AS project_group_id');
+        $this->db->where('project_group_id ='.$source.' AND idx((select array_agg(user_id) from users_roles where project_group_id = '.$destination.'), user_id) = 0');
+        $query = $this->db->get('users_roles');
+        $insert = $query->result_array();
+        if ($insert) {
+            $res = $this->db->insert_batch('users_roles',$insert);
+        }
+    }
+
+    function get_project_group_ids($user_id) {
         $this->db->select('array_agg(project_group_id) AS project_group_ids');
-        $this->db->where('user_id', $id);
+        $this->db->where('user_id', $user_id);
         $this->db->where('project_group_id !=', null);
         $query = $this->db->get('users_roles');
         if ($query->result()) {
@@ -65,12 +147,20 @@ class User_model extends CI_Model
         return null;
     }
 
+    /**
+     * This method does not return administrators
+     *
+     * @param $group_id
+     * @return mixed
+     */
     function get_project_group_users($group_id) {
         $this->db->select('ur.id, ur.user_id, role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name');
         $this->db->from('users_roles ur');
-        $this->db->join('users', 'users.user_id = ur.user_id');
+        $this->db->join('users_view', 'users_view.user_id = ur.user_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('project_group_id',$group_id);
+        $this->db->where('users_view.admin',FALSE);
+        $this->db->order_by('users_view.last_name','ASC');
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -82,6 +172,16 @@ class User_model extends CI_Model
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('user_id',$user_id);
         $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function get_roles() {
+
+        $this->db->order_by('id', 'ASC');
+        $this->db->select("id, display_name AS name", FALSE);
+        $this->db->where('id >=', 20);
+
+        $query = $this->db->get('roles');
         return $query->result_array();
     }
 

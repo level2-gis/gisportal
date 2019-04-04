@@ -63,6 +63,7 @@ class Project_groups extends CI_Controller
             $data['clients'] = $this->client_model->get_clients();
             $data['projects'] = $this->project_model->get_projects($group->client_id, '{'.$id.'}', FALSE);
             $data['users'] = $this->user_model->get_project_group_users($id);
+            $data['roles'] = $this->user_model->get_roles();
             $data['types'] = array(
                 ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
                 //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
@@ -91,8 +92,7 @@ class Project_groups extends CI_Controller
             if ($this->input->post('return') == null) {
                 redirect('/project_groups/edit/' . $group_id);
             } else {
-                //TODO save on group succesful, where redirect?
-                redirect('/projects');
+                redirect('/project_groups');
             }
         }
 
@@ -158,13 +158,13 @@ class Project_groups extends CI_Controller
     /*
      * Returns array of client project groups for dropdown list
      */
-    public function get_list($client_id = FALSE)
+    public function get_list($client_id = FALSE, $skip_no_access = FALSE)
     {
         $groups = [];
         $list_only = true;
 
         if (!empty($client_id)) {
-            $groups = $this->project_group_model->get_project_groups($client_id, $list_only);
+            $groups = $this->project_group_model->get_project_groups($client_id, $list_only, $skip_no_access);
         }
 
 //        $filter = ['id', 'name'];

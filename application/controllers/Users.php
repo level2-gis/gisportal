@@ -31,7 +31,7 @@ class Users extends CI_Controller {
     public function edit($user_id = false)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/auth/login?ru=/' . uri_string());
+            redirect('/');
         }
 
 		$this->load->helper('form');
@@ -91,7 +91,7 @@ class Users extends CI_Controller {
 
     }
 
-    function remove($id)
+    public function remove($id)
     {
         if (!$this->ion_auth->is_admin()){
             redirect('/');
@@ -119,6 +119,149 @@ class Users extends CI_Controller {
         }
         else
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The users you are trying to delete does not exist.</div>');
+    }
+
+    public function add_role($group_id, $user_id, $role_id, $back) {
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            $data = [
+                "user_id"           => $user_id,
+                "role_id"           => $role_id,
+                "project_group_id"  => $group_id
+            ];
+
+            //check first if user already has role for that group
+            $check = $this->user_model->has_project_group_role($user_id,$group_id);
+            if($check) {
+                throw new Exception('Cannot add new role: User already has access!');
+            }
+
+            $res = $this->user_model->insert_project_group_role($data);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            $id = 0;
+            if($back == 'users') {
+                $id = $user_id;
+            } else if ($back == 'project_groups') {
+                $id = $group_id;
+            }
+            if($id>0) {
+                redirect($back . '/edit/' . $id . '#edit-access');
+            }
+        }
+    }
+
+    public function set_role($group_id, $user_id, $role_id, $back) {
+
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            $res = $this->user_model->update_project_group_role($group_id,$user_id,$role_id);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            $id = 0;
+            if($back == 'users') {
+                $id = $user_id;
+            } else if ($back == 'project_groups') {
+                $id = $group_id;
+            }
+            if($id>0) {
+                redirect($back . '/edit/' . $id . '#edit-access');
+            }
+        }
+    }
+
+    public function remove_role($group_id, $user_id, $back) {
+
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            if($user_id === 'null') {
+                $user_id = null;
+            }
+
+            $res = $this->user_model->delete_project_group_role($group_id,$user_id);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            $id = 0;
+            if($back == 'users') {
+                $id = $user_id;
+            } else if ($back == 'project_groups') {
+                $id = $group_id;
+            }
+            if($id>0) {
+                redirect($back . '/edit/' . $id . '#edit-access');
+            }
+        }
+    }
+
+    public function copy_roles($source, $destination) {
+
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            if(empty($source) || empty($destination)) {
+                throw new Exception('Missing data!');
+            }
+
+            $res = $this->user_model->copy_project_group_roles($source,$destination);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('project_groups/edit/' . $destination . '#edit-access');
+        }
+    }
+
+    public function search() {
+
+        $query = $this->input->get('query');
+
+        if(empty($query)) {
+            return;
+        }
+
+        $result = $this->user_model->search(urldecode($query));
+
+        $this->output
+            ->set_content_type('text/html')
+            ->set_status_header(200)
+            ->set_output(json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
 	private function extractUserData(){

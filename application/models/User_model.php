@@ -32,7 +32,7 @@ class User_model extends CI_Model
         $where.= "last_name ILIKE '%".$text."%' ESCAPE '!' OR ";
         $where.= "user_email ILIKE '%".$text."%' ESCAPE '!')";
 
-        $this->db->select("user_id AS id, last_name || ' ' || first_name || ' (' || user_email || ')' AS name", FALSE);
+        $this->db->select("user_id AS id, trim(coalesce(last_name,'') || ' ' || coalesce(first_name,'')) || ' (' || user_email || ')' AS name", FALSE);
         $this->db->where($where);
         $this->db->where('admin', FALSE);
         $this->db->order_by('name', 'DESC');

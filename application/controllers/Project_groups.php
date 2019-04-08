@@ -262,7 +262,7 @@ class Project_groups extends CI_Controller
                 if (!empty($db_error['message'])) {
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
-                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_layer').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_group').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
                 redirect('/project_groups');
             }
             catch (Exception $e){

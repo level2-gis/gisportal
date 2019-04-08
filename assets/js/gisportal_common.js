@@ -81,6 +81,21 @@ function addRole(group, back) {
     window.location = GP.settings.siteUrl + "/users/add_role/"+group+"/"+user.id+"/"+role_id+"/"+back;
 }
 
+function addRoleMulti(user) {
+
+    var groups = $('#project_group_id').val();
+    var role_id = $('#user_role').val();
+
+    if(!groups || groups.length == 0) {
+        showError('Select groups');
+        return false
+    }
+
+    var arr = encodeURIComponent(groups.map(Number));
+
+    window.location = GP.settings.siteUrl + "/users/add_role_multi/"+arr+"/"+user+"/"+role_id;
+}
+
 function chooseGroup(client, target) {
 
     //disable button
@@ -172,7 +187,9 @@ function onClientChange(sel,action)
 
         //get new client groups
         group.empty();
-        group.append('<option selected="true" disabled>'+GP.selectGroup+'</option>');
+        if(action != 3) {
+            group.append('<option disabled>' + GP.selectGroup + '</option>');
+        }
         group.prop('selectedIndex', 0);
 
         $.getJSON(url, function (data) {

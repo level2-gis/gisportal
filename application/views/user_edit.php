@@ -67,6 +67,32 @@
                     <?php if ($user['admin']) : ?>
                         <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
                     <?php else: ?>
+
+                        <div class="form-inline well">
+                            <div class="form-group">
+                                <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">
+                                    <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                                    <?php foreach ($clients as $client_item): ?>
+                                        <option value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                                </select>
+
+                                <select class="form-control" style="vertical-align: top" multiple name="project_group_id" id="project_group_id">
+                                    <option value="" disabled><?php echo $this->lang->line('gp_select_groups'); ?></option>
+                                </select>
+
+                                <select class="form-control" id="user_role" name="user_role">
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <a onclick="addRoleMulti(<?php echo $user['user_id']; ?>)"
+                                   class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
+                            </div>
+                            <div class="pull-right">
+                                <a class="btn btn-danger"
+                                   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?> <?php echo $this->lang->line('gp_all'); ?></a>                </div>
+                        </div>
+
                         <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
                             <thead>
                             <tr>

@@ -1,3 +1,19 @@
+<?php
+
+/** @var string $title */
+/** @var array $group */
+/** @var array $clients */
+/** @var array $types */
+/** @var array $projects */
+/** @var array $roles */
+/** @var array $users */
+/** @var array $base_layers */
+/** @var array $extra_layers */
+/** @var boolean $is_admin */
+/** @var boolean $creating */
+
+?>
+
 <div class="page-header clearfix">
     <h1 class="col-md-8"><span><?php echo $title; ?></span></h1>
 </div>
@@ -124,13 +140,13 @@
         <fieldset id="edit-access" class="tab-pane">
             <div class="form-inline well">
                 <div class="form-group">
+                    <input type="search" id="user_search" class="form-control typeahead" size="30" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
+                           autocomplete="off">
                     <select class="form-control" id="user_role" name="user_role">
                         <?php foreach ($roles as $role): ?>
                             <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="search" id="user_search" class="form-control typeahead" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
-                           autocomplete="off">
                     <a onclick="addRole(<?php echo $group['id']; ?>,'project_groups')"
                        class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
                 </div>

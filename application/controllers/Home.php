@@ -30,7 +30,7 @@ class Home extends CI_Controller
 
         if ($this->session->userdata('user_id') !== null) {
             $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-            $groups = $this->user_model->get_project_group_ids($user->user_id);
+            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             $data['clients'] = $this->client_model->get_clients($groups, $data['is_admin'], false);
         } else {
             $data['clients'] = null;

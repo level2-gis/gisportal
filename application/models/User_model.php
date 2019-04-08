@@ -80,11 +80,20 @@ class User_model extends CI_Model
 //		return $query->result();
 //	}
 
+    /**
+     * Single project group role insert
+     * @param $data
+     * @return mixed
+     *
+     */
     function insert_project_group_role($data) {
 
-        //TODO check if user already has role for that group
-
         return $this->db->insert('users_roles', $data);
+    }
+
+    function insert_project_group_roles($data) {
+
+        $return = $this->db->insert_batch('users_roles',$data);
     }
 
     function update_project_group_role($group_id, $user_id, $role_id) {
@@ -106,7 +115,10 @@ class User_model extends CI_Model
         if(!empty($user_id)) {
             $this->db->where('user_id', $user_id);
         }
-        $this->db->where('project_group_id', $group_id);
+        if(!empty($group_id)) {
+            $this->db->where('project_group_id', $group_id);
+        }
+
         $this->db->delete('users_roles');
 
         if ($this->db->affected_rows() >= 1)
@@ -136,13 +148,21 @@ class User_model extends CI_Model
         }
     }
 
-    function get_project_group_ids($user_id) {
-        $this->db->select('array_agg(project_group_id) AS project_group_ids');
+    function get_project_group_ids($user_id, $group = FALSE) {
+        if($group) {
+            $this->db->select('array_agg(project_group_id) AS project_group_ids');
+        } else {
+            $this->db->select('project_group_id');
+        }
         $this->db->where('user_id', $user_id);
         $this->db->where('project_group_id !=', null);
         $query = $this->db->get('users_roles');
         if ($query->result()) {
-            return $query->result()[0]->project_group_ids;
+            if($group) {
+                return $query->result()[0]->project_group_ids;
+            } else {
+                return $query->result_array();
+            }
         }
         return null;
     }
@@ -171,6 +191,7 @@ class User_model extends CI_Model
         $this->db->join('project_groups_view p', 'p.id = ur.project_group_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('user_id',$user_id);
+        $this->db->order_by('p.name','ASC');
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -231,8 +252,8 @@ class User_model extends CI_Model
 		//$this->db->insert('clients', $data);
 
 		//return $this->db->insert_id();
-}
-    //TODO fix this
+    }
+
 //	function get_projectusers($userid)
 //	{
 //        $sql = "select p.id, p.name, p.display_name, c.display_name client_name, case when  u.user_id is null then false else true end selected

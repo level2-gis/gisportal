@@ -8,6 +8,7 @@ class Users extends CI_Controller {
         parent::__construct();
         $this->load->model('project_model');
         $this->load->model('user_model');
+        $this->load->model('client_model');
         $this->load->helper(array('url', 'html', 'eqwc_parse'));
     }
 
@@ -69,6 +70,8 @@ class Users extends CI_Controller {
 			$data['user'] = $em;
             $data['user']['admin'] = $this->ion_auth->is_admin($user_id);
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id);
+            $data['clients'] = $this->client_model->get_clients();
+            $data['roles'] = $this->user_model->get_roles();
 			$data['logged_in'] = true;
             $data['is_admin'] = true;
 
@@ -118,7 +121,56 @@ class Users extends CI_Controller {
             }
         }
         else
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The users you are trying to delete does not exist.</div>');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The user you are trying to delete does not exist.</div>');
+    }
+
+    public function add_role_multi($groups, $user_id, $role_id) {
+
+        function map_existing($item) {
+            return $item['project_group_id'];
+        }
+
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            $groups = urldecode($groups);
+            $groups_array = array_map("intval", explode(',', $groups));
+
+            //get existing groups for user
+            $existing_groups = $this->user_model->get_project_group_ids($user_id, FALSE);
+            if(!empty($existing_groups)) {
+                $existing_groups_array = array_map("map_existing", $existing_groups);
+                $diff = array_diff($groups_array,$existing_groups_array);
+            } else {
+                $diff = $groups_array;
+            }
+
+            $data = [];
+
+            foreach ($diff as $group) {
+                array_push($data, [
+                        "user_id" => $user_id,
+                        "role_id" => $role_id,
+                        "project_group_id" => $group
+
+                    ]
+                );
+            }
+
+            $res = $this->user_model->insert_project_group_roles($data);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('users/edit/' . $user_id . '#edit-access');
+        }
     }
 
     public function add_role($group_id, $user_id, $role_id, $back) {
@@ -199,6 +251,10 @@ class Users extends CI_Controller {
 
             if($user_id === 'null') {
                 $user_id = null;
+            }
+
+            if($group_id === 'null') {
+                $group_id = null;
             }
 
             $res = $this->user_model->delete_project_group_role($group_id,$user_id);

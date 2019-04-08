@@ -30,7 +30,7 @@ class Projects extends CI_Controller
         $data['is_admin'] = $this->ion_auth->is_admin();
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-        $groups = $this->user_model->get_project_group_ids($user->user_id);
+        $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
 
         $data['projects'] = $this->project_model->get_projects(false, $groups,  $data['is_admin']);
 
@@ -65,7 +65,7 @@ class Projects extends CI_Controller
         $data['is_admin'] = $this->ion_auth->is_admin();
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-        $groups = $this->user_model->get_project_group_ids($user->user_id);
+        $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
 
         $data['projects'] = $this->project_model->get_projects($client_id, $groups,  $data['is_admin']);
 

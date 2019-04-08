@@ -154,3 +154,4 @@ $lang['gp_stop_service'] = 'Are you sure you want to stop service: <b>{name}</b>
 $lang['gp_publish_public_service'] = 'You are about to publish public service: <b>{name}</b></br></br>Everyone with URL link will be able to use service. Continue?';
 $lang['gp_publish_private_service'] = 'You are about to publish private service: <b>{name}</b></br></br>Only users with permission and URL link will be able to use service. Access is done with Apache configuration. Continue?';
 $lang['gp_select_group'] = 'Select project group';
+$lang['gp_select_groups'] = 'Select client groups';

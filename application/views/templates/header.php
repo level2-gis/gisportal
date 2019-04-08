@@ -32,7 +32,7 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190403"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190408"); ?>"></script>
     <script type="text/javascript">
         var GP = {
             clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
@@ -49,7 +49,9 @@
             publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>',
             selectGroup:            '<?php echo $this->lang->line('gp_select_group'); ?>',
             copyTitle:              '<?php echo $this->lang->line('gp_copy_title'); ?>',
-            copyMsg:                '<?php echo $this->lang->line('gp_copy_msg'); ?>'
+            copyMsg:                '<?php echo $this->lang->line('gp_copy_msg'); ?>',
+            addGroupTitle:          '<?php echo $this->lang->line('gp_add_group_title'); ?>',
+            addGroupMsg:            '<?php echo $this->lang->line('gp_add_group_msg'); ?>'
         };
 
         //other stuff, not language strings

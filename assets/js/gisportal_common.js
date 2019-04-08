@@ -96,6 +96,21 @@ function addRoleMulti(user) {
     window.location = GP.settings.siteUrl + "/users/add_role_multi/"+arr+"/"+user+"/"+role_id;
 }
 
+function addGroup(back) {
+
+    var client_id = $('#client_id').val();
+
+    bootbox.prompt({
+        title: GP.addGroupTitle,
+        message: GP.addGroupMsg,
+        callback: function (name) {
+            if(name) {
+                window.location = GP.settings.siteUrl + "/project_groups/add_group/"+client_id+"/"+encodeURIComponent(name)+"?back="+back;
+            }
+        }
+    });
+}
+
 function chooseGroup(client, target) {
 
     //disable button

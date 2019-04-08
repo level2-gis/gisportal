@@ -155,6 +155,59 @@ class Project_groups extends CI_Controller
         }
     }
 
+
+    /**
+     * Creates new group by parameters and add info for session
+     */
+    public function add_group($client_id, $name) {
+
+        $x = $client_id;
+
+        try {
+            if (!$this->ion_auth->is_admin()){
+                throw new Exception('User not Admin!');
+            }
+
+            $back = $this->input->get('back');
+
+            $this->load->library('form_validation');
+
+            $data = [
+                "client_id" => $client_id,
+                "name"      => urldecode($name),
+                "type"      => PROJECT_GROUP
+            ];
+            $this->form_validation->set_data($data);
+
+            $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
+            $this->form_validation->set_rules('type', 'Type', 'required|integer');
+            $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
+
+            if ($this->form_validation->run() == FALSE) {
+                throw new Exception('Create group error: ' . $this->form_validation->error_string());
+            }
+
+            $id = $this->project_group_model->upsert_project_group($data);
+
+            //TODO after insert get group id and add it to session ,ali client id so it is selected in form
+
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        }
+        catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            $this->session->set_flashdata('client_id', $client_id);
+            if(!empty($id)) {
+                $this->session->set_flashdata('project_group_id', $id);
+            }
+            redirect($back);
+        }
+    }
+
     /*
      * Returns array of client project groups for dropdown list
      */

@@ -25,6 +25,8 @@
                     <?php foreach ($groups as $group_item): ?>
                         <option <?php if ($group_item['id'] == $project['project_group_id']) { echo "selected='selected'"; }; ?> value="<?php echo $group_item['id']; ?>"><?php echo $group_item['name']; ?></option>							<?php endforeach; ?>
                 </select>
+                <a onclick="addGroup('projects/create/<?php echo $action; ?>')"
+                   class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new'); ?></a>
                 <span class="text-danger"><?php echo form_error('project_group_id'); ?></span>
             </div>
         </div>

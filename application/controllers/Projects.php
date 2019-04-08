@@ -397,6 +397,10 @@ class Projects extends CI_Controller
                     $dq = $this->project_model->get_project($project_id);
                     if ($dq->id != null){
                         $em = (array)$dq;
+                        //overwrite project_group_id with session value, not saved!!!
+                        if(!empty($this->session->flashdata('project_group_id'))) {
+                            $em['project_group_id'] = $this->session->flashdata('project_group_id');
+                        }
                         $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
                         $data['creating'] = false;
                     }
@@ -467,6 +471,7 @@ class Projects extends CI_Controller
             $em["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : $this->input->post('name');
             $em["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : $this->input->post('client_id');
             $em["display_name"] = $this->input->post('display_name');
+            $em["project_group_id"] = $this->session->flashdata('project_group_id') ? $this->session->flashdata('project_group_id') : $this->input->post('project_group_id');
 
             $data['project'] = $em;
             $data['templates'] = $this->project_model->get_templates();
@@ -498,7 +503,7 @@ class Projects extends CI_Controller
             $project["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : $this->input->post('name');
             $project["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : $this->input->post('client_id');
             $project["display_name"] = $this->input->post('display_name');
-            $project["project_group_id"] = $this->input->post('project_group_id');
+            $project["project_group_id"] = $this->session->flashdata('project_group_id') ? $this->session->flashdata('project_group_id') : $this->input->post('project_group_id');
             $project["template"] = $this->input->post('template');
 
             //TODO client_id on project!

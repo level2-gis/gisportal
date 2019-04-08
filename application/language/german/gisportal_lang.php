@@ -136,6 +136,7 @@ $lang['gp_find_user'] = 'Find user';
 $lang['gp_add'] = 'Add';
 $lang['gp_all'] = 'All';
 $lang['gp_copy'] = 'Copy';
+$lang['gp_select_groups'] = 'Select client groups';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!
@@ -154,4 +155,5 @@ $lang['gp_stop_service'] = 'Are you sure you want to stop service: <b>{name}</b>
 $lang['gp_publish_public_service'] = 'You are about to publish public service: <b>{name}</b></br></br>Everyone with URL link will be able to use service. Continue?';
 $lang['gp_publish_private_service'] = 'You are about to publish private service: <b>{name}</b></br></br>Only users with permission and URL link will be able to use service. Access is done with Apache configuration. Continue?';
 $lang['gp_select_group'] = 'Select project group';
-$lang['gp_select_groups'] = 'Select client groups';
+$lang['gp_add_group_title'] = 'Add new group to selected client';
+$lang['gp_add_group_msg'] = 'Please type new group name:';

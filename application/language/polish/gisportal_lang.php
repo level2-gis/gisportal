@@ -156,3 +156,5 @@ $lang['gp_publish_private_service'] = 'You are about to publish private service:
 $lang['gp_select_group'] = 'Select project group';
 $lang['gp_add_group_title'] = 'Add new group to selected client';
 $lang['gp_add_group_msg'] = 'Please type new group name:';
+$lang['gp_admin_add'] = 'You will add user <b>{name}</b> as full portal Administrator.</br></br>Please confirm!';
+$lang['gp_admin_remove'] = 'You will remove user <b>{name}</b> from portal Administrators.</br></br>Please confirm!';

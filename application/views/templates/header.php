@@ -51,7 +51,9 @@
             copyTitle:              '<?php echo $this->lang->line('gp_copy_title'); ?>',
             copyMsg:                '<?php echo $this->lang->line('gp_copy_msg'); ?>',
             addGroupTitle:          '<?php echo $this->lang->line('gp_add_group_title'); ?>',
-            addGroupMsg:            '<?php echo $this->lang->line('gp_add_group_msg'); ?>'
+            addGroupMsg:            '<?php echo $this->lang->line('gp_add_group_msg'); ?>',
+            adminAdd:               '<?php echo $this->lang->line('gp_admin_add'); ?>',
+            adminRemove:            '<?php echo $this->lang->line('gp_admin_remove'); ?>'
         };
 
         //other stuff, not language strings

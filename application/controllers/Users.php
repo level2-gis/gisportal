@@ -72,6 +72,7 @@ class Users extends CI_Controller {
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id);
             $data['clients'] = $this->client_model->get_clients();
             $data['roles'] = $this->user_model->get_roles();
+            $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
 			$data['logged_in'] = true;
             $data['is_admin'] = true;
 
@@ -210,6 +211,30 @@ class Users extends CI_Controller {
             if($id>0) {
                 redirect($back . '/edit/' . $id . '#edit-access');
             }
+        }
+    }
+
+    public function set_admin($user_id, $admin)
+    {
+        $admin_group = 1;
+        $is_admin = (boolean)$admin;
+
+        try {
+            if (!$this->ion_auth->is_admin()) {
+                throw new Exception('User not Admin!');
+            }
+
+            if($is_admin) {
+                $this->ion_auth->remove_from_group($admin_group, $user_id);
+            } else {
+                $this->ion_auth->add_to_group($admin_group, $user_id);
+            }
+
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+        } finally {
+            $back = 'users';
+            redirect($back . '/edit/' . $user_id);
         }
     }
 

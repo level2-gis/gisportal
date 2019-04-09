@@ -1,5 +1,12 @@
     <div class="page-header clearfix">
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
+        <div class="actions  pull-right">
+            <?php if ($user['admin']) : ?>
+                <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $role_admin; ?></a>
+            <?php else: ?>
+                <a onclick="confirmLink(GP.adminAdd,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-success"><?php echo $role_admin; ?></a>
+            <?php endif; ?>
+        </div>
 	</div>
 
 	<?php echo $this->session->flashdata('alert'); ?>

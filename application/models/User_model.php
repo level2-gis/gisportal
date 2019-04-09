@@ -206,6 +206,15 @@ class User_model extends CI_Model
         return $query->result_array();
     }
 
+    function get_role($name) {
+
+        $this->db->select("id, display_name AS name", FALSE);
+        $this->db->where('name', $name);
+
+        $query = $this->db->get('roles');
+        return $query->result()[0];
+    }
+
 	// get user
 	function get_user_by_id($id)
 	{

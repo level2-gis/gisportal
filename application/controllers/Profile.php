@@ -26,13 +26,14 @@ class Profile extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
 
         $this->load->view('templates/header', $data);
 
         if ($this->session->userdata('user_id') !== null) {
             $data['user'] = $details;
             if ($data['is_admin']) {
-                $data['user']->display_name .= ' (Administrator)';
+                $data['user']->display_name .= ' ('.$data['role_admin'].')';
             }
             //$data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
 

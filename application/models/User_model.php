@@ -186,7 +186,7 @@ class User_model extends CI_Model
     }
 
     function get_project_groups_for_user($user_id) {
-        $this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, p.name, p.display_name, p.client, p.client_name, r.display_name as role');
+        $this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || \' (\' || p.name || \')\' END AS name, p.client, p.client_name, r.display_name as role');
         $this->db->from('users_roles ur');
         $this->db->join('project_groups_view p', 'p.id = ur.project_group_id');
         $this->db->join('roles r', 'r.id = ur.role_id');

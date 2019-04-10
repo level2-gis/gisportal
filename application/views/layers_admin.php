@@ -16,6 +16,7 @@
             <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_type"><?php echo $this->lang->line('gp_type'); ?></th>
+            <th data-sortable="true" data-field="gp_groups_title"><?php echo $this->lang->line('gp_groups_title'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
@@ -25,6 +26,7 @@
                 <td class="col-md-2"><?php echo $layers_item['name']; ?></td>
                 <td class="col-md-2"><?php echo $layers_item['display_name']; ?></td>
                 <td class="col-md-2"><?php echo $layers_item['type']; ?></td>
+                <td class="col-md-1"><?php echo $layers_item['groups']; ?></td>
                 <td class="col-md-2">
                     <a class="btn btn-primary" href="<?php echo site_url('layers/edit/'.$layers_item['id']); ?>">
                         <?php echo $this->lang->line('gp_edit'); ?>

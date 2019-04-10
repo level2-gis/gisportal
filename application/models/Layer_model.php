@@ -21,7 +21,7 @@ class Layer_model extends CI_Model {
         $this->db->order_by('type', 'ASC');
         $this->db->order_by('display_name', 'ASC');
 
-        $query = $this->db->get('layers');
+        $query = $this->db->get('layers_view');
         return $query->result_array();
     }
 

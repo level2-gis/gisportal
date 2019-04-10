@@ -97,3 +97,6 @@ defined('NEW_UPLOAD')       OR define('NEW_UPLOAD', 2);     // Create new projec
 
 defined('PROJECT_GROUP')    OR define('PROJECT_GROUP', 0);  // Group contains projects only
 defined('SUB_GROUP')        OR define('SUB_GROUP', 1);      // Group contains sub-groups only
+
+defined('BASE_LAYER')        OR define('BASE_LAYER', 0);      //Base layer
+defined('EXTRA_LAYER')        OR define('EXTRA_LAYER', 1);    //Extra layer or Overlay layer

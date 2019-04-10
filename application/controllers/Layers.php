@@ -5,8 +5,9 @@ class Layers extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('layer_model');
+        $this->load->model('client_model');
         $this->load->model('project_group_model');
-        $this->load->helper(array('form', 'url'));
+        $this->load->helper(array('form', 'url', 'eqwc_parse'));
     } 
 
     /*
@@ -103,6 +104,12 @@ class Layers extends CI_Controller{
                 }
             }
             $data['layer'] = $em;
+            $data['groups'] = $this->project_group_model->get_project_groups_with_layer($layer_id);
+            $data['clients'] = $this->client_model->get_clients();
+            $data['destination'] = array(
+                ['id' => BASE_LAYER, 'name' => $this->lang->line('gp_base_layers')],
+                ['id' => EXTRA_LAYER, 'name' => $this->lang->line('gp_overlay_layers')]
+            );
             $data['logged_in'] = true;
             $data['is_admin'] = true;
 

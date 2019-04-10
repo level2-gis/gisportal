@@ -274,6 +274,46 @@ class Project_groups extends CI_Controller
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The group you are trying to delete does not exist.</div>');
     }
 
+    public function add_layer($groups, $layer_id, $destination)
+    {
+        try {
+            if (!$this->ion_auth->is_admin()) {
+                throw new Exception('User not Admin!');
+            }
+
+            $groups = urldecode($groups);
+
+            $res = $this->project_group_model->add_layer($groups, $layer_id, $destination);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+        } finally {
+            redirect('layers/edit/' . $layer_id . '#edit-access');
+        }
+    }
+
+    public function remove_layer($group, $layer_id)
+    {
+        try {
+            if (!$this->ion_auth->is_admin()) {
+                throw new Exception('User not Admin!');
+            }
+
+            $res = $this->project_group_model->remove_layer($group, $layer_id);
+            $db_error = $this->db->error();
+            if (!empty($db_error['message'])) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+        } finally {
+            redirect('layers/edit/' . $layer_id . '#edit-access');
+        }
+    }
+
     public function _unique_name($name) {
 
         //test if we already have name in database

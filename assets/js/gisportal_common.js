@@ -96,6 +96,21 @@ function addRoleMulti(user) {
     window.location = GP.settings.siteUrl + "/users/add_role_multi/"+arr+"/"+user+"/"+role_id;
 }
 
+function addLayerMulti(layer) {
+
+    var groups = $('#project_group_id').val();
+    var destination = $('#destination').val();
+
+    if(!groups || groups.length == 0) {
+        showError('Select groups');
+        return false
+    }
+
+    var arr = encodeURIComponent(groups.map(Number));
+
+    window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination;
+}
+
 function addGroup(back) {
 
     var client_id = $('#client_id').val();

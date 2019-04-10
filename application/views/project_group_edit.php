@@ -122,8 +122,8 @@
                         <!--          <td class="col-md-2">--><?php //echo $project_item['contact']; ?><!--</td>-->
                         <?php if ($is_admin){ ?>
                             <td class="col-md-2">
-                                <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
-                                    <?php echo $this->lang->line('gp_edit'); ?>
+                                <a class="btn btn-default" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
+                                    <?php echo $this->lang->line('gp_project'); ?>
                                 </a>
                                 <?php if ($this->config->item('enable_project_publishing')) { ?>
                                     <a class="btn btn-info" href="<?php echo site_url('projects/services/' . $project_item['id']); ?>">
@@ -180,6 +180,7 @@
                                                 onclick="switchRole(<?php echo $group['id'] . ',' . $user_item['user_id'] . ',' . $user_item['role_id']; ?>,'project_groups')"><?php echo $user_item['role']; ?></a>
                         </td>
                         <td>
+                            <a class="btn btn-default" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>"><?php echo $this->lang->line('gp_user'); ?></a>
                             <a class="btn btn-danger"
                                onclick="confirmLink(GP.deleteRole,'User: <?php echo $user_item['first_name'] . ' ' . $user_item['last_name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/' . $user_item['user_id'] . '/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
                         </td>

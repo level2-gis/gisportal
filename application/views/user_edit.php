@@ -103,8 +103,7 @@
                         <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
                             <thead>
                             <tr>
-                                <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
-                                <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                                <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
                                 <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
                                 <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
                                 <th><?php echo $this->lang->line('gp_action'); ?></th>
@@ -113,7 +112,6 @@
                             <?php foreach ($groups as $group_item): ?>
                                 <tr>
                                     <td class="col-md-2"><?php echo $group_item['name']; ?></td>
-                                    <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['client']; ?></td>
                                     <td class="col-md-3"><a href="#" onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' .  $user['user_id'] . ',' . $group_item['role_id']; ?>,'users')"><?php echo $group_item['role']; ?></a></td>
                                     <td>

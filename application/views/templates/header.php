@@ -32,7 +32,7 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190408"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190410"); ?>"></script>
     <script type="text/javascript">
         var GP = {
             clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
@@ -44,6 +44,7 @@
             deleteRole:             '<?php echo $this->lang->line('gp_del_role'); ?>',
             deleteAllRoles:         '<?php echo $this->lang->line('gp_del_all_roles'); ?>',
             deleteGeneral:          '<?php echo $this->lang->line('gp_del_general'); ?>',
+            deleteLayerGroup:       '<?php echo $this->lang->line('gp_del_layer_group'); ?>',
             stopService:            '<?php echo $this->lang->line('gp_stop_service'); ?>',
             publishPublicService:   '<?php echo $this->lang->line('gp_publish_public_service'); ?>',
             publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>',

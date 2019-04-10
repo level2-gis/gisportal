@@ -16,10 +16,10 @@
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
             <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
-            <th data-sortable="true" data-field="gp_projects_title"><?php echo $this->lang->line('gp_projects_title'); ?></th>
-            <th data-sortable="true" data-field="gp_base_layers"><?php echo $this->lang->line('gp_base_layers'); ?></th>
-            <th data-sortable="true" data-field="gp_overlay_layers"><?php echo $this->lang->line('gp_overlay_layers'); ?></th>
-            <th data-sortable="true" data-field="gp_users"><?php echo $this->lang->line('gp_users_title'); ?></th>
+            <th data-sortable="true" data-align="right" data-field="gp_projects_title"><?php echo $this->lang->line('gp_projects_title'); ?></th>
+            <th data-sortable="true" data-align="right" data-field="gp_base_layers"><?php echo explode(' ',$this->lang->line('gp_base_layers'))[0]; ?></th>
+            <th data-sortable="true" data-align="right" data-field="gp_overlay_layers"><?php echo explode(' ',$this->lang->line('gp_overlay_layers'))[0]; ?></th>
+            <th data-sortable="true" data-align="right" data-field="gp_users"><?php echo $this->lang->line('gp_users_title'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>

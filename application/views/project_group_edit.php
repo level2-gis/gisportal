@@ -100,9 +100,7 @@
                     <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
                     <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
                     <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
-                    <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
                     <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
-                    <!--              <th data-sortable="true" data-field="gp_contact">--><?php //echo ucfirst($this->lang->line('gp_contact')); ?><!--</th>-->
                     <?php if ($is_admin){ ?>
                         <th><?php echo $this->lang->line('gp_action'); ?></th>
                     <?php } ?>
@@ -117,9 +115,7 @@
                         <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
                         <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
                         <td class="col-md-2"><?php echo $project_item['client']; ?></td>
-                        <td class="col-md-2"><?php echo $project_item['group']; ?></td>
                         <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
-                        <!--          <td class="col-md-2">--><?php //echo $project_item['contact']; ?><!--</td>-->
                         <?php if ($is_admin){ ?>
                             <td class="col-md-2">
                                 <a class="btn btn-default" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">
@@ -179,7 +175,7 @@
                         <td class="col-md-3"><a href="#"
                                                 onclick="switchRole(<?php echo $group['id'] . ',' . $user_item['user_id'] . ',' . $user_item['role_id']; ?>,'project_groups')"><?php echo $user_item['role']; ?></a>
                         </td>
-                        <td>
+                        <td class="col-md-2">
                             <a class="btn btn-default" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>"><?php echo $this->lang->line('gp_user'); ?></a>
                             <a class="btn btn-danger"
                                onclick="confirmLink(GP.deleteRole,'User: <?php echo $user_item['first_name'] . ' ' . $user_item['last_name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/' . $user_item['user_id'] . '/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>

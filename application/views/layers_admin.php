@@ -16,7 +16,7 @@
             <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_type"><?php echo $this->lang->line('gp_type'); ?></th>
-            <th data-sortable="true" data-field="gp_groups_title"><?php echo $this->lang->line('gp_groups_title'); ?></th>
+            <th data-sortable="true" data-align="right" data-field="gp_groups_title"><?php echo $this->lang->line('gp_groups_title'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>

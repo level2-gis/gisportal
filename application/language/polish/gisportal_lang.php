@@ -126,7 +126,7 @@ $lang['gp_services_info'] = 'Publish project using QGIS Server as OGC Web Servic
 $lang['gp_groups_title'] = 'Groups';
 $lang['gp_group'] = 'Group';
 $lang['gp_project_group'] = 'project group';
-$lang['gp_sub_group'] = 'sub group';
+$lang['gp_sub_group'] = 'menu group';
 $lang['gp_role'] = 'Role';
 $lang['gp_name_help'] = 'Must be unique, alpha numeric name and safe to use on filesystem.';
 $lang['gp_new_group'] = 'New Group';
@@ -136,6 +136,8 @@ $lang['gp_add'] = 'Add';
 $lang['gp_all'] = 'All';
 $lang['gp_copy'] = 'Copy';
 $lang['gp_select_groups'] = 'Select client groups';
+$lang['gp_parent'] = 'Parent';
+$lang['gp_items'] = 'Items';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

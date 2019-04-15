@@ -1,4 +1,5 @@
 <div class="col-md-12">
+    <p class="help-block"><?php echo $admin_navigation; ?></p>
     <div class="row form-group">
         <label for="qgis_check"
                class="control-label col-md-2"><?php echo ($this->lang->line('gp_qgis_project') . ' ' . $project['name']); ?>

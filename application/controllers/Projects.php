@@ -411,6 +411,7 @@ class Projects extends CI_Controller
             $data['image'] = $this->getImage($em['name']);
             $data['clients'] = $this->client_model->get_clients();
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
+            $data['admin_navigation'] = $this->build_admin_navigation($em);
             $data['logged_in'] = true;
             $data['is_admin'] = true;
 
@@ -934,5 +935,34 @@ class Projects extends CI_Controller
         );
 
         $this->session->unset_userdata($sess_items);
+    }
+
+    private function get_name($el) {
+        return empty($el['display_name']) ? $el['name'] : $el['display_name'];
+    }
+
+    private function build_parent_link($id, $sep, &$result) {
+        $new_group = (array)$this->project_group_model->get_project_group($id);
+        $new_id = $new_group['parent_id'];
+        $result = anchor('project_groups/edit/'.$new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        return $new_id;
+    }
+
+    private function build_admin_navigation($group)
+    {
+        $sep = ' > ';
+
+        //this is current group, last in the tree, does not have link
+        $group_full = $this->get_name($group);
+        $parent_id = $group['project_group_id'];
+
+        while (!empty($parent_id)) {
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+        }
+
+        $client = $this->client_model->get_client($group['client_id']);
+        $client_full = anchor('clients/edit/'.$client->id, $client->display_name);
+
+        return $client_full . $sep . $group_full;
     }
 }

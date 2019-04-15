@@ -9,7 +9,14 @@
 		echo form_open('clients/edit/' . $client['id'], $attributes); ?>
 			<input name="id" type="hidden" value="<?php echo $client['id']; ?>" />
 
-			<fieldset id="edit-location-meta">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#edit-client-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
+            <li><a href="#edit-client-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>
+        </ul>
+
+        <div class="tab-content">
+
+			<fieldset id="edit-client-meta" class="tab-pane active">
 				<div class="form-group">
 					<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 					<div class="col-md-5">
@@ -54,6 +61,36 @@
                 </div>
             </fieldset>
 
+            <fieldset id="edit-client-items" class="tab-pane">
+
+                <table id="table" data-pagination="true" data-search="false" data-toggle="table" data-detail-view="true" data-detail-filter="openSubGroups"
+                       data-show-pagination-switch="false">
+                    <thead>
+                    <tr>
+                        <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+                        <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                        <th data-visible="false" data-field="gp_type">Type</th>
+                        <th data-visible="false" data-field="gp_items">Items</th>
+                        <th data-field="gp_action"><?php echo $this->lang->line('gp_action'); ?></th>
+                    </tr>
+                    </thead>
+                    <?php foreach ($items as $group_item): ?>
+                        <tr>
+                            <td class="col-md-2"><?php echo $group_item['name']; ?></td>
+                            <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
+                            <td><?php echo $group_item['type']; ?></td>
+                            <td><?php echo json_encode($group_item['items']); ?></td>
+                            <td>
+                                <?php if ($group_item['type'] == PROJECT_GROUP) :?>
+                                    <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['id']); ?>"><?php echo $this->lang->line('gp_group'); ?></a>
+                                <?php elseif ($group_item['type'] == SUB_GROUP) :?>
+                                    <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['id']); ?>"><?php echo ucwords($this->lang->line('gp_sub_group')); ?></a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </fieldset>
 
 			<div id="fixed-actions">
                 <hr>
@@ -75,3 +112,28 @@
 		</form>
 
 	</div>
+</div>
+
+    <script type="text/javascript">
+
+        var $table = $('#table');
+        $table.bootstrapTable({
+            onExpandRow: function (index, row, $detail) {
+                $detail.html('<div class="col-md-8 col-md-offset-1"><table></table></div>').find('table').bootstrapTable({
+                    columns: [{
+                        field: 'name',
+                        title: GP.name
+                    }, {
+                        field: 'display_name',
+                        title: GP.displayName
+                    }, {
+                        field: 'id',
+                        title: GP.action,
+                        formatter: makeGroupAction
+                    }],
+                    data: JSON.parse(row.gp_items)
+                });
+            }
+        });
+
+    </script>

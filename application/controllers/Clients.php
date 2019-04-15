@@ -9,6 +9,7 @@ class Clients extends CI_Controller
         parent::__construct();
         $this->load->model('client_model');
         $this->load->model('project_model');
+        $this->load->model('project_group_model');
         $this->load->model('qgisproject_model');
         $this->load->helper(array('form', 'url', 'html', 'path', 'eqwc_dir', 'file', 'date', 'number'));
     }
@@ -111,6 +112,7 @@ class Clients extends CI_Controller
                     }
                 }
             }
+            $data['items'] = $this->build_child_groups($em['id'], null);
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
             $data['logged_in'] = true;
@@ -396,6 +398,25 @@ class Clients extends CI_Controller
         }
 
         return true;
+    }
+
+    private function build_child_groups($client_id, $group_id)
+    {
+        $ret = $this->project_group_model->get_child_groups($client_id,$group_id);
+
+        //TODO currently only one level below main
+        $i=0;
+        foreach ($ret as $el) {
+            if($el['type'] == SUB_GROUP) {
+                $ret2 =  $this->project_group_model->get_child_groups(null,$el['id']);
+                $ret[$i]['items'] = $ret2;
+            } else {
+                $ret[$i]['items'] = [];
+            }
+            $i++;
+        }
+
+        return $ret;
     }
 
 }

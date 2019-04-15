@@ -21,16 +21,22 @@
 <?php echo $this->session->flashdata('alert'); ?>
 
 <div class="col-md-12">
+    <p class="help-block"><?php echo $admin_navigation; ?></p>
+
     <?php $attributes = array("class" => "form-horizontal");
     echo form_open('project_groups/edit/' . $group['id'], $attributes); ?>
     <input name="id" type="hidden" value="<?php echo $group['id']; ?>"/>
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="#edit-group-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-        <li><a href="#edit-group-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
-        <li><a href="#edit-group-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
-        <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
-        <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
+        <?php if ( $group['type'] == PROJECT_GROUP) : ?>
+            <li><a href="#edit-group-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
+            <li><a href="#edit-group-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
+            <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
+            <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
+        <?php elseif ( $group['type'] == SUB_GROUP) : ?>
+            <li><a href="#edit-group-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>
+        <?php endif; ?>
     </ul>
 
     <div class="tab-content">
@@ -44,7 +50,7 @@
 
                 <div class="col-md-5">
                     <select class="form-control" name="client_id" id="client_id"
-                            onchange="onClientChange(this,null);">
+                            onchange="getParentGroups(this,<?php echo $group['id']; ?>);">
                         <?php foreach ($clients as $client_item): ?>
                             <option <?php if ($client_item['id'] == $group['client_id']) {
                                 echo "selected='selected'";
@@ -76,6 +82,21 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_parent'); ?> <?php echo $this->lang->line('gp_group'); ?></label>
+
+                <div class="col-md-5">
+                    <select class="form-control" name="parent_id" id="parent_id">
+                        <option value=""></option>
+                        <?php foreach ($parents as $parent): ?>
+                            <option <?php if ($parent['id'] == $group['parent_id']) {
+                                echo "selected='selected'";
+                            }; ?> value="<?php echo $parent['id']; ?>"><?php echo $parent['name']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="text-danger"><?php echo form_error('parent_id'); ?></span>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
 
                 <div class="col-md-5">
@@ -92,6 +113,7 @@
 
         </fieldset>
 
+        <?php if ( $group['type'] == PROJECT_GROUP) : ?>
         <fieldset id="edit-group-projects" class="tab-pane">
             <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
                 <thead>
@@ -291,7 +313,38 @@
 
             </div>
         </fieldset>
+        <?php endif; ?>
 
+        <fieldset id="edit-group-items" class="tab-pane">
+
+            <table id="table" data-pagination="true" data-search="false" data-toggle="table" data-detail-view="true" data-detail-filter="openSubGroups"
+                   data-show-pagination-switch="false">
+                <thead>
+                <tr>
+                    <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+                    <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                    <th data-visible="false" data-field="gp_type">Type</th>
+                    <th data-visible="false" data-field="gp_items">Items</th>
+                    <th data-field="gp_action"><?php echo $this->lang->line('gp_action'); ?></th>
+                </tr>
+                </thead>
+                <?php foreach ($items as $group_item): ?>
+                    <tr>
+                        <td class="col-md-2"><?php echo $group_item['name']; ?></td>
+                        <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
+                        <td><?php echo $group_item['type']; ?></td>
+                        <td><?php echo json_encode($group_item['items']); ?></td>
+                        <td>
+                            <?php if ($group_item['type'] == PROJECT_GROUP) :?>
+                                <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['id']); ?>"><?php echo $this->lang->line('gp_group'); ?></a>
+                            <?php elseif ($group_item['type'] == SUB_GROUP) :?>
+                                <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['id']); ?>"><?php echo ucwords($this->lang->line('gp_sub_group')); ?></a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </fieldset>
 
         <div id="fixed-actions">
             <hr>
@@ -342,6 +395,26 @@
     $('input[type=search]').on('search', function () {
         // search logic here
         $('.typeahead').typeahead('clear');
+    });
+
+    var $table = $('#table');
+    $table.bootstrapTable({
+        onExpandRow: function (index, row, $detail) {
+            $detail.html('<div class="col-md-8 col-md-offset-1"><table></table></div>').find('table').bootstrapTable({
+                columns: [{
+                    field: 'name',
+                    title: GP.name
+                }, {
+                    field: 'display_name',
+                    title: GP.displayName
+                }, {
+                    field: 'id',
+                    title: GP.action,
+                    formatter: makeGroupAction
+                }],
+                data: JSON.parse(row.gp_items)
+            });
+        }
     });
 
 </script>

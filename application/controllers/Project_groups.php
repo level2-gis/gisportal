@@ -37,7 +37,7 @@ class Project_groups extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
-        $group = $this->project_group_model->get_project_group($id);
+        $group = (array)$this->project_group_model->get_project_group($id);
 
         if(!isset($group)) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Group does not exist.</div>');
@@ -57,17 +57,41 @@ class Project_groups extends CI_Controller
             if(sizeof($_POST) > 0) {
                 $group = $this->extractPostData();
             }
-            $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_group') . ' ' . $group->name;
+            $g_type = $group['type'];
+            $title = empty($group['display_name']) ? $group['name'] : $group['display_name'];
+
+
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-            $data['group'] = (array)$group;
+            $data['group'] = $group;
             $data['clients'] = $this->client_model->get_clients();
-            $data['projects'] = $this->project_model->get_projects($group->client_id, '{'.$id.'}', FALSE);
-            $data['users'] = $this->user_model->get_project_group_users($id);
             $data['roles'] = $this->user_model->get_roles();
-            $data['types'] = array(
-                ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
-                //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
-            );
+            $data['parents'] = $this->project_group_model->get_parents($group['client_id'], $id);
+            $data['types'] = [];
+
+            if($g_type == PROJECT_GROUP) {
+
+                $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_group') . ' ' . $title;
+                $data['projects'] = $this->project_model->get_projects($group['client_id'], '{'.$id.'}', FALSE);
+                $data['users'] = $this->user_model->get_project_group_users($id);
+
+                array_push($data['types'],['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]);
+                //only allow edit type if there are none projects on the group
+                if(count($data['projects']) == 0) {
+                    array_push($data['types'],['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]);
+                }
+            } else if ($g_type == SUB_GROUP) {
+
+                $data['title'] = $this->lang->line('gp_edit') . ' ' . ucwords($this->lang->line('gp_sub_group')) . ' ' . $title;
+                $data['items'] = $this->build_child_groups(null, $group['id']);
+
+                //only allow edit type if there are none child groups for this subgroup
+                if(count($data['items']) == 0) {
+                    array_push($data['types'],['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]);
+                }
+                array_push($data['types'],['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]);
+            }
+
+            $data['admin_navigation'] = $this->build_admin_navigation($group);
             $data['logged_in'] = true;
             $data['is_admin'] = true;
 
@@ -113,21 +137,26 @@ class Project_groups extends CI_Controller
 
         $data['creating'] = true;
 
-        $group = new stdClass();
-        $group->name = $this->input->post('name');
-        $group->client_id = $this->input->post('client_id');
-        $group->display_name = $this->input->post('display_name');
-        $group->type = $this->input->post('type');
+        if(sizeof($_POST) > 0) {
+            $group = $this->extractPostData();
+        } else {
+            $group = $this->project_group_model->new_group();
+        }
 
         if ($this->form_validation->run() == FALSE) {
 
             $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_group');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-            $data['group'] = (array)$group;
+            $data['group'] = $group;
             $data['clients'] = $this->client_model->get_clients();
+            if($group['client_id']) {
+                $data['parents'] = $this->project_group_model->get_parents($group['client_id'], null);
+            } else {
+                $data['parents'] = [];
+            }
             $data['types'] = array(
-                ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]
-                //TODO not implemented ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
+                ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')],
+                ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
             );
             $data['logged_in'] = true;
             $data['is_admin'] = true;
@@ -206,6 +235,24 @@ class Project_groups extends CI_Controller
             }
             redirect($back);
         }
+    }
+
+    public function get_parents($client_id = FALSE, $id = FALSE)
+    {
+        $groups = [];
+
+        if($id=='null') {
+            $id = null;
+        }
+
+        if (!empty($client_id)) {
+            $groups = $this->project_group_model->get_parents($client_id, $id);
+        }
+
+        $this->output
+            ->set_content_type('text/html')
+            ->set_status_header(200)
+            ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     /*
@@ -340,11 +387,11 @@ class Project_groups extends CI_Controller
 
     private function extractPostData() {
 
-        return (object)array(
+        return array(
             'id' => $this->input->post('id'),
             'name' => $this->input->post('name'),
             'display_name' => set_null($this->input->post('display_name')),
-            'parent_id' => $this->input->post('parent_id'),
+            'parent_id' => set_null($this->input->post('parent_id')),
             'type' => $this->input->post('type'),
             'client_id' => $this->input->post('client_id'),
             'base_layers_ids' => $this->input->post('base_layers_ids'),
@@ -357,5 +404,53 @@ class Project_groups extends CI_Controller
         $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['base_layers_ids']);
         $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['extra_layers_ids']);
 
+    }
+
+    private function get_name($el) {
+        return empty($el['display_name']) ? $el['name'] : $el['display_name'];
+    }
+
+    private function build_parent_link($id, $sep, &$result) {
+        $new_group = (array)$this->project_group_model->get_project_group($id);
+        $new_id = $new_group['parent_id'];
+        $result = anchor('project_groups/edit/'.$new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        return $new_id;
+    }
+
+    private function build_admin_navigation($group)
+    {
+        $sep = ' > ';
+
+        //this is current group, last in the tree, does not have link
+        $group_full = $this->get_name($group);
+        $parent_id = $group['parent_id'];
+
+        while (!empty($parent_id)) {
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+        }
+
+        $client = $this->client_model->get_client($group['client_id']);
+        $client_full = anchor('clients/edit/'.$client->id, $client->display_name);
+
+        return $client_full . $sep . $group_full;
+    }
+
+    private function build_child_groups($client_id, $group_id)
+    {
+        $ret = $this->project_group_model->get_child_groups($client_id,$group_id);
+
+        //TODO currently only one level below main
+        $i=0;
+        foreach ($ret as $el) {
+            if($el['type'] == SUB_GROUP) {
+                $ret2 =  $this->project_group_model->get_child_groups(null,$el['id']);
+                $ret[$i]['items'] = $ret2;
+            } else {
+                $ret[$i]['items'] = [];
+            }
+            $i++;
+        }
+
+        return $ret;
     }
 }

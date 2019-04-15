@@ -5,18 +5,6 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-$(function(){
-    var hash = window.location.hash;
-    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
-
-    $('.nav-tabs a').click(function (e) {
-        $(this).tab('show');
-        var scrollmem = $('body').scrollTop() || $('html').scrollTop();
-        window.location.hash = this.hash;
-        $('html,body').scrollTop(scrollmem);
-    });
-});
-
 function showError(msg) {
     bootbox.alert({
         title: "Error",
@@ -200,6 +188,28 @@ function onGroupChange(id,sel) {
     }
 }
 
+function getParentGroups(sel, group)
+{
+    var val = sel.value;
+    var list = $('#parent_id');
+
+    var url = GP.settings.siteUrl+'/project_groups/get_parents/'+val+'/'+group;
+
+    if (val > 0) {
+
+        //get new parent groups
+        list.empty();
+        list.append('<option></option>');
+        list.prop('selectedIndex', 0);
+
+        $.getJSON(url, function (data) {
+            $.each(data, function (key, entry) {
+                list.append($('<option></option>').attr('value', entry.id).text(entry.name));
+            })
+        });
+    }
+}
+
 function onClientChange(sel,action)
 {
     var val = sel.value;
@@ -270,3 +280,23 @@ function moveDown(list) {
 //        $('select').moveAllToListAndDelete('#lstBox2', '#lstBox1');
 //        e.preventDefault();
 //    });
+
+function openSubGroups(index, row) {
+    return row.gp_type == 1;
+
+}
+
+function makeGroupAction(value, row) {
+
+    var type = row.type;
+    var text;
+
+    //project
+    if(type == 0) {
+        text = GP.group;
+    } else if (type == 1) {
+        text = GP.menuGroup;
+    }
+
+    return '<a class="btn btn-default" href="'+GP.settings.siteUrl+'/project_groups/edit/'+value+'">'+text+'</a>';
+}

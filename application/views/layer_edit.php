@@ -12,7 +12,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#edit-layer-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
             <?php if ( $creating === false && !empty($layer['id']) ) : ?>
-            <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
+                <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
             <?php endif; ?>
         </ul>
 

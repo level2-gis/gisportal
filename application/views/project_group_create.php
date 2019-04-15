@@ -10,7 +10,7 @@
         <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
 
         <div class="col-md-5">
-            <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,null);">
+            <select class="form-control" name="client_id" id="client_id" onchange="getParentGroups(this,null);">
                 <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                 <?php foreach ($clients as $client_item): ?>
                     <option <?php if ($client_item['id'] == $group['client_id']) {
@@ -43,16 +43,28 @@
             <span class="text-danger"><?php echo form_error('display_name'); ?></span>
         </div>
     </div>
+    <div class="row form-group">
+        <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_parent'); ?> <?php echo $this->lang->line('gp_group'); ?></label>
 
+        <div class="col-md-5">
+            <select class="form-control" name="parent_id" id="parent_id">
+                <option value=""></option>
+                <?php foreach ($parents as $parent): ?>
+                    <option <?php if ($parent['id'] == $group['parent_id']) {
+                        echo "selected='selected'";
+                    }; ?> value="<?php echo $parent['id']; ?>"><?php echo $parent['name']; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <span class="text-danger"><?php echo form_error('parent_id'); ?></span>
+        </div>
+    </div>
     <div class="row form-group">
         <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
 
         <div class="col-md-5">
             <select class="form-control" name="type">
                 <?php foreach ($types as $type): ?>
-                    <option <?php if ($type['id'] == $group['type']) {
-                        echo "selected='selected'";
-                    }; ?> value="<?php echo $type['id']; ?>"><?php echo $type['name']; ?></option>
+                    <option value="<?php echo $type['id']; ?>"><?php echo $type['name']; ?></option>
                 <?php endforeach; ?>
             </select>
             <span class="text-danger"><?php echo form_error('type'); ?></span>

@@ -32,9 +32,27 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190410"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190415"); ?>"></script>
     <script type="text/javascript">
+
+        $(function(){
+            var hash = window.location.hash;
+            hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+            $('.nav-tabs a').click(function (e) {
+                $(this).tab('show');
+                var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+                window.location.hash = this.hash;
+                $('html,body').scrollTop(scrollmem);
+            });
+        });
+
         var GP = {
+            name:                   '<?php echo $this->lang->line('gp_name'); ?>',
+            displayName:            '<?php echo $this->lang->line('gp_display_name'); ?>',
+            action:                 '<?php echo $this->lang->line('gp_action'); ?>',
+            group:                  '<?php echo $this->lang->line('gp_group'); ?>',
+            menuGroup:              '<?php echo $this->lang->line('gp_sub_group'); ?>',
             clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
             userRequired:           '<?php echo $this->lang->line('gp_user_required'); ?>',
             noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',

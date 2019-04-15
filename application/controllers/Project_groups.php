@@ -63,7 +63,7 @@ class Project_groups extends CI_Controller
 
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['group'] = $group;
-            $data['clients'] = $this->client_model->get_clients();
+
             $data['roles'] = $this->user_model->get_roles();
             $data['parents'] = $this->project_group_model->get_parents($group['client_id'], $id);
             $data['types'] = [];
@@ -79,14 +79,27 @@ class Project_groups extends CI_Controller
                 if(count($data['projects']) == 0) {
                     array_push($data['types'],['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]);
                 }
+
+                //if group has parent_id don't allow to change client
+                if(empty($group['parent_id'])) {
+                    $data['clients'] = $this->client_model->get_clients();
+                } else {
+                    $data['clients'] = [];
+                    array_push($data['clients'], (array)$this->client_model->get_client($group['client_id']));
+                }
+
             } else if ($g_type == SUB_GROUP) {
 
                 $data['title'] = $this->lang->line('gp_edit') . ' ' . ucwords($this->lang->line('gp_sub_group')) . ' ' . $title;
                 $data['items'] = $this->build_child_groups(null, $group['id']);
 
-                //only allow edit type if there are none child groups for this subgroup
+                //only allow edit type and client if there are none child groups for this subgroup
                 if(count($data['items']) == 0) {
                     array_push($data['types'],['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')]);
+                    $data['clients'] = $this->client_model->get_clients();
+                } else {
+                    $data['clients'] = [];
+                    array_push($data['clients'], (array)$this->client_model->get_client($group['client_id']));
                 }
                 array_push($data['types'],['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]);
             }

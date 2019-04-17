@@ -74,7 +74,8 @@ class Users extends CI_Controller {
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
 			$data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = true;   //current user is administrator
+            $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
 
 			$this->load->view('templates/header', $data);
 			$this->load->view('user_edit', $data);

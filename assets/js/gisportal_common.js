@@ -18,14 +18,14 @@ function onUploadFormSubmit() {
     var form = $('#uploadForm')[0];
     var client = $('#client_id')[0].value;
 
-    if(client=='') {
+    if(client === '') {
         showError(GP.clientRequired);
         return false;
     }
 
     var editingProject = $('#project_name')[0].value;
 
-    if ($('#userfile')[0].files.length==0) {
+    if ($('#userfile')[0].files.length === 0) {
         showError(GP.noFile);
         return false;
     }
@@ -74,7 +74,7 @@ function addRoleMulti(user) {
     var groups = $('#project_group_id').val();
     var role_id = $('#user_role').val();
 
-    if(!groups || groups.length == 0) {
+    if(!groups || groups.length === 0) {
         showError('Select groups');
         return false
     }
@@ -126,13 +126,13 @@ function chooseGroup(client, target) {
 
     $.getJSON(url, function (data) {
         $.each(data, function (key, entry) {
-            if(entry.id == target) {
+            if(entry.id === target) {
                 return;
             }
             groups.push({"value": entry.id, "text": entry.name});
         });
 
-        if(groups.length == 0) {
+        if(groups.length === 0) {
             showError("No available groups!");
             return false;
         }
@@ -159,9 +159,9 @@ function switchRole(group, user, role, back) {
     //assuming we only have roles 20 and 21 to switch between.
     var newRole = 0;
 
-    if (role == 20) {
+    if (role === 20) {
         newRole = 21;
-    } else if (role == 21) {
+    } else if (role === 21) {
         newRole = 20;
     }
 
@@ -181,7 +181,7 @@ function onProjectGroupEditClick() {
 function onGroupChange(id,sel) {
     var btn = $('#projectGroupEditBtn');
     var val = sel.value;
-    if(id==val) {
+    if(id === val) {
         btn.removeClass('disabled');
     } else {
         btn.addClass('disabled');
@@ -218,7 +218,7 @@ function onClientChange(sel,action)
     var groupDiv = $('#groupDiv');
     var url = GP.settings.siteUrl+'/project_groups/get_list/'+val;
 
-    if(action == 2) {
+    if(action === 2) {
         div = $('#uploadDiv');
     }
 
@@ -227,7 +227,7 @@ function onClientChange(sel,action)
 
         //get new client groups
         group.empty();
-        if(action != 3) {
+        if(action !== 3) {
             group.append('<option disabled>' + GP.selectGroup + '</option>');
         }
         group.prop('selectedIndex', 0);
@@ -282,7 +282,7 @@ function moveDown(list) {
 //    });
 
 function openSubGroups(index, row) {
-    return row.gp_type == 1;
+    return row.gp_type === 1;
 
 }
 
@@ -292,9 +292,9 @@ function makeGroupAction(value, row) {
     var text;
 
     //project
-    if(type == 0) {
+    if(type === 0) {
         text = GP.group;
-    } else if (type == 1) {
+    } else if (type === 1) {
         text = GP.menuGroup;
     }
 

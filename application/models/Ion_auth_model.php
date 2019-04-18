@@ -874,7 +874,9 @@ class Ion_auth_model extends CI_Model
 
 		$this->db->insert($this->tables['users'], $user_data);
 
-		$id = $this->db->insert_id($this->tables['users'] . '_id_seq');
+		//UROS: get id with call to insert_id without parameters
+		//$id = $this->db->insert_id($this->tables['users'] . '_id_seq');
+		$id = $this->db->insert_id();
 
 		// add in groups array if it doesn't exists and stop adding into default group if default group ids are set
 		if (isset($default_group->id) && empty($groups))
@@ -1609,8 +1611,11 @@ class Ion_auth_model extends CI_Model
 	 *
 	 * @return int
 	 * @author Ben Edmunds
+     *
+     * UROS: Add client_id parameter
+     *
 	 */
-	public function add_to_group($group_ids, $user_id = FALSE)
+	public function add_to_group($group_ids, $user_id = FALSE, $client_id = NULL)
 	{
 		$this->trigger_events('add_to_group');
 
@@ -1630,7 +1635,8 @@ class Ion_auth_model extends CI_Model
 			// Cast to float to support bigint data type
 			if ($this->db->insert($this->tables['users_groups'],
 								  [ $this->join['groups'] => (float)$group_id,
-									$this->join['users']  => (float)$user_id  ]))
+									$this->join['users']  => (float)$user_id,
+                                    'client_id'           => $client_id]))
 			{
 				if (isset($this->_cache_groups[$group_id]))
 				{

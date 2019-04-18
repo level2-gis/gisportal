@@ -99,6 +99,47 @@ function addLayerMulti(layer) {
     window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination;
 }
 
+function chooseAdminScope(user, user_id) {
+
+    //disable button
+    $('#adminBtn').css("pointer-events", "none");
+
+    //TODO translate
+    var msg = 'You must select new Administrator scope from the options below:';
+
+    var groups = [];
+    groups.push({"value": -1, "text": msg});
+    groups.push({"value": 0, "text": 'Full portal Administrator'});
+
+    var url = GP.settings.siteUrl + '/clients/get_list/';
+
+    $.getJSON(url, function (data) {
+        $.each(data, function (key, entry) {
+            groups.push({"value": entry.id, "text": entry.name});
+        });
+
+        bootbox.prompt({
+            title: GP.adminAdd,
+            message: '',
+            inputType: 'radio',
+            inputOptions: groups,
+            callback: function (client) {
+                if(client === '-1') {
+                    showError(msg);
+                    return false;
+                }
+                if(client) {
+                    window.location = GP.settings.siteUrl + '/users/set_admin/' + user_id + '/0/'+client;
+                }
+            }
+        });
+
+        //enable button back
+        $('#adminBtn').css("pointer-events", "auto");
+    });
+}
+
+
 function addGroup(back) {
 
     var client_id = $('#client_id').val();

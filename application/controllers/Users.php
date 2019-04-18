@@ -73,6 +73,7 @@ class Users extends CI_Controller {
             $data['clients'] = $this->client_model->get_clients();
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
+            $data['role_scope'] = $this->user_model->get_admin_scope($user_id);
 			$data['logged_in'] = true;
             $data['is_admin'] = true;   //current user is administrator
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
@@ -215,10 +216,11 @@ class Users extends CI_Controller {
         }
     }
 
-    public function set_admin($user_id, $admin)
+    public function set_admin($user_id, $admin, $client_id = NULL)
     {
         $admin_group = 1;
         $is_admin = (boolean)$admin;
+        $client_id = (empty($client_id)) ? null : (integer)$client_id;
 
         try {
             if (!$this->ion_auth->is_admin()) {
@@ -228,7 +230,7 @@ class Users extends CI_Controller {
             if($is_admin) {
                 $this->ion_auth->remove_from_group($admin_group, $user_id);
             } else {
-                $this->ion_auth->add_to_group($admin_group, $user_id);
+                $this->ion_auth->add_to_group($admin_group, $user_id, $client_id);
             }
 
         } catch (Exception $e) {

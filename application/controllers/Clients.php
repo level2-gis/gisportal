@@ -351,6 +351,20 @@ class Clients extends CI_Controller
         //}
     }
 
+    /*
+     * Returns array of available clients for dropdown list
+     */
+    public function get_list()
+    {
+        $list_only = true;
+        $groups = $this->client_model->get_clients(FALSE, TRUE, TRUE, $list_only);
+
+        $this->output
+            ->set_content_type('text/html')
+            ->set_status_header(200)
+            ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
     private function extractPostData(){
         return array(
             'id' => $this->input->post('id'),

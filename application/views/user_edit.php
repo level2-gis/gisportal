@@ -3,12 +3,12 @@
         <div class="actions  pull-right">
             <?php if ($user['admin']) : ?>
                 <?php if ($user['user_id'] === $logged_id) : ?>
-                    <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_filter . ' ' . $role_admin; ?></a>
+                    <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $role_admin; ?></a>
                 <?php else: ?>
-                    <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $this->config->item('site_title','ion_auth') . ' ' . $role_admin; ?></a>
+                    <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $role_scope . ' ' . $role_admin; ?></a>
                 <?php endif; ?>
             <?php else: ?>
-                <a onclick="confirmLink(GP.adminAdd,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-success"><?php echo $role_admin; ?></a>
+                <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $role_admin; ?></a>
             <?php endif; ?>
         </div>
 	</div>

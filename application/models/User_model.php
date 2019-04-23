@@ -285,9 +285,4 @@ class User_model extends CI_Model
         $this->db->where('user_name', $name);
         $this->db->delete('users_print');
     }
-
-    //todo return array client_id, client display_name
-    public function get_admin_scope($id) {
-        return 'xxx '.$id;
-    }
 }

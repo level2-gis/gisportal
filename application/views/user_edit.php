@@ -8,7 +8,7 @@
                     <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $role_scope . ' ' . $role_admin; ?></a>
                 <?php endif; ?>
             <?php else: ?>
-                <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $role_admin; ?></a>
+                <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $this->lang->line('gp_new'); ?> <?php echo $role_admin; ?></a>
             <?php endif; ?>
         </div>
 	</div>
@@ -76,9 +76,9 @@
 
                 <fieldset id="edit-access" class="tab-pane">
                     <?php if ($user['admin']) : ?>
-                        <div class="alert alert-info col-md-9" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></div>
-                    <?php else: ?>
-
+                        <div class="alert alert-info" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></br><?php echo $role_scope . ' ' . $role_admin; ?></div>
+                    <?php endif ?>
+                    <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter))) : ?>
                         <div class="form-inline well">
                             <div class="form-group">
                                 <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">

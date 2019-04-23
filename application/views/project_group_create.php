@@ -11,7 +11,9 @@
 
         <div class="col-md-5">
             <select class="form-control" name="client_id" id="client_id" onchange="getParentGroups(this,null);">
-                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                <?php if (count($clients)>1) : ?>
+                    <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                <?php endif ?>
                 <?php foreach ($clients as $client_item): ?>
                     <option <?php if ($client_item['id'] == $group['client_id']) {
                         echo "selected='selected'";

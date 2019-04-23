@@ -30,9 +30,9 @@
     <ul class="nav nav-tabs">
         <li class="active"><a href="#edit-group-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
         <?php if ( $group['type'] == PROJECT_GROUP) : ?>
+            <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
             <li><a href="#edit-group-layers" data-toggle="tab"><?php echo $this->lang->line('gp_base_layers'); ?></a></li>
             <li><a href="#edit-group-extra-layers" data-toggle="tab"><?php echo $this->lang->line('gp_overlay_layers'); ?></a></li>
-            <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
             <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
         <?php elseif ( $group['type'] == SUB_GROUP) : ?>
             <li><a href="#edit-group-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>

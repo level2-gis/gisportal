@@ -19,9 +19,12 @@ class Project_groups extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         $data['title'] = $this->lang->line('gp_groups_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['groups'] = $this->project_group_model->get_project_groups();
+        $data['groups'] = $this->project_group_model->get_project_groups($filter);
         $data['logged_in'] = true;
         $data['is_admin'] = true;
 
@@ -39,9 +42,16 @@ class Project_groups extends CI_Controller
 
         $group = (array)$this->project_group_model->get_project_group($id);
 
-        if(!isset($group)) {
+        if(empty($group)) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Group does not exist.</div>');
-            redirect('/projects/');
+            redirect('/project_groups/');
+        }
+
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+        if(!empty($filter) && $filter !== (integer)$group['client_id']) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/project_groups/');
         }
 
         $this->load->helper('form');
@@ -80,12 +90,15 @@ class Project_groups extends CI_Controller
                     array_push($data['types'],['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]);
                 }
 
-                //if group has parent_id don't allow to change client
-                if(empty($group['parent_id'])) {
-                    $data['clients'] = $this->client_model->get_clients();
+                if(empty($filter)) {
+                    //if group has parent_id don't allow to change client
+                    if(empty($group['parent_id'])) {
+                        $data['clients'] = $this->client_model->get_clients();
+                    } else {
+                        $data['clients'] = [(array)$this->client_model->get_client($group['client_id'])];
+                    }
                 } else {
-                    $data['clients'] = [];
-                    array_push($data['clients'], (array)$this->client_model->get_client($group['client_id']));
+                    $data['clients'] = [(array)$this->client_model->get_client($filter)];
                 }
 
             } else if ($g_type == SUB_GROUP) {
@@ -161,7 +174,15 @@ class Project_groups extends CI_Controller
             $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_group');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['group'] = $group;
-            $data['clients'] = $this->client_model->get_clients();
+
+            //filter for client administrator
+            $filter = $this->ion_auth->admin_scope()->filter;
+            if(empty($filter)) {
+                $data['clients'] = $this->client_model->get_clients();
+            } else {
+                $data['clients'] = [(array)$this->client_model->get_client($filter)];
+            }
+
             if($group['client_id']) {
                 $data['parents'] = $this->project_group_model->get_parents($group['client_id'], null);
             } else {
@@ -203,11 +224,16 @@ class Project_groups extends CI_Controller
      */
     public function add_group($client_id, $name) {
 
-        $x = $client_id;
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
 
         try {
             if (!$this->ion_auth->is_admin()){
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter) && $filter !== (integer)$client_id) {
+                throw new Exception('No permission!');
             }
 
             $back = $this->input->get('back');
@@ -307,10 +333,17 @@ class Project_groups extends CI_Controller
 
         $group = (array)$this->project_group_model->get_project_group($id);
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         // check if exists before trying to delete it
         if(isset($group['id']))
         {
             try {
+                if(!empty($filter) && $filter !== (integer)$group['client_id']) {
+                    throw new Exception('No permission!');
+                }
+
                 //before deleting check if layers exist as as base or extra layer in project groups
                 //$test = $this->project_group_model->get_project_groups_with_layer($id);
                 //if(count($test)>0)  {
@@ -334,11 +367,18 @@ class Project_groups extends CI_Controller
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The group you are trying to delete does not exist.</div>');
     }
 
-    public function add_layer($groups, $layer_id, $destination)
+    public function add_layer($groups, $layer_id, $destination, $client_id)
     {
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         try {
             if (!$this->ion_auth->is_admin()) {
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter) && $filter !== (integer)$client_id) {
+                throw new Exception('No permission!');
             }
 
             $groups = urldecode($groups);
@@ -355,11 +395,18 @@ class Project_groups extends CI_Controller
         }
     }
 
-    public function remove_layer($group, $layer_id)
+    public function remove_layer($group, $layer_id, $client_id)
     {
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         try {
             if (!$this->ion_auth->is_admin()) {
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter) && $filter !== (integer)$client_id) {
+                throw new Exception('No permission!');
             }
 
             $res = $this->project_group_model->remove_layer($group, $layer_id);

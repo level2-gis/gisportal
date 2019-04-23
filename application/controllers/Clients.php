@@ -20,8 +20,16 @@ class Clients extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+        if(empty($filter)) {
+            $data['clients'] = $this->client_model->get_clients();
+        } else {
+            $data['clients'] = [(array)$this->client_model->get_client($filter)];
+        }
+
         $data['title'] = $this->lang->line('gp_clients_title');
-        $data['clients'] = $this->client_model->get_clients();
+
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = true;
@@ -31,6 +39,7 @@ class Clients extends CI_Controller
         $this->load->view('templates/footer', $data);
     }
 
+    //TODO decide what to do with this page and if it is open to all users, currently there is no link to this page
     public function view($client_id = false)
     {
         if ($client_id === FALSE) {
@@ -82,6 +91,13 @@ class Clients extends CI_Controller
     {
         if (!$this->ion_auth->is_admin()){
             redirect('/auth/login?ru=/' . uri_string());
+        }
+
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+        if(!empty($filter) && $filter !== (integer)$client_id) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/clients/');
         }
 
         $this->load->helper('form');
@@ -160,6 +176,12 @@ class Clients extends CI_Controller
         if(isset($client['id']))
         {
             try {
+                //filter for client administrator
+                $filter = $this->ion_auth->admin_scope()->filter;
+                if(!empty($filter)) {
+                    throw new Exception('No permission!');
+                }
+
                 //before deleting check if client has any projects
                 if($client['count']>0)  {
                     throw new Exception('Cannot delete. Client has ' . $client['count'] . ' projects.');

@@ -38,7 +38,7 @@ class Project_group_model extends CI_Model {
      * @return mixed
      */
 
-    function get_project_groups($client_id = FALSE, $list_only = FALSE, $skip_no_access = FALSE)
+    function get_project_groups($client_id = NULL, $list_only = FALSE, $skip_no_access = FALSE)
     {
         //$this->db->order_by('type', 'ASC');
         $this->db->order_by('name', 'ASC');
@@ -47,7 +47,7 @@ class Project_group_model extends CI_Model {
             $this->db->select("id, CASE WHEN display_name IS NULL THEN name ELSE display_name || ' (' || name || ')' END AS name", FALSE);
         }
 
-        if($client_id) {
+        if(!empty($client_id)) {
             $this->db->where('client_id', $client_id);
         }
 
@@ -60,19 +60,23 @@ class Project_group_model extends CI_Model {
         return $query->result_array();
     }
 
-    function get_project_groups_with_layer($id) {
+    function get_project_groups_with_layer($id, $filter = NULL) {
 
         if (empty($id)) {
             return [];
         }
 
         $sql = "SELECT * FROM ";
-        $sql.= "(SELECT p.id AS project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || ' (' || p.name || ')' END AS name, c.display_name AS client, ";
+        $sql.= "(SELECT p.id AS project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || ' (' || p.name || ')' END AS name, c.id AS client_id, c.display_name AS client, ";
         $sql.= "idx(base_layers_ids,".$id.") AS is_base, ";
         $sql.= "idx(extra_layers_ids,".$id.") AS is_extra ";
         //$sql.= "CASE when overview_layer_id=".$id." THEN true ELSE false END AS is_overview ";
         $sql.= "FROM project_groups p, clients c WHERE p.client_id=c.id) AS test ";
-        $sql.= "WHERE is_base>0 or is_extra>0 ORDER BY name;";
+        $sql.= "WHERE (is_base>0 OR is_extra>0)";
+        if(!empty($filter)) {
+            $sql.= " AND client_id = ".$filter;
+        }
+        $sql.= " ORDER BY name;";
 
         $query = $this->db->query($sql);
 

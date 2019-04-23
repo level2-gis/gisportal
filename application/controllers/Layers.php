@@ -104,8 +104,16 @@ class Layers extends CI_Controller{
                 }
             }
             $data['layer'] = $em;
-            $data['groups'] = $this->project_group_model->get_project_groups_with_layer($layer_id);
-            $data['clients'] = $this->client_model->get_clients();
+
+            //filter for client administrator
+            $filter = $this->ion_auth->admin_scope()->filter;
+            if(empty($filter)) {
+                $data['clients'] = $this->client_model->get_clients();
+            } else {
+                $data['clients'] = [(array)$this->client_model->get_client($filter)];
+            }
+
+            $data['groups'] = $this->project_group_model->get_project_groups_with_layer($layer_id, $filter);
             $data['destination'] = array(
                 ['id' => BASE_LAYER, 'name' => $this->lang->line('gp_base_layers')],
                 ['id' => EXTRA_LAYER, 'name' => $this->lang->line('gp_overlay_layers')]

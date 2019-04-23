@@ -24,15 +24,30 @@ class Projects extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        $is_admin = $this->ion_auth->is_admin();
+        $filter = $this->ion_auth->admin_scope()->filter;
+
 		$data['title'] = $this->lang->line('gp_projects_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $is_admin;
 
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-        $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
 
-        $data['projects'] = $this->project_model->get_projects(false, $groups,  $data['is_admin']);
+        $groups = [];
+        if(!empty($filter)) {
+            $projects_1 = $this->project_model->get_projects($filter, $groups,  TRUE);
+            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            $projects_2 = $this->project_model->get_projects(false, $groups,  FALSE);
+
+            //TODO REMOVE DUPLICATES
+            $data['projects'] = array_merge($projects_1,$projects_2);
+        } else {
+            if(!$is_admin) {
+                $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            }
+            $data['projects'] = $this->project_model->get_projects(false, $groups,  $is_admin);
+        }
 
         $this->load->view('templates/header', $data);
 
@@ -394,9 +409,17 @@ class Projects extends CI_Controller
                 $data['creating'] = false;
             } else {
                 if ($project_id !== false){
-                    $dq = $this->project_model->get_project($project_id);
-                    if ($dq->id != null){
-                        $em = (array)$dq;
+                    $prj = $this->project_model->get_project($project_id);
+                    if ($prj->id != null){
+
+                        //filter for client administrator
+                        $filter = $this->ion_auth->admin_scope()->filter;
+                        if(!empty($filter) && $filter !== (integer)$prj->client_id) {
+                            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+                            redirect('/projects/');
+                        }
+
+                        $em = (array)$prj;
                         //overwrite project_group_id with session value, not saved!!!
                         if(!empty($this->session->flashdata('project_group_id'))) {
                             $em['project_group_id'] = $this->session->flashdata('project_group_id');
@@ -477,15 +500,20 @@ class Projects extends CI_Controller
             $data['project'] = $em;
             $data['templates'] = $this->project_model->get_templates();
             $data['action'] = $action;
-            $data['clients'] = $this->client_model->get_clients();
+
+            //filter for client administrator
+            $filter = $this->ion_auth->admin_scope()->filter;
+            if(empty($filter)) {
+                $data['clients'] = $this->client_model->get_clients();
+                $data['groups'] = [];
+            } else {
+                $data['clients'] = [(array)$this->client_model->get_client($filter)];
+                $data['groups'] = $this->project_group_model->get_project_groups($filter, true);
+                $data['project']['client_id'] = $filter;
+            }
+
             $data['logged_in'] = true;
             $data['is_admin'] = true;
-
-            if($em["client_id"]) {
-                $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
-            } else {
-                $data['groups'] = [];
-            }
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_title', $data);
@@ -545,10 +573,17 @@ class Projects extends CI_Controller
 
         $project = (array)$this->project_model->get_project($id);
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         // check if the project exists before trying to delete it
         if(isset($project['id']))
         {
             try {
+                if(!empty($filter) && $filter !== (integer)$project['client_id']) {
+                    throw new Exception('No permission!');
+                }
+
                 $this->project_model->delete_project($id);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {

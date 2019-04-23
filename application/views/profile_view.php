@@ -1,10 +1,13 @@
 <div class="page-header clearfix">
-    <h1 class="col-md-8"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $user->display_name; ?></h1>
+    <h1 class="col-md-8"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo html_escape($user->display_name); ?></h1>
+
 </div>
 
 	<div class="row">
 		<div class="col-md-8">
-
+            <?php if ($is_admin) : ?>
+                <div class="alert alert-info" role="alert"><?php echo html_escape($role_admin); ?></div>
+            <?php endif ?>
             <table class="table table-hover table-condensed">
                 <tbody>
                 <tr>
@@ -14,6 +17,10 @@
                 <tr>
                     <th><?php echo $this->lang->line('gp_email'); ?></th>
                     <td><?php echo $user->user_email; ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo $this->lang->line('gp_organization'); ?></th>
+                    <td><?php echo $user->organization; ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->lang->line('gp_registered'); ?></th>

@@ -73,7 +73,8 @@ class Users extends CI_Controller {
             $data['clients'] = $this->client_model->get_clients();
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
-            $data['role_scope'] = $this->user_model->get_admin_scope($user_id);
+            $data['role_scope'] = $this->ion_auth->admin_scope($user_id)->scope;
+            $data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
 			$data['logged_in'] = true;
             $data['is_admin'] = true;   //current user is administrator
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
@@ -127,7 +128,10 @@ class Users extends CI_Controller {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The user you are trying to delete does not exist.</div>');
     }
 
-    public function add_role_multi($groups, $user_id, $role_id) {
+    public function add_role_multi($groups, $user_id, $role_id, $client_id) {
+
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope($user_id)->filter;
 
         function map_existing($item) {
             return $item['project_group_id'];
@@ -136,6 +140,10 @@ class Users extends CI_Controller {
         try {
             if (!$this->ion_auth->is_admin()){
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter) && $filter === (integer)$client_id) {
+                throw new Exception('User is Client Administrator and has already access to all groups for client!');
             }
 
             $groups = urldecode($groups);

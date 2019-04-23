@@ -73,6 +73,7 @@ function addRoleMulti(user) {
 
     var groups = $('#project_group_id').val();
     var role_id = $('#user_role').val();
+    var client_id = $('#client_id').val();
 
     if(!groups || groups.length === 0) {
         showError('Select groups');
@@ -81,13 +82,14 @@ function addRoleMulti(user) {
 
     var arr = encodeURIComponent(groups.map(Number));
 
-    window.location = GP.settings.siteUrl + "/users/add_role_multi/"+arr+"/"+user+"/"+role_id;
+    window.location = GP.settings.siteUrl + "/users/add_role_multi/"+arr+"/"+user+"/"+role_id+'/'+client_id;
 }
 
 function addLayerMulti(layer) {
 
     var groups = $('#project_group_id').val();
     var destination = $('#destination').val();
+    var client_id = $('#client_id').val();
 
     if(!groups || groups.length == 0) {
         showError('Select groups');
@@ -96,7 +98,7 @@ function addLayerMulti(layer) {
 
     var arr = encodeURIComponent(groups.map(Number));
 
-    window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination;
+    window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination+'/'+client_id;
 }
 
 function chooseAdminScope(user, user_id) {

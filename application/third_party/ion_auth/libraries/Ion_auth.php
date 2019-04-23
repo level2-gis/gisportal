@@ -431,4 +431,18 @@ class Ion_auth
 		}
 	}
 
+	public function admin_scope($id = NULL)
+    {
+        $ret = new stdClass();
+
+        //get data for current user from session
+        if(empty($id)) {
+            $ret->filter = $this->session->userdata('admin_filter');
+            $ret->scope = $this->session->userdata('admin_scope');
+            return $ret;
+        }
+
+        return $this->ion_auth_model->get_admin_scope($id, TRUE);
+    }
+
 }

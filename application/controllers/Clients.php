@@ -29,8 +29,8 @@ class Clients extends CI_Controller
         }
 
         $data['title'] = $this->lang->line('gp_clients_title');
-
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['current_role_filter'] = $filter;  //filter for current logged in user
         $data['logged_in'] = true;
         $data['is_admin'] = true;
 
@@ -438,6 +438,10 @@ class Clients extends CI_Controller
 
     private function build_child_groups($client_id, $group_id)
     {
+        if(empty($client_id)) {
+            return [];
+        }
+
         $ret = $this->project_group_model->get_child_groups($client_id,$group_id);
 
         //TODO currently only one level below main

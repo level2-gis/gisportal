@@ -18,8 +18,11 @@ class Users extends CI_Controller {
             redirect('auth//login?ru=/' . uri_string());
         }
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
 		$data['title'] = $this->lang->line('gp_users_title');
-        $data['users'] = $this->user_model->get_users();
+        $data['users'] = $this->user_model->get_users($filter);
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = true;
@@ -57,7 +60,21 @@ class Users extends CI_Controller {
 				$data['creating'] = false;
 			} else {
 				if ($user_id !== false){
-					$dq = $this->user_model->get_user_by_id($user_id);
+                    //filter for client administrator
+                    $filter = $this->ion_auth->admin_scope()->filter;
+
+                    try {
+                        $dq = $this->user_model->get_user_by_id($user_id, $filter);
+                        if(empty($dq)) {
+                            throw new Exception('User does not exist!');
+                        }
+                    }
+                    catch (Exception $e){
+                        $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+                        redirect('/users');
+                    }
+
+				    $dq->display_name = $dq->first_name . ' ' . $dq->last_name;
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
@@ -69,14 +86,23 @@ class Users extends CI_Controller {
 			
 			$data['user'] = $em;
             $data['user']['admin'] = $this->ion_auth->is_admin($user_id);
-            $data['groups'] = $this->user_model->get_project_groups_for_user($user_id);
-            $data['clients'] = $this->client_model->get_clients();
+
+            //filter for client administrator
+            $filter = $this->ion_auth->admin_scope()->filter;
+            if(empty($filter)) {
+                $data['clients'] = $this->client_model->get_clients();
+            } else {
+                $data['clients'] = [(array)$this->client_model->get_client($filter)];
+            }
+
+            $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
             $data['role_scope'] = $this->ion_auth->admin_scope($user_id)->scope;
             $data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
 			$data['logged_in'] = true;
             $data['is_admin'] = true;   //current user is administrator
+            $data['current_role_filter'] = $this->ion_auth->admin_scope()->filter;  //filter for current logged in user
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
 
 			$this->load->view('templates/header', $data);
@@ -104,12 +130,22 @@ class Users extends CI_Controller {
             redirect('/');
         }
 
-        $user = (array)$this->user_model->get_user_by_id($id);
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
+        $user = (array)$this->user_model->get_user_by_id($id, $filter);
 
         // check if the user exists before trying to delete it
         if(isset($user['user_id']))
         {
             try {
+
+                $test = $this->user_model->has_project_group_role($id,null);
+                if($test) {
+                    throw new Exception('Cannot delete, user has roles!');
+                }
+
+
                 $this->user_model->clear_print($user['user_name']);
                 $this->user_model->delete_user($id);
                 $db_error = $this->db->error();
@@ -124,8 +160,10 @@ class Users extends CI_Controller {
                 redirect('/users/edit/'.$id);
             }
         }
-        else
+        else {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The user you are trying to delete does not exist.</div>');
+            redirect('/users');
+        }
     }
 
     public function add_role_multi($groups, $user_id, $role_id, $client_id) {
@@ -170,7 +208,15 @@ class Users extends CI_Controller {
                 );
             }
 
+            if(empty($data)) {
+                throw new Exception('Nothing added, user has already access!');
+            }
+
             $res = $this->user_model->insert_project_group_roles($data);
+
+            //set link
+            $this->user_model->set_link($user_id,$client_id);
+
             $db_error = $this->db->error();
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
@@ -184,10 +230,18 @@ class Users extends CI_Controller {
         }
     }
 
-    public function add_role($group_id, $user_id, $role_id, $back) {
+    public function add_role($group_id, $user_id, $role_id, $back, $client_id) {
+
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope($user_id)->filter;
+
         try {
             if (!$this->ion_auth->is_admin()){
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter) && $filter === (integer)$client_id) {
+                throw new Exception('User is Client Administrator and has already access to all groups for client!');
             }
 
             $data = [
@@ -203,6 +257,10 @@ class Users extends CI_Controller {
             }
 
             $res = $this->user_model->insert_project_group_role($data);
+
+            //set link
+            $this->user_model->set_link($user_id,$client_id);
+
             $db_error = $this->db->error();
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
@@ -230,9 +288,16 @@ class Users extends CI_Controller {
         $is_admin = (boolean)$admin;
         $client_id = (empty($client_id)) ? null : (integer)$client_id;
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         try {
             if (!$this->ion_auth->is_admin()) {
                 throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter)) {
+                throw new Exception('No permission!');
             }
 
             if($is_admin) {
@@ -344,11 +409,14 @@ class Users extends CI_Controller {
 
         $query = $this->input->get('query');
 
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         if(empty($query)) {
             return;
         }
 
-        $result = $this->user_model->search(urldecode($query));
+        $result = $this->user_model->search(urldecode($query),$filter);
 
         $this->output
             ->set_content_type('text/html')

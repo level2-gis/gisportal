@@ -1,14 +1,16 @@
     <div class="page-header clearfix">
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
         <div class="actions  pull-right">
-            <?php if ($user['admin']) : ?>
-                <?php if ($user['user_id'] === $logged_id) : ?>
-                    <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $role_admin; ?></a>
+            <?php if (empty($current_role_filter)) : ?>
+                <?php if ($user['admin']) : ?>
+                    <?php if ($user['user_id'] === $logged_id) : ?>
+                        <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $role_admin; ?></a>
+                    <?php else: ?>
+                        <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $role_scope . ' ' . $role_admin; ?></a>
+                    <?php endif; ?>
                 <?php else: ?>
-                    <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $role_scope . ' ' . $role_admin; ?></a>
+                    <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $this->lang->line('gp_new'); ?> <?php echo $role_admin; ?></a>
                 <?php endif; ?>
-            <?php else: ?>
-                <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $this->lang->line('gp_new'); ?> <?php echo $role_admin; ?></a>
             <?php endif; ?>
         </div>
 	</div>
@@ -78,7 +80,7 @@
                     <?php if ($user['admin']) : ?>
                         <div class="alert alert-info" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></br><?php echo $role_scope . ' ' . $role_admin; ?></div>
                     <?php endif ?>
-                    <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter))) : ?>
+                    <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter) && count($clients)>1)) : ?>
                         <div class="form-inline well">
                             <div class="form-group">
                                 <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">

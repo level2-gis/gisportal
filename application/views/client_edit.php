@@ -11,7 +11,9 @@
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="#edit-client-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-            <li><a href="#edit-client-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>
+            <?php if (!$creating) : ?>
+                <li><a href="#edit-client-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>
+            <?php endif; ?>
         </ul>
 
         <div class="tab-content">

@@ -61,12 +61,14 @@ function addRole(group, back) {
     //get user and role from ui
     var user = $('input.typeahead').typeahead("getActive");
     var role_id = $('#user_role').val();
+    var client_id = $('#client_id').val();
+
     if(!user) {
         showError(GP.userRequired);
         return false;
     }
 
-    window.location = GP.settings.siteUrl + "/users/add_role/"+group+"/"+user.id+"/"+role_id+"/"+back;
+    window.location = GP.settings.siteUrl + "/users/add_role/"+group+"/"+user.id+"/"+role_id+"/"+back+'/'+client_id;
 }
 
 function addRoleMulti(user) {
@@ -325,7 +327,7 @@ function moveDown(list) {
 //    });
 
 function openSubGroups(index, row) {
-    return row.gp_type === 1;
+    return parseInt(row.gp_type) === 1;
 
 }
 

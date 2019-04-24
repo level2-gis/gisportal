@@ -212,8 +212,7 @@ class Project_groups extends CI_Controller
             if ($this->input->post('return') == null) {
                 redirect('/project_groups/edit/' . $group_id);
             } else {
-                //TODO save on group succesful, where redirect?
-                redirect('/projects');
+                redirect('/project_groups');
             }
         }
     }

@@ -8,20 +8,25 @@ class User_model extends CI_Model
     }
 
 
-    function get_users()
+    function get_users($filter = NULL)
     {
         $this->db->order_by('user_name', 'ASC');
-        $query = $this->db->get('users_view');
+        if(empty($filter)) {
+            $query = $this->db->get('users_view');
+        } else {
+            $this->db->where('filter',$filter);
+            $query = $this->db->get('users_view_for_clients');
+        }
+
         return $query->result_array();
     }
 
     /**
-     * This method by default does not return administrators
-     *
      * @param $text
+     * @param $filter
      * @return mixed
      */
-    function search($text) {
+    function search($text, $filter) {
 
         //$this->db->like('first_name', $text);
         //$this->db->or_like('last_name', $text);
@@ -34,10 +39,20 @@ class User_model extends CI_Model
 
         $this->db->select("user_id AS id, trim(coalesce(last_name,'') || ' ' || coalesce(first_name,'')) || ' (' || user_email || ')' AS name", FALSE);
         $this->db->where($where);
+
+        if(!empty($filter)) {
+            $this->db->where('filter', $filter);
+        }
+
         $this->db->where('admin', FALSE);
+        $this->db->or_where('admin = TRUE AND filter IS NOT NULL');
         $this->db->order_by('name', 'DESC');
 
-        $query = $this->db->get('users_view');
+        if(!empty($filter)) {
+            $query = $this->db->get('users_view_for_clients');
+        } else {
+            $query = $this->db->get('users_view');
+        }
         return $query->result_array();
     }
 
@@ -112,6 +127,8 @@ class User_model extends CI_Model
 
     function delete_project_group_role($group_id, $user_id) {
 
+        //we delete only project roles, role_id over 10
+
         if(!empty($user_id)) {
             $this->db->where('user_id', $user_id);
         }
@@ -119,6 +136,7 @@ class User_model extends CI_Model
             $this->db->where('project_group_id', $group_id);
         }
 
+        $this->db->where('role_id >', 10);
         $this->db->delete('users_roles');
 
         if ($this->db->affected_rows() >= 1)
@@ -131,7 +149,9 @@ class User_model extends CI_Model
     function has_project_group_role($user_id, $project_group_id)
     {
         $this->db->where('user_id', $user_id);
-        $this->db->where('project_group_id', $project_group_id);
+        if(!empty($project_group_id)) {
+            $this->db->where('project_group_id', $project_group_id);
+        }
         $query = $this->db->get('users_roles');
         $row = $query->row();
 
@@ -168,8 +188,6 @@ class User_model extends CI_Model
     }
 
     /**
-     * This method does not return administrators
-     *
      * @param $group_id
      * @return mixed
      */
@@ -179,18 +197,21 @@ class User_model extends CI_Model
         $this->db->join('users_view', 'users_view.user_id = ur.user_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('project_group_id',$group_id);
-        $this->db->where('users_view.admin',FALSE);
+        $this->db->where('(users_view.admin = FALSE OR users_view.admin = TRUE AND filter is not null)');
         $this->db->order_by('users_view.last_name','ASC');
         $query = $this->db->get();
         return $query->result_array();
     }
 
-    function get_project_groups_for_user($user_id) {
+    function get_project_groups_for_user($user_id, $filter = NULL) {
         $this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || \' (\' || p.name || \')\' END AS name, p.client, p.client_name, r.display_name as role');
         $this->db->from('users_roles ur');
         $this->db->join('project_groups_view p', 'p.id = ur.project_group_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('user_id',$user_id);
+        if(!empty($filter)) {
+            $this->db->where('p.client_id', $filter);
+        }
         $this->db->order_by('p.name','ASC');
         $query = $this->db->get();
         return $query->result_array();
@@ -216,10 +237,18 @@ class User_model extends CI_Model
     }
 
 	// get user
-	function get_user_by_id($id)
+	function get_user_by_id($id, $filter = NULL)
 	{
 		$this->db->where('user_id', $id);
-        $query = $this->db->get('users');
+
+		if(empty($filter)) {
+            $query = $this->db->get('users');
+        } else {
+            $this->db->where('filter',$filter);
+		    $query = $this->db->get('users_view_for_clients');
+        }
+
+
         if ($query->result()) {
             return $query->result()[0];
         }
@@ -245,6 +274,19 @@ class User_model extends CI_Model
 
         //returns bool
         $result = $this->db->query('UPDATE users SET '.$sql);
+    }
+
+    function set_link($user_id, $client_id) {
+
+        $link_group = 9;
+
+        //first check if user has link to client
+        $exist = $this->ion_auth->in_group($link_group,$user_id);
+
+        //else, add to group
+        if(!$exist) {
+            $this->ion_auth->add_to_group($link_group, $user_id, $client_id);
+        }
     }
 
 	public function save_user($data)

@@ -409,7 +409,16 @@ class Projects extends CI_Controller
                 $data['creating'] = false;
             } else {
                 if ($project_id !== false){
-                    $prj = $this->project_model->get_project($project_id);
+                    try {
+                        $prj = $this->project_model->get_project($project_id);
+                        if(empty($prj)) {
+                            throw new Exception('Project does not exist!');
+                        }
+                    }
+                    catch (Exception $e){
+                        $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+                        redirect('/projects');
+                    }
                     if ($prj->id != null){
 
                         //filter for client administrator

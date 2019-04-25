@@ -23,7 +23,7 @@ class Profile extends CI_Controller
         $scope = $this->ion_auth->admin_scope()->scope;
         $is_admin = $this->ion_auth->is_admin();
         if($is_admin) {
-            $scope = empty($scope) ? $this->config->item('site_title','ion_auth') : $scope;
+            $scope = empty($scope) ? $this->lang->line('gp_admin_full_name') : $scope;
         }
 
         $data['title'] = $this->lang->line('gp_profile_title');

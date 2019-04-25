@@ -95,13 +95,16 @@ class Users extends CI_Controller {
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
             }
 
+            $user_scope = $this->ion_auth->admin_scope($user_id)->scope;
+
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
-            $data['role_scope'] = $this->ion_auth->admin_scope($user_id)->scope;
+            $data['role_scope'] = empty($user_scope) ? $this->lang->line('gp_admin_full_name') : $user_scope;;
             $data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
 			$data['logged_in'] = true;
             $data['is_admin'] = true;   //current user is administrator
+            $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $data['role_admin'], $this->lang->line('gp_user_is_admin'));
             $data['current_role_filter'] = $this->ion_auth->admin_scope()->filter;  //filter for current logged in user
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
 

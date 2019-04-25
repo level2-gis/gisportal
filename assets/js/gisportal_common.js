@@ -108,12 +108,9 @@ function chooseAdminScope(user, user_id) {
     //disable button
     $('#adminBtn').css("pointer-events", "none");
 
-    //TODO translate
-    var msg = 'You must select new Administrator scope from the options below:';
-
     var groups = [];
-    groups.push({"value": -1, "text": msg});
-    groups.push({"value": 0, "text": 'Full portal Administrator'});
+    groups.push({"value": -1, "text": GP.adminAddMsg+':'});
+    groups.push({"value": 0, "text": GP.adminFullName});
 
     var url = GP.settings.siteUrl + '/clients/get_list/';
 
@@ -123,13 +120,13 @@ function chooseAdminScope(user, user_id) {
         });
 
         bootbox.prompt({
-            title: GP.adminAdd,
+            title: GP.adminAdd.replaceAll('{name}',user),
             message: '',
             inputType: 'radio',
             inputOptions: groups,
             callback: function (client) {
                 if(client === '-1') {
-                    showError(msg);
+                    showError(GP.adminAddMsg);
                     return false;
                 }
                 if(client) {

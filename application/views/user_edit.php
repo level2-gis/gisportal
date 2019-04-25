@@ -78,7 +78,7 @@
 
                 <fieldset id="edit-access" class="tab-pane">
                     <?php if ($user['admin']) : ?>
-                        <div class="alert alert-info" role="alert"><?php echo $this->lang->line('gp_user_is_admin'); ?></br><?php echo $role_scope . ' ' . $role_admin; ?></div>
+                        <div class="alert alert-info" role="alert"><?php echo $user_admin_msg; ?></div>
                     <?php endif ?>
                     <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter) && count($clients)>1)) : ?>
                         <div class="form-inline well">

@@ -64,5 +64,17 @@ if (!function_exists('set_arr')) {
     }
 }
 
+if (!function_exists('get_first')) {
+
+    function get_first($val)
+    {
+        $space = strpos($val,' ');
+        if($space === FALSE) {
+            return $val;
+        } else {
+            return explode(' ',$val)[0];
+        }
+    }
+}
 
 

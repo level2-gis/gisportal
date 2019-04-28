@@ -87,9 +87,9 @@
                         <th data-sortable="true"
                             data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
                         <th data-sortable="true"
-                            data-field="gp_base"><?php echo explode(" ",$this->lang->line('gp_base_layers'))[0]; ?></th>
+                            data-field="gp_base"><?php echo get_first($this->lang->line('gp_base_layers')); ?></th>
                         <th data-sortable="true"
-                            data-field="gp_extra"><?php echo explode(" ",$this->lang->line('gp_overlay_layers'))[0]; ?></th>
+                            data-field="gp_extra"><?php echo get_first($this->lang->line('gp_overlay_layers')); ?></th>
                         <th><?php echo $this->lang->line('gp_action'); ?></th>
                     </tr>
                     </thead>

@@ -25,29 +25,12 @@ class Projects extends CI_Controller
         }
 
         $is_admin = $this->ion_auth->is_admin();
-        $filter = $this->ion_auth->admin_scope()->filter;
 
 		$data['title'] = $this->lang->line('gp_projects_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $is_admin;
-
-        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-
-        $groups = [];
-        if(!empty($filter)) {
-            $projects_1 = $this->project_model->get_projects($filter, $groups,  TRUE);
-            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
-            $projects_2 = $this->project_model->get_projects(false, $groups,  FALSE);
-
-            //TODO REMOVE DUPLICATES
-            $data['projects'] = array_merge($projects_1,$projects_2);
-        } else {
-            if(!$is_admin) {
-                $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
-            }
-            $data['projects'] = $this->project_model->get_projects(false, $groups,  $is_admin);
-        }
+        $data['projects'] = $this->get_user_projects($is_admin);
 
         $this->load->view('templates/header', $data);
 
@@ -382,6 +365,11 @@ class Projects extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        if ($project_id === false) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Project parameter missing.</div>');
+            redirect('/projects/');
+        }
+
         $this->load->helper('form');
         $this->load->library('form_validation');
 
@@ -408,40 +396,35 @@ class Projects extends CI_Controller
                 $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
                 $data['creating'] = false;
             } else {
-                if ($project_id !== false){
-                    try {
-                        $prj = $this->project_model->get_project($project_id);
-                        if(empty($prj)) {
-                            throw new Exception('Project does not exist!');
-                        }
+                try {
+                    $prj = $this->project_model->get_project($project_id);
+                    if (empty($prj)) {
+                        throw new Exception('Project does not exist!');
                     }
-                    catch (Exception $e){
-                        $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
-                        redirect('/projects');
-                    }
-                    if ($prj->id != null){
 
-                        //filter for client administrator
-                        $filter = $this->ion_auth->admin_scope()->filter;
-                        if(!empty($filter) && $filter !== (integer)$prj->client_id) {
-                            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
-                            redirect('/projects/');
-                        }
-
-                        $em = (array)$prj;
-                        //overwrite project_group_id with session value, not saved!!!
-                        if(!empty($this->session->flashdata('project_group_id'))) {
-                            $em['project_group_id'] = $this->session->flashdata('project_group_id');
-                        }
-                        $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
-                        $data['creating'] = false;
+                    //filter for client administrator
+                    $filter = $this->ion_auth->admin_scope()->filter;
+                    if (!empty($filter) && $filter !== (integer)$prj->client_id) {
+                        throw new Exception('No permission!');
                     }
+
+                } catch (Exception $e) {
+                    $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+                    redirect('/projects');
                 }
+
+                $em = (array)$prj;
+                //overwrite project_group_id with session value, not saved!!!
+                if (!empty($this->session->flashdata('project_group_id'))) {
+                    $em['project_group_id'] = $this->session->flashdata('project_group_id');
+                }
+                $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_project') . ' ' . $em['display_name'];
+                $data['creating'] = false;
             }
 
             $data['project'] = $em;
             $data['image'] = $this->getImage($em['name']);
-            $data['clients'] = $this->client_model->get_clients();
+            $data['clients'] = [(array)$this->client_model->get_client($em['client_id'])];
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
             $data['admin_navigation'] = $this->build_admin_navigation($em);
             $data['logged_in'] = true;
@@ -621,13 +604,20 @@ class Projects extends CI_Controller
 
         $project = $this->project_model->get_project($project_id);
         if(!$project) {
-            redirect('/');
+            redirect('/projects');
+        }
+
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
+        if(!empty($filter) && $filter !== (integer)$project->client_id) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/projects/');
         }
 
         $data['title'] = $this->lang->line('gp_publish').' '. strtolower($this->lang->line('gp_project')) .' '.$project->display_name;
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['project'] = (array)$project;
-        $data['clients'] = $this->client_model->get_clients();
+        $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
         $data['services'] = [];
         $data['logged_in'] = true;
         $data['is_admin'] = true;
@@ -651,39 +641,51 @@ class Projects extends CI_Controller
         }
 
         $project = $this->project_model->get_project($project_id);
-        if(!$project) {
+        if (!$project) {
             redirect('/');
         }
 
-        $this->load->model('qgisproject_model');
-
-        $data['project'] = (array)$project;
-        $data['clients'] = $this->client_model->get_clients();
-
-        $this->qgisinfo($data);
-
-        $project_full_path = $data['qgis_check']['name'];
-
-        $service = self::check_service($name, $type, basename($project_full_path));
-        $service_path = set_realpath($service['path']);
-        $project_new_name = $service['file_name'];
-
-        $keep_wfst = $this->config->item('keep_wfs-t_from_qgs');
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
 
         try {
+            if (!$this->ion_auth->is_admin()) {
+                throw new Exception('User not Admin!');
+            }
+
+            if(!empty($filter)) {
+                throw new Exception('No permission!');
+            }
+
+            $this->load->model('qgisproject_model');
+
+            $data['project'] = (array)$project;
+            $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
+
+            $this->qgisinfo($data);
+
+            $project_full_path = $data['qgis_check']['name'];
+
+            $service = self::check_service($name, $type, basename($project_full_path));
+            $service_path = set_realpath($service['path']);
+            $project_new_name = $service['file_name'];
+
+            $keep_wfst = $this->config->item('keep_wfs-t_from_qgs');
+
+
             $qgs = $this->qgisproject_model;
             $qgs->qgs_file = $project_full_path;
-            if(!$qgs->read_qgs_file()) {
+            if (!$qgs->read_qgs_file()) {
                 throw new Exception($qgs->error);
             }
 
             //setting advertised service url in the project qgs
-            if($name == 'wms') {
+            if ($name == 'wms') {
                 $qgs->qgs_xml->properties->WMSUrl = base_url($service['url']);
             } else if ($name == 'wfs') {
                 $qgs->qgs_xml->properties->WFSUrl = base_url($service['url']);
                 //remove transactions in case of setting
-                if($keep_wfst === FALSE) {
+                if ($keep_wfst === FALSE) {
                     $qgs->qgs_xml->properties->WFSTLayers->Insert = null;
                     $qgs->qgs_xml->properties->WFSTLayers->Update = null;
                     $qgs->qgs_xml->properties->WFSTLayers->Delete = null;
@@ -691,27 +693,23 @@ class Projects extends CI_Controller
             }
 
             //write qgs to new location
-            if(!$qgs->write_qgs_file($service_path . $project_new_name)) {
+            if (!$qgs->write_qgs_file($service_path . $project_new_name)) {
                 throw new Exception($qgs->error);
             }
 
             //set permission to 777
-            if(is_file($service_path . $project_new_name))
-            {
+            if (is_file($service_path . $project_new_name)) {
                 chmod($service_path . $project_new_name, 0777);
             }
 
             //if(!copy($project_full_path, $service_path . $project_new_name)) {
             //    throw new Exception ("Copy project failed to ". $service_path);
             //}
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+        } finally {
+            redirect('/projects/services/' . $project_id);
         }
-        catch (Exception $e){
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
-        }
-        finally {
-            redirect('/projects/services/'.$project_id);
-        }
-
     }
 
     public function stop_service($project_id = FALSE, $name = null, $type = null)
@@ -725,27 +723,37 @@ class Projects extends CI_Controller
             redirect('/');
         }
 
-        $data['project'] = (array)$project;
-        $data['clients'] = $this->client_model->get_clients();
-
-        $this->qgisinfo($data);
-
-        $project_full_path = $data['qgis_check']['name'];
-
-        $service = self::check_service($name, $type, basename($project_full_path));
-        $service_path = set_realpath($service['path']);
-        $project_new_name = $service['file_name'];
+        //filter for client administrator
+        $filter = $this->ion_auth->admin_scope()->filter;
 
         try {
-            if(!unlink($service_path . $project_new_name)) {
-                throw new Exception ("Stop service failed in ". $service_path);
+            if (!$this->ion_auth->is_admin()) {
+                throw new Exception('User not Admin!');
             }
-        }
-        catch (Exception $e){
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
-        }
-        finally {
-            redirect('/projects/services/'.$project_id);
+
+            if(!empty($filter)) {
+                throw new Exception('No permission!');
+            }
+
+            $data['project'] = (array)$project;
+            $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
+
+            $this->qgisinfo($data);
+
+            $project_full_path = $data['qgis_check']['name'];
+
+            $service = self::check_service($name, $type, basename($project_full_path));
+            $service_path = set_realpath($service['path']);
+            $project_new_name = $service['file_name'];
+
+
+            if (!unlink($service_path . $project_new_name)) {
+                throw new Exception ("Stop service failed in " . $service_path);
+            }
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+        } finally {
+            redirect('/projects/services/' . $project_id);
         }
     }
 
@@ -959,9 +967,9 @@ class Projects extends CI_Controller
         if(isset($data['project']['project_path'])) {
             $project_path = $data['project']['project_path'];
         }
-        //TODO client_id on project!
-        $client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
-        $client_name = $data['clients'][$client_key]['name'];
+
+        //$client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
+        $client_name = $data['clients'][0]['name'];
 
         $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
     }
@@ -1008,5 +1016,33 @@ class Projects extends CI_Controller
         $client_full = anchor('clients/edit/'.$client->id, $client->display_name);
 
         return $client_full . $sep . $group_full;
+    }
+
+    private function get_user_projects($is_admin)
+    {
+        $filter = $this->ion_auth->admin_scope()->filter;
+        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+        $groups = [];
+        $ret = [];
+
+        if(!empty($filter)) {
+            $projects_1 = $this->project_model->get_projects($filter, $groups,  TRUE);
+            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            $projects_2 = $this->project_model->get_projects(false, $groups,  FALSE);
+
+            //TODO REMOVE DUPLICATES
+            if(empty($projects_2)) {
+                $ret = $projects_1;
+            } else {
+                $ret = array_merge($projects_1, $projects_2);
+            }
+        } else {
+            if(!$is_admin) {
+                $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            }
+            $ret = $this->project_model->get_projects(false, $groups,  $is_admin);
+        }
+
+        return $ret;
     }
 }

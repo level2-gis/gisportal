@@ -13,9 +13,13 @@
 
     <div class="row">
         <div class="col-md-4">
-            <a href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">
-                <img title="<?php echo $img_title; ?>" class="img-responsive" src="<?php echo $client_img; ?>" alt="">
-            </a>
+            <?php if ($open_groups) : ?>
+                <a href="<?php echo site_url('project_groups/view/'.$clients_item['id']); ?>">
+            <?php else : ?>
+                <a href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>">
+            <?php endif; ?>
+                    <img title="<?php echo $img_title; ?>" class="img-responsive" src="<?php echo $client_img; ?>" alt="">
+                </a>
         </div>
         <div class="col-md-8">
              <h3 class="top">
@@ -24,7 +28,11 @@
             </h3>
 <!--            <h4>--><?php //echo $clients_item['name']; ?><!--</h4>-->
             <p class="client_description"><?php echo $clients_item['description']; ?></p>
-            <a class="btn btn-primary bottomaligned" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>
+            <?php if ($open_groups) : ?>
+                <a class="btn btn-primary bottomaligned" href="<?php echo site_url('project_groups/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>
+            <?php else : ?>
+                <a class="btn btn-primary bottomaligned" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>
+            <?php endif; ?>
                 <span class="badge"><?php echo $clients_item['count']; ?></span>
                 <span class="glyphicon glyphicon-chevron-right"></span></a>
         </div>

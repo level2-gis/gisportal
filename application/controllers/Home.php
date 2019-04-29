@@ -27,14 +27,8 @@ class Home extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
-
-        if ($this->session->userdata('user_id') !== null) {
-            $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
-            $data['clients'] = $this->client_model->get_clients($groups, $data['is_admin'], false);
-        } else {
-            $data['clients'] = null;
-        }
+        $data['clients'] = $this->get_user_clients($data['is_admin']);
+        $data['open_groups'] = empty($this->config->item('portal_show_groups_for_client')) ? FALSE : $this->config->item('portal_show_groups_for_client');
 
         $this->load->view('templates/header', $data);
 
@@ -49,11 +43,39 @@ class Home extends CI_Controller
                 $this->load->view('public_projects_view', $data);
             }
         } else if (count($data['clients']) === 1) {
-            redirect('projects/view/' . $data['clients'][0]['id']);
+            if( $data['open_groups']) {
+                redirect('project_groups/view/' . $data['clients'][0]['id']);
+            } else {
+                redirect('projects/view/' . $data['clients'][0]['id']);
+            }
         } else {
             $this->load->view('clients', $data);
         }
         $this->load->view('templates/footer', $data);
+    }
+
+    private function get_user_clients($is_admin)
+    {
+        $filter = $this->ion_auth->admin_scope()->filter;
+        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+        $groups = [];
+        $ret = [];
+
+        if(!empty($filter)) {
+            //we have client administrator
+            array_push($ret, (array)$this->client_model->get_client($filter));
+            $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            if(!empty($groups)) {
+                $ret = array_merge($ret, $this->client_model->get_clients($groups, false, false));
+            }
+        } else {
+            if(!$is_admin) {
+                $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
+            }
+            $ret = $this->client_model->get_clients($groups, $is_admin, false);
+        }
+
+        return $ret;
     }
 }
 

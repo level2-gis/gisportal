@@ -1,6 +1,7 @@
 <?php
 
 /** @var string $title */
+/** @var string $admin_navigation */
 /** @var array $group */
 /** @var array $clients */
 /** @var array $types */

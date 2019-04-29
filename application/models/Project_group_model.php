@@ -98,11 +98,12 @@ class Project_group_model extends CI_Model {
 
     /**
      * Get all child groups
-     * @param $id
      * @param $client_id
+     * @param $id
+     * @param $user_groups
      * @return mixed
      */
-    function get_child_groups($client_id, $id) {
+    function get_child_groups($client_id, $id, $user_groups = NULL) {
         if(empty($id)) {
             $this->db->where('parent_id IS NULL');
         } else {
@@ -111,6 +112,10 @@ class Project_group_model extends CI_Model {
 
         if(!empty($client_id)) {
             $this->db->where('client_id', $client_id);
+        }
+
+        if(!empty($user_groups)) {
+            $this->db->where("id = ANY('".$user_groups."')");
         }
 
         $this->db->select('id, name, display_name, parent_id, type', FALSE);

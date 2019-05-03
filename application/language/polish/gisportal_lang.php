@@ -124,6 +124,8 @@ $lang['gp_stop'] = 'Stop';
 $lang['gp_services_info'] = 'Publish project using QGIS Server as OGC Web Services for use in other GIS Sofware.<br/>Apache configuration is required for setup publishing, refer to project documentation!<br/>WMS - Web Map Service<br/>WFS - Web Feature Service';
 
 $lang['gp_groups_title'] = 'Groups';
+$lang['gp_view_groups'] = 'View groups';
+$lang['gp_open_group'] = 'Open group';
 $lang['gp_group'] = 'Group';
 $lang['gp_project_group'] = 'project group';
 $lang['gp_sub_group'] = 'menu group';

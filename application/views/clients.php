@@ -29,7 +29,7 @@
 <!--            <h4>--><?php //echo $clients_item['name']; ?><!--</h4>-->
             <p class="client_description"><?php echo $clients_item['description']; ?></p>
             <?php if ($open_groups) : ?>
-                <a class="btn btn-primary bottomaligned" href="<?php echo site_url('project_groups/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>
+                <a class="btn btn-info bottomaligned" href="<?php echo site_url('project_groups/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_groups'); ?>
             <?php else : ?>
                 <a class="btn btn-primary bottomaligned" href="<?php echo site_url('projects/view/'.$clients_item['id']); ?>"><?php echo $this->lang->line('gp_view_projects'); ?>
             <?php endif; ?>

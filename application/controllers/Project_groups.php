@@ -55,6 +55,7 @@ class Project_groups extends CI_Controller
         $data['is_admin'] = $this->ion_auth->is_admin();
         $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
         $data['navigation'] = $this->build_user_navigation($client,$parent_id);
+        $data['client_id'] = $client_id;
 
         $this->load->view('templates/header', $data);
         $this->load->view('project_groups', $data);
@@ -497,10 +498,19 @@ class Project_groups extends CI_Controller
         return empty($el['display_name']) ? $el['name'] : $el['display_name'];
     }
 
-    private function build_parent_link($id, $sep, &$result) {
+    private function build_parent_link($id, $sep, &$result, $mode = NULL) {
+
+        if(empty($id)) {
+            return;
+        }
+
         $new_group = (array)$this->project_group_model->get_project_group($id);
         $new_id = $new_group['parent_id'];
-        $result = anchor('project_groups/edit/'.$new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        if($mode === 'edit') {
+            $result = anchor('project_groups/edit/' . $new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        } else {
+            $result = anchor('project_groups/view/' . $new_group['client_id'] . '/' . $new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        }
         return $new_id;
     }
 
@@ -512,8 +522,10 @@ class Project_groups extends CI_Controller
         $group_full = $this->get_name($group);
         $parent_id = $group['parent_id'];
 
+        $mode = 'edit';
+
         while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full, $mode);
         }
 
         $client = $this->client_model->get_client($group['client_id']);
@@ -537,7 +549,7 @@ class Project_groups extends CI_Controller
         }
 
         while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+            $parent_id = $this->build_parent_link($group['parent_id'], $sep, $group_full);
         }
 
 

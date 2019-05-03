@@ -44,7 +44,7 @@ class Projects extends CI_Controller
     }
 
     /*
-     * Portal view
+     * Portal view user projects by client
      */
     public function view($client_id = false)
     {
@@ -56,22 +56,51 @@ class Projects extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        $client = $this->client_model->get_client($client_id);
+
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
-
-        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-        $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
-
-        $data['projects'] = $this->project_model->get_projects($client_id, $groups,  $data['is_admin']);
+        $data['projects'] = $this->get_user_projects($data['is_admin'],$client_id);
+        $data['navigation'] = $this->build_user_navigation($client);
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects', $data);
         $this->load->view('templates/footer', $data);
 
     }
+
+    /*
+     * Portal view user projects by group
+     */
+    public function view_group($client_id = FALSE, $group_id = FALSE)
+    {
+        if ($group_id === FALSE || $client_id === FALSE) {
+            redirect("/");
+        }
+
+        if (!$this->ion_auth->logged_in()) {
+            redirect('/auth/login?ru=/' . uri_string());
+        }
+
+        $client = $this->client_model->get_client($client_id);
+
+        $data['title'] = $this->lang->line('gp_projects_title');
+        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
+        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+        $data['logged_in'] = true;
+        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['projects'] = $this->get_user_projects_for_group($data['is_admin'],$client_id,$group_id);
+        $data['navigation'] = $this->build_user_navigation($client,$group_id);
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('projects', $data);
+        $this->load->view('templates/footer', $data);
+
+    }
+
 
     /**
      * Upload QGIS project file
@@ -993,10 +1022,19 @@ class Projects extends CI_Controller
         return empty($el['display_name']) ? $el['name'] : $el['display_name'];
     }
 
-    private function build_parent_link($id, $sep, &$result) {
+    private function build_parent_link($id, $sep, &$result, $mode = NULL) {
+
+        if(empty($id)) {
+            return;
+        }
+
         $new_group = (array)$this->project_group_model->get_project_group($id);
         $new_id = $new_group['parent_id'];
-        $result = anchor('project_groups/edit/'.$new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        if($mode === 'edit') {
+            $result = anchor('project_groups/edit/'.$new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        } else {
+            $result = anchor('project_groups/view/' . $new_group['client_id'] . '/' . $new_group['id'], $this->get_name($new_group)) . $sep . $result;
+        }
         return $new_id;
     }
 
@@ -1008,8 +1046,10 @@ class Projects extends CI_Controller
         $group_full = $this->get_name($group);
         $parent_id = $group['project_group_id'];
 
+        $mode = 'edit';
+
         while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full, $mode);
         }
 
         $client = $this->client_model->get_client($group['client_id']);
@@ -1018,7 +1058,7 @@ class Projects extends CI_Controller
         return $client_full . $sep . $group_full;
     }
 
-    private function get_user_projects($is_admin)
+    private function get_user_projects($is_admin, $client_id = FALSE)
     {
         $filter = $this->ion_auth->admin_scope()->filter;
         $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
@@ -1026,9 +1066,16 @@ class Projects extends CI_Controller
         $ret = [];
 
         if(!empty($filter)) {
-            $projects_1 = $this->project_model->get_projects($filter, $groups,  TRUE);
+            $projects_1 = $this->project_model->get_projects($filter, $groups, TRUE);
+            if($client_id) {
+                if ($filter === (integer)$client_id) {
+                    return $projects_1;
+                } else {
+                    $projects_1 = [];
+                }
+            }
             $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
-            $projects_2 = $this->project_model->get_projects(false, $groups,  FALSE);
+            $projects_2 = $this->project_model->get_projects($client_id, $groups,  FALSE);
 
             //TODO REMOVE DUPLICATES
             if(empty($projects_2)) {
@@ -1040,9 +1087,60 @@ class Projects extends CI_Controller
             if(!$is_admin) {
                 $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             }
-            $ret = $this->project_model->get_projects(false, $groups,  $is_admin);
+            $ret = $this->project_model->get_projects($client_id, $groups,  $is_admin);
         }
 
         return $ret;
+    }
+
+    private function get_user_projects_for_group($is_admin, $client_id, $group_id)
+    {
+        $filter = $this->ion_auth->admin_scope()->filter;
+        $user = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+        $groups = '{'.$group_id.'}';
+        $ret = [];
+
+        if(!empty($filter)) {
+            if ($filter !== (integer)$client_id) {
+                $check = $this->user_model->has_project_group_role($user->user_id,$group_id);
+                if(!$check) {
+                    return $ret;
+                }
+            }
+        } else {
+            if(!$is_admin) {
+                $check = $this->user_model->has_project_group_role($user->user_id,$group_id);
+                if(!$check) {
+                    return $ret;
+                }
+            }
+        }
+
+        $ret = $this->project_model->get_projects(FALSE, $groups, FALSE);
+
+        return $ret;
+    }
+
+    private function build_user_navigation($client, $parent_id = NULL)
+    {
+        if(empty($parent_id)) {
+            $sep = '';
+            $group_full = '';
+            $client_full =  $client->display_name;
+        } else {
+            $sep = ' > ';
+            //this is current group, last in the tree, does not have link
+            $group = (array)$this->project_group_model->get_project_group($parent_id);
+            $group_full = $this->get_name($group);
+            $client_full = anchor('project_groups/view/'.$client->id, $client->display_name);
+        }
+
+        while (!empty($parent_id)) {
+            $parent_id = $this->build_parent_link($group['parent_id'], $sep, $group_full);
+        }
+
+
+
+        return $client_full . $sep . $group_full;
     }
 }

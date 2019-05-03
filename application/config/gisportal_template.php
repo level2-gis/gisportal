@@ -102,8 +102,8 @@ $config['qgis_project_default_location'] = QGS_MAIN;
 $config['enable_project_publishing'] = FALSE;
 
 /*
- * When WFS service is published clear editing capabilities from published layers (default, FALSE)
- * or keep them as set in QGIS project (TRUE)
+ * When WFS service is published keep WFS editing capabilities (WFS-T) as set in QGIS project (TRUE) or disable editing
+ * option (default, FALSE)
  */
 $config['keep_wfs-t_from_qgs'] = FALSE;
 
@@ -118,3 +118,9 @@ $config['keep_wfs-t_from_qgs'] = FALSE;
  *      - wms
  */
 $config['main_services_dir'] = '/home/services/';
+
+/*
+ * In portal view show first groups when open client (TRUE) or show directly all available
+ * projects for client (default, FALSE)
+ */
+$config['portal_show_groups_for_client'] = FALSE;

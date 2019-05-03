@@ -111,6 +111,7 @@
                             <tr>
                                 <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
                                 <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
+                                <th data-sortable="true" data-align="right" data-field="gp_projects"><?php echo $this->lang->line('gp_projects_title'); ?></th>
                                 <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
                                 <th><?php echo $this->lang->line('gp_action'); ?></th>
                             </tr>
@@ -119,8 +120,10 @@
                                 <tr>
                                     <td class="col-md-2"><?php echo $group_item['name']; ?></td>
                                     <td class="col-md-2"><?php echo $group_item['client']; ?></td>
+                                    <td class="col-md-1"><?php echo $group_item['projects']; ?></td>
                                     <td class="col-md-3"><a href="#" onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' .  $user['user_id'] . ',' . $group_item['role_id']; ?>,'users')"><?php echo $group_item['role']; ?></a></td>
                                     <td>
+                                        <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['project_group_id']); ?>"><?php echo $this->lang->line('gp_group'); ?></a>
                                         <a class="btn btn-danger" onclick="confirmLink(GP.deleteRole,'Group: <?php echo $group_item['name']; ?>','<?php echo site_url('users/remove_role/' . $group_item['project_group_id'] . '/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
                                     </td>
                                 </tr>

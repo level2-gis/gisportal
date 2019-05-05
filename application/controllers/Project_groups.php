@@ -49,12 +49,18 @@ class Project_groups extends CI_Controller
         $client = $this->client_model->get_client($client_id);
 
         $data['title'] = $this->lang->line('gp_groups_title');
-        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
-        $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
-        $data['navigation'] = $this->build_user_navigation($client,$parent_id);
+
+        try {
+            $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
+            $data['navigation'] = $this->build_user_navigation($client,$parent_id);
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+            redirect("/");
+        }
+
         $data['client_id'] = $client_id;
 
         $this->load->view('templates/header', $data);
@@ -544,12 +550,21 @@ class Project_groups extends CI_Controller
             $sep = ' > ';
             //this is current group, last in the tree, does not have link
             $group = (array)$this->project_group_model->get_project_group($parent_id);
+
+            //compare client from group and from parameter
+            if($client->id !== $group['client_id']) {
+                throw new Exception('Data parameters mismatch!');
+            }
+
             $group_full = $this->get_name($group);
             $client_full = anchor('project_groups/view/'.$client->id, $client->display_name);
+
+            //update parent_id, because current group we already have
+            $parent_id = $group['parent_id'];
         }
 
         while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($group['parent_id'], $sep, $group_full);
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
         }
 
 

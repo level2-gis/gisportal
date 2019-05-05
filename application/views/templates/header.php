@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table.min.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20180310"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190505"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20180315"); ?>">
 
     <style>

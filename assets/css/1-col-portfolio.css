@@ -12,29 +12,86 @@ body {
     margin: 0px 0;
 }*/
 
-.client_description{
-    /*width:500px;*/
-    height: 120px;
+.description_no_image {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis; /* doesn't really cut text, because of white-space not nowrap */
+    padding-left: 2px;
+    margin-bottom: 0;
+}
+
+.description{
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left: 2px;
+    margin-bottom: 0;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
 }
 
-.project_description{
-    /*width:500px;*/
+.description:empty
+{
+    display:none;
+}
+
+/*.project_description{
+    !*width:500px;*!
     height: 76px;
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+}*/
 
-.bottomaligned {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: -27px;
-    left: 15px;
-}
+/*.bottomaligned {
+     position: absolute;
+     bottom: 0;
+     margin-bottom: -27px;
+     left: 15px;
+ }*/
 
 .top {
-    margin-top: 1px;
+    padding-left: 2px;
 }
+
+/*gisportal v2 styles*/
+
+.post-content {
+    bottom:0;
+    left:0;
+    position: absolute;
+    display: grid;
+}
+
+.post-top {
+    top:0;
+    left:0;
+    position: absolute;
+    display: grid;
+}
+
+.thumbnail{
+    position:relative;
+    display: inline-block;
+}
+
+.item_image {
+    opacity: 1;
+    transition: filter .2s ease-in-out;
+    -webkit-filter: grayscale(0%); /* Ch 23+, Saf 6.0+, BB 10.0+ */
+    filter: grayscale(0%); /* FF 35+ */
+}
+
+.item_image:hover {
+    opacity: 0.8;
+    -webkit-filter: grayscale(80%); /* Ch 23+, Saf 6.0+, BB 10.0+ */
+    filter: grayscale(80%); /* FF 35+ */
+}
+
+.item_no_image {
+    opacity: 0.1;
+}
+
+
+
+

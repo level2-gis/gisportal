@@ -59,7 +59,6 @@ class Projects extends CI_Controller
         $client = $this->client_model->get_client($client_id);
 
         $data['title'] = $this->lang->line('gp_projects_title');
-        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
@@ -92,8 +91,14 @@ class Projects extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();
-        $data['projects'] = $this->get_user_projects_for_group($data['is_admin'],$client_id,$group_id);
-        $data['navigation'] = $this->build_user_navigation($client,$group_id);
+
+        try {
+            $data['projects'] = $this->get_user_projects_for_group($data['is_admin'],$client_id,$group_id);
+            $data['navigation'] = $this->build_user_navigation($client,$group_id);
+        } catch (Exception $e) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+            redirect("/");
+        }
 
         $this->load->view('templates/header', $data);
         $this->load->view('projects', $data);
@@ -910,10 +915,10 @@ class Projects extends CI_Controller
             'overview_layer_id'         => set_null($this->input->post('overview_layer_id')),
             //'base_layers_ids'           => $this->input->post('base_layers_ids'),
             //'extra_layers_ids'          => $this->input->post('extra_layers_ids'),
-            //'client_id'                 => set_null($this->input->post('client_id')), //on update we are not changing client
+            'client_id'                 => set_null($this->input->post('client_id')), //on update we are not changing client
             'public'                    => set_bool($this->input->post('public')),
             'display_name'              => $this->input->post('display_name'),
-            //'crs'                       => $this->input->post('crs'),
+            'crs'                       => $this->input->post('crs'),
             'description'               => $this->input->post('description'),
             'contact'                   => $this->input->post('contact'),
             'restrict_to_start_extent'  => set_bool($this->input->post('restrict_to_start_extent')),
@@ -1131,12 +1136,21 @@ class Projects extends CI_Controller
             $sep = ' > ';
             //this is current group, last in the tree, does not have link
             $group = (array)$this->project_group_model->get_project_group($parent_id);
+
+            //compare client from group and from parameter
+            if($client->id !== $group['client_id']) {
+                throw new Exception('Data parameters mismatch!');
+            }
+
             $group_full = $this->get_name($group);
             $client_full = anchor('project_groups/view/'.$client->id, $client->display_name);
+
+            //update parent_id, because current group we already have
+            $parent_id = $group['parent_id'];
         }
 
         while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($group['parent_id'], $sep, $group_full);
+            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
         }
 
 

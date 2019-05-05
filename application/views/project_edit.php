@@ -16,8 +16,7 @@
                     <div class="row form-group">
                         <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
                         <div class="col-md-5">
-                            <select class="form-control" disabled="true" name="client_id" id="client_id">
-                                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                            <select class="form-control" name="client_id" id="client_id">
                                 <?php foreach ($clients as $client_item): ?>
                                     <option <?php if ($client_item['id'] == $project['client_id']) { echo "selected='selected'"; }; ?> value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" .$client_item['name'] . ")"; ?></option>							<?php endforeach; ?>
                             </select>

@@ -1,33 +1,34 @@
 <p class="help-block">
     <?php echo $navigation ?>
 </p>
-<?php foreach ($projects as $projects_item):
+<?php foreach ($projects as $item):
 
-    $project_img = "assets/img/projects/" . $projects_item['name'] . ".png";
-    $img_title = $this->lang->line('gp_open_project');
-    if (file_exists(FCPATH . $project_img)) {
-        $project_img = base_url($project_img);
+    $img_path = "assets/img/projects/" . $item['name'] . ".png";
+    $name = empty($item['display_name']) ? $item['name'] : $item['display_name'];
+    $url = site_url($this->config->item('web_client_url').$item['name']);
+
+    if (!file_exists(FCPATH . $img_path)) {
+        $img = base_url("assets/img/no_project.png");
+        $img_class = 'item_no_image';
+        $desc_class = 'description_no_image';
     } else {
-        $img_title = "No file: ". $project_img . " (225x150)";
-        $project_img = $scheme . "://dummyimage.com/225x150/e0e0e0/706e70?text=".$projects_item['name'] . ".png";
+        $img = base_url($img_path);
+        $img_class = 'item_image';
+        $desc_class = 'description';
     }
-
     ?>
 
-    <div class="row">
-        <div class="col-md-3">
-            <a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$projects_item['name']); ?>">
-                <img title="<?php echo $img_title; ?>" class="img-responsive" src="<?php echo $project_img; ?>" alt="">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+        <div class="thumbnail">
+            <h4 class="top"><?php echo $name; ?></h4>
+            <a target="_self" href="<?php echo $url; ?>"><img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
+                <div class="caption post-content">
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['description']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['crs']; ?></p>
+                </div>
             </a>
         </div>
-        <div class="col-md-9">
-            <h3 class="top"><?php echo $projects_item['display_name']; ?></h3>
-            <p class="project_description"><?php echo $projects_item['crs']; ?></br><?php echo $projects_item['description']; ?></br><?php echo $projects_item['contact']; ?></p>
-            <a class="btn btn-primary bottomaligned" target="_self" href="<?php echo site_url($this->config->item('web_client_url').$projects_item['name']); ?>"><?php echo $this->lang->line('gp_open_project'); ?> <span class="glyphicon glyphicon-chevron-right"></span></a>
-        </div>
     </div>
-
-    <hr>
-
 
 <?php endforeach; ?>

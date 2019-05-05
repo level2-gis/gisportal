@@ -12,7 +12,10 @@ class Signup extends CI_Controller
 	
 	function index()
 	{
-		// set form validation rules
+		//TODO read connect parameter from get, check for client name, based on setting allow "public" registration without connection
+        //connection must be added to database with set_link
+
+	    // set form validation rules
 		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|max_length[30]');
 		$this->form_validation->set_rules('lname', $this->lang->line('gp_last_name'), 'trim|required|max_length[30]');
 		$this->form_validation->set_rules('email', $this->lang->line('gp_email'), 'trim|required|valid_email|is_unique[users.user_email]');

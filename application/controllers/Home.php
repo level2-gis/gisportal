@@ -23,7 +23,6 @@ class Home extends CI_Controller
         }
 
         $data['title'] = $this->lang->line('gp_clients_title');
-        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $this->ion_auth->is_admin();

@@ -82,13 +82,6 @@
 							<span class="text-danger"><?php echo form_error('feedback_email'); ?></span>
 						</div>	
 					</div>
-                    <div class="row form-group">
-                        <label for="ordr" class="control-label col-md-2"><?php echo $this->lang->line('gp_order'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="ordr" placeholder="" type="text" value="<?php echo $project['ordr']; ?>" />
-                            <span class="text-danger"><?php echo form_error('ordr'); ?></span>
-                        </div>
-                    </div>
 					<div class="row form-group">
 						<label for="description" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_description')); ?></label>
 						<div class="col-md-5">

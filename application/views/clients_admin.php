@@ -22,17 +22,27 @@
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
-        <?php foreach ($clients as $clients_item): ?>
+        <?php foreach ($clients as $clients_item):
+
+            $img_path = "assets/img/clients/" . $clients_item['name'] . ".png";
+            $img_class = "img-responsive";
+            $img = base_url($img_path);
+
+            if (!file_exists(FCPATH . $img_path)) {
+                $img = base_url("assets/img/no_client.png");
+                $img_class .= ' item_no_image';
+            }
+        ?>
 
             <tr>
                 <td class="col-md-1">
-                    <img title="<?php echo $this->lang->line('gp_view_projects'); ?>" class="img-responsive" src="<?php echo base_url("assets/img/clients/" . $clients_item['name'] . ".png"); ?>" alt="">
+                    <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
                 </td>
-                <td class="col-md-2"><?php echo $clients_item['name']; ?></td>
-                <td class="col-md-2"><?php echo $clients_item['display_name']; ?></td>
+                <td class="col-md-3"><?php echo $clients_item['name']; ?></td>
+                <td class="col-md-3"><?php echo $clients_item['display_name']; ?></td>
                 <td class="col-md-1"><?php echo $clients_item['count_groups']; ?></td>
                 <td class="col-md-1"><?php echo $clients_item['count']; ?></td>
-                <td class="col-md-2">
+                <td class="col-md-3">
                     <a class="btn btn-primary" href="<?php echo site_url('clients/edit/'.$clients_item['id']); ?>">
                         <?php echo $this->lang->line('gp_edit'); ?>
                     </a>

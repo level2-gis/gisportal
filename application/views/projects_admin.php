@@ -33,13 +33,23 @@
               <?php } ?>
           </tr>
       </thead>
-	  <?php foreach ($projects as $project_item): ?>
+	  <?php foreach ($projects as $project_item):
+
+          $img_path = "assets/img/projects/" . $project_item['name'] . ".png";
+          $img_class = "img-responsive";
+          $img = base_url($img_path);
+
+          if (!file_exists(FCPATH . $img_path)) {
+              $img = base_url("assets/img/no_project.png");
+              $img_class .= ' item_no_image';
+          }
+      ?>
 
 		<tr>
 		  <td class="col-md-1">
-			<img class="img-responsive" src="<?php echo base_url("assets/img/projects/" . $project_item['name'] . ".png"); ?>" alt="">
+			<img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
 		  </td>
-		  <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
+		  <td class="col-md-1"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
           <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
 		  <td class="col-md-1"><?php echo $project_item['client']; ?></td>
 		  <td class="col-md-2"><?php echo $project_item['group']; ?></td>

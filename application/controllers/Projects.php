@@ -411,7 +411,6 @@ class Projects extends CI_Controller
         //$this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
         //$this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('project_group_id', 'lang:gp_group', 'required');
-        $this->form_validation->set_rules('ordr','lang:gp_order','integer');
         $this->form_validation->set_rules('feedback_email', 'lang:gp_feedback_email', 'valid_email');
 
         if ($this->form_validation->run() === FALSE)
@@ -930,7 +929,7 @@ class Projects extends CI_Controller
             'zoom_back_forward'         => set_bool($this->input->post('zoom_back_forward')),
             'identify_mode'             => set_bool($this->input->post('identify_mode')),
             'permalink'                 => set_bool($this->input->post('permalink')),
-            'ordr'                      => ($this->input->post('ordr')),
+            //'ordr'                      => ($this->input->post('ordr')),
             'plugin_ids'                => $this->input->post('plugin_ids'),
             'project_group_id'          => $this->input->post('project_group_id')
             //'project_path'              => $this->input->post('project_path')

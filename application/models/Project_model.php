@@ -31,7 +31,7 @@ class Project_model extends CI_Model {
             'zoom_back_forward'         => true,
             'identify_mode'             => false,
             'permalink'                 => true,
-            'ordr'                      => 0,
+            //'ordr'                      => 0,
             'project_path'              => '',
             'plugin_ids'                => null,
             'project_group_id'          => null

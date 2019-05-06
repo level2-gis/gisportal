@@ -49,13 +49,6 @@
 					</div>	
 				</div>
                 <div class="form-group">
-                    <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_order'); ?></label>
-                    <div class="col-md-5">
-                        <input class="form-control" name="ordr" placeholder="" type="integer" value="<?php echo $client['ordr']; ?>" />
-                        <span class="text-danger"><?php echo form_error('ordr'); ?></span>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
                     <div class="col-md-5">
                         <?php echo $image; ?>

@@ -60,9 +60,9 @@ class Client_model extends CI_Model {
     function upsert_client($data)
     {
         $id = $data['id'];
-        if ($data['ordr'] == '') {
-            $data['ordr'] = 0;
-        }
+//        if ($data['ordr'] == '') {
+//            $data['ordr'] = 0;
+//        }
 
         if ($id != null){
             $this->db->where('id',$id);

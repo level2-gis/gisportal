@@ -12,6 +12,7 @@
     <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
         <thead>
         <tr>
+            <th></th>
             <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
@@ -24,11 +25,29 @@
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
-        <?php foreach ($groups as $groups_item): ?>
+        <?php foreach ($groups as $groups_item):
+
+            $img_path = "assets/img/groups/" . $groups_item['name'] . ".png";
+            $img_class = "img-responsive";
+            $img = base_url($img_path);
+
+            if (!file_exists(FCPATH . $img_path)) {
+                if ($groups_item['type'] === SUB_GROUP) {
+                    $img = base_url("assets/img/no_sub_group.png");
+                } else {
+                    $img = base_url("assets/img/no_project_group.png");
+                }
+                $img_class .= ' item_no_image';
+            }
+
+        ?>
 
             <tr>
-                <td class="col-md-2"><?php echo $groups_item['name']; ?></td>
-                <td class="col-md-2"><?php echo $groups_item['display_name']; ?></td>
+                <td class="col-md-1">
+                    <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
+                </td>
+                <td class="col-md-1"><?php echo $groups_item['name']; ?></td>
+                <td class="col-md-1"><?php echo $groups_item['display_name']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['client']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['parent']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['project_crs']; ?></td>

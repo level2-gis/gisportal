@@ -105,7 +105,7 @@ class Clients extends CI_Controller
 
         $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
         $this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
-        $this->form_validation->set_rules('ordr','lang:gp_order','integer');
+        //$this->form_validation->set_rules('ordr','lang:gp_order','integer');
         $this->form_validation->set_rules('url', 'lang:gp_url', 'valid_url');
 
         if ($this->form_validation->run() == FALSE)
@@ -393,7 +393,7 @@ class Clients extends CI_Controller
             //'theme_id' => '1',
             'name' => $this->input->post('name'),
             'url' => $this->input->post('url'),
-            'ordr' => $this->input->post('ordr'),
+            //'ordr' => $this->input->post('ordr'),
             'display_name' => $this->input->post('display_name'),
             'description' => $this->input->post('description')
         );

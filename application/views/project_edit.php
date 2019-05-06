@@ -3,6 +3,7 @@
 		echo form_open('projects/edit/' . $project['id'], $attributes); ?>
 			<input name="id" type="hidden" value="<?php echo $project['id']; ?>" />
 			<input id="project_name" name="name" type="hidden" value="<?php echo $project['name']; ?>" />
+			<input id="crs" name="crs" type="hidden" value="<?php echo $project['crs']; ?>" />
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>

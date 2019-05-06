@@ -19,7 +19,7 @@ class Project_model extends CI_Model {
             'client_id'                 => null,
             'public'                    => false,
             'display_name'              => '',
-            'crs'                       => '',
+            //'crs'                       => '',
             'description'               => '',
             'contact'                   => '',
             'restrict_to_start_extent'  => false,

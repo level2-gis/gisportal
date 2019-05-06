@@ -463,7 +463,7 @@ class Projects extends CI_Controller
             $data['logged_in'] = true;
             $data['is_admin'] = true;
 
-            $this->loadmeta($data);
+            //$this->loadmeta($data);
             $this->qgisinfo($data);
 
             $this->load->view('templates/header', $data);

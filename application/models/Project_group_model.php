@@ -115,11 +115,11 @@ class Project_group_model extends CI_Model {
         }
 
         if(!empty($user_groups)) {
-            $this->db->where("id = ANY('".$user_groups."')");
+            $this->db->where("(id = ANY('".$user_groups."') OR children && ('".$user_groups."'))");
         }
 
-        $this->db->select('id, name, display_name, parent_id, type', FALSE);
-        $query = $this->db->get('project_groups');
+        $this->db->select('* FROM (SELECT id, name, client_id, display_name, parent_id, type, CASE WHEN type=1 THEN get_child_groups(id) ELSE null END AS children FROM project_groups) p', FALSE);
+        $query = $this->db->get();
         return $query->result_array();
     }
 

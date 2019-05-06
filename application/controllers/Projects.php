@@ -958,36 +958,6 @@ class Projects extends CI_Controller
         }
     }
 
-
-
-
-//    private function extractUserProjectData(){
-//
-//        if ($this->input->post('user_projects_ids') != null){
-//            return implode($this->input->post('user_projects_ids'),',');
-//        }
-//
-//        return null;
-//    }
-
-    private function loadmeta(&$data){
-        //$data['user_projects'] = $this->user_model->get_users_with_project_flag($data['project']['id']);
-
-        //we need baselayer for overview layer
-        //$data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['base_layers_ids']);
-        $data['base_layers'] = $this->layer_model->get_layers_with_project_flag(null);
-        //$data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['project']['extra_layers_ids']);
-        $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
-
-//        $directory = new RecursiveDirectoryIterator(PROJECT_PATH);
-//        $iterator  = new RecursiveIteratorIterator($directory);
-//
-//        foreach(new RegexIterator($iterator, '/^.+\.qgs$/i', RecursiveRegexIterator::GET_MATCH) as $file) {
-//            $f = str_replace('\\', '/', $file[0]);
-//            array_push($data['project_paths'], str_replace(PROJECT_PATH, '', $f));
-//        }
-    }
-
     private function qgisinfo(&$data){
         if ($data['project']['name'] == '') {
             $data['qgis_check'] =  ["valid" => false, "name" => ""];

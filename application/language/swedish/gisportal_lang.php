@@ -32,7 +32,6 @@ $lang['gp_projects_title'] = 'Projekt';
 $lang['gp_layers_title'] = 'Layers';
 $lang['gp_users_title'] = 'Users';
 $lang['gp_home'] = 'Hem';
-$lang['gp_portal_title'] = 'Kartportalen';
 
 $lang['gp_user_projects'] = 'Användarens projekt';
 $lang['gp_public_projects'] = 'Publika projekt';

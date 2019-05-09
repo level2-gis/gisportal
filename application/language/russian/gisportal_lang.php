@@ -32,7 +32,6 @@ $lang['gp_projects_title'] = 'Проекты';
 $lang['gp_layers_title'] = 'Слои';
 $lang['gp_users_title'] = 'Пользователи';
 $lang['gp_home'] = 'Главная';
-$lang['gp_portal_title'] = 'Портал ГИС';
 
 $lang['gp_user_projects'] = 'Проекты пользователя';
 $lang['gp_public_projects'] = 'Public projects';

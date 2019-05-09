@@ -15,10 +15,13 @@
 */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$config['company'] = 'Company name';
-$config['company_url'] = 'company url';
+$config['site_title']       = "GIS PORTAL";             // Site Title
 
-$config['web_client_url'] = '../../gisapp/';  //relative to base_site defined on top
+$config['company']          = 'My company';             // Name of company/organization who manages this GIS PORTAL
+$config['company_url']      = 'http://www.company.com';
+$config['admin_email']      = "admin@company.com";      // Company system email
+
+$config['web_client_url']   = '../../gisapp/';          //relative to base_site defined on top
 
 /*
  * Set which languages show up for user selection.

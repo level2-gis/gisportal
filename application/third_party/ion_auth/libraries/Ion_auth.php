@@ -165,9 +165,9 @@ class Ion_auth
 				{
 					$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->config->item('email_forgot_password', 'ion_auth'), $data, TRUE);
 					$this->email->clear();
-					$this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
+					$this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
 					$this->email->to($user->email);
-					$this->email->subject($this->config->item('site_title', 'ion_auth') . ' - ' . $this->lang->line('email_forgotten_password_subject'));
+					$this->email->subject($this->config->item('site_title') . ' - ' . $this->lang->line('email_forgotten_password_subject'));
 					$this->email->message($message);
 
 					if ($this->email->send())
@@ -299,9 +299,9 @@ class Ion_auth
 				$message = $this->load->view($this->config->item('email_templates', 'ion_auth').$this->config->item('email_activate', 'ion_auth'), $data, true);
 
 				$this->email->clear();
-				$this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
+				$this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
 				$this->email->to($email);
-				$this->email->subject($this->config->item('site_title', 'ion_auth') . ' - ' . $this->lang->line('email_activation_subject'));
+				$this->email->subject($this->config->item('site_title') . ' - ' . $this->lang->line('email_activation_subject'));
 				$this->email->message($message);
 
 				if ($this->email->send() === TRUE)
@@ -344,8 +344,9 @@ class Ion_auth
 		$this->session->sess_destroy();
 
 		// Recreate the session
-		session_start();
-		$this->session->sess_regenerate(TRUE);
+        // Uros comment out this, don't see a point, session was not deleted completely after logout, user stayed logged in
+		//session_start();
+		//$this->session->sess_regenerate(TRUE);
 
 		$this->set_message('logout_successful');
 		return TRUE;

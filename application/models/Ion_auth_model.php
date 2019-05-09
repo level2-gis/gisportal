@@ -512,13 +512,15 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
-		$data = [
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
+        $data = [
 			'forgotten_password_selector' => NULL,
 			'forgotten_password_code' => NULL,
 			'forgotten_password_time' => NULL
 		];
 
-		$this->db->update($this->tables['users'], $data, [$this->identity_column => $identity]);
+		$this->db->update($this->tables['users'], $data, [$identity_column => $identity]);
 
 		return TRUE;
 	}
@@ -537,12 +539,14 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
 		$data = [
 			'remember_selector' => NULL,
 			'remember_code' => NULL
 		];
 
-		$this->db->update($this->tables['users'], $data, [$this->identity_column => $identity]);
+		$this->db->update($this->tables['users'], $data, [$identity_column => $identity]);
 
 		return TRUE;
 	}
@@ -592,12 +596,14 @@ class Ion_auth_model extends CI_Model
 	 */
 	public function change_password($identity, $old, $new)
 	{
-		$this->trigger_events('pre_change_password');
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
+	    $this->trigger_events('pre_change_password');
 
 		$this->trigger_events('extra_where');
 
 		$query = $this->db->select('id, password')
-		                  ->where($this->identity_column, $identity)
+		                  ->where($identity_column, $identity)
 		                  ->limit(1)
 		                  ->order_by('id', 'desc')
 		                  ->get($this->tables['users']);
@@ -698,7 +704,9 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
-		return $this->db->where($this->identity_column, $identity)
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
+		return $this->db->where($identity_column, $identity)
 						->limit(1)
 						->count_all_results($this->tables['users']) > 0;
 	}
@@ -717,8 +725,10 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
 		$query = $this->db->select('id')
-						  ->where($this->identity_column, $identity)
+						  ->where($identity_column, $identity)
 						  ->limit(1)
 						  ->get($this->tables['users']);
 
@@ -758,8 +768,10 @@ class Ion_auth_model extends CI_Model
 			'forgotten_password_time' => time()
 		];
 
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
 		$this->trigger_events('extra_where');
-		$this->db->update($this->tables['users'], $update, [$this->identity_column => $identity]);
+		$this->db->update($this->tables['users'], $update, [$identity_column => $identity]);
 
 		if ($this->db->affected_rows() === 1)
 		{
@@ -2005,12 +2017,14 @@ class Ion_auth_model extends CI_Model
 		// Generate random tokens
 		$token = $this->_generate_selector_validator_couple();
 
+        $identity_column = (valid_email($identity) ? $this->identity_column : $this->identity_alt_column);
+
 		if ($token->validator_hashed)
 		{
 			$this->db->update($this->tables['users'],
 								[ 'remember_selector' => $token->selector,
 								  'remember_code' => $token->validator_hashed ],
-								[ $this->identity_column => $identity ]);
+								[ $identity_column => $identity ]);
 
 			if ($this->db->affected_rows() > -1)
 			{

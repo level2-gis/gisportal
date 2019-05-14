@@ -27,6 +27,9 @@
     <?php $attributes = array("class" => "form-horizontal");
     echo form_open('project_groups/edit/' . $group['id'], $attributes); ?>
     <input name="id" type="hidden" value="<?php echo $group['id']; ?>"/>
+    <input name="creating" type="hidden" value="<?php echo $creating; ?>">
+    <input id="base_ids" name="base_layers_ids" type="hidden" value="<?php echo $group['base_layers_ids']; ?>">
+    <input id="extra_ids" name="extra_layers_ids" type="hidden" value="<?php echo $group['extra_layers_ids']; ?>">
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="#edit-group-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
@@ -129,11 +132,22 @@
                     <?php } ?>
                 </tr>
                 </thead>
-                <?php foreach ($projects as $project_item): ?>
+                <?php foreach ($projects as $project_item):
+
+                    $img_path = "assets/img/projects/" . $project_item['name'] . ".png";
+                    $img_class = "img-responsive";
+                    $img = base_url($img_path);
+
+                    if (!file_exists(FCPATH . $img_path)) {
+                        $img = base_url("assets/img/no_project.png");
+                        $img_class .= ' item_no_image';
+                    }
+
+                    ?>
 
                     <tr>
                         <td class="col-md-1">
-                            <img class="img-responsive" src="<?php echo base_url("assets/img/projects/" . $project_item['name'] . ".png"); ?>" alt="">
+                            <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
                         </td>
                         <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
                         <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
@@ -175,7 +189,7 @@
                        onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?> <?php echo $this->lang->line('gp_all'); ?></a>                </div>
             </div>
 
-              <table data-pagination="true" data-search="false" data-toggle="table" data-show-pagination-switch="false">
+              <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
                 <thead>
                 <tr>
                     <th data-sortable="true"
@@ -209,110 +223,79 @@
         </fieldset>
 
         <fieldset id="edit-group-layers" class="tab-pane">
-            <div class="form-group">
-                <div class="row style-select">
-                    <div class="col-md-offset-1 col-md-10">
-                        <div class="subject-info-box-1">
-                            <label><?php echo $this->lang->line('gp_available')." ".strtolower($this->lang->line('gp_base_layers')); ?></label>
-                            <select multiple class="form-control" id="lstBase1">
-                                <?php foreach ($base_layers as $layer_item): ?>
-                                    <?php if ($layer_item['idx'] == 0) {?>
-                                        <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
-                                    <?php } ?>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="subject-info-arrows text-center">
-                            <br /><br />
-                            <input type='button' onclick="moveItem('#lstBase1','#lstBase2')" value='>' class="btn btn-default" /><br />
-                            <input type='button' onclick="moveItem('#lstBase2','#lstBase1')" value='<' class="btn btn-default" /><br />
-                            <input type='button' onclick="moveAllItems('#lstBase2','#lstBase1')" value='<<' class="btn btn-default" />
-                        </div>
-
-                        <div class="subject-info-box-2">
-                            <label><?php echo $this->lang->line('gp_base_layers')." ".strtolower($this->lang->line('gp_in_project')); ?></label>
-                            <select multiple class="form-control" id="lstBase2">
-                                <?php foreach ($base_layers as $layer_item): ?>
-                                    <?php if ($layer_item['idx'] > 0) {?>
-                                        <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
-                                    <?php } ?>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="selected-right">
-                            <button onclick="moveUp('#lstBase2')" type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-chevron-up"></span>
-                            </button>
-                            <button onclick="moveDown('#lstBase2')" type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-chevron-down"></span>
-                            </button>
-                        </div>
-
-                        <!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
-                        <!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
-                        <!--                                </div>-->
-
-                        <!--                                <div class="clearfix"></div>-->
-                    </div>
+            <div class="form-inline well">
+                <div class="form-group">
+                    <input type="search" id="layer_search" class="form-control typeahead" size="60" placeholder="<?php echo $this->lang->line('gp_find_layer'); ?>..."
+                           autocomplete="off">
+                    <a onclick="addLayer(<?php echo $group['id']; ?>,<?php echo BASE_LAYER; ?>,'edit-group-layers')"
+                       class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
                 </div>
-
             </div>
+            <table id="group_base_layers" data-reorderable-rows="true" data-use-row-attr-func="true" data-pagination="false" data-search="false" data-toggle="table" data-show-pagination-switch="false">
+                <thead>
+                <tr>
+                    <th data-visible="false" data-field="gp_id"></th>
+                    <th data-sortable="false"
+                        data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+                    <th data-sortable="false"
+                        data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                    <th data-sortable="false"
+                        data-field="gp_type"><?php echo $this->lang->line('gp_type'); ?></th>
+                    <th><?php echo $this->lang->line('gp_action'); ?></th>
+                </tr>
+                </thead>
+                <?php foreach ($base_layers as $key => $layer_item): ?>
+                    <tr>
+                        <td id="<?php echo $key; ?>"><?php echo $layer_item['id']; ?></td>
+                        <td class="col-md-2"><?php echo $layer_item['name']; ?></td>
+                        <td class="col-md-4"><?php echo $layer_item['display_name']; ?></td>
+                        <td class="col-md-1"><?php echo $layer_item['type']; ?></td>
+                        <td class="col-md-2">
+                            <a class="btn btn-default" href="<?php echo site_url('layers/edit/'.$layer_item['id']); ?>"><?php echo $this->lang->line('gp_layer'); ?></a>
+                            <a class="btn btn-danger" onclick="confirmLink(GP.deleteLayerGroup,'<?php echo $layer_item['name']; ?> from group: <?php echo $group['name']; ?>','<?php echo site_url('project_groups/remove_layer/' .  $group['id'] . '/' . $layer_item['id'] . '/' . BASE_LAYER . '/' . $group['client_id'] . '/edit-group-layers'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+            <p class="help-block"><?php echo $this->lang->line('gp_reorder_help'); ?></p>
         </fieldset>
 
         <fieldset id="edit-group-extra-layers" class="tab-pane">
-            <div class="form-group">
-                <!--						<label for="base_layers_ids" class="control-label col-md-2">Base Layers</label>-->
-                <div class="row style-select">
-                    <div class="col-md-offset-1 col-md-10">
-                        <div class="subject-info-box-1">
-                            <label><?php echo $this->lang->line('gp_available')." ".strtolower($this->lang->line('gp_overlay_layers')); ?></label>
-                            <select multiple class="form-control" id="lstExtra1">
-                                <?php foreach ($extra_layers as $layer_item): ?>
-                                    <?php if ($layer_item['idx'] == 0) {?>
-                                        <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['full_name']; ?></option>
-                                    <?php } ?>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="subject-info-arrows text-center">
-                            <br /><br />
-                            <input type='button' onclick="moveItem('#lstExtra1','#lstExtra2')" value='>' class="btn btn-default" /><br />
-                            <input type='button' onclick="moveItem('#lstExtra2','#lstExtra1')" value='<' class="btn btn-default" /><br />
-                            <input type='button' onclick="moveAllItems('#lstExtra2','#lstExtra1')" value='<<' class="btn btn-default" />
-                        </div>
-
-                        <div class="subject-info-box-2">
-                            <label><?php echo $this->lang->line('gp_overlay_layers')." ".strtolower($this->lang->line('gp_in_project')); ?></label>
-                            <select multiple class="form-control" id="lstExtra2">
-                                <?php foreach ($extra_layers as $layer_item): ?>
-                                    <?php if ($layer_item['idx'] > 0) {?>
-                                        <option value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name']; ?></option>
-                                    <?php } ?>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="selected-right">
-                            <button onclick="moveUp('#lstExtra2')" type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-chevron-up"></span>
-                            </button>
-                            <button onclick="moveDown('#lstExtra2')" type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-chevron-down"></span>
-                            </button>
-                        </div>
-
-                        <!--                                <div class="col-md-3 col-sm-3 col-xs-3 add-btns">-->
-                        <!--                                    <input type="button" id="list2val" value="get values" class="btn btn-default" />-->
-                        <!--                                </div>-->
-
-                        <!--                                <div class="clearfix"></div>-->
-                    </div>
+            <div class="form-inline well">
+                <div class="form-group">
+                    <input type="search" id="extra_layer_search" class="form-control typeahead" size="60" placeholder="<?php echo $this->lang->line('gp_find_layer'); ?>..."
+                           autocomplete="off">
+                    <a onclick="addLayerExtra(<?php echo $group['id']; ?>,<?php echo EXTRA_LAYER; ?>,'edit-group-extra-layers')"
+                       class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
                 </div>
-
             </div>
+            <table id="group_extra_layers" data-reorderable-rows="true" data-use-row-attr-func="true" data-pagination="false" data-search="false" data-toggle="table" data-show-pagination-switch="false">
+                <thead>
+                <tr>
+                    <th data-visible="false" data-field="gp_id"></th>
+                    <th data-sortable="false"
+                        data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
+                    <th data-sortable="false"
+                        data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
+                    <th data-sortable="false"
+                        data-field="gp_type"><?php echo $this->lang->line('gp_type'); ?></th>
+                    <th><?php echo $this->lang->line('gp_action'); ?></th>
+                </tr>
+                </thead>
+                <?php foreach ($extra_layers as $key => $layer_item): ?>
+                    <tr>
+                        <td id="<?php echo $key; ?>"><?php echo $layer_item['id']; ?></td>
+                        <td class="col-md-2"><?php echo $layer_item['name']; ?></td>
+                        <td class="col-md-4"><?php echo $layer_item['display_name']; ?></td>
+                        <td class="col-md-1"><?php echo $layer_item['type']; ?></td>
+                        <td class="col-md-2">
+                            <a class="btn btn-default" href="<?php echo site_url('layers/edit/'.$layer_item['id']); ?>"><?php echo $this->lang->line('gp_layer'); ?></a>
+                            <a class="btn btn-danger" onclick="confirmLink(GP.deleteLayerGroup,'<?php echo $layer_item['name']; ?> from group: <?php echo $group['name']; ?>','<?php echo site_url('project_groups/remove_layer/' .  $group['id'] . '/' . $layer_item['id'] . '/' . EXTRA_LAYER . '/' . $group['client_id'] . '/edit-group-extra-layers'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+            <p class="help-block"><?php echo $this->lang->line('gp_reorder_help'); ?></p>
         </fieldset>
         <?php endif; ?>
 
@@ -350,12 +333,8 @@
         <div id="fixed-actions">
             <hr>
             <div class="form-actions col-md-8">
-                <input name="creating" type="hidden" value="<?php echo $creating; ?>">
-                <input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
-                <input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
-
-                <input type="submit" class="btn btn-primary" onclick="checkValues()" value=<?php echo $this->lang->line('gp_save'); ?>>
-                <input type="submit" class="btn btn-primary" onclick="checkValues()" name="return"
+                <input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>
+                <input type="submit" class="btn btn-primary" name="return"
                        value=<?php echo $this->lang->line('gp_save') . "&nbsp;&&nbsp;" . strtolower($this->lang->line('gp_return')); ?>>
                 <a class="btn btn-default"
                    href="<?php echo site_url('project_groups/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
@@ -377,7 +356,7 @@
 
     $.fn.typeahead.Constructor.prototype.clear = function () { this.$element.data("active", null); };
 
-    $('input.typeahead').typeahead({
+    $('#user_search').typeahead({
         minLength: 2,
         autoSelect: false,
         changeInputOnMove: false,
@@ -390,8 +369,31 @@
         }
     });
 
-    //dobiš aktivno
-    //$('input.typeahead').typeahead("getActive");
+    $('#layer_search').typeahead({
+        minLength: 2,
+        autoSelect: false,
+        changeInputOnMove: false,
+        source:  function (query, process) {
+            return $.get(GP.settings.siteUrl + '/layers/search', { query: query }, function (data) {
+                //console.log(data);
+                data = $.parseJSON(data);
+                return process(data);
+            });
+        }
+    });
+
+    $('#extra_layer_search').typeahead({
+        minLength: 2,
+        autoSelect: false,
+        changeInputOnMove: false,
+        source:  function (query, process) {
+            return $.get(GP.settings.siteUrl + '/layers/search', { query: query }, function (data) {
+                //console.log(data);
+                data = $.parseJSON(data);
+                return process(data);
+            });
+        }
+    });
 
     $('input[type=search]').on('search', function () {
         // search logic here
@@ -415,6 +417,26 @@
                 }],
                 data: JSON.parse(row.gp_items)
             });
+        }
+    });
+
+    var $table2 = $('#group_base_layers');
+    $table2.bootstrapTable({
+        onReorderRow: function (data) {
+            //write new layers to base_layers_ids field, group must be saved to make effect
+            var layers = data.map(function(item){return parseInt(item.gp_id);});
+            var baseIds = document.getElementById('base_ids');
+            baseIds.value = ('{'+layers.join()+'}');
+        }
+    });
+
+    var $table3 = $('#group_extra_layers');
+    $table2.bootstrapTable({
+        onReorderRow: function (data) {
+            //write new layers to base_layers_ids field, group must be saved to make effect
+            var layers = data.map(function(item){return parseInt(item.gp_id);});
+            var baseIds = document.getElementById('extra_ids');
+            baseIds.value = ('{'+layers.join()+'}');
         }
     });
 

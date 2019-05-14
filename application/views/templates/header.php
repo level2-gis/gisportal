@@ -13,6 +13,7 @@
     <!--link the bootstrap css file-->
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table.min.css"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table-reorder-rows.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190505"); ?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20190505"); ?>">
@@ -25,13 +26,15 @@
     </style>
 
     <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.tablednd.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-filestyle.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap3-typeahead.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootbox.all.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.selectlistactions.js"); ?>"></script>
+<!--    <script type="text/javascript" src="--><?php //echo base_url("assets/js/jquery.selectlistactions.js"); ?><!--"></script>-->
     <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190425"); ?>"></script>
     <script type="text/javascript">
 
@@ -55,6 +58,7 @@
             menuGroup:              '<?php echo $this->lang->line('gp_sub_group'); ?>',
             clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
             userRequired:           '<?php echo $this->lang->line('gp_user_required'); ?>',
+            layerRequired:          '<?php echo $this->lang->line('gp_layer_required'); ?>',
             noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',
             onlyQgs:                '<?php echo $this->lang->line('gp_only_qgs'); ?>',
             differentProjects:      '<?php echo $this->lang->line('gp_diff_proj'); ?>',

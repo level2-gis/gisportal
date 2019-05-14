@@ -101,7 +101,7 @@
                             <td class="col-md-1"><?php echo set_check_icon((boolean)$group_item['is_extra']); ?></td>
                             <td>
                                 <a class="btn btn-default" href="<?php echo site_url('project_groups/edit/'.$group_item['project_group_id']); ?>"><?php echo $this->lang->line('gp_group'); ?></a>
-                                <a class="btn btn-danger" onclick="confirmLink(GP.deleteLayerGroup,'<?php echo $layer['name']; ?> from group: <?php echo $group_item['name']; ?>','<?php echo site_url('project_groups/remove_layer/' . $group_item['project_group_id'] . '/' . $layer['id'] . '/' .  $group_item['client_id']); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+                                <a class="btn btn-danger" onclick="confirmLink(GP.deleteLayerGroup,'<?php echo $layer['name']; ?> from group: <?php echo $group_item['name']; ?>','<?php echo site_url('project_groups/remove_layer/' . $group_item['project_group_id'] . '/' . $layer['id'] . '/' .  $group_item['is_extra'] . '/' . $group_item['client_id'] . '/layers'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

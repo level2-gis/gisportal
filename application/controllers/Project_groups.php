@@ -170,6 +170,7 @@ class Project_groups extends CI_Controller
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_group') . ' <strong>' . $group->name . '</strong>' . $this->lang->line('gp_saved') . '</div>');
+                $this->user_model->clear_gisapp_session();
             } catch (Exception $e) {
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
             }

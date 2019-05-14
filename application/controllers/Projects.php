@@ -174,7 +174,7 @@ class Projects extends CI_Controller
                     chmod($dir . $file_name, 0777);
                 }
 
-                $this->clearCurrentUserProjectSession();
+                $this->user_model->clear_gisapp_session();
                 if(!empty($project_id)) {
                     redirect('projects/edit/'.$project_id);
                 } else {
@@ -483,7 +483,7 @@ class Projects extends CI_Controller
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $project['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
-                $this->clearCurrentUserProjectSession();
+                $this->user_model->clear_gisapp_session();
             }
             catch (Exception $e){
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -577,7 +577,7 @@ class Projects extends CI_Controller
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $project['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
-                $this->clearCurrentUserProjectSession();
+                $this->user_model->clear_gisapp_session();
             }
             catch (Exception $e){
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -975,21 +975,6 @@ class Projects extends CI_Controller
         $client_name = $data['clients'][0]['name'];
 
         $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
-    }
-
-    private function clearCurrentUserProjectSession() {
-        $sess_items = array(
-            'client_path',
-            'project',
-            'project_path',
-            'data',
-            'settings',
-            'description',
-            'gis_projects',
-            'qgs'
-        );
-
-        $this->session->unset_userdata($sess_items);
     }
 
     private function get_name($el) {

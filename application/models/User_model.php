@@ -327,4 +327,20 @@ class User_model extends CI_Model
         $this->db->where('user_name', $name);
         $this->db->delete('users_print');
     }
+
+    public function clear_gisapp_session()
+    {
+        $sess_items = array(
+            'client_path',
+            'project',
+            'project_path',
+            'data',
+            'settings',
+            'description',
+            'gis_projects',
+            'qgs'
+        );
+
+        $this->session->unset_userdata($sess_items);
+    }
 }

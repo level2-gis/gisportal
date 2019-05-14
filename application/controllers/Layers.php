@@ -7,6 +7,7 @@ class Layers extends CI_Controller{
         $this->load->model('layer_model');
         $this->load->model('client_model');
         $this->load->model('project_group_model');
+        $this->load->model('user_model');
         $this->load->helper(array('form', 'url', 'eqwc_parse'));
     } 
 
@@ -133,7 +134,7 @@ class Layers extends CI_Controller{
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_layer') . ' <strong>' . $layer['name'] . '</strong>' . $this->lang->line('gp_saved') . '</div>');
-                $this->clearCurrentUserLayerSession();
+                $this->user_model->clear_gisapp_session();
             } catch (Exception $e) {
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
             }
@@ -260,20 +261,5 @@ class Layers extends CI_Controller{
         }
 
         return true;
-    }
-
-    private function clearCurrentUserLayerSession() {
-        $sess_items = array(
-            'client_path',
-            'project',
-            'project_path',
-            'data',
-            'settings',
-            'description',
-            'gis_projects',
-            'qgs'
-        );
-
-        $this->session->unset_userdata($sess_items);
     }
 }

@@ -59,17 +59,51 @@ function confirmLink(msg,name,url) {
 
 function addRole(group, back) {
     //get user and role from ui
-    var user = $('input.typeahead').typeahead("getActive");
+    var user = $('#user_search').typeahead("getActive");
     var role_id = $('#user_role').val();
     var client_id = $('#client_id').val();
+    var text = $('#user_search').val();
 
     if(!user) {
         showError(GP.userRequired);
         return false;
     }
 
-    window.location = GP.settings.siteUrl + "/users/add_role/"+group+"/"+user.id+"/"+role_id+"/"+back+'/'+client_id;
+    if(user.name === text) {
+        window.location = GP.settings.siteUrl + "/users/add_role/" + group + "/" + user.id + "/" + role_id + "/" + back + '/' + client_id;
+    }
 }
+
+function addLayer(group,destination,back) {
+    var layer = $('#layer_search').typeahead("getActive");
+    var client_id = $('#client_id').val();
+    var text = $('#layer_search').val();
+
+    if(!layer) {
+        showError(GP.layerRequired);
+        return false;
+    }
+
+    if(layer.name === text) {
+        window.location = GP.settings.siteUrl + "/project_groups/add_layer/" + group + "/" + layer.id + "/" + destination + '/' + client_id + '/' + back;
+    }
+}
+
+function addLayerExtra(group,destination,back) {
+    var layer = $('#extra_layer_search').typeahead("getActive");
+    var client_id = $('#client_id').val();
+    var text = $('#extra_layer_search').val();
+
+    if(!layer) {
+        showError(GP.layerRequired);
+        return false;
+    }
+
+    if(layer.name === text) {
+        window.location = GP.settings.siteUrl + "/project_groups/add_layer/" + group + "/" + layer.id + "/" + destination + '/' + client_id + '/' + back;
+    }
+}
+
 
 function addRoleMulti(user) {
 
@@ -100,7 +134,7 @@ function addLayerMulti(layer) {
 
     var arr = encodeURIComponent(groups.map(Number));
 
-    window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination+'/'+client_id;
+    window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination+'/'+client_id+'/layers';
 }
 
 function chooseAdminScope(user, user_id) {
@@ -288,41 +322,6 @@ function onClientChange(sel,action)
     }
 }
 
-function checkValues() {
-    var baseList = $('#lstBase2').getValues();
-    var baseIds = document.getElementById('base_ids');
-    baseIds.value = ('{'+baseList.join()+'}');
-
-    var extraList = $('#lstExtra2').getValues();
-    var extraIds = document.getElementById('extra_ids');
-    extraIds.value = ('{'+extraList.join()+'}');
-}
-
-function moveItem(list1, list2) {
-    $('select').moveToListAndDelete(list1, list2);
-    //e.preventDefault();
-}
-
-function moveAllItems(list1, list2) {
-    $('select').moveAllToListAndDelete(list1, list2);
-    //e.preventDefault();
-}
-
-function moveUp(list) {
-    $('select').moveUpDown(list, true, false);
-}
-
-function moveDown(list) {
-    $('select').moveUpDown(list, false, true);
-}
-
-//    //example calling over id
-//
-//    $('#btnAllLeft').click(function (e) {
-//        $('select').moveAllToListAndDelete('#lstBox2', '#lstBox1');
-//        e.preventDefault();
-//    });
-
 function openSubGroups(index, row) {
     return parseInt(row.gp_type) === 1;
 
@@ -342,3 +341,55 @@ function makeGroupAction(value, row) {
 
     return '<a class="btn btn-default" href="'+GP.settings.siteUrl+'/project_groups/edit/'+value+'">'+text+'</a>';
 }
+
+//use server method instead
+// function clearLayer(id,tableId) {
+//
+//     var table = $('#'+tableId);
+//     table.bootstrapTable('remove',JSON.parse('{"field": "gp_id", "values": ["'+id+'"]}'));
+//
+//     var data = table.bootstrapTable('getData');
+//     var newData = data.map(function(item){return parseInt(item.gp_id);});
+//
+//     var baseIds = document.getElementById('base_ids');
+//     if(tableId === 'group_extra_layers') {
+//         baseIds = document.getElementById('extra_ids');
+//     }
+//     baseIds.value = ('{'+newData.join()+'}');
+// }
+
+//Obsolete functions below !!!
+// function checkValues() {
+//     var baseList = $('#lstBase2').getValues();
+//     var baseIds = document.getElementById('base_ids');
+//     baseIds.value = ('{'+baseList.join()+'}');
+//
+//     var extraList = $('#lstExtra2').getValues();
+//     var extraIds = document.getElementById('extra_ids');
+//     extraIds.value = ('{'+extraList.join()+'}');
+// }
+//
+// function moveItem(list1, list2) {
+//     $('select').moveToListAndDelete(list1, list2);
+//     //e.preventDefault();
+// }
+//
+// function moveAllItems(list1, list2) {
+//     $('select').moveAllToListAndDelete(list1, list2);
+//     //e.preventDefault();
+// }
+//
+// function moveUp(list) {
+//     $('select').moveUpDown(list, true, false);
+// }
+//
+// function moveDown(list) {
+//     $('select').moveUpDown(list, false, true);
+// }
+
+//    //example calling over id
+//
+//    $('#btnAllLeft').click(function (e) {
+//        $('select').moveAllToListAndDelete('#lstBox2', '#lstBox1');
+//        e.preventDefault();
+//    });

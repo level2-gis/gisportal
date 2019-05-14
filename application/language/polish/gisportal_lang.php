@@ -133,6 +133,8 @@ $lang['gp_name_help'] = 'Must be unique, alpha numeric name and safe to use on f
 $lang['gp_new_group'] = 'New Group';
 $lang['gp_remove'] = 'Remove';
 $lang['gp_find_user'] = 'Find user';
+$lang['gp_find_layer'] = 'Find layer';
+$lang['gp_reorder_help'] = 'Items in table can be reordered using Drag and Drop. Changes must be saved manually using button below!';
 $lang['gp_add'] = 'Add';
 $lang['gp_all'] = 'All';
 $lang['gp_copy'] = 'Copy';
@@ -144,6 +146,7 @@ $lang['gp_items'] = 'Items';
 //keep {name} as it is!!
 $lang['gp_client_required'] = 'Client required';
 $lang['gp_user_required'] = 'User required';
+$lang['gp_layer_required'] = 'Layer required';
 $lang['gp_no_file'] = 'No file';
 $lang['gp_only_qgs'] = 'Only QGS project file allowed';
 $lang['gp_diff_proj'] = 'Different projects';

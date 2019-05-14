@@ -67,6 +67,34 @@ class Layer_model extends CI_Model {
     }
 
 
+    public function get_layers_filtered($ids) {
+
+        $this->db->order_by('idx', 'ASC');
+        $this->db->select("id,name,display_name,type FROM (SELECT *,idx('".$ids."',id) FROM layers_view) l",FALSE);
+        $this->db->where('idx>0');
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function search($text) {
+
+        //for ilike search we have to use direct sql
+        $where = "(name ILIKE '%".$text."%' ESCAPE '!' OR ";
+        $where.= "display_name ILIKE '%".$text."%' ESCAPE '!' OR ";
+        $where.= "type ILIKE '%".$text."%' ESCAPE '!')";
+
+        $this->db->select("id, trim(coalesce(display_name,'') || ' (' || coalesce(name,'')) || ', ' || type || ')' AS name", FALSE);
+        $this->db->where($where);
+
+        $this->db->order_by('name', 'DESC');
+
+        $query = $this->db->get('layers_view');
+
+        return $query->result_array();
+    }
+
+
     public function get_layers_with_project_flag($ids) {
 
         $sql = "SELECT id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";

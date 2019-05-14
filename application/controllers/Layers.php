@@ -184,6 +184,25 @@ class Layers extends CI_Controller{
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The layer you are trying to delete does not exist.</div>');
     }
 
+    public function search() {
+
+        $query = $this->input->get('query');
+
+        //filter for client administrator
+        //$filter = $this->ion_auth->admin_scope()->filter;
+
+        if(empty($query)) {
+            return;
+        }
+
+        $result = $this->layer_model->search(urldecode($query));
+
+        $this->output
+            ->set_content_type('text/html')
+            ->set_status_header(200)
+            ->set_output(json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
     private function extractPostData() {
         //remove crs or srs  property from WMS definition
         $type = $this->input->post('type');

@@ -401,7 +401,7 @@ class Project_groups extends CI_Controller
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">The group you are trying to delete does not exist.</div>');
     }
 
-    public function add_layer($groups, $layer_id, $destination, $client_id)
+    public function add_layer($groups, $layer_id, $destination, $client_id, $back)
     {
         //filter for client administrator
         $filter = $this->ion_auth->admin_scope()->filter;
@@ -425,11 +425,15 @@ class Project_groups extends CI_Controller
         } catch (Exception $e) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
         } finally {
-            redirect('layers/edit/' . $layer_id . '#edit-access');
+            if($back === 'layers') {
+                redirect('layers/edit/' . $layer_id . '#edit-access');
+            } else {
+                redirect('project_groups/edit/' . $groups . '#'.$back);
+            }
         }
     }
 
-    public function remove_layer($group, $layer_id, $client_id)
+    public function remove_layer($group, $layer_id, $destination, $client_id, $back)
     {
         //filter for client administrator
         $filter = $this->ion_auth->admin_scope()->filter;
@@ -443,7 +447,7 @@ class Project_groups extends CI_Controller
                 throw new Exception('No permission!');
             }
 
-            $res = $this->project_group_model->remove_layer($group, $layer_id);
+            $res = $this->project_group_model->remove_layer($group, $layer_id, $destination);
             $db_error = $this->db->error();
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
@@ -451,7 +455,11 @@ class Project_groups extends CI_Controller
         } catch (Exception $e) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
         } finally {
-            redirect('layers/edit/' . $layer_id . '#edit-access');
+            if($back === 'layers') {
+                redirect('layers/edit/' . $layer_id . '#edit-access');
+            } else {
+                redirect('project_groups/edit/' . $group . '#'.$back);
+            }
         }
     }
 
@@ -495,9 +503,11 @@ class Project_groups extends CI_Controller
 
     private function loadmeta(&$data){
 
-        $data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['base_layers_ids']);
-        $data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['extra_layers_ids']);
-
+        $data['base_layers'] = $this->layer_model->get_layers_filtered($data['group']['base_layers_ids']);
+        $data['extra_layers'] = $this->layer_model->get_layers_filtered($data['group']['extra_layers_ids']);
+        //old methods loading all layers with flag if exists for project/group
+        //$data['base_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['base_layers_ids']);
+        //$data['extra_layers'] = $this->layer_model->get_layers_with_project_flag($data['group']['extra_layers_ids']);
     }
 
     private function get_name($el) {

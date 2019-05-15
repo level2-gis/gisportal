@@ -20,6 +20,7 @@
             <th data-sortable="true" data-field="gp_admin">Admin</th>
             <th data-sortable="true" data-field="gp_scope">Admin Scope</th>
             <th data-sortable="true" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
+            <th data-sortable="true" data-visible="false" data-field="gp_active">Active</th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>
@@ -37,6 +38,7 @@
             <td class="col-md-1"><?php echo set_check_icon($user_item['admin']); ?></td>
             <td class="col-md-1"><?php echo $user_item['scope']; ?></td>
             <td class="col-md-1"><?php echo $user_item['groups']; ?></td>
+            <td class="col-md-1"><?php echo set_check_icon($user_item['active']); ?></td>
 		  <td class="col-md-1">
 			<a class="btn btn-primary" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>">
 				<?php echo $this->lang->line('gp_edit'); ?>

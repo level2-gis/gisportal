@@ -143,7 +143,7 @@ $lang['reset_password_validation_new_password_label']         = 'Novo geslo';
 $lang['reset_password_validation_new_password_confirm_label'] = 'Potrdi novo geslo';
 
 // Aktivacijsko sporočilo
-$lang['email_activate_heading']    = 'Aktivirajte računa za %s';
+$lang['email_activate_heading']    = 'Aktivirajte račun za %s';
 $lang['email_activate_subheading'] = 'Prosimo, sledite povezavi do %s.';
 $lang['email_activate_link']       = 'Aktivirajte vaš račun';
 

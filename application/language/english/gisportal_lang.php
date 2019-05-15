@@ -12,7 +12,7 @@ $lang['gp_user'] = 'User';
 $lang['gp_password'] = 'Password';
 $lang['gp_cancel'] = 'Cancel';
 $lang['gp_login_wrong'] = 'Wrong Username or password!';
-$lang['gp_new_user'] = 'New User?';
+$lang['gp_new_user'] = 'New User';
 $lang['gp_already_registered'] = 'Already Registered?';
 $lang['gp_first_name'] = 'First Name';
 $lang['gp_last_name'] = 'Last Name';
@@ -142,6 +142,8 @@ $lang['gp_copy'] = 'Copy';
 $lang['gp_select_groups'] = 'Select client groups';
 $lang['gp_parent'] = 'Parent';
 $lang['gp_items'] = 'Items';
+
+
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

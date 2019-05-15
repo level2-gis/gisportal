@@ -425,7 +425,7 @@ class Ion_auth_model extends CI_Model
 
 		// Activate if no code is given
 		// Or if a user was found with this code, and that it matches the id
-		if ($code === FALSE || ($user && $user->id === $id))
+		if ($code === FALSE || ($user && $user->id === (integer)$id))
 		{
 			$data = [
 			    'activation_selector' => NULL,
@@ -837,22 +837,24 @@ class Ion_auth_model extends CI_Model
 			$this->set_error('account_creation_duplicate_identity');
 			return FALSE;
 		}
-		else if (!$this->config->item('default_group', 'ion_auth') && empty($groups))
-		{
-			$this->set_error('account_creation_missing_default_group');
-			return FALSE;
-		}
 
-		// check if the default set in config exists in database
-		$query = $this->db->get_where($this->tables['groups'], ['name' => $this->config->item('default_group', 'ion_auth')], 1)->row();
-		if (!isset($query->id) && empty($groups))
-		{
-			$this->set_error('account_creation_invalid_default_group');
-			return FALSE;
-		}
-
-		// capture default group details
-		$default_group = $query;
+        //UROS comment out adding to default group
+        //		else if (!$this->config->item('default_group', 'ion_auth') && empty($groups))
+        //		{
+        //			$this->set_error('account_creation_missing_default_group');
+        //			return FALSE;
+        //		}
+        //
+        //		// check if the default set in config exists in database
+        //		$query = $this->db->get_where($this->tables['groups'], ['name' => $this->config->item('default_group', 'ion_auth')], 1)->row();
+        //		if (!isset($query->id) && empty($groups))
+        //		{
+        //			$this->set_error('account_creation_invalid_default_group');
+        //			return FALSE;
+        //		}
+        //
+        //		// capture default group details
+        //		$default_group = $query;
 
 		// IP Address
 		$ip_address = $this->input->ip_address();

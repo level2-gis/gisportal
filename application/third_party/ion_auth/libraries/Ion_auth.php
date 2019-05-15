@@ -164,13 +164,8 @@ class Ion_auth
 				else
 				{
 					$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->config->item('email_forgot_password', 'ion_auth'), $data, TRUE);
-					$this->email->clear();
-					$this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
-					$this->email->to($user->email);
-					$this->email->subject($this->config->item('site_title') . ' - ' . $this->lang->line('email_forgotten_password_subject'));
-					$this->email->message($message);
 
-					if ($this->email->send())
+					if ($this->send_email($this->lang->line('email_forgotten_password_subject'),$message,$user->email) === TRUE)
 					{
 						$this->set_message('forgot_password_successful');
 						return TRUE;
@@ -296,15 +291,9 @@ class Ion_auth
 			}
 			else
 			{
-				$message = $this->load->view($this->config->item('email_templates', 'ion_auth').$this->config->item('email_activate', 'ion_auth'), $data, true);
+			    $message = $this->load->view($this->config->item('email_templates', 'ion_auth').$this->config->item('email_activate', 'ion_auth'), $data, true);
 
-				$this->email->clear();
-				$this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
-				$this->email->to($email);
-				$this->email->subject($this->config->item('site_title') . ' - ' . $this->lang->line('email_activation_subject'));
-				$this->email->message($message);
-
-				if ($this->email->send() === TRUE)
+				if ($this->send_email($this->lang->line('email_activation_subject'),$message,$email) === TRUE)
 				{
 					$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_successful']);
 					$this->set_message('activation_email_successful');
@@ -348,6 +337,7 @@ class Ion_auth
 		//session_start();
 		//$this->session->sess_regenerate(TRUE);
 
+        //uros: after change above login does not get this message, session is later deleted?
 		$this->set_message('logout_successful');
 		return TRUE;
 	}
@@ -432,6 +422,12 @@ class Ion_auth
 		}
 	}
 
+    /**
+     * @param null $id
+     * @return stdClass
+     *
+     * @author Uros
+     */
 	public function admin_scope($id = NULL)
     {
         $ret = new stdClass();
@@ -446,4 +442,18 @@ class Ion_auth
         return $this->ion_auth_model->get_admin_scope($id, TRUE);
     }
 
+    /**
+     *
+     * @author Uros
+     */
+    public function send_email($subject, $message, $to = NULL) {
+
+        $this->email->clear();
+        $this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
+        $this->email->to(empty($to) ? $this->config->item('admin_email') : $to);
+        $this->email->subject($this->config->item('site_title') . ' - ' . $subject);
+        $this->email->message($message);
+
+        return $this->email->send();
+    }
 }

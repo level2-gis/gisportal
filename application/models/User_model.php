@@ -256,14 +256,14 @@ class User_model extends CI_Model
 	}
 	
 	// insert
-	function insert_user($data)
-    {
-        $manual_activation = $this->config->item('manual_activation', 'ion_auth');
-
-        $data['active'] = $manual_activation === FALSE ? 1 : 0;
-
-        return $this->db->insert('users', $data);
-	}
+//	function insert_user($data)
+//    {
+//        $manual_activation = $this->config->item('manual_activation', 'ion_auth');
+//
+//        $data['active'] = $manual_activation === FALSE ? 1 : 0;
+//
+//        return $this->db->insert('users', $data);
+//	}
 
     function update_user($id, $sql)
     {

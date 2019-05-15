@@ -35,7 +35,7 @@ class Users extends CI_Controller {
     public function edit($user_id = false)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            redirect('/auth/login?ru=/' . uri_string());
         }
 
 		$this->load->helper('form');

@@ -1968,9 +1968,7 @@ class Ion_auth_model extends CI_Model
 	public function set_session($user)
 	{
 		$this->trigger_events('pre_set_session');
-
-		$is_admin = $this->ion_auth->is_admin($user->id);
-		$scope = $this->get_admin_scope($user->id,$is_admin);
+        $portal_role = $this->get_admin_scope($user->id);
 
 		$session_data = [
 		    'identity'             => $user->{$this->identity_column},
@@ -1984,9 +1982,10 @@ class Ion_auth_model extends CI_Model
             'user_name'            => $user->username,  //gisportal
             'lang'                 => $user->lang,                           //gisportal
             'upload_dir'           => $this->config->item('main_upload_dir'), //gisportal
-            'admin'                => $is_admin, //gisportal for old gisapp
-            'admin_filter'         => $scope->filter,  //gisportal
-            'admin_scope'          => $scope->scope  //gisportal
+            'admin'                => $portal_role ? $portal_role->admin : null, //gisportal for old gisapp
+            'admin_filter'         => $portal_role ? $portal_role->filter : null,  //gisportal
+            'admin_scope'          => $portal_role ? $portal_role->scope : null,  //gisportal
+            'portal_role'          => $portal_role ? $portal_role->role_name : null  //gisportal
 		];
 
 		$this->session->set_userdata($session_data);
@@ -2842,30 +2841,23 @@ class Ion_auth_model extends CI_Model
 
     /**
      * @param $id
-     * @param $is_admin
      * @return stdClass
      *
      * Uros
      */
-    public function get_admin_scope($id, $is_admin)
+    public function get_admin_scope($id)
     {
-        $ret = new stdClass();
-
-        if(!$is_admin) {
-            $ret->filter = null;
-            $ret->scope = null;
-            return $ret;
+        if(empty($id)) {
+            return FALSE;
         }
 
-        $this->db->select("filter, scope");
+        $this->db->select("admin, filter, scope, role_name, role_display_name");
         $this->db->where('user_id', $id);
-        $this->db->where('admin', TRUE);
+        $this->db->where('role_id <', 9);
 
         $query = $this->db->get('users_view');
         if(empty($query->result())) {
-            $ret->filter = null;
-            $ret->scope = null;
-            return $ret;
+            return FALSE;
         } else {
             return $query->result()[0];
         }

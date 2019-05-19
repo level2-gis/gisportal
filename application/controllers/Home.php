@@ -61,8 +61,10 @@ class Home extends CI_Controller
         $ret = [];
 
         if(!empty($filter)) {
-            //we have client administrator
-            array_push($ret, (array)$this->client_model->get_client($filter));
+            if($is_admin) {
+                //we have client administrator
+                array_push($ret, (array)$this->client_model->get_client($filter));
+            }
             $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             if(!empty($groups)) {
                 $ret = array_merge($ret, $this->client_model->get_clients($groups, false, false));

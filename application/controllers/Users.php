@@ -74,7 +74,7 @@ class Users extends CI_Controller {
                         redirect('/users');
                     }
 
-				    $dq->display_name = $dq->first_name . ' ' . $dq->last_name;
+				    //$dq->display_name = $dq->first_name . ' ' . $dq->last_name;
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
@@ -85,7 +85,6 @@ class Users extends CI_Controller {
 			}
 			
 			$data['user'] = $em;
-            $data['user']['admin'] = $this->ion_auth->is_admin($user_id);
 
             //filter for client administrator
             $filter = $this->ion_auth->admin_scope()->filter;
@@ -95,17 +94,23 @@ class Users extends CI_Controller {
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
             }
 
-            $user_scope = $this->ion_auth->admin_scope($user_id)->scope;
+            $user_role = $this->ion_auth->admin_scope($user_id);
 
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
-            $data['role_scope'] = empty($user_scope) ? $this->lang->line('gp_admin_full_name') : $user_scope;;
-            $data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
+
+            $data['user_role'] = $user_role;
+            $data['user']['admin'] = $user_role ? $user_role->admin : null;
+            //$data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
 			$data['logged_in'] = true;
+
+			//TODO FIX
             $data['is_admin'] = true;   //current user is administrator
-            $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $data['role_admin'], $this->lang->line('gp_user_is_admin'));
-            $data['current_role_filter'] = $this->ion_auth->admin_scope()->filter;  //filter for current logged in user
+            $data['role_scope'] = empty($user_role->scope) ? $this->lang->line('gp_admin_full_name') : $user_role->scope;
+            $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+
+            $data['current_role_filter'] = $filter;  //filter for current logged in user
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
 
 			$this->load->view('templates/header', $data);

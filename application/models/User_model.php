@@ -77,7 +77,7 @@ class User_model extends CI_Model
     {
         $this->db->where('user_email', $key);
         $this->db->or_where('user_name', $key);
-        $user = $this->db->get('users')->result();
+        $user = $this->db->get('users_view')->result();
 
         $pass = password_verify($pwd, $user[0]->user_password_hash);
 
@@ -217,6 +217,9 @@ class User_model extends CI_Model
         return $query->result_array();
     }
 
+    /*
+     * Web Client project roles
+     */
     function get_roles() {
 
         $this->db->order_by('id', 'ASC');
@@ -242,7 +245,7 @@ class User_model extends CI_Model
 		$this->db->where('user_id', $id);
 
 		if(empty($filter)) {
-            $query = $this->db->get('users');
+            $query = $this->db->get('users_view');
         } else {
             $this->db->where('filter',$filter);
 		    $query = $this->db->get('users_view_for_clients');

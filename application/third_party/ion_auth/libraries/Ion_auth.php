@@ -434,12 +434,14 @@ class Ion_auth
 
         //get data for current user from session
         if(empty($id)) {
+            $ret->admin = $this->session->userdata('admin');
             $ret->filter = $this->session->userdata('admin_filter');
             $ret->scope = $this->session->userdata('admin_scope');
+            $ret->role_name = $this->session->userdata('portal_role');
             return $ret;
         }
 
-        return $this->ion_auth_model->get_admin_scope($id, TRUE);
+        return $this->ion_auth_model->get_admin_scope($id);
     }
 
     /**

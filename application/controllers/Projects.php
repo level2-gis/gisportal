@@ -1025,14 +1025,20 @@ class Projects extends CI_Controller
         $ret = [];
 
         if(!empty($filter)) {
-            $projects_1 = $this->project_model->get_projects($filter, $groups, TRUE);
-            if($client_id) {
-                if ($filter === (integer)$client_id) {
-                    return $projects_1;
-                } else {
-                    $projects_1 = [];
+            if($is_admin) {
+                //we have client administrator
+                $projects_1 = $this->project_model->get_projects($filter, $groups, TRUE);
+                if($client_id) {
+                    if ($filter === (integer)$client_id) {
+                        return $projects_1;
+                    } else {
+                        $projects_1 = [];
+                    }
                 }
+            } else {
+                $projects_1 = [];
             }
+
             $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             $projects_2 = $this->project_model->get_projects($client_id, $groups,  FALSE);
 

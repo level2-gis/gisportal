@@ -102,13 +102,15 @@ class Users extends CI_Controller {
 
             $data['user_role'] = $user_role;
             $data['user']['admin'] = $user_role ? $user_role->admin : null;
-            //$data['role_filter'] = $this->ion_auth->admin_scope($user_id)->filter;
+            $data['role_filter'] = $user_role ? $user_role->filter : null;
 			$data['logged_in'] = true;
 
 			//TODO FIX
             $data['is_admin'] = true;   //current user is administrator
             $data['role_scope'] = empty($user_role->scope) ? $this->lang->line('gp_admin_full_name') : $user_role->scope;
-            $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+            if($user_role) {
+                $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+            }
 
             $data['current_role_filter'] = $filter;  //filter for current logged in user
             $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
@@ -176,6 +178,8 @@ class Users extends CI_Controller {
 
     public function add_role_multi($groups, $user_id, $role_id, $client_id) {
 
+        $task = 'project_groups_edit_access';
+
         //filter for client administrator
         $filter = $this->ion_auth->admin_scope($user_id)->filter;
 
@@ -184,8 +188,8 @@ class Users extends CI_Controller {
         }
 
         try {
-            if (!$this->ion_auth->is_admin()){
-                throw new Exception('User not Admin!');
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
             }
 
             if(!empty($filter) && $filter === (integer)$client_id) {
@@ -240,12 +244,14 @@ class Users extends CI_Controller {
 
     public function add_role($group_id, $user_id, $role_id, $back, $client_id) {
 
+        $task = 'project_groups_edit_access';
+
         //filter for client administrator
         $filter = $this->ion_auth->admin_scope($user_id)->filter;
 
         try {
-            if (!$this->ion_auth->is_admin()){
-                throw new Exception('User not Admin!');
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
             }
 
             if(!empty($filter) && $filter === (integer)$client_id) {
@@ -324,9 +330,11 @@ class Users extends CI_Controller {
 
     public function set_role($group_id, $user_id, $role_id, $back) {
 
+        $task = 'project_groups_edit_access';
+
         try {
-            if (!$this->ion_auth->is_admin()){
-                throw new Exception('User not Admin!');
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
             }
 
             $res = $this->user_model->update_project_group_role($group_id,$user_id,$role_id);
@@ -353,9 +361,11 @@ class Users extends CI_Controller {
 
     public function remove_role($group_id, $user_id, $back) {
 
+        $task = 'project_groups_edit_access';
+
         try {
-            if (!$this->ion_auth->is_admin()){
-                throw new Exception('User not Admin!');
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
             }
 
             if($user_id === 'null') {
@@ -390,9 +400,11 @@ class Users extends CI_Controller {
 
     public function copy_roles($source, $destination) {
 
+        $task = 'project_groups_edit_access';
+
         try {
-            if (!$this->ion_auth->is_admin()){
-                throw new Exception('User not Admin!');
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
             }
 
             if(empty($source) || empty($destination)) {

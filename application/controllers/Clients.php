@@ -16,12 +16,16 @@ class Clients extends CI_Controller
 
     public function index()
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('/auth/login?ru=/' . uri_string());
+        $task = 'clients_table_view';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('message', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/auth/login');
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
         if(empty($filter)) {
             $data['clients'] = $this->client_model->get_clients();
         } else {
@@ -32,7 +36,7 @@ class Clients extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['current_role_filter'] = $filter;  //filter for current logged in user
         $data['logged_in'] = true;
-        $data['is_admin'] = true;
+        $data['is_admin'] = $user_role->admin;
 
         $this->load->view('templates/header', $data);
         $this->load->view('clients_admin', $data);
@@ -89,12 +93,15 @@ class Clients extends CI_Controller
 
     public function edit($client_id = false)
     {
-        if (!$this->ion_auth->is_admin()){
+        $task = 'clients_edit_properties';
+
+        if (!$this->ion_auth->can_execute_task($task)){
             redirect('/auth/login?ru=/' . uri_string());
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
         if(!empty($filter) && $filter !== (integer)$client_id) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
             redirect('/clients/');
@@ -132,7 +139,7 @@ class Clients extends CI_Controller
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
             $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);
@@ -167,7 +174,8 @@ class Clients extends CI_Controller
     function remove($id)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/clients/');
         }
 
         $client = (array)$this->client_model->get_client($id);

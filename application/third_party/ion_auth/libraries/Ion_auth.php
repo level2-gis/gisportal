@@ -458,4 +458,29 @@ class Ion_auth
 
         return $this->email->send();
     }
+
+    /**
+     * @author Uros
+     */
+    public function can_execute_task($name) {
+        $this->load->model('portal_model');
+
+        if (!$this->logged_in()) {
+            return FALSE;
+        }
+
+        $user_role = $this->admin_scope();
+        if($user_role->admin) {
+            return TRUE;
+        }
+
+        //get task from db
+        $task = (array)$this->portal_model->get_task($name);
+
+        if(empty($task)) {
+            return FALSE;
+        }
+
+        return $task[$user_role->role_name];
+    }
 }

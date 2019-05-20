@@ -21,4 +21,15 @@ class Portal_model extends CI_Model
 
         return $msg;
     }
+
+    function get_task($task) {
+
+        $this->db->where('name', $task);
+        $query = $this->db->get('tasks');
+
+        if ($query->result()) {
+            return $query->result()[0];
+        }
+        return null;
+    }
 }

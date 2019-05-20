@@ -20,8 +20,9 @@ class Profile extends CI_Controller
 
         $id = $this->session->userdata('user_id');
         $details = $this->user_model->get_user_by_id($id);
-        $scope = $this->ion_auth->admin_scope()->scope;
-        $is_admin = $this->ion_auth->is_admin();
+        $user_role = $this->ion_auth->admin_scope();
+        $scope = $user_role->scope;
+        $is_admin = $user_role->admin;
         if($is_admin) {
             $scope = empty($scope) ? $this->lang->line('gp_admin_full_name') : $scope;
         }
@@ -32,7 +33,12 @@ class Profile extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $is_admin;
-        $data['role_admin'] = $scope . ' ' . $this->user_model->get_role('admin')->name;
+        $data['role_scope'] = $scope;
+        if(!empty($user_role->role_name)) {
+            $data['role_name'] = $this->user_model->get_role($user_role->role_name)->name;
+        } else {
+            $data['role_name'] = null;
+        }
 
         $this->load->view('templates/header', $data);
 

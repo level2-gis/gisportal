@@ -160,7 +160,7 @@ class User_model extends CI_Model
 
     function copy_project_group_roles($source, $destination) {
         $this->db->select('user_id, role_id,'.$destination.' AS project_group_id');
-        $this->db->where('project_group_id ='.$source.' AND idx((select array_agg(user_id) from users_roles where project_group_id = '.$destination.'), user_id) = 0');
+        $this->db->where('project_group_id ='.$source.' AND idx((SELECT CASE WHEN array_agg(user_id) IS NULL THEN \'{-1}\'::integer[] ELSE array_agg(user_id) END from users_roles where project_group_id = '.$destination.'), user_id) = 0');
         $query = $this->db->get('users_roles');
         $insert = $query->result_array();
         if ($insert) {
@@ -192,7 +192,7 @@ class User_model extends CI_Model
      * @return mixed
      */
     function get_project_group_users($group_id) {
-        $this->db->select('ur.id, ur.user_id, role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name');
+        $this->db->select('ur.id, ur.user_id, ur.role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name');
         $this->db->from('users_roles ur');
         $this->db->join('users_view', 'users_view.user_id = ur.user_id');
         $this->db->join('roles r', 'r.id = ur.role_id');

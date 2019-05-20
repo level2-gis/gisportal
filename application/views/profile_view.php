@@ -5,8 +5,8 @@
 
 	<div class="row">
 		<div class="col-md-8">
-            <?php if ($is_admin) : ?>
-                <div class="alert alert-info" role="alert"><?php echo html_escape($role_admin); ?></div>
+            <?php if (!empty($role_scope)) : ?>
+                <div class="alert alert-info" role="alert"><?php echo html_escape($role_scope . ' ' . $role_name); ?></div>
             <?php endif ?>
             <table class="table table-hover table-condensed">
                 <tbody>

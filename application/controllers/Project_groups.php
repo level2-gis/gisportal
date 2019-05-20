@@ -15,18 +15,22 @@ class Project_groups extends CI_Controller
 
     public function index()
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('/auth/login?ru=/' . uri_string());
+        $task = 'project_groups_table_view';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('message', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/auth/login');
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
 
         $data['title'] = $this->lang->line('gp_groups_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['groups'] = $this->project_group_model->get_project_groups($filter);
         $data['logged_in'] = true;
-        $data['is_admin'] = true;
+        $data['is_admin'] = $user_role->admin;
 
         $this->load->view('templates/header', $data);
         $this->load->view('project_groups_admin', $data);
@@ -71,8 +75,16 @@ class Project_groups extends CI_Controller
 
     public function edit($id = FALSE)
     {
-        if (!$this->ion_auth->is_admin()) {
-            redirect('/auth/login?ru=/' . uri_string());
+        if(empty($id)) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Group missing.</div>');
+            redirect('/project_groups/');
+        }
+
+        $task = 'project_groups_edit_properties';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/project_groups/');
         }
 
         $group = (array)$this->project_group_model->get_project_group($id);
@@ -187,7 +199,8 @@ class Project_groups extends CI_Controller
     public function create()
     {
         if (!$this->ion_auth->is_admin()) {
-            redirect('/auth/login?ru=/' . uri_string());
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/project_groups/');
         }
 
         $this->load->helper('form');
@@ -363,7 +376,8 @@ class Project_groups extends CI_Controller
     function remove($id)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/project_groups/');
         }
 
         $group = (array)$this->project_group_model->get_project_group($id);

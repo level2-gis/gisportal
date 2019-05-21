@@ -25,13 +25,14 @@ class Projects extends CI_Controller
         }
 
         $task = 'projects_table_view';
-        $is_admin = $this->ion_auth->is_admin();
+        $user_role = $this->ion_auth->admin_scope();
 
 		$data['title'] = $this->lang->line('gp_projects_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $is_admin;
-        $data['projects'] = $this->get_user_projects($is_admin);
+        $data['is_admin'] = $user_role->admin;;
+        $data['role'] = $user_role->role_name;
+        $data['projects'] = $this->get_user_projects($data['is_admin']);
         $data['can_edit'] = $this->ion_auth->can_execute_task($task);
 
         $this->load->view('templates/header', $data);
@@ -59,11 +60,13 @@ class Projects extends CI_Controller
         }
 
         $client = $this->client_model->get_client($client_id);
+        $user_role = $this->ion_auth->admin_scope();
 
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
         $data['projects'] = $this->get_user_projects($data['is_admin'],$client_id);
         $data['navigation'] = $this->build_user_navigation($client);
 
@@ -87,12 +90,14 @@ class Projects extends CI_Controller
         }
 
         $client = $this->client_model->get_client($client_id);
+        $user_role = $this->ion_auth->admin_scope();
 
         $data['title'] = $this->lang->line('gp_projects_title');
         $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         try {
             $data['projects'] = $this->get_user_projects_for_group($data['is_admin'],$client_id,$group_id);
@@ -429,6 +434,8 @@ class Projects extends CI_Controller
             $em["name"] = $this->session->flashdata('project_name') ? $this->session->flashdata('project_name') : '';
             $em["client_id"] = $this->session->flashdata('client_id') ? $this->session->flashdata('client_id') : null;
 
+            $user_role = $this->ion_auth->admin_scope();
+
             if(sizeof($_POST) > 0){
                 $em = $this->extractProjectData();
                 $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_project') .' '. $em['display_name'];
@@ -441,7 +448,7 @@ class Projects extends CI_Controller
                     }
 
                     //filter for client administrator
-                    $filter = $this->ion_auth->admin_scope()->filter;
+                    $filter = $user_role->filter;
                     if (!empty($filter) && $filter !== (integer)$prj->client_id) {
                         throw new Exception('No permission!');
                     }
@@ -465,9 +472,11 @@ class Projects extends CI_Controller
             $data['clients'] = [(array)$this->client_model->get_client($em['client_id'])];
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
             $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
+            $data['layers'] = $this->layer_model->get_layers_with_project_flag();
             $data['admin_navigation'] = $this->build_admin_navigation($em);
             $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
             $data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
 
             $this->qgisinfo($data);
@@ -534,7 +543,8 @@ class Projects extends CI_Controller
             $data['action'] = $action;
 
             //filter for client administrator
-            $filter = $this->ion_auth->admin_scope()->filter;
+            $user_role = $this->ion_auth->admin_scope();
+            $filter = $user_role->filter;
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
                 $data['groups'] = [];
@@ -544,8 +554,8 @@ class Projects extends CI_Controller
                 $data['project']['client_id'] = $filter;
             }
 
-            $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_title', $data);
@@ -650,7 +660,8 @@ class Projects extends CI_Controller
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
         if(!empty($filter) && $filter !== (integer)$project->client_id) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
             redirect('/projects/');
@@ -662,7 +673,8 @@ class Projects extends CI_Controller
         $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
         $data['services'] = [];
         $data['logged_in'] = true;
-        $data['is_admin'] = true;
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         $this->qgisinfo($data);
         if($data['qgis_check']['valid']) {

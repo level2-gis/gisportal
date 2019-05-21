@@ -37,6 +37,7 @@ class Clients extends CI_Controller
         $data['current_role_filter'] = $filter;  //filter for current logged in user
         $data['logged_in'] = true;
         $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         $this->load->view('templates/header', $data);
         $this->load->view('clients_admin', $data);
@@ -57,12 +58,14 @@ class Clients extends CI_Controller
         $client = $this->client_model->get_client($client_id);
         $client_name = $client->name;
         $upload_dir = set_realpath($this->config->item('main_upload_dir'), false);
+        $user_role = $this->ion_auth->admin_scope();
 
         $data['client'] = $client;
         $data['title'] = $client->display_name;
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         $this->load->view('templates/header', $data);
 
@@ -140,6 +143,7 @@ class Clients extends CI_Controller
             $data['image'] = $this->getImage($em['name']);
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);

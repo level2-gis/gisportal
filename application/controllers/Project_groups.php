@@ -31,6 +31,7 @@ class Project_groups extends CI_Controller
         $data['groups'] = $this->project_group_model->get_project_groups($filter);
         $data['logged_in'] = true;
         $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         $this->load->view('templates/header', $data);
         $this->load->view('project_groups_admin', $data);
@@ -51,11 +52,13 @@ class Project_groups extends CI_Controller
         }
 
         $client = $this->client_model->get_client($client_id);
+        $user_role = $this->ion_auth->admin_scope();
 
         $data['title'] = $this->lang->line('gp_groups_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         try {
             $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
@@ -95,7 +98,8 @@ class Project_groups extends CI_Controller
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
         if(!empty($filter) && $filter !== (integer)$group['client_id']) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
             redirect('/project_groups/');
@@ -166,7 +170,8 @@ class Project_groups extends CI_Controller
 
             $data['admin_navigation'] = $this->build_admin_navigation($group);
             $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
             $data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
             $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 
@@ -227,7 +232,7 @@ class Project_groups extends CI_Controller
             $data['group'] = $group;
 
             //filter for client administrator
-            $filter = $this->ion_auth->admin_scope()->filter;
+            $user_role = $this->ion_auth->admin_scope();
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
             } else {
@@ -244,7 +249,8 @@ class Project_groups extends CI_Controller
                 ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
             );
             $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_group_create', $data);

@@ -22,10 +22,13 @@ class Home extends CI_Controller
             redirect('auth/login', 'refresh');
         }
 
+        $user_role = $this->ion_auth->admin_scope();
+
         $data['title'] = $this->lang->line('gp_clients_title');
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $this->ion_auth->is_admin();
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
         $data['clients'] = $this->get_user_clients($data['is_admin']);
         $data['open_groups'] = empty($this->config->item('portal_show_groups_for_client')) ? FALSE : $this->config->item('portal_show_groups_for_client');
 

@@ -22,13 +22,15 @@ class Users extends CI_Controller {
         }
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
 
 		$data['title'] = $this->lang->line('gp_users_title');
         $data['users'] = $this->user_model->get_users($filter);
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = true;
+        $data['is_admin'] = $user_role->admin;
+        $data['role'] = $user_role->role_name;
 
         $this->load->view('templates/header', $data);
         $this->load->view('users_admin', $data);
@@ -93,30 +95,32 @@ class Users extends CI_Controller {
 			$data['user'] = $em;
 
             //filter for client administrator
-            $filter = $this->ion_auth->admin_scope()->filter;
+            $user_role = $this->ion_auth->admin_scope();
+            $filter = $user_role->filter;
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
             } else {
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
             }
 
-            $user_role = $this->ion_auth->admin_scope($user_id);
+            $edit_user_role = $this->ion_auth->admin_scope($user_id);
 
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
 
-            $data['user_role'] = $user_role;
-            $data['user']['admin'] = $user_role ? $user_role->admin : null;
-            $data['role_filter'] = $user_role ? $user_role->filter : null;
+            $data['user_role'] = $edit_user_role;
+            $data['user']['admin'] = $edit_user_role ? $edit_user_role->admin : null;
+            $data['role_filter'] = $edit_user_role ? $edit_user_role->filter : null;
 			$data['logged_in'] = true;
             $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 
-			//TODO FIX
-            $data['is_admin'] = true;   //current user is administrator
-            $data['role_scope'] = empty($user_role->scope) ? $this->lang->line('gp_admin_full_name') : $user_role->scope;
-            if($user_role) {
-                $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
+
+            $data['role_scope'] = empty($edit_user_role->scope) ? $this->lang->line('gp_admin_full_name') : $edit_user_role->scope;
+            if($edit_user_role) {
+                $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $edit_user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
             }
 
             $data['current_role_filter'] = $filter;  //filter for current logged in user
@@ -191,7 +195,8 @@ class Users extends CI_Controller {
         $task = 'project_groups_edit_access';
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope($user_id)->filter;
+        $user_role = $this->ion_auth->admin_scope($user_id);
+        $filter = $user_role->filter;
 
         function map_existing($item) {
             return $item['project_group_id'];
@@ -202,7 +207,7 @@ class Users extends CI_Controller {
                 throw new Exception('No permission!');
             }
 
-            if(!empty($filter) && $filter === (integer)$client_id) {
+            if($user_role->admin && !empty($filter) && $filter === (integer)$client_id) {
                 throw new Exception('User is Client Administrator and has already access to all groups for client!');
             }
 

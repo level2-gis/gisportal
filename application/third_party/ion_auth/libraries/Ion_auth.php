@@ -470,6 +470,11 @@ class Ion_auth
         }
 
         $user_role = $this->admin_scope();
+
+        if(empty($user_role->role_name)) {
+            return FALSE;
+        }
+
         if($user_role->admin) {
             return TRUE;
         }

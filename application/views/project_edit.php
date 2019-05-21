@@ -63,7 +63,7 @@
                         <div class="col-md-5">
                             <select class="form-control" name="overview_layer_id">
                                 <option value=""><?php echo $this->lang->line('gp_select_layer'); ?></option>
-                                <?php foreach ($base_layers as $layer_item): ?>
+                                <?php foreach ($layers as $layer_item): ?>
                                     <option <?php if ($layer_item['id'] == $project['overview_layer_id']) { echo "selected='selected'"; }; ?> value="<?php echo $layer_item['id']; ?>"><?php echo $layer_item['display_name'] . " (" .$layer_item['name'] . ")"; ?></option>
                                 <?php endforeach; ?>
                             </select>

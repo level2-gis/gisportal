@@ -33,6 +33,7 @@ class Profile extends CI_Controller
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $is_admin;
+        $data['role'] = $user_role->role_name;
         $data['role_scope'] = $scope;
         if(!empty($user_role->role_name)) {
             $data['role_name'] = $this->user_model->get_role($user_role->role_name)->name;

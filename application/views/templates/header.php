@@ -110,15 +110,17 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar1">
             <ul class="nav navbar-nav navbar-right">
-                    <?php if ($is_admin) : ?>
+                    <?php if (isset($role) && ($role==='admin' || $role === 'power')) : ?>
                         <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo $this->lang->line('gp_clients_title'); ?></span></a></li>
                         <li><a href="<?php echo site_url('/project_groups'); ?>"><i class="fa fa-list"></i> <span><?php echo $this->lang->line('gp_groups_title'); ?></span></a></li>
                     <?php endif; ?>
 
                     <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>
 
-                    <?php if ($is_admin) : ?>
+                    <?php if (isset($role) && $role==='admin') : ?>
                         <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span><?php echo $this->lang->line('gp_layers_title'); ?></span></a></li>
+                    <?php endif; ?>
+                    <?php if (isset($role) && ($role==='admin' || $role === 'power')) : ?>
                         <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span><?php echo $this->lang->line('gp_users_title'); ?></span></a></li>
                     <?php endif; ?>
 

@@ -3,7 +3,7 @@
 
         <?php echo form_open("auth/login"); ?>
 
-        <legend><?php echo $this->lang->line('gp_login'); ?></legend>
+        <legend class="text-center"><?php echo $heading; ?></legend>
         <div class="form-group">
             <label for="identity"><?php echo $this->lang->line('gp_user'); ?></label>
             <input class="form-control" name="<?php echo $identity['name']; ?>"

@@ -7,7 +7,9 @@
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-			  <li><a href="#edit-project-plugins" data-toggle="tab"><?php echo $this->lang->line('gp_plugins'); ?></a></li>
+			  <?php if($can_edit_plugins) : ?>
+			    <li><a href="#edit-project-plugins" data-toggle="tab"><?php echo $this->lang->line('gp_plugins'); ?></a></li>
+              <?php endif; ?>
 			</ul>
 
 			<div class="tab-content">

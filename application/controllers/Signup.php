@@ -32,7 +32,7 @@ class Signup extends CI_Controller
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             //we allow registration also if user is logged in
             $data['logged_in'] = $this->ion_auth->logged_in();
-            $data['is_admin'] = $data['logged_in'] ? $this->ion_auth->is_admin() : false;
+            $data['is_admin'] = $data['logged_in'] ? $data['logged_in'] : false;
 
             $this->load->view('templates/header', $data);
             $this->load->view('signup_view');

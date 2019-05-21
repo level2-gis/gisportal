@@ -24,6 +24,7 @@ class Projects extends CI_Controller
             redirect('/auth/login?ru=/' . uri_string());
         }
 
+        $task = 'projects_table_view';
         $is_admin = $this->ion_auth->is_admin();
 
 		$data['title'] = $this->lang->line('gp_projects_title');
@@ -31,6 +32,7 @@ class Projects extends CI_Controller
         $data['logged_in'] = true;
         $data['is_admin'] = $is_admin;
         $data['projects'] = $this->get_user_projects($is_admin);
+        $data['can_edit'] = $this->ion_auth->can_execute_task($task);
 
         $this->load->view('templates/header', $data);
 
@@ -395,8 +397,11 @@ class Projects extends CI_Controller
 
     public function edit($project_id = false)
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('/auth/login?ru=/' . uri_string());
+        $task = 'projects_edit_properties';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/projects/');
         }
 
         if ($project_id === false) {
@@ -463,6 +468,7 @@ class Projects extends CI_Controller
             $data['admin_navigation'] = $this->build_admin_navigation($em);
             $data['logged_in'] = true;
             $data['is_admin'] = true;
+            $data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
 
             $this->qgisinfo($data);
 
@@ -499,7 +505,8 @@ class Projects extends CI_Controller
     public function create($action = FALSE) {
 
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/projects/');
         }
 
         $this->load->helper('form');
@@ -593,7 +600,8 @@ class Projects extends CI_Controller
     public function remove($id)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/projects/');
         }
 
         $project = (array)$this->project_model->get_project($id);
@@ -632,7 +640,8 @@ class Projects extends CI_Controller
     public function services($project_id = false)
     {
         if (!$this->ion_auth->is_admin()){
-            redirect('/');
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/projects/');
         }
 
         $project = $this->project_model->get_project($project_id);

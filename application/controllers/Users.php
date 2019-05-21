@@ -14,8 +14,11 @@ class Users extends CI_Controller {
 
     public function index()
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('auth//login?ru=/' . uri_string());
+        $task = 'users_table_view';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('auth//login');
         }
 
         //filter for client administrator
@@ -34,8 +37,11 @@ class Users extends CI_Controller {
 
     public function edit($user_id = false)
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('/auth/login?ru=/' . uri_string());
+        $task = 'users_edit_properties';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/users');
         }
 
 		$this->load->helper('form');
@@ -104,6 +110,7 @@ class Users extends CI_Controller {
             $data['user']['admin'] = $user_role ? $user_role->admin : null;
             $data['role_filter'] = $user_role ? $user_role->filter : null;
 			$data['logged_in'] = true;
+            $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 
 			//TODO FIX
             $data['is_admin'] = true;   //current user is administrator
@@ -136,8 +143,11 @@ class Users extends CI_Controller {
 
     public function remove($id)
     {
-        if (!$this->ion_auth->is_admin()){
-            redirect('/');
+        $task = 'users_delete';
+
+        if (!$this->ion_auth->can_execute_task($task)){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/users');
         }
 
         //filter for client administrator
@@ -247,14 +257,15 @@ class Users extends CI_Controller {
         $task = 'project_groups_edit_access';
 
         //filter for client administrator
-        $filter = $this->ion_auth->admin_scope($user_id)->filter;
+        $user_role = $this->ion_auth->admin_scope($user_id);
+        $filter = $user_role->filter;
 
         try {
             if (!$this->ion_auth->can_execute_task($task)){
                 throw new Exception('No permission!');
             }
 
-            if(!empty($filter) && $filter === (integer)$client_id) {
+            if($user_role->admin && !empty($filter) && $filter === (integer)$client_id) {
                 throw new Exception('User is Client Administrator and has already access to all groups for client!');
             }
 

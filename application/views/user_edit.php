@@ -24,7 +24,9 @@
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-user-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-			  <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
+              <?php if($can_edit_access) : ?>
+                <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
+              <?php endif; ?>
 			</ul>
 
 			<div class="tab-content">

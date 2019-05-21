@@ -167,6 +167,8 @@ class Project_groups extends CI_Controller
             $data['admin_navigation'] = $this->build_admin_navigation($group);
             $data['logged_in'] = true;
             $data['is_admin'] = true;
+            $data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
+            $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 
             $this->loadmeta($data);
 

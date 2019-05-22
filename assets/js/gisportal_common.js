@@ -137,15 +137,26 @@ function addLayerMulti(layer) {
     window.location = GP.settings.siteUrl + "/project_groups/add_layer/"+arr+"/"+layer+"/"+destination+'/'+client_id+'/layers';
 }
 
-function chooseAdminScope(user, user_id) {
+function removeAdmin(user, user_id, role, roleName) {
+
+    var url = GP.settings.siteUrl + '/users/set_admin/' + user_id + '/1/'+role;
+    var msg = GP.adminRemove.replaceAll('{role}',roleName);
+
+    confirmLink(msg,user,url);
+}
+
+function chooseAdminScope(user, user_id, role, roleName) {
 
     //disable button
-    $('#adminBtn').css("pointer-events", "none");
+    //$('#adminBtn').css("pointer-events", "none");
+    var adminAddMsg = GP.adminAddMsg.replaceAll('{role}',roleName);
+    var adminAdd = GP.adminAdd.replaceAll('{name}',user).replaceAll('{role}',roleName);
 
     var groups = [];
-    groups.push({"value": -1, "text": GP.adminAddMsg+':'});
-    groups.push({"value": 0, "text": GP.adminFullName});
-
+    groups.push({"value": -1, "text": adminAddMsg});
+    if(role === 'admin') {
+        groups.push({"value": 0, "text": GP.adminFullName});
+    }
     var url = GP.settings.siteUrl + '/clients/get_list/';
 
     $.getJSON(url, function (data) {
@@ -154,23 +165,23 @@ function chooseAdminScope(user, user_id) {
         });
 
         bootbox.prompt({
-            title: GP.adminAdd.replaceAll('{name}',user),
+            title: adminAdd,
             message: '',
             inputType: 'radio',
             inputOptions: groups,
             callback: function (client) {
                 if(client === '-1') {
-                    showError(GP.adminAddMsg);
+                    showError(adminAddMsg);
                     return false;
                 }
                 if(client) {
-                    window.location = GP.settings.siteUrl + '/users/set_admin/' + user_id + '/0/'+client;
+                    window.location = GP.settings.siteUrl + '/users/set_admin/' + user_id + '/0/'+role+'/'+client;
                 }
             }
         });
 
         //enable button back
-        $('#adminBtn').css("pointer-events", "auto");
+        //$('#adminBtn').css("pointer-events", "auto");
     });
 }
 

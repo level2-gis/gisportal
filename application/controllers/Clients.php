@@ -390,8 +390,15 @@ class Clients extends CI_Controller
      */
     public function get_list()
     {
+        $filter = $this->ion_auth->admin_scope()->filter;
+
         $list_only = true;
-        $groups = $this->client_model->get_clients(FALSE, TRUE, TRUE, $list_only);
+
+        if(empty($filter)) {
+            $groups = $this->client_model->get_clients(FALSE, TRUE, TRUE, $list_only);
+        } else {
+            $groups = [$this->client_model->get_client($filter, $list_only)];
+        }
 
         $this->output
             ->set_content_type('text/html')

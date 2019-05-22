@@ -9,8 +9,12 @@ class Client_model extends CI_Model {
     /*
      * Get client by id
      */
-    function get_client($id)
+    function get_client($id, $list_only = FALSE)
     {
+        if($list_only) {
+            $this->db->select("id, display_name || ' (' || name || ')' AS name", FALSE);
+        }
+
         $this->db->where('id', $id);
         $query = $this->db->get('clients_view');
         return $query->result()[0];

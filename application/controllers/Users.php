@@ -62,15 +62,16 @@ class Users extends CI_Controller {
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 			$data['creating'] = true;
 
+            //filter for client administrator
+			$user_role = $this->ion_auth->admin_scope();
+            $filter = $this->ion_auth->admin_scope()->filter;
+
 			if(sizeof($_POST) > 0){
 				$em = $this->extractUserData();
 				$data['title'] = 'Edit User ' . $em['first_name'] . ' ' .  $em['last_name'];
 				$data['creating'] = false;
 			} else {
 				if ($user_id !== false){
-                    //filter for client administrator
-                    $filter = $this->ion_auth->admin_scope()->filter;
-
                     try {
                         $dq = $this->user_model->get_user_by_id($user_id, $filter);
                         if(empty($dq)) {
@@ -94,9 +95,6 @@ class Users extends CI_Controller {
 			
 			$data['user'] = $em;
 
-            //filter for client administrator
-            $user_role = $this->ion_auth->admin_scope();
-            $filter = $user_role->filter;
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
             } else {
@@ -108,6 +106,7 @@ class Users extends CI_Controller {
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
             $data['roles'] = $this->user_model->get_roles();
             $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
+            $data['role_power'] = $this->user_model->get_role('power')->name; //get role name from database
 
             $data['user_role'] = $edit_user_role;
             $data['user']['admin'] = $edit_user_role ? $edit_user_role->admin : null;
@@ -312,10 +311,11 @@ class Users extends CI_Controller {
         }
     }
 
-    public function set_admin($user_id, $admin, $client_id = NULL)
+    public function set_admin($user_id, $has, $role, $client_id = NULL)
     {
-        $admin_group = 1;
-        $is_admin = (boolean)$admin;
+        //fixed ids for admin and power roles!!
+        $admin_group = $role === 'admin' ? 1 : 2;
+        $to_remove = (boolean)$has;
         $client_id = (empty($client_id)) ? null : (integer)$client_id;
 
         //filter for client administrator
@@ -326,11 +326,11 @@ class Users extends CI_Controller {
                 throw new Exception('User not Admin!');
             }
 
-            if(!empty($filter)) {
+            if(!empty($filter) && $role==='admin') {
                 throw new Exception('No permission!');
             }
 
-            if($is_admin) {
+            if($to_remove) {
                 $this->ion_auth->remove_from_group($admin_group, $user_id);
             } else {
                 $this->ion_auth->add_to_group($admin_group, $user_id, $client_id);

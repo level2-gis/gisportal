@@ -1,17 +1,25 @@
     <div class="page-header clearfix">
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
-        <div class="actions  pull-right">
-            <?php if (empty($current_role_filter)) : ?>
+        <div class="btn-group actions  pull-right">
+
                 <?php if (!empty($user_role)) : ?>
-                    <?php if ($user['user_id'] === $logged_id) : ?>
+                    <?php if (($user['user_id'] === $logged_id) || (!empty($current_role_filter))) : ?>
                         <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $user_role->role_display_name; ?></a>
                     <?php else: ?>
-                        <a onclick="confirmLink(GP.adminRemove,'<?php echo $user['display_name']; ?>','<?php echo site_url('users/set_admin/'. $user['user_id'] . '/' . (int)$user['admin']); ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $user_role->scope . ' ' . $user_role->role_display_name; ?></a>
+                       <a onclick="removeAdmin('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $user_role->scope . ' ' . $user_role->role_display_name; ?></a>
                     <?php endif; ?>
                 <?php else: ?>
-                    <a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>')" href="#" class="btn btn-mini btn-success"><?php echo $this->lang->line('gp_new'); ?> <?php echo $role_admin; ?></a>
+                    <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo lang('gp_new'); ?> <?php echo lang('gp_role'); ?> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <?php if (empty($current_role_filter)) : ?>
+                            <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','admin','<?php echo $role_admin; ?>')" href="#"><?php echo $role_admin; ?></a></li>
+                        <?php endif; ?>
+                        <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','power','<?php echo $role_power; ?>')" href="#"><?php echo $role_power; ?></a></li>
+                    </ul>
                 <?php endif; ?>
-            <?php endif; ?>
+
         </div>
 	</div>
 

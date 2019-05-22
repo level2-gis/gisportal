@@ -35,7 +35,7 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
 <!--    <script type="text/javascript" src="--><?php //echo base_url("assets/js/jquery.selectlistactions.js"); ?><!--"></script>-->
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190425"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190522"); ?>"></script>
     <script type="text/javascript">
 
         $(function(){
@@ -51,34 +51,34 @@
         });
 
         var GP = {
-            name:                   '<?php echo $this->lang->line('gp_name'); ?>',
-            displayName:            '<?php echo $this->lang->line('gp_display_name'); ?>',
-            action:                 '<?php echo $this->lang->line('gp_action'); ?>',
-            group:                  '<?php echo $this->lang->line('gp_group'); ?>',
-            menuGroup:              '<?php echo $this->lang->line('gp_sub_group'); ?>',
-            clientRequired:         '<?php echo $this->lang->line('gp_client_required'); ?>',
-            userRequired:           '<?php echo $this->lang->line('gp_user_required'); ?>',
-            layerRequired:          '<?php echo $this->lang->line('gp_layer_required'); ?>',
-            noFile:                 '<?php echo $this->lang->line('gp_no_file'); ?>',
-            onlyQgs:                '<?php echo $this->lang->line('gp_only_qgs'); ?>',
-            differentProjects:      '<?php echo $this->lang->line('gp_diff_proj'); ?>',
-            deleteProject:          '<?php echo $this->lang->line('gp_del_proj'); ?>',
-            deleteRole:             '<?php echo $this->lang->line('gp_del_role'); ?>',
-            deleteAllRoles:         '<?php echo $this->lang->line('gp_del_all_roles'); ?>',
-            deleteGeneral:          '<?php echo $this->lang->line('gp_del_general'); ?>',
-            deleteLayerGroup:       '<?php echo $this->lang->line('gp_del_layer_group'); ?>',
-            stopService:            '<?php echo $this->lang->line('gp_stop_service'); ?>',
-            publishPublicService:   '<?php echo $this->lang->line('gp_publish_public_service'); ?>',
-            publishPrivateService:  '<?php echo $this->lang->line('gp_publish_private_service'); ?>',
-            selectGroup:            '<?php echo $this->lang->line('gp_select_group'); ?>',
-            copyTitle:              '<?php echo $this->lang->line('gp_copy_title'); ?>',
-            copyMsg:                '<?php echo $this->lang->line('gp_copy_msg'); ?>',
-            addGroupTitle:          '<?php echo $this->lang->line('gp_add_group_title'); ?>',
-            addGroupMsg:            '<?php echo $this->lang->line('gp_add_group_msg'); ?>',
-            adminFullName:          '<?php echo $this->lang->line('gp_admin_full_name'); ?>',
-            adminAdd:               '<?php echo $this->lang->line('gp_admin_add'); ?>',
-            adminAddMsg:            '<?php echo $this->lang->line('gp_admin_add_msg'); ?>',
-            adminRemove:            '<?php echo $this->lang->line('gp_admin_remove'); ?>'
+            name:                   '<?php echo lang('gp_name'); ?>',
+            displayName:            '<?php echo lang('gp_display_name'); ?>',
+            action:                 '<?php echo lang('gp_action'); ?>',
+            group:                  '<?php echo lang('gp_group'); ?>',
+            menuGroup:              '<?php echo lang('gp_sub_group'); ?>',
+            clientRequired:         '<?php echo lang('gp_client_required'); ?>',
+            userRequired:           '<?php echo lang('gp_user_required'); ?>',
+            layerRequired:          '<?php echo lang('gp_layer_required'); ?>',
+            noFile:                 '<?php echo lang('gp_no_file'); ?>',
+            onlyQgs:                '<?php echo lang('gp_only_qgs'); ?>',
+            differentProjects:      '<?php echo lang('gp_diff_proj'); ?>',
+            deleteProject:          '<?php echo lang('gp_del_proj'); ?>',
+            deleteRole:             '<?php echo lang('gp_del_role'); ?>',
+            deleteAllRoles:         '<?php echo lang('gp_del_all_roles'); ?>',
+            deleteGeneral:          '<?php echo lang('gp_del_general'); ?>',
+            deleteLayerGroup:       '<?php echo lang('gp_del_layer_group'); ?>',
+            stopService:            '<?php echo lang('gp_stop_service'); ?>',
+            publishPublicService:   '<?php echo lang('gp_publish_public_service'); ?>',
+            publishPrivateService:  '<?php echo lang('gp_publish_private_service'); ?>',
+            selectGroup:            '<?php echo lang('gp_select_group'); ?>',
+            copyTitle:              '<?php echo lang('gp_copy_title'); ?>',
+            copyMsg:                '<?php echo lang('gp_copy_msg'); ?>',
+            addGroupTitle:          '<?php echo lang('gp_add_group_title'); ?>',
+            addGroupMsg:            '<?php echo lang('gp_add_group_msg'); ?>',
+            adminFullName:          '<?php echo lang('gp_admin_full_name'); ?>',
+            adminAdd:               '<?php echo lang('gp_admin_add'); ?>',
+            adminAddMsg:            '<?php echo lang('gp_admin_add_msg'); ?>',
+            adminRemove:            '<?php echo lang('gp_admin_remove'); ?>'
         };
 
         //other stuff, not language strings
@@ -111,24 +111,24 @@
         <div class="collapse navbar-collapse" id="navbar1">
             <ul class="nav navbar-nav navbar-right">
                     <?php if (isset($role) && ($role==='admin' || $role === 'power')) : ?>
-                        <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo $this->lang->line('gp_clients_title'); ?></span></a></li>
-                        <li><a href="<?php echo site_url('/project_groups'); ?>"><i class="fa fa-list"></i> <span><?php echo $this->lang->line('gp_groups_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/clients'); ?>"><i class="fa fa-folder"></i> <span><?php echo lang('gp_clients_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/project_groups'); ?>"><i class="fa fa-list"></i> <span><?php echo lang('gp_groups_title'); ?></span></a></li>
                     <?php endif; ?>
 
-                    <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo $this->lang->line('gp_projects_title'); ?></span></a></li>
+                    <li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i> <span><?php echo lang('gp_projects_title'); ?></span></a></li>
 
                     <?php if (isset($role) && $role==='admin') : ?>
-                        <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span><?php echo $this->lang->line('gp_layers_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i> <span><?php echo lang('gp_layers_title'); ?></span></a></li>
                     <?php endif; ?>
                     <?php if (isset($role) && ($role==='admin' || $role === 'power')) : ?>
-                        <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span><?php echo $this->lang->line('gp_users_title'); ?></span></a></li>
+                        <li><a href="<?php echo site_url('/users'); ?>"><i class="fa fa-group"></i> <span><?php echo lang('gp_users_title'); ?></span></a></li>
                     <?php endif; ?>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo site_url('/profile') ?>"><?php echo $this->lang->line('gp_profile_title'); ?></a></li>
-                            <li><a href="<?php echo site_url('/auth/logout') ?>"><?php echo $this->lang->line('gp_log_out'); ?></a></li>
+                            <li><a href="<?php echo site_url('/profile') ?>"><?php echo lang('gp_profile_title'); ?></a></li>
+                            <li><a href="<?php echo site_url('/auth/logout') ?>"><?php echo lang('gp_log_out'); ?></a></li>
                         </ul>
                     </li>
             </ul>

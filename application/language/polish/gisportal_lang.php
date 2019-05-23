@@ -142,6 +142,10 @@ $lang['gp_select_groups'] = 'Select client groups';
 $lang['gp_parent'] = 'Parent';
 $lang['gp_items'] = 'Items';
 
+$lang['gp_user_registration_link'] = 'User registration link';
+$lang['gp_user_registration_help'] = 'New users registered using above link will be connected to the client.';
+
+
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!
 $lang['gp_client_required'] = 'Client required';

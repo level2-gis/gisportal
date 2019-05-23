@@ -8,12 +8,35 @@ class Signup extends CI_Controller
 		$this->load->library(array('form_validation'));
 		$this->load->database();
 		$this->load->model('user_model');
+		$this->load->model('client_model');
 	}
 	
 	function index()
 	{
-		//TODO read connect parameter from get, check for client name, based on setting allow "public" registration without connection
-        //connection must be added to database with set_link
+        try {
+            $cl_query = $this->input->get('client', TRUE);
+
+            $client = NULL;
+            if (!empty($cl_query)) {
+                $client = $this->client_model->get_client_by_name($cl_query);
+            } else {
+                if ($this->config->item('public_registration') === FALSE) {
+                   throw new Exception('Client required!');
+                }
+            }
+
+            if (empty($client) && ($this->config->item('public_registration') === FALSE)) {
+                throw new Exception('Client not correct!');
+            }
+
+        } catch (Exception $e) {
+            $data['logged_in'] = FALSE;
+            $data['message'] = $e->getMessage();
+            $data['type'] = 'danger';
+            $this->load->view('templates/header', $data);
+            $this->load->view('message_view', $data);
+            return;
+        }
 
 	    // set form validation rules
 		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|max_length[30]');
@@ -28,6 +51,7 @@ class Signup extends CI_Controller
 		if ($this->form_validation->run() == FALSE)
         {
 			// fails
+            $data['client'] = empty($client) ? null : (array)$client[0];
             $data['title'] = $this->lang->line('gp_register');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             //we allow registration also if user is logged in
@@ -44,6 +68,8 @@ class Signup extends CI_Controller
             $email = strtolower($this->input->post('email'));
             $password = $this->input->post('password');
             $username = $this->input->post('username');
+
+            $client_id = $this->input->post('client_id');
 
 		    //insert user details into db
 			$additional_data = array(
@@ -64,6 +90,12 @@ class Signup extends CI_Controller
                 $additional_data["email"] = $email;
                 $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_user.tpl.php', $additional_data, TRUE);
                 $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message);
+
+                //set link in case client exists
+                if(!empty($client_id)) {
+                    //TODO notify client administrators
+                    $this->user_model->set_link($new_id,$client_id);
+                }
 
                 redirect('auth/login', 'refresh');
 			}

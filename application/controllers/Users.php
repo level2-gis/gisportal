@@ -39,7 +39,7 @@ class Users extends CI_Controller {
 
     public function edit($user_id = false)
     {
-        $task = 'users_edit_properties';
+        $task = 'users_edit';
 
         if (!$this->ion_auth->can_execute_task($task)){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');

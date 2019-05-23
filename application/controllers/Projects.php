@@ -402,7 +402,7 @@ class Projects extends CI_Controller
 
     public function edit($project_id = false)
     {
-        $task = 'projects_edit_properties';
+        $task = 'projects_edit';
 
         if (!$this->ion_auth->can_execute_task($task)){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');

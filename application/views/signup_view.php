@@ -2,8 +2,12 @@
 		<div class="col-md-4 col-md-offset-4 well">
 			<?php $attributes = array("name" => "signupform");
 			echo form_open("signup/", $attributes);?>
-			<legend><?php echo $this->lang->line('gp_register'); ?></legend>
-			
+            <input name="client_id" type="hidden" value="<?php echo $client['id']; ?>" />
+			<?php if(!empty($client)) : ?>
+                <h3 class="text-center"><?php echo $client['display_name']; ?></h3>
+            <?php endif; ?>
+            <legend><?php echo $this->lang->line('gp_register'); ?></legend>
+
 			<div class="form-group">
 				<label for="name"><?php echo $this->lang->line('gp_first_name'); ?></label>
 				<input class="form-control" name="fname" placeholder="" type="text" value="<?php echo set_value('fname'); ?>" />

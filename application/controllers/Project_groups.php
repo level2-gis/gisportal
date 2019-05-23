@@ -83,7 +83,7 @@ class Project_groups extends CI_Controller
             redirect('/project_groups/');
         }
 
-        $task = 'project_groups_edit_properties';
+        $task = 'project_groups_edit';
 
         if (!$this->ion_auth->can_execute_task($task)){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');

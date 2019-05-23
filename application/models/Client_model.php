@@ -20,6 +20,14 @@ class Client_model extends CI_Model {
         return $query->result()[0];
     }
 
+    function get_client_by_name($name)
+    {
+        $this->db->where('name', $name);
+        $query = $this->db->get('clients');
+
+        return $query->result();
+    }
+
     function client_exists($name)
     {
         $this->db->where('name', $name);

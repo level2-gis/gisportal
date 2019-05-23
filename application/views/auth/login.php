@@ -3,7 +3,7 @@
 
         <?php echo form_open("auth/login"); ?>
 
-        <legend class="text-center"><?php echo $heading; ?></legend>
+        <h3 class="text-center"><?php echo $heading; ?></h3>
         <div class="form-group">
             <label for="identity"><?php echo $this->lang->line('gp_user'); ?></label>
             <input class="form-control" name="<?php echo $identity['name']; ?>"
@@ -31,12 +31,14 @@
         <?php echo $this->session->flashdata('message'); ?>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-4 col-md-offset-4 text-center">
-        <?php echo $this->lang->line('gp_new_user'); ?>? <a
-            href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+<?php if ($this->config->item('public_registration')) :  ?>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+            <?php echo $this->lang->line('gp_new_user'); ?>? <a
+                href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 <div class="row">
     <div class="col-md-4 col-md-offset-4 text-center">
         <a href="forgot_password"><?php echo lang('login_forgot_password'); ?></a>

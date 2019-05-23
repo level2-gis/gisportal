@@ -96,7 +96,7 @@ class Clients extends CI_Controller
 
     public function edit($client_id = false)
     {
-        $task = 'clients_edit_properties';
+        $task = 'clients_edit';
 
         if (!$this->ion_auth->can_execute_task($task)){
             redirect('/auth/login?ru=/' . uri_string());
@@ -144,6 +144,7 @@ class Clients extends CI_Controller
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
+            $data['register'] = '/signup?client='.$em['name'];
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);

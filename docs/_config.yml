@@ -1,6 +1,6 @@
 # Theme settings
 doks:
-    baseurl:
+    baseurl: ./gisportal
     color_theme: # Available themes: blue (default), green, purple, red and yellow
     header:
         logo:
@@ -16,9 +16,9 @@ doks:
     footer:
         content:
             logo:
-                text: Project name
+                text: GIS portal
                 image:
-            copyright: Copyright &copy; 2017. - Project name <br>All rights reserved.
+            copyright: Copyright &copy; 2019. - Level2 <br>All rights reserved.
         social_list:
             - network_name: facebook
               profile_url: '#'

@@ -21,6 +21,7 @@ grid_navigation:
       excerpt: Section description
       cta: Read more
       url: '/features'
+grid_navigation:
     - title: About
       excerpt: Section description
       cta: Read more

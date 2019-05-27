@@ -4,7 +4,7 @@ doks:
     color_theme: # Available themes: blue (default), green, purple, red and yellow
     header:
         logo:
-            text: GIS Portal
+            text: GIS Portal Documentation
             image:
         nav:
             - item_name: Test

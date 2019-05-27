@@ -4,7 +4,7 @@ layout: homepage
 keywords:
 
 # Hero section
-title: GIS Portal
+title: GIS Portal Documentation
 description: Welcome to documentation for GIS Portal v2.
 buttons:
     - content: Let's get started

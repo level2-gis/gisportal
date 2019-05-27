@@ -9,7 +9,7 @@ title: Features
 description: Page description
 
 # Micro navigation
-micro_nav: false
+micro_nav: true
 
 # Page navigation
 page_nav:

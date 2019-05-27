@@ -6,7 +6,7 @@ keywords:
 # Hero section
 title: GIS Portal
 description: Welcome to documentation for GIS Portal v2.
-Info: callout--info
+callout--info
 aaaa
 buttons:
     - content: Let's get started

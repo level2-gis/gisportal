@@ -8,8 +8,7 @@ doks:
             image:
         nav:
             - item_name: Demo
-              item_url: 'https://test.level2.si'
-              external_url: true
+              external_url: 'https://test.level2.si'
             - item_name: Code
               item_url: 'https://github.com/level2-gis/gisportal'
               external_url: true

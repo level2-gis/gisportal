@@ -10,8 +10,8 @@ buttons:
     - content: Button
       url: 'default'
       external_url: false
-    - icon: github
-      content: Button with icon
+    - content: Button with icon
+      icon: github
       url: '#'
       external_url: true
 
@@ -21,7 +21,6 @@ grid_navigation:
       excerpt: Section description
       cta: Read more
       url: '/features'
-grid_navigation:
     - title: About
       excerpt: Section description
       cta: Read more

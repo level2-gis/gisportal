@@ -6,6 +6,8 @@ keywords:
 # Hero section
 title: GIS Portal
 description: Welcome to documentation for GIS Portal v2.
+Info: callout--info
+aaaa
 buttons:
     - content: Let's get started
       url: 'default'
@@ -30,6 +32,3 @@ grid_navigation:
       cta: Read more
       url: '/about'   
 ---
-<div class="callout callout--danger">
-    <p><strong>Current Status:</strong> Version 2 under development!</p>
-</div>

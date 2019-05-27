@@ -7,12 +7,10 @@ doks:
             text: GIS PORTAL
             image:
         nav:
-            - item_name: Item 1
-              item_url: 'default'
-            - item_name: Item 2
-              item_url: '#'
-            - item_name: Item 3
-              item_url: '#'
+            - item_name: User demo
+              item_url: 'https://test.level2.si'
+            - item_name: Code
+              item_url: 'https://github.com/level2-gis/gisportal'
     footer:
         content:
             logo:

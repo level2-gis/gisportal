@@ -7,10 +7,12 @@ doks:
             text: GIS PORTAL
             image:
         nav:
-            - item_name: User demo
+            - item_name: Demo
               item_url: 'https://test.level2.si'
+              external_url: true
             - item_name: Code
               item_url: 'https://github.com/level2-gis/gisportal'
+              external_url: true
     footer:
         content:
             logo:

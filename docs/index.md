@@ -5,15 +5,22 @@ keywords:
 
 # Hero section
 title: GIS Portal
-description: Documentation is under development
+description: Welcome to documentation for GIS Portal v2.
+<div class="callout callout--danger">
+    <p><strong>Current Status:</strong> Version 2 under development!</p>
+</div>
 buttons:
-    - content: Button
+    - content: Let's get started
       url: 'default'
       external_url: false
-    - content: Button with icon
+    - content: Code
       icon: github
-      url: '#'
+      url: 'https://github.com/level2-gis/gisportal'
       external_url: true
+    - content: Demo
+      icon: github
+      url: 'https://test.level2.si'
+      external_url: true  
 
 # Grid navigation
 grid_navigation:

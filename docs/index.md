@@ -8,14 +8,15 @@ title: GIS Portal
 description: Welcome to documentation for GIS Portal v2.
 buttons:
     - content: Let's get started
-      url: 'default'
+      icon: arrow-right
+      url: '/default'
       external_url: false
     - content: Code
       icon: github
       url: 'https://github.com/level2-gis/gisportal'
       external_url: true
     - content: Demo
-      icon: github
+      icon: meetup
       url: 'https://test.level2.si'
       external_url: true  
 

@@ -4,11 +4,11 @@ layout: homepage
 keywords:
 
 # Hero section
-title: Project name
-description: Project description
+title: GIS PORTAL
+description: Documentation is under development
 buttons:
     - content: Button
-      url: '#'
+      url: 'default'
       external_url: false
     - icon: github
       content: Button with icon
@@ -16,16 +16,16 @@ buttons:
       external_url: true
 
 # Author box
-author:
-    title: About Author
-    title_url: '#'
-    external_url: true
-    description: Author description
+#author:
+#    title: About Author
+#    title_url: '#'
+#    external_url: true
+#    description: Author description
 
 # Grid navigation
 grid_navigation:
-    - title: Grid navigation
+    - title: Features
       excerpt: Section description
       cta: Read more
-      url: '#'
+      url: 'features'
 ---

@@ -4,7 +4,7 @@ layout: homepage
 keywords:
 
 # Hero section
-title: GIS Portal Documentation
+title: GIS Portal
 description: Welcome to documentation for GIS Portal v2.
 buttons:
     - content: Let's get started
@@ -31,3 +31,8 @@ grid_navigation:
       cta: Read more
       url: '/about'   
 ---
+
+<div class="callout callout--danger">
+    <p><strong>Lorem ipsum dolor sit amet!</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+</div>

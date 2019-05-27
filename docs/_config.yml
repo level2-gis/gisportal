@@ -14,7 +14,7 @@ doks:
     footer:
         content:
             logo:
-                text: GIS PORTAL
+                text: GIS Portal Documentation
                 image:
             copyright: Copyright &copy; 2019. - Level2 <br>All rights reserved.
         social_list:

@@ -1,15 +1,91 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(__DIR__.'/../../../gisapp/admin/settings.php');
+
 class Qgisproject_model extends CI_Model
 {
     function __construct()
     {
         parent::__construct();
+        $this->main_path = set_realpath(PROJECT_PATH);
     }
 
     public $qgs_file    = null;
     public $qgs_xml     = null;
     public $error       = null;
+    public $main_path   = null;
+
+    /**
+     * Default location of QGIS project file when uploading or using template
+     * Depends on settings
+     */
+    public function get_default_qgs_project_path($first,$second) {
+        $ci =& get_instance();
+        $config = $ci->config->item('qgis_project_default_location');
+
+        switch($config) {
+            case QGS_MAIN :
+                return set_realpath(PROJECT_PATH);
+            case QGS_CLIENT :
+                return set_realpath(PROJECT_PATH . $first);
+            default :
+                return set_realpath(PROJECT_PATH);
+        }
+    }
+
+    public function check_qgs_file($project_id) {
+
+        $message = '';
+        $valid = FALSE;
+
+        try {
+            $this->load->project_model();
+
+            //get other project attributes
+            $project = $this->project_model->get_project($project_id, TRUE);
+            if(empty($project)) {
+                throw new Exception('Project ID unknown: '.$project_id);
+            }
+
+            //TODO what aobut different case and qgz extension!?!
+            $project_file = $project->name . '.qgs';
+
+            //first check if project has full path stored in db and if that exist and is readable
+            if (!empty($project->project_path)) {
+                if (is_readable($project->project_path)) {
+                    $valid = true;
+                    $message = $project->project_path;
+                    //TODO save project path to DB!
+                }
+            }
+            //check if the project can be found in main project folder
+            elseif (is_readable($this->main_path . $project_file)) {
+                $valid = true;
+                $message = $this->main_path . $project_file;
+                //TODO save project path to DB!
+            }
+            //check if project is in client subfolder
+            elseif (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file)) {
+                $valid = true;
+                $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
+                //TODO save project path to DB!
+            }
+            //check if project is in client/group subfolder
+            elseif (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file)) {
+                $valid = true;
+                $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
+                //TODO save project path to DB!
+            } else {
+                //project not found, report directory only regarding setting
+                $message = "Project: ". $project_file . ' not found in: '. $this->get_default_qgs_project_path($project->client_name,$project->group_name);
+            }
+
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+        } finally {
+            return ["valid" => $valid, "name" => $message];
+        }
+    }
 
     public function read_qgs_file() {
         $xml = null;

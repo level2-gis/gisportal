@@ -67,10 +67,14 @@ class Project_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function get_project($id)
+    public function get_project($id, $use_view = FALSE)
     {
         $this->db->where('id', $id);
-        $query = $this->db->get('projects');
+        if($use_view) {
+            $query = $this->db->get('projects_view');
+        } else {
+            $query = $this->db->get('projects');
+        }
         return $query->result()[0];
     }
 

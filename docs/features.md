@@ -2,7 +2,7 @@
 # Page settings
 layout: default
 keywords:
-comments: false
+comments: true
 
 # Hero section
 title: Features

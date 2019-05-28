@@ -4,7 +4,7 @@ doks:
     color_theme: # Available themes: blue (default), green, purple, red and yellow
     header:
         logo:
-            text: GIS Portal Documentation
+            text: GIS Portal
             image:
         nav:
             - item_name: Test
@@ -14,7 +14,7 @@ doks:
     footer:
         content:
             logo:
-                text: GIS Portal Documentation
+                text: GIS Portal
                 image:
             copyright: Copyright &copy; 2019. - Level2 <br>All rights reserved.
         social_list:
@@ -23,7 +23,7 @@ doks:
     google_analytics:
         tracking_code: # Add your Google Analytics tracking code to activate Google Analytics
     comments:
-        disqus_forum_shortname: # Add your disqus forum shortname to activate comments
+        disqus_forum_shortname: 'gis-portal'
 
 # SASS settings
 sass:

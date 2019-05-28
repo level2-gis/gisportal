@@ -11,11 +11,11 @@ buttons:
       icon: arrow-right
       url: '/default'
       external_url: false
-    - content: Code
+    - content: Get Code
       icon: github
       url: 'https://github.com/level2-gis/gisportal'
       external_url: true
-    - content: Demo
+    - content: View Demo
       icon: meetup
       url: 'https://test.level2.si'
       external_url: true  
@@ -31,8 +31,3 @@ grid_navigation:
       cta: Read more
       url: '/about'   
 ---
-
-<div class="callout callout--danger">
-    <p><strong>Lorem ipsum dolor sit amet!</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-</div>

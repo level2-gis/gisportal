@@ -17,7 +17,8 @@ class Client_model extends CI_Model {
 
         $this->db->where('id', $id);
         $query = $this->db->get('clients_view');
-        return $query->result()[0];
+        $result = $query->result();
+        return $result ? $result[0] : null;
     }
 
     function get_client_by_name($name)

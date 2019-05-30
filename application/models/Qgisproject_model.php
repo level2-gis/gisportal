@@ -7,6 +7,7 @@ class Qgisproject_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+        $this->load->helper(array('path'));
         $this->main_path = set_realpath(PROJECT_PATH);
     }
 
@@ -19,27 +20,37 @@ class Qgisproject_model extends CI_Model
      * Default location of QGIS project file when uploading or using template
      * Depends on settings
      */
-    public function get_default_qgs_project_path($first,$second) {
+    public function get_default_qgs_project_path($first,$second = NULL) {
         $ci =& get_instance();
         $config = $ci->config->item('qgis_project_default_location');
 
+        $dir = '';
+
         switch($config) {
             case QGS_MAIN :
-                return set_realpath(PROJECT_PATH);
+                $dir = set_realpath(PROJECT_PATH);
+                break;
             case QGS_CLIENT :
-                return set_realpath(PROJECT_PATH . $first);
-            default :
-                return set_realpath(PROJECT_PATH);
+                $dir = set_realpath(PROJECT_PATH . $first);
+                break;
+            case QGS_GROUP :
+                $dir = set_realpath(PROJECT_PATH . $first . DIRECTORY_SEPARATOR . $second);
         }
+
+        if(!file_exists($dir) && !empty($dir)) {
+            mkdir($dir,0777, true);
+        }
+        return $dir;
     }
 
     public function check_qgs_file($project_id) {
 
         $message = '';
         $valid = FALSE;
+        $config = $this->config->item('qgis_project_default_location');
 
         try {
-            $this->load->project_model();
+            //$this->load->project_model();
 
             //get other project attributes
             $project = $this->project_model->get_project($project_id, TRUE);
@@ -47,42 +58,58 @@ class Qgisproject_model extends CI_Model
                 throw new Exception('Project ID unknown: '.$project_id);
             }
 
-            //TODO what aobut different case and qgz extension!?!
+            //TODO what about different case and qgz extension!?!
             $project_file = $project->name . '.qgs';
 
-            //first check if project has full path stored in db and if that exist and is readable
-            if (!empty($project->project_path)) {
-                if (is_readable($project->project_path)) {
+            if($config===QGS_MAIN || $config === QGS_CLIENT) {
+
+                //first check if project has full path stored in db and if that exist and is readable
+                if (!empty($project->project_path)) {
+                    if (is_readable($project->project_path)) {
+                        $valid = true;
+                        $message = $project->project_path;
+                    } else {
+                        $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
+                    }
+                    return ["valid" => $valid, "name" => $message];
+                }
+
+                //check if the project can be found in main project folder
+                if (is_readable($this->main_path . $project_file)) {
+                    $valid = true;
+                    $message = $this->main_path . $project_file;
+                    return ["valid" => $valid, "name" => $message];
+                }
+
+                //check if project is in client subfolder
+                if (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file)) {
+                    $valid = true;
+                    $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
+                    return ["valid" => $valid, "name" => $message];
+                }
+
+
+            } elseif ($config === QGS_GROUP) {
+                $project->project_path = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file;
+                $this->project_model->upsert_project(array("id" => $project->id, "project_path" => $project->project_path));
+
+                //check if project is in client/group subfolder
+                if (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file)) {
                     $valid = true;
                     $message = $project->project_path;
-                    //TODO save project path to DB!
+                } else {
+                    $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                 }
+
+                return ["valid" => $valid, "name" => $message];
             }
-            //check if the project can be found in main project folder
-            elseif (is_readable($this->main_path . $project_file)) {
-                $valid = true;
-                $message = $this->main_path . $project_file;
-                //TODO save project path to DB!
-            }
-            //check if project is in client subfolder
-            elseif (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file)) {
-                $valid = true;
-                $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
-                //TODO save project path to DB!
-            }
-            //check if project is in client/group subfolder
-            elseif (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file)) {
-                $valid = true;
-                $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
-                //TODO save project path to DB!
-            } else {
-                //project not found, report directory only regarding setting
-                $message = "Project: ". $project_file . ' not found in: '. $this->get_default_qgs_project_path($project->client_name,$project->group_name);
-            }
+
+            //project not found, report directory only regarding setting
+            $message = "Project: ". $project_file . ' not found in:</br>'. $this->get_default_qgs_project_path($project->client_name,$project->group_name);
+            return ["valid" => $valid, "name" => $message];
 
         } catch (Exception $e) {
             $message = $e->getMessage();
-        } finally {
             return ["valid" => $valid, "name" => $message];
         }
     }
@@ -185,7 +212,7 @@ class Qgisproject_model extends CI_Model
 
     public function get_layer_feature_count($connection_string, $table) {
         try {
-            $mycmd = get_ogr() .'ogrinfo -so "' . $connection_string . '" ' . $table;
+            $mycmd = $this->get_ogr() .'ogrinfo -so "' . $connection_string . '" ' . $table;
             $output = shell_exec($mycmd);
 
             $matches = array();
@@ -202,5 +229,14 @@ class Qgisproject_model extends CI_Model
             $this->error = $e->getMessage();
             return -1;
         }
+    }
+
+    /**
+     * This is here because of gisapp setting, later you can use this to work with ogr:
+     * https://github.com/geo6/php-gdal-wrapper
+     */
+    public function get_ogr()
+    {
+        return str_replace('ogr2ogr','',OGR2OGR);
     }
 }

@@ -14,6 +14,7 @@ class Projects extends CI_Controller
         $this->load->model('user_model');
         $this->load->model('layer_model');
         $this->load->model('plugin_model');
+        $this->load->model('qgisproject_model');
         $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file', 'download'));
     }
 
@@ -117,7 +118,7 @@ class Projects extends CI_Controller
     /**
      * Upload QGIS project file
      */
-    public function upload_admin($client_id = false) {
+    public function upload_admin($client_id = false, $group_id = false) {
 
         if (!$this->ion_auth->is_admin()){
             redirect('/');
@@ -128,27 +129,33 @@ class Projects extends CI_Controller
                 throw new Exception('Client not found!');
             }
 
+            if ($group_id === FALSE) {
+                throw new Exception('Group not found!');
+            }
+
             $client = $this->client_model->get_client($client_id);
             if ($client == null) {
                 throw new Exception('Client not found!');
             }
+
+            $group = $this->project_group_model->get_project_group($group_id);
+            if ($group == null) {
+                throw new Exception('Group not found!');
+            }
             $client_name = $client->name;
+            $group_name = $group->name;
 
             //put project to which subfolder, from config
-            $dir = set_realpath(get_qgis_project_path($client_name));
+            $dir = set_realpath($this->qgisproject_model->get_default_qgs_project_path($client_name,$group_name));
 
             $project_id = $this->input->post('project_id');
             if ($project_id) {
                 //editing existing project, get project directory
-                $project = $this->project_model->get_project($project_id);
-                $qgis = check_qgis_project($project->name, $project->project_path, $client_name);
+                //$project = $this->project_model->get_project($project_id);
+                $qgis = $this->qgisproject_model->check_qgs_file($project_id);
                 if ($qgis["valid"]) {
                     $dir = set_realpath(dirname($qgis["name"]));
                 }
-            }
-
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
             }
 
             $config['upload_path'] = $dir;
@@ -174,6 +181,7 @@ class Projects extends CI_Controller
 
                 $this->session->set_flashdata('project_name',$project_name);
                 $this->session->set_flashdata('client_id',$client_id);
+                $this->session->set_flashdata('project_group_id',$group_id);
 
                 //set permission to 777
                 if(is_file($dir . $file_name))
@@ -366,17 +374,20 @@ class Projects extends CI_Controller
         }
 
         try {
-            $project = $this->project_model->get_project($project_id);
-            //TODO client_id on project!
-            $client = $this->client_model->get_client($project->client_id);
+//            $project = $this->project_model->get_project($project_id);
+//            //TODO client_id on project!
+//            $client = $this->client_model->get_client($project->client_id);
+//
+//            if ($client == null) {
+//                throw new Exception('Client not found!');
+//            }
+//
+//            $client_name = $client->name;
 
-            if ($client == null) {
-                throw new Exception('Client not found!');
-            }
 
-            $client_name = $client->name;
+
             $qgs_file = '';
-            $check = check_qgis_project($project->name, $project->project_path, $client_name);
+            $check = $this->qgisproject_model->check_qgs_file($project_id);
 
             if($check['valid']) {
                 $qgs_file = $check["name"];
@@ -479,7 +490,9 @@ class Projects extends CI_Controller
             $data['role'] = $user_role->role_name;
             $data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
 
-            $this->qgisinfo($data);
+            $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+
+            //$this->qgisinfo($data);
 
             $this->load->view('templates/header', $data);
             $this->load->view('project_title', $data);
@@ -539,7 +552,6 @@ class Projects extends CI_Controller
             $em["project_group_id"] = $this->session->flashdata('project_group_id') ? $this->session->flashdata('project_group_id') : $this->input->post('project_group_id');
 
             $data['project'] = $em;
-            $data['templates'] = $this->project_model->get_templates();
             $data['action'] = $action;
 
             //filter for client administrator
@@ -547,13 +559,16 @@ class Projects extends CI_Controller
             $filter = $user_role->filter;
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
-                $data['groups'] = [];
+                $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
+                $data['templates'] = $this->get_templates($em["client_id"],true);
             } else {
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
                 $data['groups'] = $this->project_group_model->get_project_groups($filter, true);
+                $data['templates'] = $this->get_templates($filter,true);
                 $data['project']['client_id'] = $filter;
             }
 
+            $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
 
@@ -585,7 +600,7 @@ class Projects extends CI_Controller
             try {
                 //copy template if selected
                 if(!empty($project["template"])) {
-                    $this->project_model->copy_template($project["template"],$project["name"],$client->name);
+                    $this->copy_template($project["template"],$project["name"],$client->name);
                 }
 
                 $project_id = $this->project_model->upsert_project($project);
@@ -676,7 +691,9 @@ class Projects extends CI_Controller
         $data['is_admin'] = $user_role->admin;
         $data['role'] = $user_role->role_name;
 
-        $this->qgisinfo($data);
+        $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+
+        //$this->qgisinfo($data);
         if($data['qgis_check']['valid']) {
             $data['services'] = self::get_project_services($data['qgis_check']['name']);
         } else {
@@ -716,7 +733,9 @@ class Projects extends CI_Controller
             $data['project'] = (array)$project;
             $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
 
-            $this->qgisinfo($data);
+            $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+
+            //$this->qgisinfo($data);
 
             $project_full_path = $data['qgis_check']['name'];
 
@@ -792,7 +811,9 @@ class Projects extends CI_Controller
             $data['project'] = (array)$project;
             $data['clients'] = [(array)$this->client_model->get_client($project->client_id)];
 
-            $this->qgisinfo($data);
+            $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+
+            //$this->qgisinfo($data);
 
             $project_full_path = $data['qgis_check']['name'];
 
@@ -811,6 +832,44 @@ class Projects extends CI_Controller
         }
     }
 
+    /*
+    * Returns array of client project templates when creating new project
+    * Templates should be in client_name/_templates subfolder
+    */
+    public function get_templates($client_id = FALSE, $return_array = FALSE)
+    {
+        $groups = [];
+
+        if (!empty($client_id)) {
+            $client = $this->client_model->get_client($client_id);
+            if(!empty($client)) {
+                $dir = $this->get_templates_path($client->name);
+                if($dir) {
+                    $arr = get_dir_file_info($dir);
+                    foreach($arr as $name => $fileinfo) {
+                        $fn = $fileinfo["server_path"];
+                        if(is_readable($fn)) {
+                            $ext = pathinfo($fn, PATHINFO_EXTENSION);
+                            if(strtolower($ext) == 'qgs') {
+                                array_push($groups,$name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if($return_array) {
+            return $groups;
+        } else {
+            $this->output
+                ->set_content_type('text/html')
+                ->set_status_header(200)
+                ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+
     public function _unique_name($name) {
 
         //test if we already have name in database
@@ -823,6 +882,35 @@ class Projects extends CI_Controller
         }
 
         return true;
+    }
+
+    private function get_templates_path($client_name) {
+        $this->load->model('qgisproject_model');
+        $main = $this->qgisproject_model->main_path;
+
+        $dir = $main . $client_name . DIRECTORY_SEPARATOR . '_templates';
+
+        //create templates folder if it doesn't exist
+        if(!file_exists($dir)) {
+            mkdir($dir,0777, true);
+        }
+
+        return is_dir($dir) ? $dir : FALSE;
+    }
+
+    private function copy_template($template, $project_name, $client_name)
+    {
+        $this->load->model('qgisproject_model');
+        $main = $this->qgisproject_model->main_path;
+
+        $dir = set_realpath($main . $client_name . DIRECTORY_SEPARATOR . '_templates');
+        $dir2= set_realpath($this->qgisproject_model->get_default_qgs_project_path($client_name));
+
+        $source = $dir . $template;
+        $target = $dir2. $project_name;
+        if(is_readable($source)) {
+            copy($source,$target.'.qgs');
+        }
     }
 
     private function get_project_services($project_full_path)
@@ -979,24 +1067,24 @@ class Projects extends CI_Controller
         }
     }
 
-    private function qgisinfo(&$data){
-        if ($data['project']['name'] == '') {
-            $data['qgis_check'] =  ["valid" => false, "name" => ""];
-            return;
-        }
-
-        $project_name = $data['project']['name'];
-
-        $project_path = null;
-        if(isset($data['project']['project_path'])) {
-            $project_path = $data['project']['project_path'];
-        }
-
-        //$client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
-        $client_name = $data['clients'][0]['name'];
-
-        $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
-    }
+//    private function qgisinfo(&$data){
+//        if ($data['project']['name'] == '') {
+//            $data['qgis_check'] =  ["valid" => false, "name" => ""];
+//            return;
+//        }
+//
+//        $project_name = $data['project']['name'];
+//
+//        $project_path = null;
+//        if(isset($data['project']['project_path'])) {
+//            $project_path = $data['project']['project_path'];
+//        }
+//
+//        //$client_key = array_search($data['project']['client_id'], array_column($data['clients'], 'id'));
+//        $client_name = $data['clients'][0]['name'];
+//
+//        $data['qgis_check'] = check_qgis_project($project_name, $project_path, $client_name);
+//    }
 
     private function get_name($el) {
         return empty($el['display_name']) ? $el['name'] : $el['display_name'];

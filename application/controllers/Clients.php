@@ -319,9 +319,9 @@ class Clients extends CI_Controller
         $layer_id = $this->input->post('layer_id');
         $file_crs = $this->input->post('crs_code');
 
-        $project = $this->project_model->get_project($project_id);
+        //$project = $this->project_model->get_project($project_id);
         $qgs_file = '';
-        $check = check_qgis_project($project->name, $project->project_path, $client_name);
+        $check = $this->qgisproject_model->check_qgs_file($project_id);
 
         if($check['valid']) {
             $qgs_file = $check["name"];
@@ -366,7 +366,7 @@ class Clients extends CI_Controller
         $target_srs = ' -t_srs EPSG:' . $srid . ' ';
 
         //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
-        $mycmd = get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
         $output = shell_exec($mycmd);
 
         $cnt_after = $qgs->get_layer_feature_count($conn, $table);

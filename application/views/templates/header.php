@@ -34,8 +34,7 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
-<!--    <script type="text/javascript" src="--><?php //echo base_url("assets/js/jquery.selectlistactions.js"); ?><!--"></script>-->
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190522"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190530"); ?>"></script>
     <script type="text/javascript">
 
         $(function(){
@@ -71,6 +70,7 @@
             publishPublicService:   '<?php echo lang('gp_publish_public_service'); ?>',
             publishPrivateService:  '<?php echo lang('gp_publish_private_service'); ?>',
             selectGroup:            '<?php echo lang('gp_select_group'); ?>',
+            selectTemplate:         '<?php echo lang('gp_select_template'); ?>',
             copyTitle:              '<?php echo lang('gp_copy_title'); ?>',
             copyMsg:                '<?php echo lang('gp_copy_msg'); ?>',
             addGroupTitle:          '<?php echo lang('gp_add_group_title'); ?>',

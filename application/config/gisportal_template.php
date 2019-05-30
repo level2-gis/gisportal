@@ -98,6 +98,7 @@ $config['main_upload_web'] = './uploads/';
  * Possible values:
  * QGS_MAIN     = QGIS project files location in main projects folder defined in /gisapp/admin/settings.php (PROJECT_PATH)
  * QGS_CLIENT   = QGIS project files location in main projects/client_name subfolder
+ * QGS_GROUP    = QGIS project files location in main projects/client_name/project_group subfolder
  */
 $config['qgis_project_default_location'] = QGS_MAIN;
 

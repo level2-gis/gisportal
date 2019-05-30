@@ -69,6 +69,10 @@ class Layer_model extends CI_Model {
 
     public function get_layers_filtered($ids) {
 
+        if(empty($ids)) {
+            return [];
+        }
+
         $this->db->order_by('idx', 'ASC');
         $this->db->select("id,name,display_name,type FROM (SELECT *,idx('".$ids."',id) FROM layers_view) l",FALSE);
         $this->db->where('idx>0');

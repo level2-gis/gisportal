@@ -17,6 +17,7 @@ function onUploadFormSubmit() {
 
     var form = $('#uploadForm')[0];
     var client = $('#client_id')[0].value;
+    var group = $('#project_group_id')[0].value;
 
     if(client === '') {
         showError(GP.clientRequired);
@@ -34,7 +35,7 @@ function onUploadFormSubmit() {
     var newProject = file.split('.')[0];
     var ext = file.split('.')[1];
 
-    form.action = form.action+client;
+    form.action = GP.settings.siteUrl + '/projects/upload_admin/'+client+'/'+group;
 
     //client side validation
     if (ext.toLowerCase() !== 'qgs') {
@@ -297,20 +298,33 @@ function getParentGroups(sel, group)
     }
 }
 
+function onGroupChange(sel)
+{
+    var val = sel.value;
+    var div = $('#uploadDiv');
+
+    if (val > 0) {
+        div.show();
+    } else {
+        div.hide();
+    }
+}
+
 function onClientChange(sel,action)
 {
     var val = sel.value;
     var div = $('#templateDiv');
+    var template = $('#template');
     var group = $('#project_group_id');
     var groupDiv = $('#groupDiv');
     var url = GP.settings.siteUrl+'/project_groups/get_list/'+val;
+    var url2 = GP.settings.siteUrl+'/projects/get_templates/'+val;
 
-    if(action === 2) {
-        div = $('#uploadDiv');
-    }
+    // if(action === 2) {
+    //     div = $('#uploadDiv');
+    // }
 
     if (val > 0) {
-        div.show();
 
         //get new client groups
         group.empty();
@@ -325,6 +339,18 @@ function onClientChange(sel,action)
             })
         });
 
+        //get new templates
+        template.empty();
+        template.append('<option disabled>' + GP.selectTemplate + '</option>');
+        template.prop('selectedIndex', 0);
+
+        $.getJSON(url2, function (data) {
+            $.each(data, function (key, entry) {
+                template.append($('<option></option>').attr('value', entry).text(entry));
+            })
+        });
+
+        div.show();
         groupDiv.show();
 
     } else {

@@ -622,12 +622,14 @@ class Projects extends CI_Controller
         }
     }
 
-    public function remove($id)
+    public function remove($id, $remove_files = FALSE)
     {
         if (!$this->ion_auth->is_admin()){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
             redirect('/projects/');
         }
+
+        $remove_files = (boolean)$remove_files;
 
         $project = (array)$this->project_model->get_project($id);
 
@@ -642,12 +644,39 @@ class Projects extends CI_Controller
                     throw new Exception('No permission!');
                 }
 
+                $check = [];
+                if($remove_files) {
+                    $check = $this->qgisproject_model->check_qgs_file($id);
+                }
+
                 $this->project_model->delete_project($id);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
-                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
+
+                $delete_report = '';
+                if($check['valid']) {
+                    $qgs = $check['name'];
+                    $json = str_replace('qgs','json',$qgs);
+                    $html = str_replace('qgs','html',$qgs);
+
+                    if (unlink($qgs)){
+                        $delete_report .= '</br>' . $qgs . ' deleted!';
+                    }
+                    if(file_exists($json)) {
+                        if(unlink($json)) {
+                            $delete_report .= '</br>' . $json . ' deleted!';
+                        }
+                    }
+                    if(file_exists($html)) {
+                        if(unlink($html)) {
+                            $delete_report .= '</br>' . $html . ' deleted!';
+                        }
+                    }
+                }
+
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted') . $delete_report .'</div>');
                 redirect('/projects');
             }
             catch (Exception $e){

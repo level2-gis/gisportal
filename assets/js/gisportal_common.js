@@ -58,6 +58,18 @@ function confirmLink(msg,name,url) {
     });
 }
 
+function confirmDeleteProject(name,id) {
+    bootbox.prompt({
+        title: GP.delete + ' ' + GP.project + '?',
+        message: GP.deleteProject.replaceAll('{name}',name),
+        inputType: 'checkbox',
+        inputOptions: [{text: GP.deleteProjectFiles, value: 1}],
+        callback: function (del) {
+           window.location = GP.settings.siteUrl + '/projects/remove/' + id + '/' + del;
+        }
+    });
+}
+
 function addRole(group, back) {
     //get user and role from ui
     var user = $('#user_search').typeahead("getActive");

@@ -11,11 +11,13 @@ class LanguageLoader
         if ($siteCode) {
             $siteLang = get_language_name($siteCode);
             $ci->lang->load('auth', $siteLang);
+            $ci->lang->load('ion_auth', $siteLang);
             $ci->lang->load('gisportal', $siteLang);
         } else {
             $defCode = get_code($defLang);
             $ci->session->set_userdata('lang', $defCode);
             $ci->lang->load('auth', $defLang);
+            $ci->lang->load('ion_auth', $defLang);
             $ci->lang->load('gisportal', $defLang);
         }
     }

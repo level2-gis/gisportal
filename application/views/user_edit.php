@@ -24,7 +24,9 @@
 	</div>
 
 	<?php echo $this->session->flashdata('alert'); ?>
-
+    <?php if (!$user['active']) : ?>
+        <div class="alert alert-warning" role="alert"><?php echo lang('login_unsuccessful_not_active'); ?></div>
+    <?php endif ?>
 	<div class="col-md-12">
 		<?php $attributes = array("class" => "form-horizontal");
 		echo form_open('users/edit/' . $user['user_id'], $attributes); ?>

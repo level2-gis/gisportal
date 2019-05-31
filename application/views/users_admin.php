@@ -6,7 +6,7 @@
 
 <div>
 
-    <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true" data-show-columns="true">
+    <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true" data-show-columns="true" data-row-style="userRowStyle">
         <thead>
         <tr>
             <th data-sortable="true" data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>

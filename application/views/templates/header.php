@@ -34,7 +34,7 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/locale/bootstrap-table-".$lang.".js"); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190530"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20190531"); ?>"></script>
     <script type="text/javascript">
 
         $(function(){

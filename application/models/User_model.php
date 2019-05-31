@@ -21,6 +21,24 @@ class User_model extends CI_Model
         return $query->result_array();
     }
 
+    function get_portal_users($role, $filter = NULL, $email_only = FALSE)
+    {
+        if($email_only) {
+            $this->db->select('user_email');
+        }
+
+        if(!empty($role)) {
+            $this->db->where('role_name',$role);
+        }
+
+        if(!empty($filter)) {
+            $this->db->where('filter', $filter);
+        }
+
+        $query = $this->db->get('users_view_for_clients');
+        return $query->result_array();
+    }
+
     /**
      * @param $text
      * @param $filter

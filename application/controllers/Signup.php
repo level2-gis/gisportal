@@ -91,11 +91,19 @@ class Signup extends CI_Controller
                 $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_user.tpl.php', $additional_data, TRUE);
                 $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message);
 
+                //get main administrators, necessary?
+                $admins = array_column($this->user_model->get_portal_users('admin',null, true),'user_email');
+                $admins2 = [];
+
                 //set link in case client exists
                 if(!empty($client_id)) {
-                    //TODO notify client administrators
+                    $admins2 = array_column($this->user_model->get_portal_users('admin',$client_id, true),'user_email');
                     $this->user_model->set_link($new_id,$client_id);
                 }
+
+                //notify collected administrators
+                $admin_emails = array_unique(array_merge($admins,$admins2));
+                $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message,$admin_emails);
 
                 redirect('auth/login', 'refresh');
 			}

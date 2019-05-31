@@ -41,6 +41,7 @@ class Project_group_model extends CI_Model {
     function get_project_groups($client_id = NULL, $list_only = FALSE, $skip_no_access = FALSE)
     {
         //$this->db->order_by('type', 'ASC');
+        $this->db->order_by('client_name', 'ASC');
         $this->db->order_by('name', 'ASC');
 
         if($list_only) {
@@ -84,6 +85,9 @@ class Project_group_model extends CI_Model {
     }
 
     function get_parents($client_id, $id) {
+
+        $this->db->order_by('name', 'ASC');
+
         if(!empty($id)) {
             $this->db->where('id <>', $id);
         }
@@ -104,6 +108,9 @@ class Project_group_model extends CI_Model {
      * @return mixed
      */
     function get_child_groups($client_id, $id, $user_groups = NULL) {
+
+        $this->db->order_by('name', 'ASC');
+
         if(empty($id)) {
             $this->db->where('parent_id IS NULL');
         } else {
@@ -186,51 +193,4 @@ class Project_group_model extends CI_Model {
 
         return $this->db->query($sql);
     }
-//
-//    /*
-//    * function to insert/update
-//    */
-//    function upsert_layer($data)
-//    {
-//        $id = $data['id'];
-//
-//        if ($id != null){
-//            $this->db->where('id',$id);
-//            $q = $this->db->get('layers');
-//            if ( $q->num_rows() > 0 )
-//            {
-//                $this->db->where('id',$id);
-//                $this->db->update('layers',$data);
-//                return $id;
-//            }
-//        }
-//
-//        unset($data['id']);
-//        $this->db->insert('layers', $data);
-//
-//        return $this->db->insert_id();
-//    }
-//
-//    /*
-//     * function to delete layer
-//     */
-//    function delete_layer($id)
-//    {
-//        return $this->db->delete('layers',array('id'=>$id));
-//    }
-//
-//
-//    public function get_layers_with_project_flag($ids) {
-//
-//        $sql = "SELECT id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
-//        if (empty($ids)) {
-//            $sql.="0 AS idx ";
-//        } else {
-//            $sql.= "idx('".$ids."',id) ";
-//        }
-//        $sql.= "FROM layers ORDER by idx,name;";
-//        $query = $this->db->query($sql);
-//
-//        return $query->result_array();
-//    }
 }

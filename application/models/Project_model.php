@@ -46,9 +46,10 @@ class Project_model extends CI_Model
             return null;
         }
 
-        $this->db->order_by('client', 'ASC');
-        $this->db->order_by('ordr', 'ASC');
-        $this->db->order_by('display_name', 'ASC');
+        $this->db->order_by('client_name', 'ASC');
+        //$this->db->order_by('ordr', 'ASC');
+        $this->db->order_by('group_name', 'ASC');
+        $this->db->order_by('name', 'ASC');
         if ($client_id === FALSE) {
             if (!$user_admin) {
                 $this->db->where("group_id = ANY('" . $groups . "')");
@@ -90,8 +91,9 @@ class Project_model extends CI_Model
 
     public function get_public_projects()
     {
-        $this->db->order_by('client', 'ASC');
-        $this->db->order_by('display_name', 'ASC');
+        $this->db->order_by('client_name', 'ASC');
+        $this->db->order_by('group_name', 'ASC');
+        $this->db->order_by('name', 'ASC');
         $this->db->where("public = TRUE");
         $query = $this->db->get('projects_view');
 

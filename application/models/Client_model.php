@@ -47,8 +47,8 @@ class Client_model extends CI_Model {
             return null;
         }
 
-        $this->db->order_by('ordr', 'ASC');
-        $this->db->order_by('display_name', 'ASC');
+        //$this->db->order_by('ordr', 'ASC');
+        $this->db->order_by('name', 'ASC');
 
         if($list_only) {
             $this->db->select("id, display_name || ' (' || name || ')' AS name", FALSE);

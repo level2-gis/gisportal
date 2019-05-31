@@ -85,14 +85,15 @@ class Signup extends CI_Controller
                 $msg = $this->ion_auth->messages();     //old $this->lang->line('gp_register_success');
                 $this->session->set_flashdata('message','<div class="alert alert-warning text-center">' . $msg . '</div>');
 
-                //notify gisportal system admin
+                //prepare message for administrators
                 $additional_data["id"] = $new_id;
                 $additional_data["email"] = $email;
                 $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_user.tpl.php', $additional_data, TRUE);
-                $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message);
 
                 //get main administrators, necessary?
                 $admins = array_column($this->user_model->get_portal_users('admin',null, true),'user_email');
+                //add system admin from config
+                array_push($admins,$this->config->item('admin_email'));
                 $admins2 = [];
 
                 //set link in case client exists
@@ -101,7 +102,7 @@ class Signup extends CI_Controller
                     $this->user_model->set_link($new_id,$client_id);
                 }
 
-                //notify collected administrators
+                //notify collected administrators, remove duplicates
                 $admin_emails = array_unique(array_merge($admins,$admins2));
                 $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message,$admin_emails);
 

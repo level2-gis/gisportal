@@ -2851,7 +2851,7 @@ class Ion_auth_model extends CI_Model
             return FALSE;
         }
 
-        $this->db->select("admin, filter, scope, role_name, role_display_name");
+        $this->db->select("admin, filter, scope, role_name, role_display_name, user_email AS email");
         $this->db->where('user_id', $id);
         $this->db->where('role_id <', 9);
 

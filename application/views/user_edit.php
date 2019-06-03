@@ -10,7 +10,7 @@
                     <?php endif; ?>
                 <?php else: ?>
                     <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <?php echo lang('gp_new'); ?> <?php echo lang('gp_role'); ?> <span class="caret"></span>
+                        <?php echo lang('gp_new_role'); ?> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <?php if (empty($current_role_filter)) : ?>

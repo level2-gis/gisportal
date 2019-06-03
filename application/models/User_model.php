@@ -121,12 +121,12 @@ class User_model extends CI_Model
      */
     function insert_project_group_role($data) {
 
-        return $this->db->insert('users_roles', $data);
+        $this->db->insert('users_roles', $data);
     }
 
     function insert_project_group_roles($data) {
 
-        $return = $this->db->insert_batch('users_roles',$data);
+        $this->db->insert_batch('users_roles', $data);
     }
 
     function update_project_group_role($group_id, $user_id, $role_id) {

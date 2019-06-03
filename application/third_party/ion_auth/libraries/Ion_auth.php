@@ -438,6 +438,7 @@ class Ion_auth
             $ret->filter = $this->session->userdata('admin_filter');
             $ret->scope = $this->session->userdata('admin_scope');
             $ret->role_name = $this->session->userdata('portal_role');
+            $ret->email = $this->session->userdata('email');
             return $ret;
         }
 

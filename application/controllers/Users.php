@@ -238,7 +238,7 @@ class Users extends CI_Controller {
                 throw new Exception('Nothing added, user has already access!');
             }
 
-            $res = $this->user_model->insert_project_group_roles($data);
+            $this->user_model->insert_project_group_roles($data);
 
             //set link
             $this->user_model->set_link($user_id,$client_id);
@@ -247,6 +247,11 @@ class Users extends CI_Controller {
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
             }
+
+            $client = $this->client_model->get_client($client_id);
+            $user = $this->user_model->get_user_by_id($user_id);
+            $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_access.tpl.php', $client, TRUE);
+            $this->ion_auth->send_email(lang('gp_new_access'),$message,$user->user_email);
         }
         catch (Exception $e){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -285,7 +290,7 @@ class Users extends CI_Controller {
                 throw new Exception('Cannot add new role: User already has access!');
             }
 
-            $res = $this->user_model->insert_project_group_role($data);
+            $this->user_model->insert_project_group_role($data);
 
             //set link
             $this->user_model->set_link($user_id,$client_id);
@@ -294,6 +299,11 @@ class Users extends CI_Controller {
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
             }
+
+            $client = $this->client_model->get_client($client_id);
+            $user = $this->user_model->get_user_by_id($user_id);
+            $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_access.tpl.php', $client, TRUE);
+            $this->ion_auth->send_email(lang('gp_new_access'),$message,$user->user_email);
         }
         catch (Exception $e){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -333,7 +343,14 @@ class Users extends CI_Controller {
             if($to_remove) {
                 $this->ion_auth->remove_from_group($admin_group, $user_id);
             } else {
-                $this->ion_auth->add_to_group($admin_group, $user_id, $client_id);
+                if($this->ion_auth->add_to_group($admin_group, $user_id, $client_id) > 0) {
+                    $user_data = $this->ion_auth->admin_scope($user_id);
+                    if($user_data->admin) {
+                        $user_data->scope = empty($user_data->scope) ? $this->lang->line('gp_admin_full_name') : $user_data->scope;
+                    }
+                    $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_role.tpl.php', $user_data, TRUE);
+                    $this->ion_auth->send_email(lang('gp_new_role'),$message,$user_data->email);
+                }
             }
 
         } catch (Exception $e) {

@@ -110,6 +110,10 @@ $lang['gp_add_new_file'] = 'Dodaj nowy plik';
 $lang['gp_upload'] = 'Wczytaj';
 $lang['gp_info_demo'] = 'To jest tylko wersja pokazująca repozytorium wczytanych plików dla każdego klienta. Wczytane pliki znajdują się w podfolderach projektów.';
 $lang['gp_plugins'] = 'Plugins';
+$lang['gp_new_role'] = 'New Role';
+$lang['gp_new_access'] = 'New Access';
+$lang['gp_email_new_role'] = 'You were given a new role';
+$lang['gp_email_new_access'] = 'You were given new access for client';
 
 $lang['gp_download'] = 'Download';
 $lang['gp_template'] = 'Template';

@@ -31,9 +31,9 @@ class User_model extends CI_Model
             $this->db->where('role_name',$role);
         }
 
-        if(!empty($filter)) {
+        //if(!empty($filter)) {
             $this->db->where('filter', $filter);
-        }
+        //}
 
         $query = $this->db->get('users_view_for_clients');
         return $query->result_array();

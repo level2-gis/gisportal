@@ -41,6 +41,10 @@ class Users extends CI_Controller {
     {
         $task = 'users_edit';
 
+        if (!$this->ion_auth->logged_in()) {
+            redirect('/auth/login?ru=/' . uri_string());
+        }
+
         if (!$this->ion_auth->can_execute_task($task)){
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
             redirect('/users');

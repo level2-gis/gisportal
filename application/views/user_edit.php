@@ -77,14 +77,18 @@
                             <span class="text-danger"><?php echo form_error('organization'); ?></span>
                         </div>
                     </div>
-<!--                    <div class="form-group">-->
-<!--						<div class="col-md-offset-2 col-md-4">-->
-<!--							<div class="control">-->
-<!--								<input type="checkbox" name="admin" value="true" --><?php //if ($user['admin']) { echo "checked='checked'"; }; ?><!-- /> --><?php //echo $this->lang->line('gp_make_admin'); ?>
-<!--							</div>-->
-<!--					-->
-<!--						</div>-->
-<!--					</div>-->
+                    <div class="form-group">
+                        <label for="organization" class="control-label col-md-2"><?php echo lang('index_status_th'); ?></label>
+                        <div class="col-md-5">
+                            <?php if($user['active']): ?>
+                                <a href="<?php echo site_url('auth/deactivate/' . $user['user_id']); ?>"
+                                   class="btn"><?php echo lang('index_active_link'); ?></a>
+                            <?php else: ?>
+                                <a href="<?php echo site_url('auth/activate/' . $user['user_id']); ?>"
+                                   class="btn"><?php echo lang('index_inactive_link'); ?></a>
+                            <?php endif; ?>
+                        </div>
+					</div>
 		
 				</fieldset>
 

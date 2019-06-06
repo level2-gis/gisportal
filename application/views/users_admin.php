@@ -20,7 +20,7 @@
             <th data-sortable="true" data-field="gp_portal_role">Portal role</th>
             <th data-sortable="true" data-field="gp_scope">Scope</th>
             <th data-sortable="true" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
-            <th data-sortable="true" data-visible="false" data-field="gp_active">Active</th>
+            <th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>
         </tr>
         </thead>

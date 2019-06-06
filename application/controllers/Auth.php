@@ -425,7 +425,12 @@ class Auth extends CI_Controller
 		{
 			// redirect them to the auth page
 			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">' . $this->ion_auth->messages() . '</div>');
-			redirect("auth/login", 'refresh');
+            if ($code !== FALSE)
+            {
+                redirect("auth/login", 'refresh');
+            } else {
+                redirect("users/edit/" . $id, 'refresh');
+            }
 		}
 		else
 		{
@@ -484,7 +489,7 @@ class Auth extends CI_Controller
 			}
 
 			// redirect them back to the auth page
-			redirect('auth', 'refresh');
+			redirect('users/edit/'.$id, 'refresh');
 		}
 	}
 

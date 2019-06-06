@@ -78,7 +78,25 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="organization" class="control-label col-md-2"><?php echo lang('index_status_th'); ?></label>
+                        <label for="registered" class="control-label col-md-2"><?php echo lang('gp_registered'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="registered" readonly="readonly" value="<?php echo $user['registered']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_login" class="control-label col-md-2"><?php echo lang('gp_last_login'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="last_login" readonly="readonly" value="<?php echo $user['last_login']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="count_login" class="control-label col-md-2"><?php echo lang('gp_count_login'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="count_login" readonly="readonly" value="<?php echo $user['count_login']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2"><?php echo lang('index_status_th'); ?></label>
                         <div class="col-md-5">
                             <?php if($user['active']): ?>
                                 <a href="<?php echo site_url('auth/deactivate/' . $user['user_id']); ?>"

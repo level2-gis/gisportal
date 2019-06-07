@@ -75,9 +75,9 @@ class Auth extends CI_Controller
             empty($ref) ? redirect("/") : redirect($ref);
         }
 
-        if(empty($this->session->flashdata('message'))) {
-            $this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
-        }
+        //if(empty($this->session->flashdata('message'))) {
+        //    $this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');
+        //}
 
         $this->data['title'] = $this->lang->line('login_heading');
         $this->data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
@@ -129,6 +129,9 @@ class Auth extends CI_Controller
 			];
 
 			$this->data['heading'] = $this->config->item('site_title');
+
+			//message to display below login part, from table portal or from language string
+			//$this->data['portal_message'] = $this->portal_model->get_login_msg();
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
 		}
@@ -260,9 +263,11 @@ class Auth extends CI_Controller
 
             $this->data['logged_in'] = false;
             $this->data['is_admin'] = false;
+            $this->data['status'] = $this->session->flashdata('status');
 
 			// set any errors and display the form
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+			//$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+			$this->data['message'] = $this->session->flashdata('message');
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'forgot_password', $this->data);
 		}
 		else
@@ -292,8 +297,9 @@ class Auth extends CI_Controller
 			if ($forgotten)
 			{
 				// if there were no errors
-				$this->session->set_flashdata('message', '<div class="alert alert-warning text-center">' . $this->ion_auth->messages() . '</div>');
-				redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
+				$this->session->set_flashdata('status', 'ok');
+				redirect("auth/forgot_password", 'refresh');
 			}
 			else
 			{
@@ -331,7 +337,8 @@ class Auth extends CI_Controller
 				// display the form
 
 				// set the flash data error message if there is one
-				$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+				//$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+				$this->data['message'] = $this->session->flashdata('message');
 
 				$this->data['min_password_length'] = $this->config->item('min_password_length', 'ion_auth');
 				$this->data['new_password'] = [
@@ -355,8 +362,8 @@ class Auth extends CI_Controller
 				$this->data['csrf'] = $this->_get_csrf_nonce();
 				$this->data['code'] = $code;
 
-                $this->data['logged_in'] = true;
-                $this->data['is_admin'] = $this->ion_auth->is_admin();
+                $this->data['logged_in'] = false;
+                $this->data['is_admin'] = false;
 
 				// render
 				$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'reset_password', $this->data);

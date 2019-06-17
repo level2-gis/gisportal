@@ -92,6 +92,7 @@ $lang['gp_base_layers'] = 'Warstwy podkładowe';
 $lang['gp_overlay_layers'] = 'Warstwy zewnętrzne';
 $lang['gp_overview_layer'] = 'Warstwa podstawowa';
 $lang['gp_feedback_email'] = 'E-mail do zgłoszeń';
+$lang['gp_feedback_email_help'] = 'Leave empty to use ';
 $lang['gp_geolocation'] = 'Wykrywanie lokalizacji';
 $lang['gp_restrict'] = 'Ogranicz zasięg do początkowego';
 $lang['gp_feedback'] = 'Zgłoszenia na e-mail';

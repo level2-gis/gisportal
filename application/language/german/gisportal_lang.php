@@ -92,6 +92,7 @@ $lang['gp_base_layers'] = 'Base layers';
 $lang['gp_overlay_layers'] = 'Overlay layers';
 $lang['gp_overview_layer'] = 'Overview layer';
 $lang['gp_feedback_email'] = 'Feedback email';
+$lang['gp_feedback_email_help'] = 'Leave empty to use ';
 $lang['gp_geolocation'] = 'Geolocation';
 $lang['gp_restrict'] = 'Restrict to start extent';
 $lang['gp_feedback'] = 'Feedback';

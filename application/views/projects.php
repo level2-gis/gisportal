@@ -25,6 +25,8 @@
                 <div class="caption post-content">
                     <p class="<?php echo $desc_class; ?>"><?php echo $item['description']; ?></p>
                     <p class="<?php echo $desc_class; ?>"><?php echo $item['contact']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact_email']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact_phone']; ?></p>
                     <p class="<?php echo $desc_class; ?>"><?php echo $item['crs']; ?></p>
                 </div>
             </a>

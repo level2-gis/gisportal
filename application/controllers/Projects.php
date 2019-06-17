@@ -94,7 +94,7 @@ class Projects extends CI_Controller
         $user_role = $this->ion_auth->admin_scope();
 
         $data['title'] = $this->lang->line('gp_projects_title');
-        $data['scheme'] = $_SERVER["REQUEST_SCHEME"];
+        //$data['scheme'] = $_SERVER["REQUEST_SCHEME"];
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $user_role->admin;
@@ -433,6 +433,7 @@ class Projects extends CI_Controller
         //$this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('project_group_id', 'lang:gp_group', 'required');
         $this->form_validation->set_rules('feedback_email', 'lang:gp_feedback_email', 'valid_email');
+        $this->form_validation->set_rules('contact_email', 'lang:gp_email', 'valid_email');
 
         if ($this->form_validation->run() === FALSE)
         {
@@ -476,6 +477,14 @@ class Projects extends CI_Controller
                 }
                 $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_project') . ' ' . $em['display_name'];
                 $data['creating'] = false;
+            }
+
+            //handle project contact information
+            if(!empty($em['contact_id'])) {
+                $user = $this->user_model->get_user_by_id($em['contact_id']);
+                $em['contact'] = $user->first_name . ' ' . $user->last_name;
+                $em['contact_email'] = $user->user_email;
+                $em['contact_phone'] = $user->phone;
             }
 
             $data['project'] = $em;
@@ -619,6 +628,23 @@ class Projects extends CI_Controller
             } else {
                 redirect('/projects');
             }
+        }
+    }
+
+    public function remove_contact($project_id = FALSE)
+    {
+        if ($project_id === false) {
+        $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Project parameter missing.</div>');
+        redirect('/projects/');
+        }
+
+        try {
+            $this->project_model->remove_contact($project_id);
+        } catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('/projects/edit/'.$project_id);
         }
     }
 
@@ -1057,7 +1083,7 @@ class Projects extends CI_Controller
             'display_name'              => $this->input->post('display_name'),
             'crs'                       => $this->input->post('crs'),
             'description'               => $this->input->post('description'),
-            'contact'                   => $this->input->post('contact'),
+            'contact_id'                => set_null($this->input->post('contact_id')),
             'restrict_to_start_extent'  => set_bool($this->input->post('restrict_to_start_extent')),
             'geolocation'               => set_bool($this->input->post('geolocation')),
             'feedback'                  => set_bool($this->input->post('feedback')),
@@ -1078,6 +1104,13 @@ class Projects extends CI_Controller
             if ($blids != ''){
                 $data['plugin_ids'] = '{' . $blids . '}';
             }
+        }
+
+        if(empty($this->input->post('contact_id'))) {
+            $data['contact'] = $this->input->post('contact');
+            $data['contact_email'] = $this->input->post('contact_email');
+            $data['contact_phone'] = $this->input->post('contact_phone');
+
         }
 
         return $data;

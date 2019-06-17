@@ -140,4 +140,11 @@ class Project_model extends CI_Model
         //$this->db->query('update users set project_ids = array_remove(project_ids,' . $id. ')');
         $query = $this->db->delete('projects');
     }
+
+    public function remove_contact($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->set('contact_id', null);
+        $this->db->update('projects');
+    }
 }

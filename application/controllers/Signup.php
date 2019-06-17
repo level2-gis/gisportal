@@ -75,7 +75,8 @@ class Signup extends CI_Controller
 			$additional_data = array(
                 'first_name' => $this->input->post('fname'),
                 'last_name' => $this->input->post('lname'),
-                'organization' => $this->input->post('organization')
+                'organization' => $this->input->post('organization'),
+                'phone' => $this->input->post('phone')
 			);
 			
 			$new_id = $this->ion_auth->register($username, $password, $email, $additional_data);

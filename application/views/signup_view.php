@@ -38,6 +38,12 @@
                 <span class="text-danger"><?php echo form_error('organization'); ?></span>
             </div>
 
+            <div class="form-group">
+                <label for="phone"><?php echo lang('edit_user_validation_phone_label'); ?></label>
+                <input class="form-control" name="phone" placeholder="" type="text" value="<?php echo set_value('phone'); ?>" />
+                <span class="text-danger"><?php echo form_error('phone'); ?></span>
+            </div>
+
 			<div class="form-group">
 				<label for="subject"><?php echo $this->lang->line('gp_password'); ?></label>
 				<input class="form-control" name="password" placeholder="" type="password" />

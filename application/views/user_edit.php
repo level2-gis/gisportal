@@ -78,6 +78,13 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="phone" class="control-label col-md-2"><?php echo lang('edit_user_validation_phone_label'); ?></label>
+                        <div class="col-md-5">
+                            <input class="form-control" name="phone" placeholder="" type="text" value="<?php echo $user['phone']; ?>" />
+                            <span class="text-danger"><?php echo form_error('phone'); ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="registered" class="control-label col-md-2"><?php echo lang('gp_registered'); ?></label>
                         <div class="col-md-5">
                             <input class="form-control" name="registered" readonly="readonly" value="<?php echo $user['registered']; ?>" />

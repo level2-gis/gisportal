@@ -23,7 +23,7 @@ class Layers extends CI_Controller{
         $user_role = $this->ion_auth->admin_scope();
 
         $data['title'] = $this->lang->line('gp_layers_title');
-        $data['layers'] = $this->layer_model->get_layers();
+        $data['layers'] = $this->layer_model->get_layers($user_role->filter);
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
         $data['is_admin'] = $user_role->admin;
@@ -110,7 +110,13 @@ class Layers extends CI_Controller{
             $data['layer'] = $em;
 
             //filter for client administrator
-            $filter = $this->ion_auth->admin_scope()->filter;
+            $user_role = $this->ion_auth->admin_scope();
+            $filter = $user_role->filter;
+            if(!empty($filter) && ($filter !== (integer)$em['client_id']) && !empty($em['id'])) {
+                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+                redirect('/layers/');
+            }
+
             if(empty($filter)) {
                 $data['clients'] = $this->client_model->get_clients();
             } else {
@@ -123,7 +129,8 @@ class Layers extends CI_Controller{
                 ['id' => EXTRA_LAYER, 'name' => $this->lang->line('gp_overlay_layers')]
             );
             $data['logged_in'] = true;
-            $data['is_admin'] = true;
+            $data['is_admin'] = $user_role->admin;
+            $data['role'] = $user_role->role_name;
 
             $this->load->view('templates/header', $data);
             $this->load->view('layer_edit', $data);
@@ -171,6 +178,13 @@ class Layers extends CI_Controller{
                     throw new Exception('Cannot delete. Layer exists in ' . count($test) . ' project groups.');
                 }
 
+                //filter for client administrator
+                $user_role = $this->ion_auth->admin_scope();
+                $filter = $user_role->filter;
+                if(!empty($filter) && ($filter !== (integer)$layer['client_id'])) {
+                    throw new Exception('No permission!');
+                }
+
                 $this->layer_model->delete_layer($id);
                 $db_error = $this->db->error();
                 if (!empty($db_error['message'])) {
@@ -193,13 +207,13 @@ class Layers extends CI_Controller{
         $query = $this->input->get('query');
 
         //filter for client administrator
-        //$filter = $this->ion_auth->admin_scope()->filter;
+        $filter = $this->ion_auth->admin_scope()->filter;
 
         if(empty($query)) {
             return;
         }
 
-        $result = $this->layer_model->search(urldecode($query));
+        $result = $this->layer_model->search(urldecode($query), $filter);
 
         $this->output
             ->set_content_type('text/html')
@@ -225,7 +239,8 @@ class Layers extends CI_Controller{
             'type' => $type,
             'name' => $this->input->post('name'),
             'display_name' => $this->input->post('display_name'),
-            'definition' => $def
+            'definition' => $def,
+            'client_id' => $this->input->post('client_id')
         );
     }
 

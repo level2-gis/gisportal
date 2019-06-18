@@ -16,10 +16,19 @@ class Layer_model extends CI_Model {
         return $query->result()[0];
     }
 
-    function get_layers()
+    function get_layers($client_id = NULL, $list_only = FALSE)
     {
         $this->db->order_by('type', 'ASC');
         $this->db->order_by('display_name', 'ASC');
+
+        if($list_only) {
+            $this->db->select("id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type", FALSE);
+        }
+
+        if(!empty($client_id)) {
+            $this->db->where('client_id', null);
+            $this->db->or_where('client_id', $client_id);
+        }
 
         $query = $this->db->get('layers_view');
         return $query->result_array();
@@ -81,7 +90,7 @@ class Layer_model extends CI_Model {
         return $query->result_array();
     }
 
-    function search($text) {
+    function search($text, $filter) {
 
         //for ilike search we have to use direct sql
         $where = "(name ILIKE '%".$text."%' ESCAPE '!' OR ";
@@ -91,6 +100,10 @@ class Layer_model extends CI_Model {
         $this->db->select("id, trim(coalesce(display_name,'') || ' (' || coalesce(name,'')) || ', ' || type || ')' AS name", FALSE);
         $this->db->where($where);
 
+        if(!empty($filter)) {
+            $this->db->where('(client_id = '.$filter.' OR client_id IS NULL)', null, FALSE);
+        }
+
         $this->db->order_by('name', 'DESC');
 
         $query = $this->db->get('layers_view');
@@ -99,17 +112,17 @@ class Layer_model extends CI_Model {
     }
 
 
-    public function get_layers_with_project_flag($ids = NULL) {
-
-        $sql = "SELECT id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
-        if (empty($ids)) {
-            $sql.="0 AS idx ";
-        } else {
-            $sql.= "idx('".$ids."',id) ";
-        }
-        $sql.= "FROM layers ORDER by idx,name;";
-        $query = $this->db->query($sql);
-
-        return $query->result_array();
-    }
+//    public function get_layers_with_project_flag($ids = NULL) {
+//
+//        $sql = "SELECT id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type, ";
+//        if (empty($ids)) {
+//            $sql.="0 AS idx ";
+//        } else {
+//            $sql.= "idx('".$ids."',id) ";
+//        }
+//        $sql.= "FROM layers ORDER by idx,name;";
+//        $query = $this->db->query($sql);
+//
+//        return $query->result_array();
+//    }
 }

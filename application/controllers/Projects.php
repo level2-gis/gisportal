@@ -492,7 +492,7 @@ class Projects extends CI_Controller
             $data['clients'] = [(array)$this->client_model->get_client($em['client_id'])];
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
             $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
-            $data['layers'] = $this->layer_model->get_layers_with_project_flag();
+            $data['layers'] = $this->layer_model->get_layers($filter, TRUE); //used only for overview layer selection
             $data['admin_navigation'] = $this->build_admin_navigation($em);
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;

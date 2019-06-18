@@ -46,12 +46,31 @@
 					</div>	
 				</div>	
 				<div class="form-group">
-					<label for="description" class="control-label col-md-2"><?php echo $this->lang->line('gp_definition'); ?></label>
+					<label for="definition" class="control-label col-md-2"><?php echo $this->lang->line('gp_definition'); ?></label>
 					<div class="col-md-5">
 						<textarea class="form-control" cols="20" rows="6" name="definition" placeholder="" type="text"><?php echo $layer['definition']; ?></textarea>
 						<span class="text-danger"><?php echo form_error('definition'); ?></span>
 					</div>	
 				</div>
+
+                <div class="row form-group">
+                    <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
+
+                    <div class="col-md-5">
+                        <select class="form-control" name="client_id" id="client_id">
+                            <?php if (count($clients)>1) : ?>
+                                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                            <?php endif ?>
+                            <?php foreach ($clients as $client_item): ?>
+                                <option <?php if ($client_item['id'] == $layer['client_id']) {
+                                    echo "selected='selected'";
+                                }; ?>
+                                        value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                        </select>
+                        <span class="text-danger"><?php echo form_error('client_id'); ?></span>
+                    </div>
+                </div>
+
             </fieldset>
             <?php if ( $creating === false && !empty($layer['id']) ) : ?>
             <fieldset id="edit-access" class="tab-pane">

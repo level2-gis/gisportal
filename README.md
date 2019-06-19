@@ -38,7 +38,7 @@ Administrator is every user with admin=true in database.
 
 	```
 	cd /var/www/html/
-	git clone https://github.com/uprel/gisportal.git
+	git clone https://github.com/level2-gis/gisportal.git
 	cd gisportal
 	git checkout v1.0.0
 	```

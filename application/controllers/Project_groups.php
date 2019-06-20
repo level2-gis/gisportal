@@ -174,6 +174,7 @@ class Project_groups extends CI_Controller
             $data['role'] = $user_role->role_name;
             $data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
             $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
+            $data['return'] = $this->get_group_return_url($group);
 
             $this->loadmeta($data);
 
@@ -197,7 +198,7 @@ class Project_groups extends CI_Controller
             if ($this->input->post('return') == null) {
                 redirect('/project_groups/edit/' . $group_id);
             } else {
-                redirect('/project_groups');
+                redirect($this->get_group_return_url($group));
             }
         }
 
@@ -269,7 +270,7 @@ class Project_groups extends CI_Controller
             if ($this->input->post('return') == null) {
                 redirect('/project_groups/edit/' . $group_id);
             } else {
-                redirect('/project_groups');
+                redirect($this->get_group_return_url($group));
             }
         }
     }
@@ -413,7 +414,7 @@ class Project_groups extends CI_Controller
                     throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
                 }
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_group').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
-                redirect('/project_groups');
+                redirect($this->get_group_return_url($group));
             }
             catch (Exception $e){
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
@@ -519,8 +520,8 @@ class Project_groups extends CI_Controller
             'parent_id' => set_null($this->input->post('parent_id')),
             'type' => $this->input->post('type'),
             'client_id' => $this->input->post('client_id'),
-            'base_layers_ids' => $this->input->post('base_layers_ids'),
-            'extra_layers_ids' => $this->input->post('extra_layers_ids'),
+            'base_layers_ids' => set_null($this->input->post('base_layers_ids')),
+            'extra_layers_ids' => set_null($this->input->post('extra_layers_ids')),
         );
     }
 
@@ -648,5 +649,17 @@ class Project_groups extends CI_Controller
         }
 
         return $ret;
+    }
+
+    private function get_group_return_url(array $group)
+    {
+        $type = (integer)$group['type'];
+
+        if($type === SUB_GROUP)
+        {
+            return 'clients/edit/'.$group['client_id'].'#edit-client-items';
+        }
+
+        return 'project_groups';
     }
 }

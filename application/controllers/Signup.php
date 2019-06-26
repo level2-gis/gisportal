@@ -14,11 +14,12 @@ class Signup extends CI_Controller
 	function index()
 	{
         try {
-            $cl_query = $this->input->get('client', TRUE);
+            $cl_query = $this->input->get('code', TRUE);
 
             $client = NULL;
             if (!empty($cl_query)) {
-                $client = $this->client_model->get_client_by_name($cl_query);
+                $cl_decode = base64_decode($cl_query);
+                $client = $this->client_model->get_client_by_name($cl_decode);
             } else {
                 if ($this->config->item('public_registration') === FALSE) {
                    throw new Exception('Client required!');

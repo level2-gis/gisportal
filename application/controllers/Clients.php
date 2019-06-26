@@ -144,7 +144,7 @@ class Clients extends CI_Controller
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
-            $data['register'] = '/signup?client='.$em['name'];
+            $data['register'] = '/signup?code='.base64_encode($em['name']);
 
             $this->load->view('templates/header', $data);
             $this->load->view('client_edit', $data);

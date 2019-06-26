@@ -31,7 +31,7 @@
                     <div class="row form-group">
                         <label for="project_group_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_group'); ?></label>
                         <div class="col-md-5">
-                            <select class="form-control" name="project_group_id" id="project_group_id" onchange="onGroupChange(<?php echo $project['project_group_id']; ?>, this);">
+                            <select class="form-control" name="project_group_id" id="project_group_id" onchange="onProjectEditGroupChange(<?php echo $project['project_group_id']; ?>, this);">
                                 <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_group'); ?></option>
                                 <?php foreach ($groups as $group_item): ?>
                                     <option <?php if ($group_item['id'] == $project['project_group_id']) { echo "selected='selected'"; }; ?> value="<?php echo $group_item['id']; ?>"><?php echo $group_item['name']; ?></option>							<?php endforeach; ?>
@@ -39,7 +39,7 @@
                             <span class="text-danger"><?php echo form_error('project_group_id'); ?></span>
                         </div>
                         <div class="col-md-2">
-                            <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick();">
+                            <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick('project_group_id');">
                                 <?php echo $this->lang->line('gp_edit'); ?>
                             </a>
                             <a onclick="addGroup('projects/edit/<?php echo $project['id']; ?>')"

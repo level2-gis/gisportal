@@ -22,7 +22,7 @@
         <label for="project_group_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_group'); ?></label>
         <div class="col-md-5">
             <div <?php if (empty($project["client_id"])) { echo "style='display:none'"; } ?> id="groupDiv" class="form-inline">
-                <select class="form-control" name="project_group_id" id="project_group_id" onchange="onGroupChange(this);">
+                <select class="form-control" name="project_group_id" id="project_group_id" onchange="onProjectCreateGroupChange(this);">
                     <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_group'); ?></option>
                     <?php foreach ($groups as $group_item): ?>
                         <option <?php if ($group_item['id'] == $project['project_group_id']) { echo "selected='selected'"; }; ?> value="<?php echo $group_item['id']; ?>"><?php echo $group_item['name']; ?></option>							<?php endforeach; ?>

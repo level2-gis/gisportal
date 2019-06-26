@@ -90,6 +90,8 @@ class Project_group_model extends CI_Model {
 
         if(!empty($id)) {
             $this->db->where('id <>', $id);
+            $this->db->where('(parent_id <> '.$id . ' OR parent_id IS NULL)');
+            $this->db->where('(idx((SELECT get_child_menus('.$id.')),"id") = 0 OR idx((SELECT get_child_menus('.$id.')),"id") IS NULL)');
         }
         $this->db->where('type', SUB_GROUP);
         $this->db->where('client_id', $client_id);

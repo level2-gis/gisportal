@@ -270,17 +270,17 @@ function switchRole(group, user, role, back) {
     }
 }
 
-function onProjectGroupEditClick() {
-    var group = $('#project_group_id').val();
+function onProjectGroupEditClick(item) {
+    var group = $('#'+item).val();
     if(group) {
         var url = GP.settings.siteUrl + '/project_groups/edit/' + group;
         window.location = url;
     }
 }
 
-function onGroupChange(id,sel) {
+function onProjectEditGroupChange(id,sel) {
     var btn = $('#projectGroupEditBtn');
-    var val = sel.value;
+    var val = parseInt(sel.value);
     if(id === val) {
         btn.removeClass('disabled');
     } else {
@@ -310,7 +310,7 @@ function getParentGroups(sel, group)
     }
 }
 
-function onGroupChange(sel)
+function onProjectCreateGroupChange(sel)
 {
     var val = sel.value;
     var div = $('#uploadDiv');

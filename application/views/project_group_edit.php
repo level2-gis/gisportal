@@ -93,6 +93,7 @@
                 <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_parent'); ?> <?php echo $this->lang->line('gp_group'); ?></label>
 
                 <div class="col-md-5">
+<!--                    <select class="form-control" name="parent_id" id="parent_id" onchange="onProjectEditGroupChange(--><?php //echo $group['parent_id'] ? $group['parent_id'] : -1; ?>//, this);">
                     <select class="form-control" name="parent_id" id="parent_id">
                         <option value=""></option>
                         <?php foreach ($parents as $parent): ?>
@@ -103,6 +104,13 @@
                     </select>
                     <span class="text-danger"><?php echo form_error('parent_id'); ?></span>
                 </div>
+<!--                --><?php //if (!empty($group['parent_id'])) : ?>
+<!--                <div class="col-md-2">-->
+<!--                    <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick('parent_id');">-->
+<!--                        --><?php //echo $this->lang->line('gp_edit'); ?>
+<!--                    </a>-->
+<!--                </div>-->
+<!--                --><?php //endif; ?>
             </div>
             <div class="form-group">
                 <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>

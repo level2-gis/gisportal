@@ -99,15 +99,17 @@ class Signup extends CI_Controller
                 //add system admin from config
                 array_push($admins,$this->config->item('admin_email'));
                 $admins2 = [];
+                $admins3 = [];
 
                 //set link in case client exists
                 if(!empty($client_id)) {
                     $admins2 = array_column($this->user_model->get_portal_users('admin',$client_id, true),'user_email');
+                    $admins3 = array_column($this->user_model->get_portal_users('power',$client_id, true),'user_email');
                     $this->user_model->set_link($new_id,$client_id);
                 }
 
                 //notify collected administrators, remove duplicates
-                $admin_emails = array_unique(array_merge($admins,$admins2));
+                $admin_emails = array_unique(array_merge($admins,$admins2,$admins3));
                 $this->ion_auth->send_email($this->lang->line('gp_new_user'),$message,$admin_emails);
 
                 redirect('auth/login', 'refresh');

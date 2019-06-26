@@ -1213,11 +1213,10 @@ class Projects extends CI_Controller
             $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             $projects_2 = $this->project_model->get_projects($client_id, $groups,  FALSE);
 
-            //TODO REMOVE DUPLICATES
             if(empty($projects_2)) {
                 $ret = $projects_1;
             } else {
-                $ret = array_merge($projects_1, $projects_2);
+                $ret = array_unique(array_merge($projects_1, $projects_2), SORT_REGULAR);
             }
         } else {
             if(!$is_admin) {

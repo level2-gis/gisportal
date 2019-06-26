@@ -66,7 +66,7 @@ class Home extends CI_Controller
             }
             $groups = $this->user_model->get_project_group_ids($user->user_id, TRUE);
             if(!empty($groups)) {
-                $ret = array_merge($ret, $this->client_model->get_clients($groups, false, false));
+                $ret = array_unique(array_merge($ret, $this->client_model->get_clients($groups, false, false)), SORT_REGULAR);
             }
         } else {
             if(!$is_admin) {

@@ -175,7 +175,6 @@ class Users extends CI_Controller {
                     throw new Exception('Cannot delete, user has roles!');
                 }
 
-
                 $this->user_model->clear_print($user['user_name']);
                 $this->user_model->delete_user($id);
                 $db_error = $this->db->error();

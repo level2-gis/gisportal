@@ -14,7 +14,9 @@ class User_model extends CI_Model
         if(empty($filter)) {
             $query = $this->db->get('users_view');
         } else {
+            $this->db->select('user_id,first_name,last_name,display_name,user_name,user_email,organization,registered,count_login,last_login,lang,active,phone,bool_or(admin) as admin,filter,scope,min(role_id) as role_id, min(role_name) as role_name,max(role_display_name) as role_display_name,sum(groups) as groups');
             $this->db->where('filter',$filter);
+            $this->db->group_by('user_id,first_name,last_name,display_name,user_name,user_email,organization,registered,count_login,last_login,lang,active,phone,filter,scope');
             $query = $this->db->get('users_view_for_clients');
         }
 

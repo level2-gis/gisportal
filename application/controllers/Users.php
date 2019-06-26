@@ -167,6 +167,9 @@ class Users extends CI_Controller {
         {
             try {
 
+                //remove link
+                $this->user_model->remove_link($id, $filter);
+
                 $test = $this->user_model->has_project_group_role($id,null);
                 if($test) {
                     throw new Exception('Cannot delete, user has roles!');

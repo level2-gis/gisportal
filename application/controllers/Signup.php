@@ -14,20 +14,22 @@ class Signup extends CI_Controller
 	function index()
 	{
         try {
-            $cl_query = $this->input->get('code', TRUE);
+            if(sizeof($_POST) == 0) {
+                $cl_query = $this->input->get('code', TRUE);
 
-            $client = NULL;
-            if (!empty($cl_query)) {
-                $cl_decode = base64_decode($cl_query);
-                $client = $this->client_model->get_client_by_name($cl_decode);
-            } else {
-                if ($this->config->item('public_registration') === FALSE) {
-                   throw new Exception('Client required!');
+                $client = NULL;
+                if (!empty($cl_query)) {
+                    $cl_decode = base64_decode($cl_query);
+                    $client = $this->client_model->get_client_by_name($cl_decode);
+                } else {
+                    if ($this->config->item('public_registration') === FALSE) {
+                        throw new Exception('Client required!');
+                    }
                 }
-            }
 
-            if (empty($client) && ($this->config->item('public_registration') === FALSE)) {
-                throw new Exception('Client not correct!');
+                if (empty($client) && ($this->config->item('public_registration') === FALSE)) {
+                    throw new Exception('Client not correct!');
+                }
             }
 
         } catch (Exception $e) {

@@ -297,17 +297,42 @@ class User_model extends CI_Model
         $result = $this->db->query('UPDATE users SET '.$sql);
     }
 
+    //used for links, because user can have more links, so we need client parameter to check
+    function has_portal_role($role, $user_id, $client_id) {
+
+        $this->db->where('user_id',$user_id);
+        $this->db->where('role_id',$role);
+        $this->db->where('client_id',$client_id);
+
+        $query = $this->db->get('users_roles');
+        $row = $query->row();
+
+        return isset($row);
+    }
+
     function set_link($user_id, $client_id) {
 
         $link_group = 9;
 
         //first check if user has link to client
-        $exist = $this->ion_auth->in_group($link_group,$user_id);
+        $exist = $this->has_portal_role($link_group,$user_id, $client_id);
 
         //else, add to group
         if(!$exist) {
             $this->ion_auth->add_to_group($link_group, $user_id, $client_id);
         }
+    }
+
+    function remove_link($user_id, $client_id = NULL) {
+
+        $link_group = 9;
+
+        $this->db->where('user_id',$user_id);
+        $this->db->where('role_id',$link_group);
+        if(!empty($client_id)) {
+            $this->db->where('client_id', $client_id);
+        }
+        $this->db->delete('users_roles');
     }
 
 	public function save_user($data)

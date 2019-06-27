@@ -55,13 +55,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="register" class="control-label col-md-2"><?php echo lang('gp_user_registration_link'); ?></label>
-                    <div class="col-md-5">
-                        <input id="register_link" class="form-control key" name="register" placeholder="" type="text" readonly="readonly" value="<?php echo site_url($register); ?>" />
-                        <p class="help-block"><?php echo lang('gp_user_registration_help'); ?></p>
+                <?php if (!$creating) : ?>
+                    <div class="form-group">
+                        <label for="register" class="control-label col-md-2"><?php echo lang('gp_user_registration_link'); ?></label>
+                        <div class="col-md-5">
+                            <input id="register_link" class="form-control key" name="register" placeholder="" type="text" readonly="readonly" value="<?php echo site_url($register); ?>" />
+                            <p class="help-block"><?php echo lang('gp_user_registration_help'); ?></p>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
 
             </fieldset>
 

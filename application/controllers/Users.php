@@ -62,7 +62,6 @@ class Users extends CI_Controller {
 
 			$em = array ( 'user_id' => '', 'user_name' => '', 'user_email' => '', 'display_name' => '');
 
-			$data['title'] = 'Create New User';
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 			$data['creating'] = true;
 
@@ -72,7 +71,7 @@ class Users extends CI_Controller {
 
 			if(sizeof($_POST) > 0){
 				$em = $this->extractUserData();
-				$data['title'] = 'Edit User ' . $em['first_name'] . ' ' .  $em['last_name'];
+				$data['title'] = lang('gp_edit') . ' ' .lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
 				$data['creating'] = false;
 			} else {
 				if ($user_id !== false){
@@ -91,7 +90,7 @@ class Users extends CI_Controller {
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
-						$data['title'] = 'Edit User ' . $em['first_name'] . ' ' .  $em['last_name'];
+						$data['title'] = lang('gp_edit') . ' ' .lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
 						$data['creating'] = false;
 					}
 				}
@@ -137,7 +136,7 @@ class Users extends CI_Controller {
 			$user = $this->extractUserData();
 
 			$user_id = $this->user_model->save_user($user);
-            $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">User <strong>' . $user['display_name'] . '</strong> has been saved</div>');
+            $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' .  lang('gp_user')   . ' <strong>' . $user['display_name'] . '</strong> ' . lang('gp_saved'). '</div>');
 
 			if($this->input->post('return') == null){
 				redirect('/users/edit/' . $user_id);

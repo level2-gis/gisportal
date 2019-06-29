@@ -135,7 +135,12 @@
                     <span class="text-danger"><?php echo form_error('type'); ?></span>
                 </div>
             </div>
-
+            <div class="row form-group">
+                <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
+                <div class="col-md-5">
+                    <?php echo $image; ?>
+                </div>
+            </div>
         </fieldset>
 
         <?php if ( $group['type'] == PROJECT_GROUP) : ?>

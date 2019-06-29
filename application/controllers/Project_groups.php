@@ -10,7 +10,7 @@ class Project_groups extends CI_Controller
         $this->load->model('project_model');
         $this->load->model('layer_model');
         $this->load->model('user_model');
-        $this->load->helper(array('eqwc_parse'));
+        $this->load->helper(array('eqwc_parse','path'));
     }
 
     public function index()
@@ -241,6 +241,7 @@ class Project_groups extends CI_Controller
             }
 
             $data['admin_navigation'] = $this->build_admin_navigation($group);
+            $data['image'] = $this->getImage($group['name']);
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
@@ -733,5 +734,18 @@ class Project_groups extends CI_Controller
         }
 
         return 'project_groups';
+    }
+
+    private function getImage($name)
+    {
+        $path = 'assets/img/groups/'.$name.'.png';
+        $fn = set_realpath(FCPATH.$path, false);
+
+        if (is_file($fn)) {
+            return "<img class='img-responsive' src='" . base_url($path) . "'>";
+        }
+        else {
+            return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (300x200px)</br>".$fn."</div>";
+        }
     }
 }

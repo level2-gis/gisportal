@@ -151,6 +151,11 @@ $lang['gp_items'] = 'post';
 $lang['gp_user_registration_link'] = 'Länk för användarregistrering';
 $lang['gp_user_registration_help'] = 'Användare som registreras med följande länk kopplas till er verksamhet och kan sedan ges tillgång till utvalda projekt.';
 
+$lang['gp_send_email'] = 'Send email';
+$lang['gp_send'] = 'Send';
+$lang['gp_email_sent'] = 'Email sent';
+$lang['gp_email_subject'] = 'Subject';
+$lang['gp_email_body'] = 'Body';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

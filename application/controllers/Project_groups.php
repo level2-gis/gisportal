@@ -76,6 +76,78 @@ class Project_groups extends CI_Controller
 
     }
 
+    public function send_email($id = FALSE)
+    {
+        if(empty($id)) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Group missing.</div>');
+            redirect('/project_groups/');
+        }
+
+        $task = 'project_groups_send_email';
+
+        $group = (array)$this->project_group_model->get_project_group($id);
+
+        if(empty($group)) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Group does not exist.</div>');
+            redirect('/project_groups/');
+        }
+
+        //filter for client administrator
+        $user_role = $this->ion_auth->admin_scope();
+        $filter = $user_role->filter;
+        if(!empty($filter) && $filter !== (integer)$group['client_id']) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+            redirect('/project_groups/');
+        }
+
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('subject', 'lang:gp_email_subject', 'required');
+        $this->form_validation->set_rules('body', 'lang:gp_email_body', 'required');
+
+        try {
+            if (!$this->ion_auth->can_execute_task($task)){
+                throw new Exception('No permission!');
+            }
+
+            $emails = array_column($this->user_model->get_project_group_users($id), 'user_email');
+
+            if(count($emails) === 0) {
+                throw new Exception('No users!');
+            }
+
+            if ($this->form_validation->run() == FALSE) {
+                $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+                $data['group'] = $group;
+                $data['title'] = lang('gp_send_email');
+                $data['subtitle'] = $this->get_name($group);
+                $data['logged_in'] = true;
+                $data['is_admin'] = $user_role->admin;
+                $data['role'] = $user_role->role_name;
+                $data['emails'] = $emails;
+
+                $this->load->view('templates/header', $data);
+                $this->load->view('email/send_form', $data);
+
+            }
+
+            else {
+                $subject = $this->input->post('subject');
+                $body = $this->input->post('body');
+
+                $this->ion_auth->send_email($subject,nl2br($body),$emails);
+
+                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . lang('gp_email_sent') . '</div>');
+                redirect('project_groups/edit/' . $id);
+            }
+
+        } catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+            redirect('project_groups/edit/' . $id);
+        }
+    }
+
     public function edit($id = FALSE)
     {
         if(empty($id)) {

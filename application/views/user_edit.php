@@ -130,7 +130,7 @@
                                         <option value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
                                 </select>
 
-                                <select class="form-control" style="vertical-align: top" multiple name="project_group_id" id="project_group_id">
+                                <select class="form-control" style="vertical-align: top" multiple size="10" name="project_group_id" id="project_group_id">
                                     <option value="" disabled><?php echo $this->lang->line('gp_select_groups'); ?></option>
                                 </select>
 

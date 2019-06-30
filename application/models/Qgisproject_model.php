@@ -112,9 +112,9 @@ class Qgisproject_model extends CI_Model
                         } else {
                             $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                         }
+                    } else {
+                        $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                     }
-
-                    $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                 }
 
                 return ["valid" => $valid, "name" => $message];

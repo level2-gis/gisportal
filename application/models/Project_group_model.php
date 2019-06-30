@@ -22,10 +22,14 @@ class Project_group_model extends CI_Model {
     /*
     * Get project_group by id
     */
-    function get_project_group($id)
+    function get_project_group($id, $use_view = FALSE)
     {
         $this->db->where('id', $id);
-        $query = $this->db->get('project_groups');
+        if ($use_view) {
+            $query = $this->db->get('project_groups_view');
+        } else {
+            $query = $this->db->get('project_groups');
+        }
         return $query->result()[0];
     }
 

@@ -5,7 +5,7 @@
                class="control-label col-md-2"><?php echo ($this->lang->line('gp_qgis_project') . ' ' . $project['name']); ?>
             <p class="help-block"><?php echo $project["crs"]; ?></p>
         </label>
-        <div class="col-md-5">
+        <div class="col-md-8">
             <?php if ($qgis_check['valid']) {
                 ?>
                 <div class="alert alert-success">

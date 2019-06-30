@@ -91,13 +91,29 @@ class Qgisproject_model extends CI_Model
 
             } elseif ($config === QGS_GROUP) {
                 $project->project_path = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file;
-                $this->project_model->upsert_project(array("id" => $project->id, "project_path" => $project->project_path));
 
                 //check if project is in client/group subfolder
-                if (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file)) {
+                if (is_readable($project->project_path)) {
                     $valid = true;
                     $message = $project->project_path;
+                    //store found project_path to database for gisapp
+                    $this->project_model->upsert_project(array("id" => $project->id, "project_path" => $project->project_path));
                 } else {
+                    //get group
+                    $group = $this->project_group_model->get_project_group($project->group_id, TRUE);
+                    if(!empty($group->parent_id)) {
+                        //look if exists in menu group
+                        $project->project_path = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $group->parent . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file;
+                        if (is_readable($project->project_path)) {
+                            $valid = true;
+                            $message = $project->project_path;
+                            //store found project_path to database for gisapp
+                            $this->project_model->upsert_project(array("id" => $project->id, "project_path" => $project->project_path));
+                        } else {
+                            $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
+                        }
+                    }
+
                     $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                 }
 

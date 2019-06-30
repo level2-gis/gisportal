@@ -61,18 +61,18 @@ class Qgisproject_model extends CI_Model
             //TODO what about different case and qgz extension!?!
             $project_file = $project->name . '.qgs';
 
-            if($config===QGS_MAIN || $config === QGS_CLIENT) {
-
-                //first check if project has full path stored in db and if that exist and is readable
-                if (!empty($project->project_path)) {
-                    if (is_readable($project->project_path)) {
-                        $valid = true;
-                        $message = $project->project_path;
-                    } else {
-                        $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
-                    }
-                    return ["valid" => $valid, "name" => $message];
+            //first check if project has full path stored in db and if that exist and is readable
+            if (!empty($project->project_path)) {
+                if (is_readable($project->project_path)) {
+                    $valid = true;
+                    $message = $project->project_path;
+                } else {
+                    $message = "Project: " . $project_file . ' not found in:</br>' . $project->project_path;
                 }
+                return ["valid" => $valid, "name" => $message];
+            }
+
+            if($config===QGS_MAIN || $config === QGS_CLIENT) {
 
                 //check if the project can be found in main project folder
                 if (is_readable($this->main_path . $project_file)) {

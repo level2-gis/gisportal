@@ -20,7 +20,7 @@
 			<fieldset id="edit-layer-meta" class="tab-pane active">
 				<div class="form-group">
 					<label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
-					<div class="col-md-5">
+					<div class="col-md-6">
 						<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $layer['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
                         <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
@@ -28,14 +28,14 @@
 				</div>	
 				<div class="form-group">
 					<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
-					<div class="col-md-5">
+					<div class="col-md-6">
 						<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $layer['display_name']; ?>" />
 						<span class="text-danger"><?php echo form_error('display_name'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
 					<label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
-					<div class="col-md-5">
+					<div class="col-md-6">
                         <select class="form-control" name="type">
                             <option value="">Select Type</option>
                             <?php foreach ($types as $type): ?>
@@ -47,7 +47,7 @@
 				</div>	
 				<div class="form-group">
 					<label for="definition" class="control-label col-md-2"><?php echo $this->lang->line('gp_definition'); ?></label>
-					<div class="col-md-5">
+					<div class="col-md-6">
 						<textarea class="form-control" cols="20" rows="18" name="definition" placeholder="" type="text"><?php echo $layer['definition']; ?></textarea>
 						<span class="text-danger"><?php echo form_error('definition'); ?></span>
 					</div>	
@@ -56,7 +56,7 @@
                 <div class="row form-group">
                     <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
 
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <select class="form-control" name="client_id" id="client_id">
                             <?php if (count($clients)>1) : ?>
                                 <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>

@@ -532,7 +532,7 @@
     });
 
     var $table3 = $('#group_extra_layers');
-    $table2.bootstrapTable({
+    $table3.bootstrapTable({
         onReorderRow: function (data) {
             //write new layers to base_layers_ids field, group must be saved to make effect
             var layers = data.map(function(item){return parseInt(item.gp_id);});

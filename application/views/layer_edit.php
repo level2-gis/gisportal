@@ -48,7 +48,7 @@
 				<div class="form-group">
 					<label for="definition" class="control-label col-md-2"><?php echo $this->lang->line('gp_definition'); ?></label>
 					<div class="col-md-5">
-						<textarea class="form-control" cols="20" rows="6" name="definition" placeholder="" type="text"><?php echo $layer['definition']; ?></textarea>
+						<textarea class="form-control" cols="20" rows="16" name="definition" placeholder="" type="text"><?php echo $layer['definition']; ?></textarea>
 						<span class="text-danger"><?php echo form_error('definition'); ?></span>
 					</div>	
 				</div>

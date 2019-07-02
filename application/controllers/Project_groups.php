@@ -183,6 +183,7 @@ class Project_groups extends CI_Controller
         $this->form_validation->set_rules('client_id', 'lang:gp_client', 'required');
         $this->form_validation->set_rules('type', 'Type', 'required|integer');
         $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
+        $this->form_validation->set_rules('contact_email', 'lang:gp_email', 'valid_email');
 
         $data['creating'] = false;
 
@@ -195,6 +196,15 @@ class Project_groups extends CI_Controller
 
 
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+
+            //handle contact information
+            if(!empty($group['contact_id'])) {
+                $user = $this->user_model->get_user_by_id($group['contact_id']);
+                $group['contact'] = $user->first_name . ' ' . $user->last_name;
+                $group['contact_email'] = $user->user_email;
+                $group['contact_phone'] = $user->phone;
+            }
+
             $data['group'] = $group;
 
             $data['roles'] = $this->user_model->get_roles();
@@ -560,6 +570,23 @@ class Project_groups extends CI_Controller
         }
     }
 
+    public function remove_contact($id = FALSE)
+    {
+        if ($id === false) {
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Project group parameter missing.</div>');
+            redirect('/project_groups/');
+        }
+
+        try {
+            $this->project_group_model->remove_contact($id);
+        } catch (Exception $e){
+            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+        }
+        finally {
+            redirect('/project_groups/edit/'.$id);
+        }
+    }
+
     public function _unique_name($name) {
 
         //test if we already have name in database
@@ -586,16 +613,26 @@ class Project_groups extends CI_Controller
 
     private function extractPostData() {
 
-        return array(
-            'id' => $this->input->post('id'),
-            'name' => $this->input->post('name'),
-            'display_name' => set_null($this->input->post('display_name')),
-            'parent_id' => set_null($this->input->post('parent_id')),
-            'type' => $this->input->post('type'),
-            'client_id' => $this->input->post('client_id'),
-            'base_layers_ids' => set_null($this->input->post('base_layers_ids')),
-            'extra_layers_ids' => set_null($this->input->post('extra_layers_ids')),
+        $data = array(
+            'id'                        => $this->input->post('id'),
+            'name'                      => $this->input->post('name'),
+            'display_name'              => set_null($this->input->post('display_name')),
+            'parent_id'                 => set_null($this->input->post('parent_id')),
+            'type'                      => $this->input->post('type'),
+            'client_id'                 => $this->input->post('client_id'),
+            'base_layers_ids'           => set_null($this->input->post('base_layers_ids')),
+            'extra_layers_ids'          => set_null($this->input->post('extra_layers_ids')),
+            'contact_id'                => set_null($this->input->post('contact_id'))
         );
+
+        if(empty($this->input->post('contact_id'))) {
+            $data['contact'] = $this->input->post('contact');
+            $data['contact_email'] = $this->input->post('contact_email');
+            $data['contact_phone'] = $this->input->post('contact_phone');
+
+        }
+
+        return $data;
     }
 
     private function loadmeta(&$data){

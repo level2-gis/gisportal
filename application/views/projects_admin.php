@@ -27,7 +27,6 @@
               <th data-sortable="true" data-field="gp_group"><?php echo $this->lang->line('gp_group'); ?></th>
               <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
               <th data-sortable="true" data-visible="false" data-field="gp_overview"><?php echo $this->lang->line('gp_overview_layer'); ?></th>
-              <th data-sortable="true" data-visible="false" data-field="gp_contact"><?php echo ucfirst($this->lang->line('gp_contact')); ?></th>
               <?php if ($can_edit){ ?>
                 <th><?php echo $this->lang->line('gp_action'); ?></th>
               <?php } ?>
@@ -55,7 +54,6 @@
 		  <td class="col-md-2"><?php echo $project_item['group']; ?></td>
           <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
           <td class="col-md-1"><?php echo $project_item['overview_layer']; ?></td>
-          <td class="col-md-1"><?php echo $project_item['contact']; ?></td>
           <?php if ($can_edit){ ?>
             <td class="col-md-2">
                 <a class="btn btn-primary" href="<?php echo site_url('projects/edit/' . $project_item['id']); ?>">

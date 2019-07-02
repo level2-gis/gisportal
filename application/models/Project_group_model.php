@@ -16,6 +16,12 @@ class Project_group_model extends CI_Model {
             'client_id'                 => null,
             'base_layers_ids'           => null,
             'extra_layers_ids'          => null,
+            'contact'                   => null,
+            'contact_id'                => null,
+            'contact_phone'             => null,
+            'contact_email'             => null,
+            'custom1'                   => null,
+            'custom2'                   => null
         );
     }
 
@@ -131,7 +137,7 @@ class Project_group_model extends CI_Model {
             $this->db->where("(id = ANY('".$user_groups."') OR children && ('".$user_groups."'))");
         }
 
-        $this->db->select('* FROM (SELECT id, name, client_id, display_name, parent_id, type, CASE WHEN type=1 THEN get_child_groups(id) ELSE null END AS children FROM project_groups) p', FALSE);
+        $this->db->select('* FROM (SELECT id, name, client_id, display_name, parent_id, type, contact, contact_id, contact_phone, contact_email, CASE WHEN type=1 THEN get_child_groups(id) ELSE null END AS children FROM project_groups_view) p', FALSE);
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -198,5 +204,12 @@ class Project_group_model extends CI_Model {
         $sql.= 'WHERE id = '.$group.';';
 
         return $this->db->query($sql);
+    }
+
+    public function remove_contact($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->set('contact_id', null);
+        $this->db->update('project_groups');
     }
 }

@@ -14,9 +14,11 @@
             $img = base_url("assets/img/no_project_group.png");
         }
         $img_class = 'item_no_image';
+        $desc_class = 'description_no_image';
     } else {
         $img = base_url($img_path);
         $img_class = 'item_image';
+        $desc_class = 'description';
     }
 
     if ($item['type'] === SUB_GROUP) {
@@ -34,6 +36,12 @@
                 <?php endif; ?>
             </h4>
             <a target="_self" href="<?php echo $url; ?>"><img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
+                <div class="caption post-content">
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact_email']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo $item['contact_phone']; ?></p>
+                </div>
+
             </a>
         </div>
     </div>

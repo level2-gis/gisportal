@@ -4,7 +4,6 @@
 			<input name="id" type="hidden" value="<?php echo $project['id']; ?>" />
 			<input id="project_name" name="name" type="hidden" value="<?php echo $project['name']; ?>" />
 			<input id="crs" name="crs" type="hidden" value="<?php echo $project['crs']; ?>" />
-			<input id="contact_id" name="contact_id" type="hidden" value="<?php echo $project['contact_id']; ?>" />
 
 			<ul class="nav nav-tabs">
 			  <li class="active"><a href="#edit-project-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
@@ -69,40 +68,6 @@
                                 <?php endforeach; ?>
                             </select>
                             <span class="text-danger"><?php echo form_error('overview_layer_id'); ?></span>
-                        </div>
-                    </div>
-
-					<div class="row form-group">
-						<label for="contact" class="control-label col-md-2"><?php echo ucfirst(lang('gp_contact')) . ' ' . lang('gp_name'); ?></label>
-						<div class="col-md-5">
-							<input <?php if (!empty($project['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact" name="contact" placeholder="" type="text" value="<?php echo $project['contact']; ?>" />
-							<span class="text-danger"><?php echo form_error('contact'); ?></span>
-						</div>
-                        <div class="col-md-3">
-                            <?php if (empty($project['contact_id'])) : ?>
-                            <input type="search" id="user_search" class="form-control typeahead" size="30" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
-                                   autocomplete="off">
-                            <?php else : ?>
-                                <a class="btn btn-danger" href="<?php echo site_url('projects/remove_contact/' . $project['id']); ?>">
-                                    <?php echo lang('gp_remove') . ' ' . ucfirst(lang('gp_contact')); ?>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-					</div>
-
-                    <div class="row form-group">
-                        <label for="contact_email" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_contact')) . ' ' . lang('gp_email'); ?></label>
-                        <div class="col-md-5">
-                            <input <?php if (!empty($project['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_email" name="contact_email" placeholder="" type="text" value="<?php echo $project['contact_email']; ?>" />
-                            <span class="text-danger"><?php echo form_error('contact_email'); ?></span>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <label for="contact_phone" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_contact')) . ' ' . lang('edit_user_validation_phone_label'); ?></label>
-                        <div class="col-md-5">
-                            <input <?php if (!empty($project['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_phone" name="contact_phone" placeholder="" type="text" value="<?php echo $project['contact_phone']; ?>" />
-                            <span class="text-danger"><?php echo form_error('contact_phone'); ?></span>
                         </div>
                     </div>
 
@@ -200,51 +165,3 @@
 		</form>
 
 	</div>
-        <script type="text/javascript">
-
-            $.fn.typeahead.Constructor.prototype.clear = function () {
-                this.$element.data("active", null);
-            };
-
-            $('#user_search').typeahead({
-                minLength: 2,
-                autoSelect: false,
-                changeInputOnMove: false,
-                source: function (query, process) {
-                    return $.get(GP.settings.siteUrl + '/users/search', {query: query}, function (data) {
-                        //console.log(data);
-                        data = $.parseJSON(data);
-                        return process(data);
-                    });
-                }
-            });
-            $('#user_search').change(function() {
-
-                var user = $('#user_search').typeahead("getActive");
-                var contact = $('#contact');
-                var contact_id = $('#contact_id');
-                var contact_email = $('#contact_email');
-                var contact_phone = $('#contact_phone');
-                //var client_id = $('#client_id').val();
-                var text = $('#user_search').val();
-
-
-                if (user) {
-                    // Some item from your model is active!
-                    if (user.name == text) {
-                        //disable contact fields
-                        contact.prop('disabled', true);
-                        contact_email.prop('disabled', true);
-                        contact_phone.prop('disabled', true);
-
-                        //add user.id to project.contact_id
-                        contact_id.val(user.id);
-                    }
-                }
-            });
-
-            $('input[type=search]').on('search', function () {
-                // search logic here
-                $('.typeahead').typeahead('clear');
-            });
-        </script>

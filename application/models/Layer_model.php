@@ -18,8 +18,8 @@ class Layer_model extends CI_Model {
 
     function get_layers($client_id = NULL, $list_only = FALSE)
     {
-        $this->db->order_by('type', 'ASC');
-        $this->db->order_by('display_name', 'ASC');
+        //$this->db->order_by('type', 'ASC');
+        $this->db->order_by('name', 'ASC');
 
         if($list_only) {
             $this->db->select("id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type", FALSE);

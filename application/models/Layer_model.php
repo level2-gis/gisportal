@@ -104,9 +104,9 @@ class Layer_model extends CI_Model {
             $this->db->where('(client_id = '.$filter.' OR client_id IS NULL)', null, FALSE);
         }
 
-        $this->db->order_by('name', 'DESC');
+        //$this->db->order_by('name', 'DESC');
 
-        $query = $this->db->get('layers_view');
+        $query = $this->db->get('(SELECT * FROM layers_view ORDER BY name) l');
 
         return $query->result_array();
     }

@@ -87,6 +87,7 @@
         //other stuff, not language strings
         GP.settings = {};
         GP.settings.siteUrl = '<?php echo site_url(); ?>';
+        GP.settings.maxSearchResults = '20';  //max items, also possible value 'all'
 
     </script>
 </head>

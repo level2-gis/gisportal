@@ -424,6 +424,7 @@
         minLength: 2,
         autoSelect: false,
         changeInputOnMove: false,
+        items: GP.settings.maxSearchResults,
         source:  function (query, process) {
             return $.get(GP.settings.siteUrl + '/users/search', { query: query }, function (data) {
                 //console.log(data);
@@ -437,6 +438,7 @@
         minLength: 2,
         autoSelect: false,
         changeInputOnMove: false,
+        items: GP.settings.maxSearchResults,
         source:  function (query, process) {
             return $.get(GP.settings.siteUrl + '/layers/search', { query: query }, function (data) {
                 //console.log(data);
@@ -450,6 +452,7 @@
         minLength: 2,
         autoSelect: false,
         changeInputOnMove: false,
+        items: GP.settings.maxSearchResults,
         source:  function (query, process) {
             return $.get(GP.settings.siteUrl + '/layers/search', { query: query }, function (data) {
                 //console.log(data);
@@ -463,6 +466,7 @@
         minLength: 2,
         autoSelect: false,
         changeInputOnMove: false,
+        items: GP.settings.maxSearchResults,
         source: function (query, process) {
             return $.get(GP.settings.siteUrl + '/users/search', {query: query}, function (data) {
                 //console.log(data);

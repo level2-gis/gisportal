@@ -42,7 +42,9 @@
     <input id="contact_id" name="contact_id" type="hidden" value="<?php echo $group['contact_id']; ?>" />
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#edit-group-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
+        <?php if($can_edit_properties || $can_edit_contacts) : ?>
+            <li class="active"><a href="#edit-group-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
+        <?php endif; ?>
         <?php if ( $group['type'] == PROJECT_GROUP) : ?>
             <li><a href="#edit-group-projects" data-toggle="tab"><?php echo $this->lang->line('gp_projects_title'); ?></a></li>
             <?php if($can_edit_layers) : ?>
@@ -61,46 +63,85 @@
 
 
         <fieldset id="edit-group-meta" class="tab-pane active">
+            <?php if($can_edit_properties) : ?>
+                <div class="row form-group">
+                    <label for="client_id"
+                           class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
 
-            <div class="row form-group">
-                <label for="client_id"
-                       class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
-
-                <div class="col-md-5">
-                    <select class="form-control" name="client_id" id="client_id"
-                            onchange="getParentGroups(this,<?php echo $group['id']; ?>);">
-                        <?php foreach ($clients as $client_item): ?>
-                            <option <?php if ($client_item['id'] == $group['client_id']) {
-                                echo "selected='selected'";
-                            }; ?>
-                                value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
-                    </select>
-                    <span class="text-danger"><?php echo form_error('client_id'); ?></span>
+                    <div class="col-md-5">
+                        <select class="form-control" name="client_id" id="client_id"
+                                onchange="getParentGroups(this,<?php echo $group['id']; ?>);">
+                            <?php foreach ($clients as $client_item): ?>
+                                <option <?php if ($client_item['id'] == $group['client_id']) {
+                                    echo "selected='selected'";
+                                }; ?>
+                                    value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                        </select>
+                        <span class="text-danger"><?php echo form_error('client_id'); ?></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
+                <div class="form-group">
+                    <label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 
-                <div class="col-md-5">
-                    <input class="form-control" name="name" placeholder="" type="text"
-                           value="<?php echo $group['name']; ?>"/>
-                    <span class="text-danger"><?php echo form_error('name'); ?></span>
-                    <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
+                    <div class="col-md-5">
+                        <input class="form-control" name="name" placeholder="" type="text"
+                               value="<?php echo $group['name']; ?>"/>
+                        <span class="text-danger"><?php echo form_error('name'); ?></span>
+                        <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="display_name"
-                       class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
+                <div class="form-group">
+                    <label for="display_name"
+                           class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
 
-                <div class="col-md-5">
-                    <input class="form-control" name="display_name" placeholder="" type="text"
-                           value="<?php echo $group['display_name']; ?>"/>
-                    <span class="text-danger"><?php echo form_error('display_name'); ?></span>
+                    <div class="col-md-5">
+                        <input class="form-control" name="display_name" placeholder="" type="text"
+                               value="<?php echo $group['display_name']; ?>"/>
+                        <span class="text-danger"><?php echo form_error('display_name'); ?></span>
+                    </div>
                 </div>
-            </div>
 
-            <?php if ( $group['type'] == PROJECT_GROUP) : ?>
+                <div class="form-group">
+                    <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_parent'); ?> <?php echo $this->lang->line('gp_group'); ?></label>
+
+                    <div class="col-md-5">
+                        <!--                    <select class="form-control" name="parent_id" id="parent_id" onchange="onProjectEditGroupChange(<?php /*echo $group['parent_id'] ? $group['parent_id'] : -1; */?>, this);">-->
+                        <select class="form-control" name="parent_id" id="parent_id">
+                            <option value=""></option>
+                            <?php foreach ($parents as $parent): ?>
+                                <option <?php if ($parent['id'] == $group['parent_id']) {
+                                    echo "selected='selected'";
+                                }; ?> value="<?php echo $parent['id']; ?>"><?php echo $parent['name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span class="text-danger"><?php echo form_error('parent_id'); ?></span>
+                    </div>
+                    <!--                --><?php //if (!empty($group['parent_id'])) : ?>
+                    <!--                <div class="col-md-2">-->
+                    <!--                    <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick('parent_id');">-->
+                    <!--                        --><?php //echo $this->lang->line('gp_edit'); ?>
+                    <!--                    </a>-->
+                    <!--                </div>-->
+                    <!--                --><?php //endif; ?>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
+
+                    <div class="col-md-5">
+                        <select class="form-control" name="type">
+                            <?php foreach ($types as $type): ?>
+                                <option <?php if ($type['id'] == $group['type']) {
+                                    echo "selected='selected'";
+                                }; ?> value="<?php echo $type['id']; ?>"><?php echo $type['name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span class="text-danger"><?php echo form_error('type'); ?></span>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if ( $group['type'] == PROJECT_GROUP &&  $can_edit_contacts) : ?>
                 <div class="row form-group">
                     <label for="contact" class="control-label col-md-2"><?php echo ucfirst(lang('gp_contact')) . ' ' . lang('gp_name'); ?></label>
                     <div class="col-md-5">
@@ -136,43 +177,6 @@
                 </div>
             <?php endif; ?>
 
-            <div class="form-group">
-                <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_parent'); ?> <?php echo $this->lang->line('gp_group'); ?></label>
-
-                <div class="col-md-5">
-<!--                    <select class="form-control" name="parent_id" id="parent_id" onchange="onProjectEditGroupChange(<?php /*echo $group['parent_id'] ? $group['parent_id'] : -1; */?>, this);">-->
-                    <select class="form-control" name="parent_id" id="parent_id">
-                        <option value=""></option>
-                        <?php foreach ($parents as $parent): ?>
-                            <option <?php if ($parent['id'] == $group['parent_id']) {
-                                echo "selected='selected'";
-                            }; ?> value="<?php echo $parent['id']; ?>"><?php echo $parent['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <span class="text-danger"><?php echo form_error('parent_id'); ?></span>
-                </div>
-<!--                --><?php //if (!empty($group['parent_id'])) : ?>
-<!--                <div class="col-md-2">-->
-<!--                    <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick('parent_id');">-->
-<!--                        --><?php //echo $this->lang->line('gp_edit'); ?>
-<!--                    </a>-->
-<!--                </div>-->
-<!--                --><?php //endif; ?>
-            </div>
-            <div class="form-group">
-                <label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
-
-                <div class="col-md-5">
-                    <select class="form-control" name="type">
-                        <?php foreach ($types as $type): ?>
-                            <option <?php if ($type['id'] == $group['type']) {
-                                echo "selected='selected'";
-                            }; ?> value="<?php echo $type['id']; ?>"><?php echo $type['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <span class="text-danger"><?php echo form_error('type'); ?></span>
-                </div>
-            </div>
             <div class="row form-group">
                 <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
                 <div class="col-md-5">

@@ -51,6 +51,8 @@ INSERT INTO tasks (name, admin, power) VALUES ('clients_edit',TRUE, TRUE);
 INSERT INTO tasks (name, admin, power) VALUES ('clients_send_email',TRUE, TRUE);
 INSERT INTO tasks (name, admin, power) VALUES ('project_groups_table_view',TRUE, TRUE);
 INSERT INTO tasks (name, admin, power) VALUES ('project_groups_edit',TRUE, TRUE);
+INSERT INTO tasks (name, admin, power) VALUES ('project_groups_edit_properties',TRUE, FALSE);
+INSERT INTO tasks (name, admin, power) VALUES ('project_groups_edit_contacts',TRUE, TRUE);
 INSERT INTO tasks (name, admin, power) VALUES ('project_groups_edit_layers',TRUE, FALSE);
 INSERT INTO tasks (name, admin, power) VALUES ('project_groups_edit_access',TRUE, TRUE);
 INSERT INTO tasks (name, admin, power) VALUES ('project_groups_send_email',TRUE, TRUE);

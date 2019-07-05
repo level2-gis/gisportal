@@ -591,7 +591,7 @@ COMMENT ON FUNCTION check_user_project(uname text, project text) IS 'IN uname, p
 
 DROP FUNCTION IF EXISTS public.get_project_data(text);
 CREATE OR REPLACE FUNCTION public.get_project_data(project text)
-  RETURNS TABLE(client_id integer, client_name text, client_display_name text, client_url text, theme_name text, overview_layer json, base_layers json, extra_layers json, tables_onstart text[], is_public boolean, project_id integer, project_name text, project_display_name text, crs text, description text, contact text, restrict_to_start_extent boolean, geolocation boolean, feedback boolean, measurements boolean, print boolean, zoom_back_forward boolean, identify_mode boolean, permalink boolean, feedback_email text, project_path text, plugins text[])
+  RETURNS TABLE(client_id integer, client_name text, client_display_name text, client_url text, theme_name text, overview_layer json, base_layers json, extra_layers json, tables_onstart text[], is_public boolean, project_id integer, project_name text, project_display_name text, crs text, description text, restrict_to_start_extent boolean, geolocation boolean, feedback boolean, measurements boolean, print boolean, zoom_back_forward boolean, identify_mode boolean, permalink boolean, feedback_email text, project_path text, plugins text[])
 LANGUAGE 'plpgsql'
 
 COST 1
@@ -636,7 +636,6 @@ begin
                  projects.display_name,
                  projects.crs,
                  projects.description,
-                 projects.contact,
                  projects.restrict_to_start_extent,
                  projects.geolocation,
                  projects.feedback,

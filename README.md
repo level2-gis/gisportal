@@ -4,6 +4,8 @@ Built with Codeigniter and Bootstrap.
 
 Client part of EQWC is [**gisapp**](https://github.com/uprel/gisapp)
 
+> **Documentation below is obsolete and needs updating to gisportal v2**
+
 ## Users
 
 - start page

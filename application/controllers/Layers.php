@@ -240,7 +240,7 @@ class Layers extends CI_Controller{
             'name' => $this->input->post('name'),
             'display_name' => $this->input->post('display_name'),
             'definition' => $def,
-            'client_id' => $this->input->post('client_id')
+            'client_id' => set_null($this->input->post('client_id'))
         );
     }
 

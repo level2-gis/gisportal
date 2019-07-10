@@ -104,7 +104,7 @@
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
 					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>
-					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
+					<input type="submit" class="btn btn-primary" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
 					<a class="btn btn-default" href="<?php echo site_url('clients/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
 				
 				<?php if ( $creating === false && !empty($client['id'])) : ?>

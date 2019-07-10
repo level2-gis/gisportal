@@ -80,9 +80,9 @@
             <input id="base_ids" name="base_layers_ids" type="hidden" value="{}">
             <input id="extra_ids" name="extra_layers_ids" type="hidden" value="{}">
 
-            <input type="submit" class="btn btn-primary" onclick="checkValues()"
+            <input type="submit" class="btn btn-primary"
                    value=<?php echo $this->lang->line('gp_save'); ?>>
-            <input type="submit" class="btn btn-primary" onclick="checkValues()" name="return"
+            <input type="submit" class="btn btn-primary" name="return"
                    value=<?php echo $this->lang->line('gp_save') . "&nbsp;&&nbsp;" . strtolower($this->lang->line('gp_return')); ?>>
             <a class="btn btn-default"
                href="<?php echo site_url('project_groups/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>

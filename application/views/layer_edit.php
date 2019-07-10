@@ -59,7 +59,7 @@
                     <div class="col-md-6">
                         <select class="form-control" name="client_id" id="client_id">
                             <?php if (count($clients)>1) : ?>
-                                <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
+                                <option value="" selected="true"><?php echo $this->lang->line('gp_select_client'); ?></option>
                             <?php endif ?>
                             <?php foreach ($clients as $client_item): ?>
                                 <option <?php if ($client_item['id'] == $layer['client_id']) {
@@ -135,7 +135,7 @@
 					<input name="creating" type="hidden" value="<?php echo $creating; ?>">
 
 					<input type="submit" class="btn btn-primary" value=<?php echo $this->lang->line('gp_save'); ?>>
-					<input type="submit" class="btn btn-primary" onclick="checkValues()" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
+					<input type="submit" class="btn btn-primary" name="return" value=<?php echo $this->lang->line('gp_save')."&nbsp;&&nbsp;".strtolower($this->lang->line('gp_return')); ?>>
 					<a class="btn btn-default" href="<?php echo site_url('layers/'); ?>"><?php echo $this->lang->line('gp_return'); ?></a>
 				
 				<?php if ( $creating === false && !empty($layer['id']) ) : ?>

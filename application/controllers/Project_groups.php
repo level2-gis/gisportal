@@ -531,6 +531,7 @@ class Project_groups extends CI_Controller
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
             }
+            $this->user_model->clear_gisapp_session();
         } catch (Exception $e) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
         } finally {
@@ -558,6 +559,7 @@ class Project_groups extends CI_Controller
 
             $res = $this->project_group_model->remove_layer($group, $layer_id, $destination);
             $db_error = $this->db->error();
+            $this->user_model->clear_gisapp_session();
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
             }

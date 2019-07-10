@@ -2,8 +2,9 @@
 		<h1 class="col-md-8"><?php echo $title; ?></h1>
         <div class="btn-group actions  pull-right">
 
+            <?php if($is_admin) : ?>
                 <?php if (!empty($user_role)) : ?>
-                    <?php if (($user['user_id'] === $logged_id) || (!empty($current_role_filter))) : ?>
+                    <?php if (($user['user_id'] === $logged_id) || (!empty($current_role_filter) && !($role == 'admin' && $user_role->role_name == 'power'))) : ?>
                         <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $user_role->role_display_name; ?></a>
                     <?php else: ?>
                        <a onclick="removeAdmin('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $user_role->scope . ' ' . $user_role->role_display_name; ?></a>
@@ -19,7 +20,7 @@
                         <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','power','<?php echo $role_power; ?>')" href="#"><?php echo $role_power; ?></a></li>
                     </ul>
                 <?php endif; ?>
-
+            <?php endif; ?>
         </div>
 	</div>
 

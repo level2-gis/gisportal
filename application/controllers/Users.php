@@ -67,7 +67,7 @@ class Users extends CI_Controller {
 
             //filter for client administrator
 			$user_role = $this->ion_auth->admin_scope();
-            $filter = $this->ion_auth->admin_scope()->filter;
+            $filter = $user_role->filter;
 
 			if(sizeof($_POST) > 0){
 				$em = $this->extractUserData();

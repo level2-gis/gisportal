@@ -131,3 +131,29 @@ $config['main_services_dir'] = '/home/services/';
  * projects for client (default, FALSE)
  */
 $config['portal_show_groups_for_client'] = FALSE;
+
+/*
+ * Name of the custom1 text field on project groups table that will be displayed on the form.
+ * If name is blank, field is not visible in Edit Project Group page
+ */
+$config['project_group_custom1_name'] = '';
+
+/*
+ * Set optional validation rules for custom1 field, if field is enabled on the form
+ * Description https://www.codeigniter.com/user_guide/libraries/form_validation.html#id32
+ * more rules can be applied, for example 'required|valid_url'
+ */
+$config['project_group_custom1_rules'] = '';
+
+/*
+ * Name of the custom2 text field on project groups table that will be displayed on the form.
+ * If name is blank, field is not visible in Edit Project Group page
+ */
+$config['project_group_custom2_name'] = '';
+
+/*
+ * Set optional validation rules for custom2 field, if field is enabled on the form
+ * Description https://www.codeigniter.com/user_guide/libraries/form_validation.html#id32
+ * more rules can be applied, for example 'required|valid_url'
+ */
+$config['project_group_custom2_rules'] = '';

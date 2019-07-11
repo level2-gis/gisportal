@@ -185,6 +185,14 @@ class Project_groups extends CI_Controller
         $this->form_validation->set_rules('name', 'lang:gp_name', 'required|alpha_dash|callback__unique_name');
         $this->form_validation->set_rules('contact_email', 'lang:gp_email', 'valid_email');
 
+        if(!empty($this->config->item('project_group_custom1_rules'))) {
+            $this->form_validation->set_rules('custom1', $this->config->item('project_group_custom1_name'), $this->config->item('project_group_custom1_rules'));
+        }
+        if(!empty($this->config->item('project_group_custom2_rules'))) {
+            $this->form_validation->set_rules('custom2', $this->config->item('project_group_custom2_name'), $this->config->item('project_group_custom2_rules'));
+        }
+
+
         $data['creating'] = false;
 
         if ($this->form_validation->run() == FALSE) {
@@ -252,6 +260,8 @@ class Project_groups extends CI_Controller
 
             $data['admin_navigation'] = $this->build_admin_navigation($group);
             $data['image'] = $this->getImage($group['name']);
+            $data['custom1'] = $this->config->item('project_group_custom1_name');
+            $data['custom2'] = $this->config->item('project_group_custom2_name');
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
@@ -626,7 +636,9 @@ class Project_groups extends CI_Controller
             'client_id'                 => $this->input->post('client_id'),
             'base_layers_ids'           => set_null($this->input->post('base_layers_ids')),
             'extra_layers_ids'          => set_null($this->input->post('extra_layers_ids')),
-            'contact_id'                => set_null($this->input->post('contact_id'))
+            'contact_id'                => set_null($this->input->post('contact_id')),
+            'custom1'                   => set_null($this->input->post('custom1')),
+            'custom2'                   => set_null($this->input->post('custom2'))
         );
 
         if(empty($this->input->post('contact_id'))) {

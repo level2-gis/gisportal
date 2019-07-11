@@ -139,6 +139,31 @@
                         <span class="text-danger"><?php echo form_error('type'); ?></span>
                     </div>
                 </div>
+
+                <?php if ( $group['type'] == PROJECT_GROUP) : ?>
+                    <?php if (!empty($custom1)) : ?>
+                        <div class="form-group">
+                            <label for="custom1"
+                                   class="control-label col-md-2"><?php echo $custom1; ?></label>
+                            <div class="col-md-5">
+                                <input class="form-control" name="custom1" placeholder="" type="text"
+                                       value="<?php echo $group['custom1']; ?>"/>
+                                <span class="text-danger"><?php echo form_error('custom1'); ?></span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($custom2)) : ?>
+                        <div class="form-group">
+                            <label for="custom2"
+                                   class="control-label col-md-2"><?php echo $custom2; ?></label>
+                            <div class="col-md-5">
+                                <input class="form-control" name="custom2" placeholder="" type="text"
+                                       value="<?php echo $group['custom2']; ?>"/>
+                                <span class="text-danger"><?php echo form_error('custom2'); ?></span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php if ( $group['type'] == PROJECT_GROUP &&  $can_edit_contacts) : ?>

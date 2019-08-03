@@ -288,16 +288,16 @@ class User_model extends CI_Model
 //        return $this->db->insert('users', $data);
 //	}
 
-    function update_user($id, $sql)
-    {
-        //$this->db->where('user_id', $id);
-        //$this->db->update('users', $data);
-
-        $sql.= " WHERE user_id = ".$id;
-
-        //returns bool
-        $result = $this->db->query('UPDATE users SET '.$sql);
-    }
+//    function update_user($id, $sql)
+//    {
+//        //$this->db->where('user_id', $id);
+//        //$this->db->update('users', $data);
+//
+//        $sql.= " WHERE user_id = ".$id;
+//
+//        //returns bool
+//        $result = $this->db->query('UPDATE users SET '.$sql);
+//    }
 
     //used for links, because user can have more links, so we need client parameter to check
     function has_portal_role($role, $user_id, $client_id) {

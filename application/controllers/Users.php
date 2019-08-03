@@ -492,7 +492,7 @@ class Users extends CI_Controller {
 			'user_email' => $this->input->post('user_email'),
 			'first_name' => $this->input->post('first_name'),
 			'last_name' => $this->input->post('last_name'),
-			'admin' => $this->ion_auth->is_admin($id),
+			//'admin' => $this->ion_auth->is_admin($id),
             'organization' => $this->input->post('organization'),
             'phone' => $this->input->post('phone')
 		);

@@ -106,10 +106,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" target="_blank" href="<?php echo $this->config->item('company_url'); ?>">
+            <a class="navbar-brand" target="_blank" href="<?php echo base_url(); ?>">
                 <img height="32px" src="<?php echo base_url("assets/img/header_logo.png"); ?>" alt="">
             </a>
-            <a class="navbar-brand" href="<?php echo base_url(); ?>"><?php echo $this->config->item('site_title'); ?></a>
+            <?php if(!$this->config->item('logo_contains_site_title')) : ?>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>"><?php echo $this->config->item('site_title'); ?></a>
+            <?php endif; ?>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar1">

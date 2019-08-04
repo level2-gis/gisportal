@@ -157,3 +157,8 @@ $config['project_group_custom2_name'] = '';
  * more rules can be applied, for example 'required|valid_url'
  */
 $config['project_group_custom2_rules'] = '';
+
+/*
+ * Set to true if you don't want to display site title next to logo (header, login)
+ */
+$config['logo_contains_site_title'] = FALSE;

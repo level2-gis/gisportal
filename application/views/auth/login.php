@@ -3,7 +3,11 @@
 
         <?php echo form_open("auth/login"); ?>
 
-        <h3 class="text-center"><?php echo $heading; ?></h3>
+        <img height="50px" class="center-block" src="<?php echo base_url("assets/img/header_logo.png"); ?>" alt="">
+        <?php if(!$this->config->item('logo_contains_site_title')) : ?>
+            <h3 class="text-center"><?php echo $heading; ?></h3>
+        <?php endif; ?>
+
         <div class="form-group">
             <label for="identity"><?php echo $this->lang->line('gp_user'); ?></label>
             <input class="form-control" name="<?php echo $identity['name']; ?>"

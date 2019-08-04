@@ -57,7 +57,7 @@
                     <label for="client_id" class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
 
                     <div class="col-md-6">
-                        <select class="form-control" name="client_id" id="client_id">
+                        <select class="form-control" name="client_id">
                             <?php if (count($clients)>1) : ?>
                                 <option value="" selected="true"><?php echo $this->lang->line('gp_select_client'); ?></option>
                             <?php endif ?>

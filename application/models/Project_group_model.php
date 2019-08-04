@@ -195,9 +195,9 @@ class Project_group_model extends CI_Model {
     }
 
     function remove_layer($group, $layer_id, $destination) {
-        if($destination != BASE_LAYER && $destination != EXTRA_LAYER) {
-            return false;
-        }
+        //if($destination != BASE_LAYER && $destination != EXTRA_LAYER) {
+        //    return false;
+        //}
         $dst_field = $destination == BASE_LAYER ? 'base_layers_ids' : 'extra_layers_ids';
 
         $sql = 'UPDATE project_groups SET '.$dst_field.' = array_remove('.$dst_field.','.$layer_id.') ';

@@ -72,7 +72,7 @@ class Layers extends CI_Controller{
     /*
      * Adding/Editing a layer
      */
-    function edit($layer_id = false)
+    function edit($layer_id = false, $copy = false)
     {
         if (!$this->ion_auth->is_admin()) {
             redirect('/auth/login?ru=/' . uri_string());
@@ -102,8 +102,12 @@ class Layers extends CI_Controller{
                     $dq = $this->layer_model->get_layer($layer_id);
                     if ($dq->id != null) {
                         $em = (array)$dq;
-                        $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_layer') . ' ' . $em['display_name'];
-                        $data['creating'] = false;
+                        if(!$copy) {
+                            $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_layer') . ' ' . $em['display_name'];
+                            $data['creating'] = false;
+                        } else {
+                            $em['id'] = null;
+                        }
                     }
                 }
             }

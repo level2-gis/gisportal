@@ -33,7 +33,9 @@
                     <a class="btn btn-primary" href="<?php echo site_url('layers/edit/'.$layers_item['id']); ?>">
                         <?php echo $this->lang->line('gp_edit'); ?>
                     </a>
-
+                    <a class="btn btn-info" href="<?php echo site_url('layers/edit/'.$layers_item['id'].'/1'); ?>">
+                        <?php echo lang('gp_copy'); ?>
+                    </a>
                 </td>
             </tr>
         <?php endforeach; ?>

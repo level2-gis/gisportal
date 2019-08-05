@@ -3,7 +3,7 @@
 
         <?php echo form_open("auth/login"); ?>
 
-        <img height="50px" class="center-block" src="<?php echo base_url("assets/img/header_logo.png"); ?>" alt="">
+        <img height="50px" class="center-block" src="<?php echo base_url("assets/img/header_logo.png") . '?v=' . $this->config->item('header_logo_version'); ?>" alt="">
         <?php if(!$this->config->item('logo_contains_site_title')) : ?>
             <h3 class="text-center"><?php echo $heading; ?></h3>
         <?php endif; ?>

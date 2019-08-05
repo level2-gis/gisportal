@@ -162,3 +162,8 @@ $config['project_group_custom2_rules'] = '';
  * Set to true if you don't want to display site title next to logo (header, login)
  */
 $config['logo_contains_site_title'] = FALSE;
+
+/*
+ * Increase this number when you change header_logo to prevent displaying old cached image on the client side
+ */
+$config['header_logo_version'] = 1;

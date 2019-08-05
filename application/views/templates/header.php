@@ -106,7 +106,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" target="_blank" href="<?php echo base_url(); ?>">
+            <a class="navbar-brand" href="<?php echo base_url(); ?>">
                 <img height="32px" src="<?php echo base_url("assets/img/header_logo.png") . '?v=' . $this->config->item('header_logo_version'); ?>" alt="">
             </a>
             <?php if(!$this->config->item('logo_contains_site_title')) : ?>

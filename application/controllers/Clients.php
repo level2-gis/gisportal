@@ -366,9 +366,10 @@ class Clients extends CI_Controller
 
         $source_srs = ' -s_srs ' . $file_crs . ' ';
         $target_srs = ' -t_srs EPSG:' . $srid . ' ';
+        $assign_srs = ' -a_srs EPSG:' . $srid . ' ';
 
         //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
-        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . $assign_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
         $output = shell_exec($mycmd);
 
         $cnt_after = $qgs->get_layer_feature_count($conn, $table);

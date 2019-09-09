@@ -222,6 +222,16 @@ class Qgisproject_model extends CI_Model
                     // ... maybe other parms ...
                 }
             }
+
+            //read user and pass for authcfg from settings
+            if(isset($ds_parms['authcfg']) && defined('AUTHCFG')) {
+                $auth = AUTHCFG;
+                $cfg = $auth[$ds_parms['authcfg']];
+                if(!empty($cfg)) {
+                    $ds_parms['user'] = $cfg['user'];
+                    $ds_parms['password'] = $cfg['password'];
+                }
+            }
         }
         return $ds_parms;
     }

@@ -343,10 +343,12 @@ class Clients extends CI_Controller
         $qgs_lay_info = $qgs->get_layer_info($qgs_lay);
 
         $format_name = 'PostgreSQL'; //TODO
-        $conn = $qgs_lay->datasource;
+        //$conn = $qgs_lay->datasource;
         $srid = (string)$qgs_lay->srs->spatialrefsys->srid;
         //removing text sslmode and all after that
-        $conn = "PG:" . rtrim(substr($conn, 0, strpos($conn, 'sslmode')));
+        //$conn = "PG:" . rtrim(substr($conn, 0, strpos($conn, 'sslmode')));
+        $conn = "PG:dbname='".$qgs_lay_info['dbname']."' host=".$qgs_lay_info['host']." port=".$qgs_lay_info['port']." user=".$qgs_lay_info['user']." password=".$qgs_lay_info['password'];
+
 
         $table = $qgs_lay_info['table'];
         //$sql = $qgs_lay_info['sql'];

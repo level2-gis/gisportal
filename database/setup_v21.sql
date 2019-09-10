@@ -176,9 +176,14 @@ $_$;
 -- Name: get_project_data(text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.get_project_data(project text) RETURNS TABLE(client_id integer, client_name text, client_display_name text, client_url text, theme_name text, overview_layer json, base_layers json, extra_layers json, tables_onstart text[], is_public boolean, project_id integer, project_name text, project_display_name text, crs text, description text, restrict_to_start_extent boolean, geolocation boolean, feedback boolean, measurements boolean, print boolean, zoom_back_forward boolean, identify_mode boolean, permalink boolean, feedback_email text, project_path text, plugins text[])
-    LANGUAGE plpgsql COST 1
-    AS $_$
+CREATE FUNCTION public.get_project_data(project text)
+  RETURNS TABLE(client_id integer, client_name text, client_display_name text, client_url text, theme_name text, overview_layer json, base_layers json, extra_layers json, tables_onstart text[], is_public boolean, project_id integer, project_name text, project_display_name text, crs text, description text, restrict_to_start_extent boolean, geolocation boolean, feedback boolean, measurements boolean, print boolean, zoom_back_forward boolean, identify_mode boolean, permalink boolean, feedback_email text, project_path text, plugins text[], custom1 text, custom2 text)
+LANGUAGE 'plpgsql'
+
+COST 1
+VOLATILE
+ROWS 1000
+AS $BODY$
 
 declare base json;
 declare overview json;
@@ -227,21 +232,17 @@ begin
                  projects.permalink,
                  projects.feedback_email,
                  projects.project_path,
-                 plugins
+                 plugins,
+                 g.custom1,
+                 g.custom2
 
-     FROM projects,clients,themes WHERE clients.theme_id=themes.id AND projects.client_id = clients.id AND projects.name=$1;
+     FROM projects,clients,themes,project_groups g WHERE clients.theme_id=themes.id AND projects.client_id = clients.id AND projects.project_group_id = g.id AND projects.name=$1;
 end;
 
-$_$;
+$BODY$;
 
-
---
--- TOC entry 2475 (class 0 OID 0)
--- Dependencies: 278
--- Name: FUNCTION get_project_data(project text); Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON FUNCTION public.get_project_data(project text) IS 'IN project --> client, theme, baselayers, overview layer, extra layers and tables_onstart for project_name.';
+COMMENT ON FUNCTION public.get_project_data(text)
+IS 'IN project --> client, theme, baselayers, overview layer, extra layers and tables_onstart for project_name.';
 
 
 SET default_tablespace = '';
@@ -1334,7 +1335,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.settings VALUES (20, '2019-07-05');
+INSERT INTO public.settings VALUES (21, '2019-09-10');
 
 
 --

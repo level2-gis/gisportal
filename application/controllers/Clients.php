@@ -353,7 +353,7 @@ class Clients extends CI_Controller
         $table = $qgs_lay_info['table'];
 
         //test
-        $sql = "SELECT 'aaaa' AS createdby, SetSRID(OGR_Geometry,3794) AS OGR_Geometry FROM " . $table;
+        $sql = "SELECT 'aaaa' AS createdby, SetSRID(Geometry,3794) AS Geometry FROM " . $table;
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {
@@ -371,7 +371,7 @@ class Clients extends CI_Controller
         $assign_srs = ' -a_srs EPSG:' . $srid . ' ';
 
         //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
-        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . $assign_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table . ' -sql "'.$sql.'"';
+        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . $assign_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table . ' -dialect sqlite -sql "'.$sql.'"';
         $output = shell_exec($mycmd);
 
         $cnt_after = $qgs->get_layer_feature_count($conn, $table);
@@ -380,6 +380,7 @@ class Clients extends CI_Controller
         }
 
         if($cnt_after<=$cnt_before) {
+            error_log($mycmd);
             throw new Exception('No data imported!');
         }
 

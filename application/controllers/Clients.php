@@ -351,7 +351,9 @@ class Clients extends CI_Controller
 
 
         $table = $qgs_lay_info['table'];
-        //$sql = $qgs_lay_info['sql'];
+
+        //test
+        $sql = "SELECT 'aaaa' AS createdby, SetSRID(OGR_Geometry,3794) AS OGR_Geometry FROM " . $table;
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {
@@ -369,7 +371,7 @@ class Clients extends CI_Controller
         $assign_srs = ' -a_srs EPSG:' . $srid . ' ';
 
         //$mycmd = get_ogr() . 'ogr2ogr -t_srs EPSG:' . $srid . ' -append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
-        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . $assign_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table;
+        $mycmd = $qgs->get_ogr() . 'ogr2ogr ' . $target_srs . $source_srs . $assign_srs . '-append -f "' . $format_name . '" "' . $conn . '" "' . $user_file . '" -nln ' . $table . ' -sql "'.$sql.'"';
         $output = shell_exec($mycmd);
 
         $cnt_after = $qgs->get_layer_feature_count($conn, $table);

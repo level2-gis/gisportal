@@ -353,7 +353,8 @@ class Clients extends CI_Controller
         $table = $qgs_lay_info['table'];
 
         //test
-        $sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
+        //$sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
+        $sql = "SELECT * FROM " . explode('.',$file_name)[0];
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {

@@ -350,10 +350,10 @@ class Clients extends CI_Controller
         $conn = "PG:dbname='".$qgs_lay_info['dbname']."' host=".$qgs_lay_info['host']." port=".$qgs_lay_info['port']." user=".$qgs_lay_info['user']." password=".$qgs_lay_info['password'];
 
 
-        $table = str_replace('"', "", $qgs_lay_info['table']);;
+        $table = $qgs_lay_info['table'];
 
         //test
-        $sql = "SELECT 'aaaa' AS createdby, SetSRID(Geometry,3794) AS Geometry FROM " . $table;
+        $sql = "SELECT 'aaaa' AS createdby, SetSRID(Geometry,3794) AS Geometry";
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {

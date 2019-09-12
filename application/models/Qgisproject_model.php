@@ -236,6 +236,28 @@ class Qgisproject_model extends CI_Model
         return $ds_parms;
     }
 
+    public function get_layer_pg_connection($ds_parms) {
+
+        if(empty($ds_parms['host']))
+        {
+            $ds_parms['host'] = 'localhost';
+        }
+        if ($ds_parms['provider'] == 'postgres') {
+            $PDO_DSN = "pgsql:host=${ds_parms['host']};port=${ds_parms['port']};dbname=${ds_parms['dbname']}";
+        } else {
+            $this->error = 'provider not supported:'.$ds_parms['provider'];
+            return false;
+        }
+        try {
+            $dbh = new PDO($PDO_DSN, @$ds_parms['user'], @$ds_parms['password']);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+        return $dbh;
+    }
+
     public function get_layer_feature_count($connection_string, $table) {
         try {
             $mycmd = $this->get_ogr() .'ogrinfo -so "' . $connection_string . '" ' . $table;

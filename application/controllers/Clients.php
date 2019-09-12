@@ -358,7 +358,7 @@ class Clients extends CI_Controller
 
         //test, does not work, geometry has always srid 0 in db, that's why I only add calculated fields and update geometry later
         //$sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
-        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby, now() AS created FROM " . explode('.',$file_name)[0];
+        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . explode('.',$file_name)[0];
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {

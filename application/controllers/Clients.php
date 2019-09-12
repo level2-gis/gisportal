@@ -352,13 +352,18 @@ class Clients extends CI_Controller
 
         $table = $qgs_lay_info['table'];
         $geom_column = $qgs_lay_info['geom_column'];
+        $layer_name = explode('.',$file_name)[0];
+
+        if($this->upload->file_ext=='.dxf') {
+            $layer_name = 'entities';
+        }
 
         $user = $this->session->userdata('user_name');
         $project = $this->session->userdata('project');
 
         //test, does not work, geometry has always srid 0 in db, that's why I only add calculated fields and update geometry later
         //$sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
-        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . explode('.',$file_name)[0];
+        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . $layer_name;
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {

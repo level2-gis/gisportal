@@ -62,6 +62,12 @@ class Project_groups extends CI_Controller
 
         try {
             $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
+
+            //if there is only one group, open it
+            if(count($data['items']) == 1) {
+                redirect('projects/view_group/' . $client_id . '/' . $data['items'][0]['id']);
+            }
+
             $data['navigation'] = $this->build_user_navigation($client,$parent_id);
         } catch (Exception $e) {
             $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');

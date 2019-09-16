@@ -156,6 +156,7 @@ $lang['gp_send'] = 'Send';
 $lang['gp_email_sent'] = 'Email sent';
 $lang['gp_email_subject'] = 'Subject';
 $lang['gp_email_body'] = 'Body';
+$lang['gp_send_copy_to'] = 'Send copy to';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

@@ -114,8 +114,8 @@ $lang['gp_info_demo'] = 'This is now only demonstration for each client web repo
 $lang['gp_plugins'] = 'Plugins';
 $lang['gp_new_role'] = 'New Role';
 $lang['gp_new_access'] = 'New Access';
-$lang['gp_email_new_role'] = 'You were given a new role';
-$lang['gp_email_new_access'] = 'You were given new access for client';
+$lang['gp_email_new_role'] = 'Dodeljene so vam bile nove pravice';
+$lang['gp_email_new_access'] = 'Dodeljen vam je bil nov dostopa za';
 
 $lang['gp_download'] = 'Download';
 $lang['gp_template'] = 'Template';
@@ -156,6 +156,7 @@ $lang['gp_send'] = 'Send';
 $lang['gp_email_sent'] = 'Email sent';
 $lang['gp_email_subject'] = 'Subject';
 $lang['gp_email_body'] = 'Body';
+$lang['gp_send_copy_to'] = 'Send copy to';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

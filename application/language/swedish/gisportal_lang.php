@@ -156,6 +156,7 @@ $lang['gp_send'] = 'Skicka';
 $lang['gp_email_sent'] = 'E-post skickat';
 $lang['gp_email_subject'] = 'Ärende';
 $lang['gp_email_body'] = 'Innehåll';
+$lang['gp_send_copy_to'] = 'Send copy to';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

@@ -115,7 +115,7 @@ $lang['gp_plugins'] = 'Plugins';
 $lang['gp_new_role'] = 'New Role';
 $lang['gp_new_access'] = 'New Access';
 $lang['gp_email_new_role'] = 'Dodeljene so vam bile nove pravice';
-$lang['gp_email_new_access'] = 'Dodeljen vam je bil nov dostopa za';
+$lang['gp_email_new_access'] = 'Dodeljen vam je bil nov dostop za';
 
 $lang['gp_download'] = 'Download';
 $lang['gp_template'] = 'Template';

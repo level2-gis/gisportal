@@ -454,7 +454,9 @@ class Ion_auth
         $this->email->clear();
         $this->email->from($this->config->item('admin_email'), $this->config->item('site_title'));
         //if want to show emails, just use to, by default is bcc and limit parameter which splits into more batches if emails>limit
-        $this->email->bcc(empty($to) ? $this->config->item('admin_email') : $to, 100);
+        //TODO make this optional
+        //$this->email->bcc(empty($to) ? $this->config->item('admin_email') : $to, 100);
+        $this->email->to(empty($to) ? $this->config->item('admin_email') : $to);
         $this->email->subject($this->config->item('site_title') . ' - ' . $subject);
         $this->email->message($message);
 

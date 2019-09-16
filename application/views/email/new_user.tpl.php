@@ -6,6 +6,8 @@
         <br /><?php echo $email; ?>
         <br /><?php echo $organization; ?></p>
 	<p><?php echo anchor(site_url('users/edit/'.$id), lang('gp_edit')); ?></p>
-<footer><?php echo $this->config->item('site_title') . ' - ' . $_SERVER['SERVER_NAME']; ?></footer>
+    <br><br>
+    <hr>
+    <footer><?php echo $this->config->item('site_title') . ' - ' . $_SERVER['SERVER_NAME']; ?></footer>
 </body>
 </html>

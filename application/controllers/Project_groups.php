@@ -130,6 +130,7 @@ class Project_groups extends CI_Controller
                 $data['subtitle'] = $this->get_name($group);
                 $data['logged_in'] = true;
                 $data['is_admin'] = $user_role->admin;
+                $data['own_email'] = $user_role->email;
                 $data['role'] = $user_role->role_name;
                 $data['emails'] = $emails;
 
@@ -141,8 +142,16 @@ class Project_groups extends CI_Controller
             else {
                 $subject = $this->input->post('subject');
                 $body = $this->input->post('body');
+                $include = $this->input->post('include');
 
-                $this->ion_auth->send_email($subject,nl2br($body),$emails);
+                if(!empty($include)) {
+                    array_push($emails,$include);
+                }
+
+                $data = array('body' => nl2br($body));
+
+                $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'send_email.tpl.php', $data, TRUE);
+                $this->ion_auth->send_email($subject,$message,$emails);
 
                 $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . lang('gp_email_sent') . '</div>');
                 redirect('project_groups/edit/' . $id);

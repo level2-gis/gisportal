@@ -37,6 +37,15 @@
                 <span class="text-danger"><?php echo form_error('body'); ?></span>
             </div>
         </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <div class="control">.
+                    <input type="checkbox" name="include" value="<?php echo $own_email; ?>" checked="checked"/> <?php echo lang('gp_send_copy_to') . ': ' . $own_email; ?>
+                </div>
+            </div>
+        </div>
+
     </fieldset>
 
     <div id="fixed-actions">

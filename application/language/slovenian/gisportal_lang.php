@@ -112,9 +112,9 @@ $lang['gp_upload'] = 'Upload';
 $lang['gp_info_demo'] = 'This is now only demonstration for each client web repository for user uploaded files.
         Files uploaded from projects are in projects subfolders.';
 $lang['gp_plugins'] = 'Plugins';
-$lang['gp_new_role'] = 'New Role';
-$lang['gp_new_access'] = 'New Access';
-$lang['gp_email_new_role'] = 'Dodeljene so vam bile nove pravice';
+$lang['gp_new_role'] = 'Nova pravica';
+$lang['gp_new_access'] = 'Nov dostop';
+$lang['gp_email_new_role'] = 'Dodeljena vam je bila nova pravica';
 $lang['gp_email_new_access'] = 'Dodeljen vam je bil nov dostop za';
 
 $lang['gp_download'] = 'Download';

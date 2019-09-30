@@ -90,6 +90,14 @@ class Qgisproject_model extends CI_Model
 
 
             } elseif ($config === QGS_GROUP) {
+
+                //first check if project is in client subfolder
+                if (is_readable($this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file)) {
+                    $valid = true;
+                    $message = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project_file;
+                    return ["valid" => $valid, "name" => $message];
+                }
+
                 $project->project_path = $this->main_path . $project->client_name . DIRECTORY_SEPARATOR . $project->group_name . DIRECTORY_SEPARATOR . $project_file;
 
                 //check if project is in client/group subfolder

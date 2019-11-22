@@ -10,7 +10,7 @@
         $img_class = 'item_no_image';
         $desc_class = 'description_no_image';
     } else {
-        $img = base_url($img_path);
+        $img = base_url($img_path) . '?v=' . $this->config->item('header_logo_version');
         $img_class = 'item_image';
         $desc_class = 'description';
     }

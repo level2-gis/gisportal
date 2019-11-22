@@ -165,5 +165,6 @@ $config['logo_contains_site_title'] = FALSE;
 
 /*
  * Increase this number when you change header_logo to prevent displaying old cached image on the client side
+ * This implies also to clients, groups and project images
  */
 $config['header_logo_version'] = 1;

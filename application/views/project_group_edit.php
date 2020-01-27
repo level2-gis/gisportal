@@ -17,15 +17,16 @@
 
 <div class="page-header clearfix">
     <h1 class="col-md-8"><span><?php echo $title; ?></span></h1>
-    <div class="btn-group actions  pull-right">
-        <button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo lang('gp_action'); ?> <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="<?php echo site_url('project_groups/send_email/'.$group['id']); ?>"><?php echo lang('gp_send_email'); ?></a></li>
-        </ul>
-    </div>
-
+    <?php if($group['type'] == PROJECT_GROUP) : ?>
+		<div class="btn-group actions  pull-right">
+			<button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<?php echo lang('gp_action'); ?> <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="<?php echo site_url('project_groups/send_email/'.$group['id']); ?>"><?php echo lang('gp_send_email'); ?></a></li>
+			</ul>
+		</div>
+	<?php endif; ?>
 </div>
 
 <?php echo $this->session->flashdata('alert'); ?>

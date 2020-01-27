@@ -8,7 +8,7 @@
         <div class="col-md-8">
             <?php if ($qgis_check['valid']) {
                 ?>
-                <div class="alert alert-success">
+                <div class="alert alert-info">
                     <div class="row col-md-offset-1">
                         <?php echo $qgis_check['name'] ?> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     </div>

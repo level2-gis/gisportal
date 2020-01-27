@@ -159,6 +159,17 @@ $config['project_group_custom2_name'] = '';
 $config['project_group_custom2_rules'] = '';
 
 /*
+ * Other optional custom fields for project_groups, no rules here, just set name for each field and make it visible to
+ * edit.
+ * Data from custom fields is available in gisapp in projectData object
+ */
+$config['project_group_custom3_name'] = '';
+$config['project_group_custom4_name'] = '';
+$config['project_group_link1_name'] = '';
+$config['project_group_link2_name'] = '';
+$config['project_group_link3_name'] = '';
+
+/*
  * Set to true if you don't want to display site title next to logo (header, login)
  */
 $config['logo_contains_site_title'] = FALSE;

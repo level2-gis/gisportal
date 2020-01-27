@@ -21,7 +21,12 @@ class Project_group_model extends CI_Model {
             'contact_phone'             => null,
             'contact_email'             => null,
             'custom1'                   => null,
-            'custom2'                   => null
+            'custom2'                   => null,
+            'custom3'                   => null,
+            'custom4'                   => null,
+            'link1'                   	=> null,
+            'link2'                   	=> null,
+            'link3'                   	=> null
         );
     }
 

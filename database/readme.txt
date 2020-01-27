@@ -11,7 +11,12 @@ latest gisapp - https://github.com/uprel/gisapp
 Minor update script from v20 to v21. No structure change, add custom1 and custom2 fields from project group to function
 get_project_data().
 
-3. setup_v21.sql
+3. 021_update.sql
+
+Update script from v21 to v22. Adds more custom fields (custom3, custom4, link1, link2, link3) to project_groups table.
+This is optional and so not included in main setup file.
+
+4. setup_v21.sql
 
 If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
 latest gisapp - https://github.com/uprel/gisapp

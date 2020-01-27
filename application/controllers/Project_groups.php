@@ -277,6 +277,11 @@ class Project_groups extends CI_Controller
             $data['image'] = $this->getImage($group['name']);
             $data['custom1'] = $this->config->item('project_group_custom1_name');
             $data['custom2'] = $this->config->item('project_group_custom2_name');
+            $data['custom3'] = $this->config->item('project_group_custom3_name');
+            $data['custom4'] = $this->config->item('project_group_custom4_name');
+            $data['link1'] = $this->config->item('project_group_link1_name');
+            $data['link2'] = $this->config->item('project_group_link2_name');
+            $data['link3'] = $this->config->item('project_group_link3_name');
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
@@ -655,6 +660,23 @@ class Project_groups extends CI_Controller
             'custom1'                   => set_null($this->input->post('custom1')),
             'custom2'                   => set_null($this->input->post('custom2'))
         );
+
+        //other optional custom fields
+		if(!empty($this->input->post('custom3'))) {
+			$data['custom3'] = $this->input->post('custom3');
+		}
+		if(!empty($this->input->post('custom4'))) {
+			$data['custom4'] = $this->input->post('custom4');
+		}
+		if(!empty($this->input->post('link1'))) {
+			$data['link1'] = $this->input->post('link1');
+		}
+		if(!empty($this->input->post('link2'))) {
+			$data['link2'] = $this->input->post('link2');
+		}
+		if(!empty($this->input->post('link3'))) {
+			$data['link3'] = $this->input->post('link3');
+		}
 
         if(empty($this->input->post('contact_id'))) {
             $data['contact'] = $this->input->post('contact');

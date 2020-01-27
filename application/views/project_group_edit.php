@@ -164,6 +164,50 @@
                             </div>
                         </div>
                     <?php endif; ?>
+					<?php if (!empty($custom3)) : ?>
+						<div class="form-group">
+							<label for="custom3"
+								   class="control-label col-md-2"><?php echo $custom3; ?></label>
+							<div class="col-md-5">
+								<input class="form-control" name="custom3" placeholder="" type="text"
+									   value="<?php echo $group['custom3']; ?>"/>
+								<span class="text-danger"><?php echo form_error('custom3'); ?></span>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php if (!empty($link1)) : ?>
+						<div class="form-group">
+							<label for="link1"
+								   class="control-label col-md-2"><?php echo $link1; ?></label>
+							<div class="col-md-5">
+								<input class="form-control" name="link1" placeholder="" type="text"
+									   value="<?php echo $group['link1']; ?>"/>
+								<span class="text-danger"><?php echo form_error('link1'); ?></span>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php if (!empty($link2)) : ?>
+						<div class="form-group">
+							<label for="link2"
+								   class="control-label col-md-2"><?php echo $link2; ?></label>
+							<div class="col-md-5">
+								<input class="form-control" name="link2" placeholder="" type="text"
+									   value="<?php echo $group['link2']; ?>"/>
+								<span class="text-danger"><?php echo form_error('link2'); ?></span>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php if (!empty($link3)) : ?>
+						<div class="form-group">
+							<label for="link3"
+								   class="control-label col-md-2"><?php echo $link3; ?></label>
+							<div class="col-md-5">
+								<input class="form-control" name="link3" placeholder="" type="text"
+									   value="<?php echo $group['link3']; ?>"/>
+								<span class="text-danger"><?php echo form_error('link3'); ?></span>
+							</div>
+						</div>
+					<?php endif; ?>
                 <?php endif; ?>
             <?php endif; ?>
 

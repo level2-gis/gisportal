@@ -455,11 +455,16 @@ class Clients extends CI_Controller
     }
 
 	private function getGisappClientLogo($name) {
-		$path = dirname(FCPATH) . DIRECTORY_SEPARATOR . 'gisapp/admin/resources/images/'.$name.'.png';
-		$fn = set_realpath($path, false);
+		$path = 'gisapp/admin/resources/images/'.$name.'.png';
+		$fn = set_realpath(dirname(FCPATH) . DIRECTORY_SEPARATOR . $path, false);
+		$url_arr = parse_url(base_url());
+		$base = $url_arr['scheme'] . '://' . $url_arr['host'];
+		if(!empty($url_arr['port'])) {
+			$base.=':'.$url_arr['port'];
+		}
 
 		if (is_file($fn)) {
-			return "<img title='".$fn."' class='img-responsive' src='" . base_url($path) . "'>";
+			return "<img title='".$fn."' class='img-responsive' src='" . $base.'/'.$path . "'>";
 		}
 		else {
 			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>".$fn."</div>";

@@ -236,7 +236,7 @@ class Project_groups extends CI_Controller
 
             if($g_type == PROJECT_GROUP) {
 
-                $data['title'] = $this->lang->line('gp_edit') . ' ' . $this->lang->line('gp_group') . ' ' . $title;
+                $data['title'] = $this->lang->line('gp_group') . ' ' . $title;
                 $data['projects'] = $this->project_model->get_projects($group['client_id'], '{'.$id.'}', FALSE);
                 $data['users'] = $this->user_model->get_project_group_users($id);
 
@@ -259,7 +259,7 @@ class Project_groups extends CI_Controller
 
             } else if ($g_type == SUB_GROUP) {
 
-                $data['title'] = $this->lang->line('gp_edit') . ' ' . ucwords($this->lang->line('gp_sub_group')) . ' ' . $title;
+                $data['title'] = ucwords($this->lang->line('gp_sub_group')) . ' ' . $title;
                 $data['items'] = $this->build_child_groups(null, $group['id']);
 
                 //only allow edit type and client if there are none child groups for this subgroup

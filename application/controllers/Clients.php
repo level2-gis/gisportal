@@ -126,14 +126,14 @@ class Clients extends CI_Controller
 
             $em = $this->extractPostData();
             if(sizeof($_POST) > 0){
-                $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_client') .' '. $em['display_name'];
+                $data['title'] = $this->lang->line('gp_client') .' '. $em['display_name'];
                 $data['creating'] = false;
             } else {
                 if ($client_id !== false){
                     $dq = $this->client_model->get_client($client_id);
                     if ($dq->id != null){
                         $em = (array)$dq;
-                        $data['title'] = $this->lang->line('gp_edit').' '.$this->lang->line('gp_client') .' '. $em['display_name'];
+                        $data['title'] = $this->lang->line('gp_client') .' '. $em['display_name'];
                         $data['creating'] = false;
                     }
                 }

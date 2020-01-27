@@ -90,7 +90,7 @@ class Users extends CI_Controller {
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
-						$data['title'] = lang('gp_edit') . ' ' .lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
+						$data['title'] = lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
 						$data['creating'] = false;
 					}
 				}

@@ -50,11 +50,17 @@
 					</div>	
 				</div>
                 <div class="form-group">
-                    <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
+                    <label class="control-label col-md-2">Portal <?php echo $this->lang->line('gp_image'); ?></label>
                     <div class="col-md-5">
                         <?php echo $image; ?>
                     </div>
                 </div>
+				<div class="form-group">
+					<label class="control-label col-md-2">Gisapp logo</label>
+					<div class="col-md-5">
+						<?php echo $logo; ?>
+					</div>
+				</div>
 
                 <?php if (!$creating) : ?>
                     <div class="form-group">

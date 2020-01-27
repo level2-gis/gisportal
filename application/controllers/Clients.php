@@ -120,7 +120,7 @@ class Clients extends CI_Controller
 
         if ($this->form_validation->run() == FALSE)
         {
-            $data['title'] = $this->lang->line('gp_create').' '.$this->lang->line('gp_new').' '.$this->lang->line('gp_client');
+            $data['title'] = $this->lang->line('gp_new_client');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 
@@ -141,6 +141,7 @@ class Clients extends CI_Controller
             $data['items'] = $this->build_child_groups($em['id'], null);
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
+            $data['logo'] = $this->getGisappClientLogo($em['name']);
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
@@ -446,12 +447,24 @@ class Clients extends CI_Controller
         $fn = set_realpath(FCPATH.$path, false);
 
         if (is_file($fn)) {
-            return "<img class='img-responsive' src='" . base_url($path) . "'>";
+            return "<img title='".$fn."' class='img-responsive' src='" . base_url($path) . "'>";
         }
         else {
             return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (300x200px)</br>".$fn."</div>";
         }
     }
+
+	private function getGisappClientLogo($name) {
+		$path = dirname(FCPATH) . DIRECTORY_SEPARATOR . 'gisapp/admin/resources/images/'.$name.'.png';
+		$fn = set_realpath($path, false);
+
+		if (is_file($fn)) {
+			return "<img title='".$fn."' class='img-responsive' src='" . base_url($path) . "'>";
+		}
+		else {
+			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>".$fn."</div>";
+		}
+	}
 
 
     public function _unique_name($name) {

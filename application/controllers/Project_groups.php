@@ -338,7 +338,7 @@ class Project_groups extends CI_Controller
 
         if ($this->form_validation->run() == FALSE) {
 
-            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_group');
+            $data['title'] = $this->lang->line('gp_new_group');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['group'] = $group;
 

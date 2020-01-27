@@ -89,7 +89,7 @@ class Layers extends CI_Controller{
         $data['types'] = array('Bing', 'Google', 'OSM', 'WMS', 'WMTS', 'XYZ');
 
         if ($this->form_validation->run() == FALSE) {
-            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_layer');
+            $data['title'] = $this->lang->line('gp_new_layer');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 

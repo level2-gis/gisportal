@@ -437,7 +437,7 @@ class Projects extends CI_Controller
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['title'] = $this->lang->line('gp_create').' '.$this->lang->line('gp_new').' '.$this->lang->line('gp_project');
+            $data['title'] = $this->lang->line('gp_new_project');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 
@@ -540,7 +540,7 @@ class Projects extends CI_Controller
         $this->form_validation->set_rules('project_group_id', 'lang:gp_group', 'required');
 
         if ($this->form_validation->run() === FALSE) {
-            $data['title'] = $this->lang->line('gp_create') . ' ' . $this->lang->line('gp_new') . ' ' . $this->lang->line('gp_project');
+            $data['title'] = $this->lang->line('gp_new_project');
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
             $data['creating'] = true;
 

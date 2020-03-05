@@ -29,7 +29,7 @@ if (!function_exists('set_datestr')) {
 
     function set_datestr($val)
     {
-        if ($val == '' || $val == null) {
+        if (empty($val)) {
             return '';
         }
 

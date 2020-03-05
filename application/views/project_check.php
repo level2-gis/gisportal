@@ -12,7 +12,13 @@
                     <div class="row col-md-offset-1">
                         <?php echo $qgis_check['name'] ?> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     </div>
-                    <div class="row col-md-offset-1">
+					<div class="row col-md-offset-1">
+						<?php
+							$info = get_file_info($qgis_check['name'], array('size','date'));
+							echo date('Y-m-d H:i:s', $info['date']) . ', ' . byte_format($info['size'],2);
+						?>
+					</div>
+					<div class="row col-md-offset-1">
                         <a title="<?php echo ($this->lang->line('gp_download') . ' ' . $this->lang->line('gp_qgis_project')); ?>" href="<?php echo site_url('projects/download/' . $project['id']); ?>">
                             <?php echo $this->lang->line('gp_download'); ?>?
                         </a>

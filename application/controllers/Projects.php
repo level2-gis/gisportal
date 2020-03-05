@@ -15,7 +15,7 @@ class Projects extends CI_Controller
         $this->load->model('layer_model');
         $this->load->model('plugin_model');
         $this->load->model('qgisproject_model');
-        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file', 'download'));
+        $this->load->helper(array('url', 'html', 'path', 'eqwc_parse', 'eqwc_dir', 'file', 'download', 'number'));
     }
 
     public function index()
@@ -1090,7 +1090,7 @@ class Projects extends CI_Controller
         $fn = set_realpath(FCPATH.$path, false);
 
         if (is_file($fn)) {
-            return "<img class='img-responsive' src='" . base_url($path) . "'>";
+			return "<img title='".$fn."' class='img-responsive' src='" . base_url($path) . "'>";
         }
         else {
             return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (250x177px)</br>".$fn."</div>";

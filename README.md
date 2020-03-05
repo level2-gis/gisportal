@@ -73,6 +73,15 @@ Administrator is every user with admin=true in database.
     
     This means that you login to gisportal and then browse all public projects or projects you have permission without
     new login.
+    
+1.  If you want users to confirm their registration by getting email to activate account you need to enable Email service below and set to TRUE
+    option 
+    
+    ```
+    $config['email_activation']  
+    ```
+    
+    in `application/third_party/ion_auth/config/ion_auth.php`    
 
 1.  Navigate browser to http://your-server/gisportal/, you should see login page. Default login is `admin`, `admin`.
 

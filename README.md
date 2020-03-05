@@ -29,29 +29,33 @@ Administrator is every user with admin=true in database.
 
 ![admin1](https://github.com/uprel/gisportal/wiki/images/admin_projects_view1.png)
 
-## Setup
+## Setup v2
 
 > You go through this after you setup gisapp!
 
 > This code relies on database from gisapp. Make sure you are running latest [database version](https://github.com/uprel/gisapp/wiki/3.-Managing-Database#upgrading)!
 
-1. Read release info first - [v1.0.0](https://github.com/uprel/gisportal/releases/tag/v1.0.0)
 1. Checkout into web root to have gisportal folder beside gisapp folder (EQWC)
 
 	```
 	cd /var/www/html/
 	git clone https://github.com/level2-gis/gisportal.git
-	cd gisportal
-	git checkout v1.0.0
+	```
+    This got you latest code from master. If you need specific version type:
+    
+    ```
+    cd gisportal
+	git checkout v2.0.0
 	```
 	
-1. Setup database connection in application/config/database.php
-1. Setup base site URL and default language in application/config/config.php
-1. Copy gisportal_template.php to gisportal.php in application/config/.
-1. Adjust gisportal specific settings in new gisportal.php file.
-1. Edit header_logo.png in assets/img folder.
-1. Enable integration with gisportal in gisapp/client_common/settings.js
-1. To preserve session information from gisapp to gisportal you have to edit php.ini and change line
+1. Setup database connection in `application/config/database.php`
+1. Setup base site URL and default language in `application/config/config.php`
+1. Copy `gisportal_template.php` to `gisportal.php` in `application/config/`.
+1. Adjust gisportal specific settings in new `gisportal.php` file.
+1. Upgrade gisapp database with gisportal specifics. Details are in [database/readme.txt](database/readme.txt).
+1. Edit header_logo.png in `assets/img` folder.
+1. Enable integration with gisportal in `gisapp/client_common/settings.js`
+1. To preserve session information from gisapp to gisportal you have to edit `php.ini` and change line
 
     ```
     session.name = PHPSESSID
@@ -70,24 +74,25 @@ Administrator is every user with admin=true in database.
     This means that you login to gisportal and then browse all public projects or projects you have permission without
     new login.
 
+1.  Navigate browser to http://your-server/gisportal/, you should see login page. Default login is `admin`, `admin`.
+
 ## Email service
-If you entered correct gmail info at config/gisportal.php you enabled email service using Google SMTP server. That means you don't need to setup own mail server. This service can be used to sending emails from gisapp or gisportal.
+You need to configure email for password reset and other email actions from gisportal and gisapp. That means you don't need to setup own mail server.
+Current email configuration is for Gmail account to send emails using Google SMTP server.
+Edit `application/config/email.php` with your own Gmail access.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
-
-Email service is currently used with new User Feedback control in gisapp and with Editor plugin.
-It is planned to be used with gisportal (for sending emails to users) and for other tasks in gisapp.
 
 If you have problems sending email check this settings for your Google account: [Google-account-configuration](../../wiki/Google-account-configuration)
 
 ## Shortening URL
 Now your gisportal URL looks like this:
 
-```http://localhost/gisportal/index.php/login```
+```http://your-server/gisportal/index.php/login```
 
 Read [Shortening URL on Wiki](https://github.com/uprel/gisportal/wiki/Shortening-URL) to remove "/gisportal/index.php", like this:
 
-```http://localhost/login```
+```http://your-server/login```
 
 > You can test this on provided Demo link above!
 

@@ -78,7 +78,7 @@ class Signup extends CI_Controller
 			$additional_data = array(
                 'first_name' => $this->input->post('fname'),
                 'last_name' => $this->input->post('lname'),
-                'organization' => $this->input->post('organization'),
+                'company' => $this->input->post('organization'),
                 'phone' => $this->input->post('phone')
 			);
 			
@@ -87,7 +87,7 @@ class Signup extends CI_Controller
 			if ($new_id)
 			{
                 $msg = $this->ion_auth->messages();     //old $this->lang->line('gp_register_success');
-                $this->session->set_flashdata('message','<div class="alert alert-warning text-center">' . $msg . '</div>');
+                $this->session->set_flashdata('message','<div class="alert alert-info text-center">' . $msg . '</div>');
 
                 //prepare message for administrators
                 $additional_data["id"] = $new_id;

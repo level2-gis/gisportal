@@ -86,8 +86,8 @@ Administrator is every user with admin=true in database.
 1.  Navigate browser to http://your-server/gisportal/, you should see login page. Default login is `admin`, `admin`.
 
 ## Email service
-You need to configure email for password reset and other email actions from gisportal and gisapp. That means you don't need to setup own mail server.
-Current email configuration is for Gmail account to send emails using Google SMTP server.
+You need to configure email for password reset and other email actions from gisportal and gisapp.
+Current email configuration is for Gmail account to send emails using Google SMTP server. That means you don't need to setup own mail server.
 Edit `application/config/email.php` with your own Gmail access.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)

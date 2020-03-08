@@ -22,6 +22,7 @@ $lang['gp_organization'] = 'Organizacija';
 $lang['gp_username_placeholder'] = 'Up. ime ali e-pošta';
 $lang['gp_confirm'] = 'Potrdite';
 $lang['gp_here'] = 'tukaj';
+$lang['gp_session_timeout'] = "Vaša seja je potekla. Ponovno se prijavite!";
 
 $lang['gp_view_projects'] = 'Poglej projekte';
 $lang['gp_open_project'] = 'Odpri projekt';

@@ -72,8 +72,12 @@ class Auth extends CI_Controller
         }
 
         if ($this->ion_auth->logged_in()) {
-            empty($ref) ? redirect("/") : redirect($ref);
-        }
+        	empty($ref) ? redirect("/") : redirect($ref);
+        } else {
+        	if(!empty($ru)) {
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">'.lang("gp_session_timeout").'</div>');
+			}
+		}
 
         //if(empty($this->session->flashdata('message'))) {
         //    $this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->portal_model->get_login_msg() . '</div>');

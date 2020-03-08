@@ -22,6 +22,7 @@ $lang['gp_organization'] = 'Organizacja';
 $lang['gp_username_placeholder'] = 'Login lub Email';
 $lang['gp_confirm'] = 'Potwierdź';
 $lang['gp_here'] = 'tutaj';
+$lang['gp_session_timeout'] = "Your session has expired. Please login again!";
 
 $lang['gp_view_projects'] = 'Przeglądaj projekty';
 $lang['gp_open_project'] = 'Otwórz projekt';

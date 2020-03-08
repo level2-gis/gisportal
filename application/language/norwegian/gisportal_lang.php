@@ -22,6 +22,7 @@ $lang['gp_organization'] = 'Organisasjon';
 $lang['gp_username_placeholder'] = 'Brukernavn eller epost';
 $lang['gp_confirm'] = 'Forsett?';
 $lang['gp_here'] = 'here';
+$lang['gp_session_timeout'] = "Your session has expired. Please login again!";
 
 $lang['gp_view_projects'] = 'Se prosjekter';
 $lang['gp_open_project'] = 'åpne prosjekt';

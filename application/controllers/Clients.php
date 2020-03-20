@@ -260,7 +260,11 @@ class Clients extends CI_Controller
     public function import($client_id = false)
     {
         try {
-            $client = $this->client_model->get_client($client_id);
+			if (!$this->ion_auth->logged_in()){
+				throw new Exception(lang('gp_session_timeout'));
+			}
+
+        	$client = $this->client_model->get_client($client_id);
             if ($client == null) {
                 throw new Exception('Client not found!');
             }

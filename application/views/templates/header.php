@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table-reorder-rows.css"); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
-    <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200415"); ?>">
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200416"); ?>">
 
     <style>
         /*does not work on Firefox and MS browsers*/

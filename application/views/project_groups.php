@@ -1,6 +1,4 @@
-<p class="help-block">
-    <?php echo $navigation ?>
-</p>
+<h4><?php echo $navigation; ?></h4>
 <?php foreach ($items as $item):
 
     $img_path = "assets/img/groups/" . $item['name'] . ".png";

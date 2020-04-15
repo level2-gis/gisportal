@@ -1,8 +1,7 @@
 </div>
-<div class="row"></div>
 <div class="container-fluid news-band">
 	<div class="container">
-		<h3><?php echo lang('gp_rss_latest_news'); ?></h3>
+		<h4><?php echo lang('gp_rss_latest_news'); ?></h4>
 		<table class="table-condensed">
 			<?php foreach ($rss['item'] as $item):
 				$pubDateInt = strtotime($item['pubDate']);

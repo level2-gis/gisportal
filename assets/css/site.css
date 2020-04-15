@@ -137,3 +137,10 @@ body {
 .nav-tabs{
   margin-bottom:20px;
 }
+
+.news-band {
+	width: auto !important;
+	background-color: #ddd;
+	color: #323F3F;
+	padding-bottom: 10px;
+}

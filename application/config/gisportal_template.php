@@ -179,3 +179,13 @@ $config['logo_contains_site_title'] = FALSE;
  * This implies also to clients, groups and project images
  */
 $config['header_logo_version'] = 1;
+
+/*
+ * Display news items from RSS feed. Leave blank to skip this. News are displayed below client, groups and projects portal page.
+ */
+$config['rss_feed_url'] = '';
+
+/*
+ * How many items to display from RSS feed
+ */
+$config['rss_feed_limit'] = 10;

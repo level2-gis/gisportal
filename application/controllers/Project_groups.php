@@ -60,6 +60,15 @@ class Project_groups extends CI_Controller
         $data['is_admin'] = $user_role->admin;
         $data['role'] = $user_role->role_name;
 
+		//rss
+		if(!empty($this->config->item('rss_feed_url'))) {
+			$rss_config['url'] = $this->config->item('rss_feed_url');
+			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
+			$this->load->library('rss_parser', $rss_config);
+			$rss['rss'] = $this->rss_parser->parse();
+			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
+		}
+
         try {
             $data['items'] = $this->get_user_groups($client_id,$parent_id,$data['is_admin']);
 
@@ -78,6 +87,9 @@ class Project_groups extends CI_Controller
 
         $this->load->view('templates/header', $data);
         $this->load->view('project_groups', $data);
+		if(!empty($rss)) {
+			$this->load->view('rss_short', $rss);
+		}
         $this->load->view('templates/footer', $data);
 
     }

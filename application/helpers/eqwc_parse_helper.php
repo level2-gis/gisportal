@@ -27,13 +27,17 @@ if (!function_exists('set_bool')) {
 
 if (!function_exists('set_datestr')) {
 
-    function set_datestr($val)
+    function set_datestr($val, $time = TRUE)
     {
         if (empty($val)) {
             return '';
         }
 
-        return date_format(date_create($val),'Y-m-d H:i:s');
+        if($time) {
+			return date_format(date_create($val), 'Y-m-d H:i:s');
+		} else {
+			return date_format(date_create($val), 'Y-m-d');
+		}
     }
 }
 

@@ -115,6 +115,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 0;
+  padding-bottom: 40px;
 }
 
 .body-content h1 {
@@ -144,5 +145,4 @@ body {
 	color: #323F3F;
 	padding-bottom: 10px;
 	padding-top: 5px;
-	margin-top: 40px;
 }

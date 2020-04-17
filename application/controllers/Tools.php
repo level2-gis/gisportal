@@ -2,29 +2,29 @@
 class Tools extends CI_Controller {
 
 	public function index() {
-		echo 'Tools controller for running tasks on server with Command line interface';
+		echo 'Tools controller for running tasks on server with Command line interface' . PHP_EOL;
 	}
 
 	public function image_thumb_fix($client_name = FALSE)
 	{
 		try {
 			if (!is_cli()) {
-				throw new Exception('You have to run this only through command line interface!</br>TODO Write short how-to');
+				throw new Exception('You have to run this only through command line interface!'. PHP_EOL.'TODO Write short how-to'. PHP_EOL);
 			}
 			if(empty($client_name)) {
-				throw new Exception ('Client name missing!');
+				throw new Exception ('Client name missing!'. PHP_EOL);
 			}
 			//check client and upload dir
 			$this->load->model('client_model');
 			$this->load->helper(array('path','file'));
 			if(!$this->client_model->client_exists($client_name)) {
-				throw new Exception ('Client does not exist!');
+				throw new Exception ('Client does not exist!'. PHP_EOL);
 			}
 			$client_dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), true) . $client_name, true);
 			$client_files = get_dir_file_info($client_dir);
 
 			if(count($client_files) == 0) {
-				throw new Exception ('No files!');
+				throw new Exception ('No files!'. PHP_EOL);
 			}
 
 			echo "Client upload directory: {$client_dir}" . PHP_EOL;
@@ -70,7 +70,7 @@ class Tools extends CI_Controller {
 
 		} catch (Exception $e) {
 			$this->output
-				->set_content_type('text/html')
+				->set_content_type('text/plain')
 				->set_status_header(500)
 				->set_output($e->getMessage());
 		}

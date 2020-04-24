@@ -20,6 +20,9 @@ class Tools extends CI_Controller {
 			if(!$this->client_model->client_exists($client_name)) {
 				throw new Exception ('Client does not exist!'. PHP_EOL);
 			}
+
+			$this->load->library('image_lib');
+
 			$client_dir = set_realpath(set_realpath($this->config->item('main_upload_dir'), true) . $client_name, true);
 			$client_files = get_dir_file_info($client_dir);
 
@@ -57,8 +60,11 @@ class Tools extends CI_Controller {
 							//echo $file . PHP_EOL;
 							$thumb_dir = set_realpath($project_dir . 'thumb' . DIRECTORY_SEPARATOR, false);
 							if(!file_exists($thumb_dir . $file)) {
-								self::imageResize($project_dir, $file);
-								echo $thumb_dir . $file . PHP_EOL;
+								if(!self::imageResize($project_dir, $file)) {
+									echo $this->image_lib->display_errors();
+								} else {
+									echo $thumb_dir . $file . PHP_EOL;
+								}
 							}
 						}
 					}
@@ -93,7 +99,8 @@ class Tools extends CI_Controller {
 			$config['width'] = 225;
 			$config['height'] = 150;
 
-			$this->load->library('image_lib', $config);
+			$this->image_lib->clear();
+			$this->image_lib->initialize($config);
 
 			return $this->image_lib->resize();
 		}

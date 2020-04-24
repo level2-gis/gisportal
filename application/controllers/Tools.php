@@ -61,7 +61,7 @@ class Tools extends CI_Controller {
 							$thumb_dir = set_realpath($project_dir . 'thumb' . DIRECTORY_SEPARATOR, false);
 							if(!file_exists($thumb_dir . $file)) {
 								if(!self::imageResize($project_dir, $file)) {
-									echo $this->image_lib->display_errors();
+									echo 'Problem with file: ' . $file . PHP_EOL . $this->image_lib->display_errors();
 								} else {
 									echo $thumb_dir . $file . PHP_EOL;
 								}
@@ -83,7 +83,7 @@ class Tools extends CI_Controller {
 	}
 
 	/*
-	 * Copy from projects controller
+	 * Copy from projects controller (modify library clear and initialition for batch process
 	 */
 	private function imageResize($dir, $fn) {
 

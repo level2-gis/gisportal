@@ -134,8 +134,26 @@ class Auth extends CI_Controller
 
 			$this->data['heading'] = $this->config->item('site_title');
 
-			//message to display below login part, from table portal or from language string
-			//$this->data['portal_message'] = $this->portal_model->get_login_msg();
+			//rss latest news, take only last one if it is not older then 7 days
+			if(!empty($this->config->item('rss_feed_url'))) {
+				$rss_config['url'] = $this->config->item('rss_feed_url');
+				$rss_config['limit'] = 1;
+				try {
+					$this->load->library('rss_parser', $rss_config);
+					$rss = $this->rss_parser->parse();
+					$item = $rss['item'][0];
+					$pubDateInt = strtotime($item['pubDate']);
+					$dateCompare = strtotime('-7 days');
+					if ($pubDateInt < $dateCompare) {
+						$rss = null;
+					}
+				} catch (Exception $ex) {
+					$rss = null;
+				}
+			}
+
+			//message to display below login part
+			$this->data['rss'] = $rss;
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
 		}

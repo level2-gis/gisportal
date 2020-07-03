@@ -43,3 +43,14 @@
         </p>
     </div>
 </div>
+<?php if (!empty($rss)): ?>
+	<div class="row">
+		<div class="alert alert-warning col-md-4 col-md-offset-4" role="alert">
+			<?php foreach ($rss['item'] as $item): ?>
+				<?php echo '<p class="text-center"><span class="label label-danger text-uppercase">' . lang('gp_rss_new') . '</span></p>'; ?>
+				<p class="text-center"><a href="<?php echo $item['link']; ?>" target="_blank"><?php echo $item['title']; ?></a>
+				</p>
+			<?php endforeach; ?>
+		</div>
+	</div>
+<?php endif; ?>

@@ -48,7 +48,7 @@ class Project_model extends CI_Model
 
         $this->db->order_by('client_name', 'ASC');
         //$this->db->order_by('ordr', 'ASC');
-        $this->db->order_by('group_name', 'ASC');
+        //$this->db->order_by('group_name', 'ASC');
         $this->db->order_by('name', 'ASC');
         if ($client_id === FALSE) {
             if (!$user_admin) {

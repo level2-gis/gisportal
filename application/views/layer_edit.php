@@ -50,7 +50,12 @@
 					<div class="col-md-6">
 						<textarea class="form-control" cols="20" rows="18" name="definition" placeholder="" type="text"><?php echo $layer['definition']; ?></textarea>
 						<span class="text-danger"><?php echo form_error('definition'); ?></span>
-					</div>	
+					</div>
+					<div class="col-md-2">
+						<a class="btn btn-default" target="_blank" href="https://jsonlint.com/?json=<?php echo html_escape($layer['definition']); ?>">
+							Validate JSON
+						</a>
+					</div>
 				</div>
 
                 <div class="row form-group">

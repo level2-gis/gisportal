@@ -236,8 +236,9 @@ class Layers extends CI_Controller{
             unset($obj->params->{"crs"});
             unset($obj->params->{"CRS"});
         }
-        $def = json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-
+        if(!empty($obj)) {
+			$def = json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+		}
         return array(
             'id' => $this->input->post('id'),
             'type' => $type,

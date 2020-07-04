@@ -74,7 +74,11 @@ class Project_groups extends CI_Controller
 
             //if there is only one group, open it
             if(count($data['items']) == 1) {
-                redirect('projects/view_group/' . $client_id . '/' . $data['items'][0]['id']);
+				if ($data['items'][0]['type'] === SUB_GROUP) {
+					redirect('project_groups/view/' . $client_id . '/' . $data['items'][0]['id']);
+				} else {
+					redirect('projects/view_group/' . $client_id . '/' . $data['items'][0]['id']);
+				}
             }
 
             $data['navigation'] = $this->build_user_navigation($client,$parent_id);

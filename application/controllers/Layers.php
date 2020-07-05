@@ -162,6 +162,40 @@ class Layers extends CI_Controller{
     }
 
     /*
+     * Show Openlayers map layer preview
+     */
+    function map($id = FALSE) {
+
+		if ($id === FALSE) {
+			redirect("/");
+		}
+
+		if (!$this->ion_auth->logged_in()) {
+			redirect('/auth/login?ru=/' . uri_string());
+		}
+
+		$layer = (array)$this->layer_model->get_layer($id);
+		$user_role = $this->ion_auth->admin_scope();
+
+		if(empty($layer)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No layer!</div>');
+			redirect("/");
+		}
+
+		$data['title'] = $this->lang->line('gp_layer') . ' ' . $layer['display_name'];
+		$data['subtitle'] = $layer['type'];
+		$data['baselayers'] = [$layer];
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
+		$data['edit_url'] = 'layers/edit/'. $layer['id'];
+
+		$this->load->view('templates/header_map', $data);
+		$this->load->view('map', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
+    /*
      * Deleting layer
      */
     function remove($id)

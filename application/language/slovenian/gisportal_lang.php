@@ -162,6 +162,8 @@ $lang['gp_send_copy_to'] = 'Send copy to';
 $lang['gp_rss_latest_news'] = 'Zadnje novice';
 $lang['gp_rss_new'] = 'novo';
 
+$lang['gp_map'] = 'Karta';
+
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!
 $lang['gp_client_required'] = 'Client required';

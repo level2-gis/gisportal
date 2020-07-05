@@ -327,16 +327,18 @@
                        onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?> <?php echo $this->lang->line('gp_all'); ?></a>                </div>
             </div>
 
-              <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
+              <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true" data-show-columns="true" data-row-style="userRowStyle">
                 <thead>
                 <tr>
                     <th data-sortable="true"
                         data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>
                     <th data-sortable="true"
                         data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
-                    <th data-sortable="true"
-                        data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
                     <th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
+					<th data-sortable="true" data-visible="false" data-field="gp_organization"><?php echo $this->lang->line('gp_organization'); ?></th>
+					<th data-sortable="true" data-visible="false" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
+					<th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
+					<th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
                     <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
                     <th><?php echo $this->lang->line('gp_action'); ?></th>
                 </tr>
@@ -345,9 +347,12 @@
                     <tr>
                         <td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
                         <td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
-                        <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
                         <td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-                        <td class="col-md-3"><a href="#"
+						<td class="col-md-1"><?php echo $user_item['organization']; ?></td>
+						<td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
+						<td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
+						<td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>
+                        <td class="col-md-2"><a href="#"
                                                 onclick="switchRole(<?php echo $group['id'] . ',' . $user_item['user_id'] . ',' . $user_item['role_id']; ?>,'project_groups')"><?php echo $user_item['role']; ?></a>
                         </td>
                         <td class="col-md-2">

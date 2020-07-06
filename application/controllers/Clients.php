@@ -369,7 +369,7 @@ class Clients extends CI_Controller
         //test, does not work, geometry has always srid 0 in db, that's why I only add calculated fields and update geometry later
         //TODO TRY with OGR_GEOMETRY
         //$sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
-        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . $layer_name . " WHERE OGR_GEOMETRY = '".$qgs_lay_info['type']."'";
+        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM \"" . $layer_name . "\" WHERE OGR_GEOMETRY = '".$qgs_lay_info['type']."'";
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {
@@ -379,7 +379,8 @@ class Clients extends CI_Controller
         $user_file = $dir . $file_name;
         //special case for zip files, assuming inside .shp, .shx, .dbf
         if ($this->upload->file_ext=='.zip') {
-            $user_file = '/vsizip/' . $dir . $file_name . DIRECTORY_SEPARATOR . str_replace('.zip', '.shp', $file_name);
+            //$user_file = '/vsizip/' . $dir . $file_name . DIRECTORY_SEPARATOR . str_replace('.zip', '.shp', $file_name);
+            $user_file = '/vsizip/' . $user_file;
         }
 
         $source_srs = ' -s_srs ' . $file_crs . ' ';

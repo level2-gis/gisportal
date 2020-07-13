@@ -189,3 +189,13 @@ $config['rss_feed_url'] = '';
  * How many items to display from RSS feed
  */
 $config['rss_feed_limit'] = 10;
+
+/*
+ * Layer map preview default map center position: [longitude, latitude]
+ */
+$config['layer_preview_start_lonlat'] = '[15, 46]';
+
+/*
+ * Layer map preview default map zoom value
+ */
+$config['layer_preview_start_zoom'] = 8;

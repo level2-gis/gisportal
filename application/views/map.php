@@ -12,26 +12,4 @@
 <div id="map" class="map"></div>
 <div class="help-block" id="projection"></div>
 <div id="mouse-position"></div>
-<script type="text/javascript">
-
-	var olMap = new ol.Map({
-		target: 'map',
-		controls: ol.control.defaults().extend([
-			new ol.control.FullScreen(),
-			new ol.control.ScaleLine(),
-			new ol.control.MousePosition({
-				target: document.getElementById('mouse-position'),
-				undefinedHTML: '&nbsp;',
-				className: 'custom-mouse-position help-block',
-				coordinateFormat: ol.coordinate.createStringXY(2)
-			})
-		]),
-		layers: [],
-		view: new ol.View({
-			center: ol.proj.fromLonLat([35, 50]),
-			zoom: 4
-		})
-	});
-
-	initViewer();
-</script>
+<script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_map.js?v=20200705"); ?>"></script>

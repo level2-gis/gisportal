@@ -189,6 +189,8 @@ class Layers extends CI_Controller{
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;
 		$data['edit_url'] = 'layers/edit/'. $layer['id'];
+		$data['center'] = $this->config->item('layer_preview_start_lonlat');
+		$data['zoom'] = $this->config->item('layer_preview_start_zoom');
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);

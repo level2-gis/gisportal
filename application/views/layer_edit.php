@@ -1,9 +1,11 @@
 	<div class="page-header clearfix">
 		<h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
-		<div class="col-xs-4 col-md-1 actions  pull-right">
-			<a href="<?php echo site_url('layers/map/' . $layer['id']); ?>"
-			   class="btn btn-mini btn-default"><?php echo lang('gp_map'); ?></a>
-		</div>
+		<?php if ( $creating === false && !empty($layer['id']) ) : ?>
+			<div class="col-xs-4 col-md-1 actions  pull-right">
+				<a href="<?php echo site_url('layers/map/' . $layer['id']); ?>"
+				   class="btn btn-mini btn-default"><?php echo lang('gp_map'); ?></a>
+			</div>
+		<?php endif; ?>
 	</div>
 
 	<?php echo $this->session->flashdata('alert'); ?>

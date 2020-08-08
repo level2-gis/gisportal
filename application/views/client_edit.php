@@ -1,6 +1,6 @@
 	<div class="page-header clearfix">
 <!--		<h1 class="col-md-8"><i class="fa fa-pencil"></i> <span>--><?php //echo $title; ?><!--</span></h1>-->
-		<h1 class="col-md-8"><span><?php echo $title; ?></span></h1>
+		<h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
 	</div>
 
 	<?php echo $this->session->flashdata('alert'); ?>

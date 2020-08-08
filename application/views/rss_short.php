@@ -13,7 +13,7 @@
 			?>
 				<tr>
 					<td class="col-md-1"><?php echo $item['new']; ?></td>
-					<td class="col-md-2"><?php echo set_datestr($item['pubDate'], FALSE); ?></td>
+					<td class="col-md-2 col-xs-3"><?php echo set_datestr($item['pubDate'], FALSE); ?></td>
 					<td class="col-md-9"><a href="<?php echo $item['link']; ?>" target="_blank"><?php echo $item['title']; ?></a></td>
 				</tr>
 			<?php endforeach; ?>

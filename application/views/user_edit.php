@@ -1,6 +1,6 @@
     <div class="page-header clearfix">
-		<h1 class="col-md-8"><?php echo $title; ?></h1>
-        <div class="btn-group actions  pull-right">
+		<h1 class="col-xs-8"><?php echo $title; ?></h1>
+        <div class="col-xs-4 col-md-1 btn-group actions  pull-right">
 
             <?php if($is_admin) : ?>
                 <?php if (!empty($user_role)) : ?>

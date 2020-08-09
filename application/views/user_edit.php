@@ -123,7 +123,7 @@
                         <div class="alert alert-info" role="alert"><?php echo $user_admin_msg; ?></div>
                     <?php endif ?>
                     <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter) && count($clients)>1)) : ?>
-                        <div class="form-inline well">
+                        <div class="col-xs-12 form-inline well">
                             <div class="form-group">
                                 <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">
                                     <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>

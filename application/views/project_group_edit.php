@@ -309,7 +309,7 @@
         </fieldset>
 
         <fieldset id="edit-access" class="tab-pane">
-            <div class="form-inline well">
+            <div class="col-xs-12 form-inline well">
                 <div class="form-group">
                     <input type="search" id="user_search" class="form-control typeahead" size="30" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
                            autocomplete="off">

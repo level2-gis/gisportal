@@ -651,6 +651,46 @@ class Projects extends CI_Controller
         }
     }
 
+	/*
+	 * Show Openlayers map project preview
+	 */
+	function map($id = FALSE) {
+
+		if ($id === FALSE) {
+			redirect("/");
+		}
+
+		if (!$this->ion_auth->logged_in()) {
+			redirect('/auth/login?ru=/' . uri_string());
+		}
+
+		$project = (array)$this->project_model->get_project($id);
+		$user_role = $this->ion_auth->admin_scope();
+
+		if(empty($project)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No project!</div>');
+			redirect("/");
+		}
+
+		$project['definition'] = json_encode(self::get_project_wms_definition($project['name']));
+		$project['type'] = 'WMS';
+
+		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
+		$data['subtitle'] = 'TODO subtitle'; //$layer['type'];
+
+		$data['baselayers'] = [$project];	//TODO get project gruop related base+overlay layers [$layer];, for start get OSM layer
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
+		$data['edit_url'] = 'projects/edit/'. $project['id'];
+		$data['center'] = empty($this->config->item('layer_preview_start_lonlat')) ? '[-21.949,64.167]' : $this->config->item('layer_preview_start_lonlat');
+		$data['zoom'] = empty($this->config->item('layer_preview_start_zoom')) ? 8 : $this->config->item('layer_preview_start_zoom');
+
+		$this->load->view('templates/header_map', $data);
+		$this->load->view('map', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
     public function remove($id, $remove_files = FALSE)
     {
         if (!$this->ion_auth->is_admin()){
@@ -970,6 +1010,18 @@ class Projects extends CI_Controller
             copy($source,$target.'.qgs');
         }
     }
+
+    private function get_project_wms_definition($project_name) {
+    	//default gisapp url, user must be logged in, cannot use ourside of session
+    	$ret = [
+    		"url" => site_url('/proxy/' . $project_name)
+			//"params" => [
+			//	"LAYERS" => $project_name
+			//]
+    	];
+
+		return $ret;
+	}
 
     private function get_project_services($project_full_path)
     {

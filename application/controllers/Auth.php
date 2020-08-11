@@ -147,13 +147,13 @@ class Auth extends CI_Controller
 					if ($pubDateInt < $dateCompare) {
 						$rss = null;
 					}
+					//message to display below login part
+					$this->data['rss'] = $rss;
+					
 				} catch (Exception $ex) {
 					$rss = null;
 				}
 			}
-
-			//message to display below login part
-			$this->data['rss'] = $rss;
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
 		}

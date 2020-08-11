@@ -149,7 +149,7 @@ class Auth extends CI_Controller
 					}
 					//message to display below login part
 					$this->data['rss'] = $rss;
-					
+
 				} catch (Exception $ex) {
 					$rss = null;
 				}

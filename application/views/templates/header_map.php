@@ -97,8 +97,13 @@
 		GP.settings.siteUrl = '<?php echo site_url(); ?>';
 		GP.settings.maxSearchResults = '20';  //max items, also possible value 'all'
 		GP.map = {};
-		GP.map.startCenter = <?php echo $center; ?>;
-		GP.map.startZoom = <?php echo $zoom; ?>;
+
+		<?php if (!empty($center)) : ?>
+				GP.map.startCenter = <?php echo $center; ?>;	//lon lat
+				GP.map.startZoom = <?php echo $zoom; ?>;
+		<?php else : ?>
+			GP.map.startExtent = [<?php echo implode(",",$extent); ?>];	//use instead of center and zoom in project CRS
+		<?php endif; ?>
 		GP.map.baselayers = function() {
 			var bl = eval(<?php echo json_encode($baselayers); ?>);
 			return bl;

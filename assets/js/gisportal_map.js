@@ -132,15 +132,25 @@ function setBaseLayer(lay) {
 
 			definition = $.parseJSON(lay.definition);
 
-			//tiled wms layer
-			layOl = new ol.layer.Tile({
-				visible: true,
-				//name: lay.name,
-				source: new ol.source.TileWMS({
-					url: definition.url,
-					params: definition.params
-				})
-			});
+			if(definition.singleTile) {
+				layOl = new ol.layer.Image({
+					visible: true,
+					source: new ol.source.ImageWMS({
+						url: definition.url,
+						params: definition.params
+					})
+				});
+			} else {
+				//tiled wms layer
+				layOl = new ol.layer.Tile({
+					visible: true,
+					//name: lay.name,
+					source: new ol.source.TileWMS({
+						url: definition.url,
+						params: definition.params
+					})
+				});
+			}
 
 			break;
 
@@ -169,12 +179,16 @@ GP.map.olMap = new ol.Map({
 		})
 	]),
 	layers: [],
-	view: new ol.View({
-		center: ol.proj.fromLonLat(GP.map.startCenter),
-		zoom: GP.map.startZoom,
-		enableRotation: false
-	})
+	view: new ol.View({enableRotation: false})
 });
+
+//set center or extent
+if(GP.map.startCenter) {
+	GP.map.olMap.getView().setCenter(ol.proj.fromLonLat(GP.map.startCenter));
+	GP.map.olMap.getView().setZoom(GP.map.startZoom);
+} else {
+	GP.map.olMap.getView().fit(GP.map.startExtent);
+}
 
 var baseLayers = GP.map.baselayers();
 

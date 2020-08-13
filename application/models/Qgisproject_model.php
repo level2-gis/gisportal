@@ -169,6 +169,37 @@ class Qgisproject_model extends CI_Model
         return $this->qgs_xml->asXml($file);
     }
 
+    //project title from qgis, need for wms call
+    public function get_project_title() {
+
+		$ret = null;
+
+		if(empty($this->error)) {
+			$ret = (string)$this->qgs_xml->title;
+		}
+
+		return $ret;
+	}
+
+	public function get_project_extent() {
+
+		$xml = $this->qgs_xml;
+
+		$extent = (array)($xml->properties->WMSExtent->value);
+		if (empty($extent)) {
+			$extent = [
+				floatval($xml->mapcanvas->extent->xmin),
+				floatval($xml->mapcanvas->extent->ymin),
+				floatval($xml->mapcanvas->extent->xmax),
+				floatval($xml->mapcanvas->extent->ymax)
+			];
+		}
+
+		return $extent;
+
+		//return [($extent[0] + $extent[2]) / 2, ($extent[1] + $extent[3]) / 2];
+	}
+
     public function get_layer_by_id($id) {
         try {
             $xpath = '//maplayer/id[.="' . $id . '"]/parent::*';

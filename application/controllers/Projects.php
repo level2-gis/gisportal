@@ -672,7 +672,9 @@ class Projects extends CI_Controller
 			redirect("/");
 		}
 
-		$project['definition'] = json_encode(self::get_project_wms_definition($project['name']));
+		$wms = self::get_project_wms_definition($project['name'], $id);
+
+		$project['definition'] = json_encode($wms);
 		$project['type'] = 'WMS';
 
 		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
@@ -683,8 +685,7 @@ class Projects extends CI_Controller
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;
 		$data['edit_url'] = 'projects/edit/'. $project['id'];
-		$data['center'] = empty($this->config->item('layer_preview_start_lonlat')) ? '[-21.949,64.167]' : $this->config->item('layer_preview_start_lonlat');
-		$data['zoom'] = empty($this->config->item('layer_preview_start_zoom')) ? 8 : $this->config->item('layer_preview_start_zoom');
+		$data['extent'] =  $wms['extent'];
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);
@@ -1011,13 +1012,32 @@ class Projects extends CI_Controller
         }
     }
 
-    private function get_project_wms_definition($project_name) {
-    	//default gisapp url, user must be logged in, cannot use ourside of session
+    private function get_project_wms_definition($project_name, $project_id) {
+
+		$main_wms = null;
+		$extent = null;
+		$qgs = $this->qgisproject_model;
+
+		$check = $qgs->check_qgs_file($project_id);
+		if ($check["valid"]) {
+			$project_full_path = $check['name'];
+			$qgs->qgs_file = $project_full_path;
+			$qgs->read_qgs_file();
+			$main_wms = $this->qgisproject_model->get_project_title();
+			$extent = $this->qgisproject_model->get_project_extent();
+		}
+
+		$this->user_model->clear_gisapp_session();
+		$this->session->set_userdata('project', $project_name);
+
+    	//default gisapp url, user must be logged in, cannot use outside of session
     	$ret = [
-    		"url" => site_url('/proxy/' . $project_name)
-			//"params" => [
-			//	"LAYERS" => $project_name
-			//]
+    		"url" => site_url('/proxy/' . $project_name),
+			"params" => [
+				"LAYERS" => $main_wms
+			],
+			"extent" => $extent,
+			"singleTile" => TRUE
     	];
 
 		return $ret;

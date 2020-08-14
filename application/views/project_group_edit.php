@@ -340,7 +340,8 @@
 					<th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
 					<th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
                     <th data-sortable="true" data-field="gp_role"><?php echo $this->lang->line('gp_role'); ?></th>
-                    <th><?php echo $this->lang->line('gp_action'); ?></th>
+					<th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
+					<th><?php echo $this->lang->line('gp_action'); ?></th>
                 </tr>
                 </thead>
                 <?php foreach ($users as $user_item): ?>
@@ -355,7 +356,8 @@
                         <td class="col-md-2"><a href="#"
                                                 onclick="switchRole(<?php echo $group['id'] . ',' . $user_item['user_id'] . ',' . $user_item['role_id']; ?>,'project_groups')"><?php echo $user_item['role']; ?></a>
                         </td>
-                        <td class="col-md-2">
+						<td class="col-md-1"><?php echo set_check_icon($user_item['active']); ?></td>
+						<td class="col-md-2">
                             <a class="btn btn-default" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>"><?php echo $this->lang->line('gp_user'); ?></a>
                             <a class="btn btn-danger"
                                onclick="confirmLink(GP.deleteRole,'User: <?php echo $user_item['first_name'] . ' ' . $user_item['last_name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/' . $user_item['user_id'] . '/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>

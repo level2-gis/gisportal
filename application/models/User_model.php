@@ -212,7 +212,7 @@ class User_model extends CI_Model
      * @return mixed
      */
     function get_project_group_users($group_id) {
-        $this->db->select('ur.id, ur.user_id, ur.role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name');
+        $this->db->select('ur.id, ur.user_id, ur.role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name, users_view.active');
         $this->db->from('users_roles ur');
         $this->db->join('users_view', 'users_view.user_id = ur.user_id');
         $this->db->join('roles r', 'r.id = ur.role_id');

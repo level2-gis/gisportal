@@ -169,7 +169,7 @@ class Qgisproject_model extends CI_Model
         return $this->qgs_xml->asXml($file);
     }
 
-    //project title from qgis, need for wms call
+    //project title from qgis, need for wms call, if title is empty this does not work, you need layers
     public function get_project_title() {
 
 		$ret = null;

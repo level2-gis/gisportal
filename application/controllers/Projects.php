@@ -1024,6 +1024,9 @@ class Projects extends CI_Controller
 			$qgs->qgs_file = $project_full_path;
 			$qgs->read_qgs_file();
 			$main_wms = $this->qgisproject_model->get_project_title();
+			if(empty($main_wms)) {
+				$main_wms = $project_name;
+			}
 			$extent = $this->qgisproject_model->get_project_extent();
 		}
 

@@ -15,6 +15,8 @@ class Qgisproject_model extends CI_Model
     public $qgs_xml     = null;
     public $error       = null;
     public $main_path   = null;
+    public $name		= null;
+	public $qgs_layers 	= [];
 
     /**
      * Default location of QGIS project file when uploading or using template
@@ -60,6 +62,9 @@ class Qgisproject_model extends CI_Model
 
             //TODO what about different case and qgz extension!?!
             $project_file = $project->name . '.qgs';
+
+            //store name
+			$this->name = $project->name;
 
             //first check if project has full path stored in db and if that exist and is readable
             if (!empty($project->project_path)) {
@@ -168,37 +173,6 @@ class Qgisproject_model extends CI_Model
         }
         return $this->qgs_xml->asXml($file);
     }
-
-    //project title from qgis, need for wms call, if title is empty this does not work, you need layers
-    public function get_project_title() {
-
-		$ret = null;
-
-		if(empty($this->error)) {
-			$ret = (string)$this->qgs_xml->title;
-		}
-
-		return $ret;
-	}
-
-	public function get_project_extent() {
-
-		$xml = $this->qgs_xml;
-
-		$extent = (array)($xml->properties->WMSExtent->value);
-		if (empty($extent)) {
-			$extent = [
-				floatval($xml->mapcanvas->extent->xmin),
-				floatval($xml->mapcanvas->extent->ymin),
-				floatval($xml->mapcanvas->extent->xmax),
-				floatval($xml->mapcanvas->extent->ymax)
-			];
-		}
-
-		return $extent;
-
-		//return [($extent[0] + $extent[2]) / 2, ($extent[1] + $extent[3]) / 2];
-	}
 
     public function get_layer_by_id($id) {
         try {
@@ -326,4 +300,155 @@ class Qgisproject_model extends CI_Model
     {
         return str_replace('ogr2ogr','',OGR2OGR);
     }
+
+	/**
+	 * taken from gisapp/Helpers
+	 * @return stdClass
+	 */
+	public function get_project_properties()
+	{
+		$xml = $this->qgs_xml;
+		$prop = new \stdClass();
+
+		//default empty properties
+		$prop->crs = "EPSG:3857";
+		$prop->crs_description = "";
+		$prop->proj4 = "";
+		$prop->title = "";
+		$prop->extent = [];
+		$prop->layers = [];
+		$prop->visible_layers = [];
+		$prop->use_ids = null;
+		$prop->add_geom_to_fi = null;
+		$prop->version = "";
+		$prop->crs_list = [];
+		$prop->description = "";
+
+		if(empty($this->error)) {
+			$prop->crs = (string)$xml->mapcanvas->destinationsrs->spatialrefsys->authid;
+			$prop->crs_description = (string)$xml->mapcanvas->destinationsrs->spatialrefsys->description;
+			$prop->proj4 = (string)$xml->mapcanvas->destinationsrs->spatialrefsys->proj4;
+			$prop->title = (string)$xml->title == "" ? $this->name : (string)$xml->title;
+			$prop->extent = self::_get_project_extent($xml);
+			//parsing boolean values, be careful (bool)"false" = true!!!
+			$prop->use_ids = filter_var($xml->properties->WMSUseLayerIDs,FILTER_VALIDATE_BOOLEAN);
+			$prop->add_geom_to_fi = filter_var($xml->properties->WMSAddWktGeometry,FILTER_VALIDATE_BOOLEAN);
+			$prop->version = (string)$xml["version"];
+			$prop->crs_list = array_filter((array)($xml->properties->WMSCrsList->value));
+			$prop->description = (string)$xml->properties->WMSServiceAbstract;
+			try {
+
+				self::_read_layer_node($xml->xpath('layer-tree-group')[0],null, null);
+
+				//get wfs layers
+				$wfs = (array)($xml->properties->WFSLayers->value);
+				foreach($this->qgs_layers as $lay) {
+
+					if($lay->visible) {
+						if($prop->use_ids) {
+							array_unshift($prop->visible_layers, $lay->id);
+						} else {
+							array_unshift($prop->visible_layers, $lay->layername);
+						}
+					}
+
+					$lay_object = self::get_layer_by_id($lay->id,$xml);
+					if($lay_object) {
+						$lay_info = self::get_layer_info($lay_object);
+						if ($lay_info) {
+							$lay->provider = (string)$lay_info["provider"];
+							$lay->geom_type = (string)$lay_info["type"];
+							$lay->geom_column = (string)$lay_info["geom_column"];
+							$lay->crs = (string)$lay_info["crs"];
+							$lay->sql = (string)$lay_info["sql"];
+							$lay->key = (string)$lay_info["key"];
+							//$lay->identify = (int)$lay_info["identify"];
+						}
+					}
+
+					//enable wfs just for postgres and spatialite regardless project setting
+					if (in_array($lay->id,$wfs) and (!empty($lay->geom_type))) {
+						if($lay->provider == 'postgres' or $lay->provider == 'spatialite') {
+							$lay->wfs = true;
+							//layer CRS must be included in crs list for client to load projection file
+							if(empty($lay->crs)) {
+								$lay->crs = $prop->crs;
+							}
+							if(!(in_array($lay->crs,$prop->crs_list))) {
+								array_push($prop->crs_list,$lay->crs);
+							}
+							if(strpos(strtolower($lay->geom_type), 'polygon') === false) {
+								$lay->goto = true;
+							}
+						}
+					}
+
+					$prop->layers[$lay->id] = $lay;
+				}
+
+			} catch (\Exception $e) {
+				$this->error = $e->getMessage();
+			}
+		}
+
+		return $prop;
+	}
+
+	/**
+	 * taken from gisapp/Helpers
+	 * @param $group
+	 * @param $groupname
+	 * @param $parent
+	 */
+    private function _read_layer_node($group,$groupname,$parent)
+	{
+		foreach ($group->children() as $el) {
+			$cnt = sizeof($this->qgs_layers);
+			$type = $el->getName();
+			$lay = new \stdClass();
+			if ($type == 'layer-tree-group') {
+				$this->_read_layer_node($el, (string)$el->attributes()["name"], $groupname);
+
+			} else {
+				if ($el->attributes()["id"] > '') {
+					$cnt++;
+					$lay->topic = 'Topic';
+					$lay->parent = $parent;
+					$lay->groupname = $groupname;
+					$lay->layername = (string)$el->attributes()["name"];
+					$lay->toclayertitle = (string)$el->attributes()["name"];
+					$lay->visible = (string)$el->attributes()["checked"] == 'Qt::Checked' ? true : false;
+					$lay->id = (string)$el->attributes()["id"];
+					$lay->wms_sort = (900 - $cnt);
+					$lay->toc_sort = $cnt;
+					$lay->wfs = false;      //fill later
+					$lay->goto = false;      //fill later
+					$lay->provider = '';    //fill later
+					$lay->geom_type = '';   //fill later
+					$lay->geom_column = ''; //fill later
+					$lay->crs = ''; //fill later
+
+					array_push($this->qgs_layers, $lay);
+				}
+			}
+		}
+	}
+
+	private function _get_project_extent($xml) {
+
+		$extent = (array)($xml->properties->WMSExtent->value);
+		if (empty($extent)) {
+			$extent = [
+				floatval($xml->mapcanvas->extent->xmin),
+				floatval($xml->mapcanvas->extent->ymin),
+				floatval($xml->mapcanvas->extent->xmax),
+				floatval($xml->mapcanvas->extent->ymax)
+			];
+		}
+
+		return $extent;
+
+		//center
+		//return [($extent[0] + $extent[2]) / 2, ($extent[1] + $extent[3]) / 2];
+	}
 }

@@ -672,13 +672,13 @@ class Projects extends CI_Controller
 			redirect("/");
 		}
 
-		$wms = self::get_project_wms_definition($project['name'], $id);
+		$wms = self::get_project_wms_definition($id);
 
 		$project['definition'] = json_encode($wms);
 		$project['type'] = 'WMS';
 
 		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
-		$data['subtitle'] = 'TODO subtitle'; //$layer['type'];
+		$data['subtitle'] = $wms['version'];
 
 		$data['baselayers'] = [$project];	//TODO get project gruop related base+overlay layers [$layer];, for start get OSM layer
 		$data['logged_in'] = true;
@@ -1012,10 +1012,10 @@ class Projects extends CI_Controller
         }
     }
 
-    private function get_project_wms_definition($project_name, $project_id) {
+    private function get_project_wms_definition($project_id) {
 
-		$main_wms = null;
-		$extent = null;
+		$properties = null;
+		$ret = [];
 		$qgs = $this->qgisproject_model;
 
 		$check = $qgs->check_qgs_file($project_id);
@@ -1023,22 +1023,25 @@ class Projects extends CI_Controller
 			$project_full_path = $check['name'];
 			$qgs->qgs_file = $project_full_path;
 			$qgs->read_qgs_file();
-			$main_wms = $this->qgisproject_model->get_project_title();
-			$extent = $this->qgisproject_model->get_project_extent();
+			$properties = $qgs->get_project_properties();
+			$project_name = $qgs->name;
+
+			$this->user_model->clear_gisapp_session();
+			$this->session->set_userdata('project', $project_name);
+
+			//default gisapp url, user must be logged in, cannot use outside of session
+			$ret = [
+				"url" => site_url('/proxy/' . $project_name),
+				"params" => [
+					"LAYERS" => implode(',',$properties->visible_layers)
+				],
+				"extent" => $properties->extent,
+				"singleTile" => TRUE,
+				"crs" => $properties->crs,
+				"proj4" => $properties->proj4,
+				"version" => $properties->version
+			];
 		}
-
-		$this->user_model->clear_gisapp_session();
-		$this->session->set_userdata('project', $project_name);
-
-    	//default gisapp url, user must be logged in, cannot use outside of session
-    	$ret = [
-    		"url" => site_url('/proxy/' . $project_name),
-			"params" => [
-				"LAYERS" => $main_wms
-			],
-			"extent" => $extent,
-			"singleTile" => TRUE
-    	];
 
 		return $ret;
 	}

@@ -54,7 +54,7 @@ $lang['gp_no_projects'] = 'Nie masz dostępu do projektów!';
 $lang['gp_no_public_projects'] = 'Nie są dostępne żadne publiczne projekty!';
 
 $lang['gp_uploaded_files'] = 'Wczytane pliki';
-$lang['gp_upload_no_folder'] = 'Utwórz na dysku folder dla wczytywanych plików, zdefiniowany w config.php:';
+$lang['gp_upload_no_folder'] = 'Utwórz na dysku folder dla wczytywanych plików, zdefiniowany w config/gisportal.php:';
 $lang['gp_upload_success'] = 'Plik został wczytany!';
 
 $lang['gp_edit'] = 'Edytuj';

@@ -54,7 +54,7 @@ $lang['gp_no_projects'] = 'Momentan sind keine Projekte für Dich freigegeben!';
 $lang['gp_no_public_projects'] = 'Momentan sind keine öffentlichen Projekte verfügbar!';
 
 $lang['gp_uploaded_files'] = 'Uploaded files';
-$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config.php: ';
+$lang['gp_upload_no_folder'] = 'Please create main upload folder on disk, defined in config/gisportal.php: ';
 $lang['gp_upload_success'] = 'Your file was successfully uploaded!';
 
 $lang['gp_edit'] = 'Edit';

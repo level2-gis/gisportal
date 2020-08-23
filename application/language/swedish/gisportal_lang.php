@@ -54,7 +54,7 @@ $lang['gp_no_projects'] = 'Du har inte tillgång till några privata projekt!';
 $lang['gp_no_public_projects'] = 'Det finns inte några publika projekt tillgängliga!';
 
 $lang['gp_uploaded_files'] = 'Uppladdade filer';
-$lang['gp_upload_no_folder'] = 'Vänligen skapa en uppladdningskatalog på server, defineras i config.php: ';
+$lang['gp_upload_no_folder'] = 'Vänligen skapa en uppladdningskatalog på server, defineras i config/gisportal.php: ';
 $lang['gp_upload_success'] = 'Din fil är uppladdad!';
 
 $lang['gp_edit'] = 'Editera';

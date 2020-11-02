@@ -39,7 +39,15 @@ class Mail extends CI_Controller
         $data = new  stdClass();
         $data->mailto = $this->input->post("mailto") == null ? $this->config->item('admin_email') : $this->input->post("mailto");
         $data->subject = $this->input->post("subject");
-        $data->body = $this->input->post("body");
+
+        //check template
+		if(empty($this->input->post("template"))) {
+			$data->body = $this->input->post("body");
+		} else {
+			$body_data = json_decode($this->input->post("body"));
+			$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->input->post("template"), $body_data, TRUE);
+			$data->body = $body;
+		}
 
         $this->sendMailWithResponse($data);
     }

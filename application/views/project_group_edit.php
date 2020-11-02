@@ -64,24 +64,23 @@
 
 
         <fieldset id="edit-group-meta" class="tab-pane active">
-            <?php if($can_edit_properties) : ?>
-                <div class="row form-group">
-                    <label for="client_id"
-                           class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
+			<div class="row form-group">
+				<label for="client_id"
+					   class="control-label col-md-2"><?php echo $this->lang->line('gp_client'); ?></label>
 
-                    <div class="col-md-5">
-                        <select class="form-control" name="client_id" id="client_id"
-                                onchange="getParentGroups(this,<?php echo $group['id']; ?>);">
-                            <?php foreach ($clients as $client_item): ?>
-                                <option <?php if ($client_item['id'] == $group['client_id']) {
-                                    echo "selected='selected'";
-                                }; ?>
-                                    value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
-                        </select>
-                        <span class="text-danger"><?php echo form_error('client_id'); ?></span>
-                    </div>
-                </div>
-
+				<div class="col-md-5">
+					<select class="form-control" name="client_id" id="client_id"
+							onchange="getParentGroups(this,<?php echo $group['id']; ?>);">
+						<?php foreach ($clients as $client_item): ?>
+							<option <?php if ($client_item['id'] == $group['client_id']) {
+								echo "selected='selected'";
+							}; ?>
+								value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+					</select>
+					<span class="text-danger"><?php echo form_error('client_id'); ?></span>
+				</div>
+			</div>
+			<?php if($can_edit_properties) : ?>
                 <div class="form-group">
                     <label for="name" class="control-label col-md-2"><?php echo $this->lang->line('gp_name'); ?></label>
 
@@ -175,6 +174,17 @@
 							</div>
 						</div>
 					<?php endif; ?>
+					<?php if (!empty($custom4)) : ?>
+						<div class="form-group">
+							<label for="custom4"
+								   class="control-label col-md-2"><?php echo $custom4; ?></label>
+							<div class="col-md-5">
+								<input class="form-control" name="custom4" placeholder="" type="text"
+									   value="<?php echo $group['custom4']; ?>"/>
+								<span class="text-danger"><?php echo form_error('custom4'); ?></span>
+							</div>
+						</div>
+					<?php endif; ?>
 					<?php if (!empty($link1)) : ?>
 						<div class="form-group">
 							<label for="link1"
@@ -209,7 +219,14 @@
 						</div>
 					<?php endif; ?>
                 <?php endif; ?>
-            <?php endif; ?>
+            <?php else: ?>
+				<input name="display_name" type="hidden" value="<?php echo $group['display_name']; ?>">
+				<input name="parent_id" type="hidden" value="<?php echo $group['parent_id']; ?>">
+				<input name="type" type="hidden" value="<?php echo $group['type']; ?>">
+				<input name="name" type="hidden" value="<?php echo $group['name']; ?>" />
+				<input name="custom1" type="hidden" value="<?php echo $group['custom1']; ?>" />
+				<input name="custom2" type="hidden" value="<?php echo $group['custom2']; ?>" />
+			<?php endif; ?>
 
             <?php if ( $group['type'] == PROJECT_GROUP &&  $can_edit_contacts) : ?>
                 <div class="row form-group">

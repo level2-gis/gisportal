@@ -43,6 +43,7 @@
 	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/proj4.js?v=2.6.2"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/ol.js?v=6.3.1"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("../gisapp/client_common/customProjections.js"); ?>"></script>
 	<script type="text/javascript">
 
 		$(function(){
@@ -104,6 +105,8 @@
 		<?php else : ?>
 			GP.map.startExtent = [<?php echo implode(",",$extent); ?>];	//use instead of center and zoom in project CRS
 		<?php endif; ?>
+		GP.map.crs = '<?php echo $crs; ?>';
+		GP.map.proj4 = '<?php echo $proj4; ?>';
 		GP.map.baselayers = function() {
 			var bl = eval(<?php echo json_encode($baselayers); ?>);
 			return bl;

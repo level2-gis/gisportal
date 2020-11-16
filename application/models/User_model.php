@@ -386,7 +386,8 @@ class User_model extends CI_Model
             'settings',
             'description',
             'gis_projects',
-            'qgs'
+            'qgs',
+			'map'
         );
 
         $this->session->unset_userdata($sess_items);

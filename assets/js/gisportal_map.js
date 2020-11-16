@@ -60,8 +60,7 @@ function setBaseLayer(lay) {
 		case 'WMTS' :
 
 			definition = $.parseJSON(lay.definition);
-			//first load capabilities
-			//TODO currenlty only works for layers in 3857, use proj4 to prepare other projections
+
 			$.ajax(definition.capabilitiesUrl).then(function(response) {
 			   var result = new ol.format.WMTSCapabilities().read(response);
 			   var options = ol.source.WMTS.optionsFromCapabilities(result, {
@@ -69,7 +68,7 @@ function setBaseLayer(lay) {
 			       matrixSet: definition.matrixSet,
 			       requestEncoding: definition.requestEncoding,
 			       style: definition.style,
-			       //projection: Config.map.projection,
+			       projection: projection,
 			       format: definition.format
 			   });
 
@@ -166,6 +165,18 @@ function setBaseLayer(lay) {
 	}
 }
 
+var projection = 'EPSG:3857';
+if((GP.map.crs != 'EPSG:3857') && (GP.map.crs != 'EPSG:4326')) {
+	proj4.defs(GP.map.crs, GP.map.proj4);
+	ol.proj.proj4.register(proj4);
+
+	projection = new ol.proj.Projection({
+		code: GP.map.crs,
+		units: CustomProj[GP.map.crs].units,
+		extent:	CustomProj[GP.map.crs].extent
+	});
+}
+
 GP.map.olMap = new ol.Map({
 	target: 'map',
 	controls: ol.control.defaults().extend([
@@ -179,12 +190,17 @@ GP.map.olMap = new ol.Map({
 		})
 	]),
 	layers: [],
-	view: new ol.View({enableRotation: false})
+	view: new ol.View({
+		center: [0,0],
+		zoom: 2,
+		projection: projection,
+		enableRotation: false
+	})
 });
 
 //set center or extent
 if(GP.map.startCenter) {
-	GP.map.olMap.getView().setCenter(ol.proj.fromLonLat(GP.map.startCenter));
+	GP.map.olMap.getView().setCenter(ol.proj.fromLonLat(GP.map.startCenter, GP.map.crs));
 	GP.map.olMap.getView().setZoom(GP.map.startZoom);
 } else {
 	GP.map.olMap.getView().fit(GP.map.startExtent);

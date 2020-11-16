@@ -674,18 +674,25 @@ class Projects extends CI_Controller
 
 		$wms = self::get_project_wms_definition($id);
 
+		if(empty($wms)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Project not valid</div>');
+			redirect("/projects/edit/".$id);
+		}
+
 		$project['definition'] = json_encode($wms);
 		$project['type'] = 'WMS';
 
 		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
 		$data['subtitle'] = $wms['version'];
 
-		$data['baselayers'] = [$project];	//TODO get project gruop related base+overlay layers [$layer];, for start get OSM layer
+		$data['baselayers'] = [$project];	//TODO get project group related base+overlay layers [$layer]
 		$data['logged_in'] = true;
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;
 		$data['edit_url'] = 'projects/edit/'. $project['id'];
 		$data['extent'] =  $wms['extent'];
+		$data['crs'] =  $wms['crs'];
+		$data['proj4'] =  $wms['proj4'];
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);
@@ -1027,7 +1034,7 @@ class Projects extends CI_Controller
 			$project_name = $qgs->name;
 
 			$this->user_model->clear_gisapp_session();
-			$this->session->set_userdata('project', $project_name);
+			$this->session->set_userdata('map', $project_name);
 
 			//default gisapp url, user must be logged in, cannot use outside of session
 			$ret = [

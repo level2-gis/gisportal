@@ -182,6 +182,10 @@ class Layers extends CI_Controller{
 			redirect("/");
 		}
 
+		//check if layer has crs and proj4 definitions, only needed to preview layers other then 3857
+		$crs = empty(json_decode($layer['definition']) -> crs) ? 'EPSG:3857' : json_decode($layer['definition']) -> crs;
+		$proj4 = empty(json_decode($layer['definition']) -> proj4) ? '' : json_decode($layer['definition']) -> proj4;
+
 		$data['title'] = $this->lang->line('gp_layer') . ' ' . $layer['display_name'];
 		$data['subtitle'] = $layer['type'];
 		$data['baselayers'] = [$layer];
@@ -191,6 +195,8 @@ class Layers extends CI_Controller{
 		$data['edit_url'] = 'layers/edit/'. $layer['id'];
 		$data['center'] = empty($this->config->item('layer_preview_start_lonlat')) ? '[-21.949,64.167]' : $this->config->item('layer_preview_start_lonlat');
 		$data['zoom'] = empty($this->config->item('layer_preview_start_zoom')) ? 8 : $this->config->item('layer_preview_start_zoom');
+		$data['crs'] =  $crs;
+		$data['proj4'] =  $proj4;
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);

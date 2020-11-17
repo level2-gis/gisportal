@@ -8,14 +8,18 @@ class User_model extends CI_Model
     }
 
 
-    function get_users($filter = NULL)
+    function get_users($client_filter = NULL, $remove_links = FALSE)
     {
         $this->db->order_by('user_name', 'ASC');
-        if(empty($filter)) {
+        if(empty($client_filter)) {
             $query = $this->db->get('users_view');
         } else {
             $this->db->select('user_id,first_name,last_name,display_name,user_name,user_email,organization,registered,count_login,last_login,lang,active,phone,bool_or(admin) as admin,filter,scope,min(role_id) as role_id, min(role_name) as role_name,max(role_display_name) as role_display_name,sum(groups) as groups');
-            $this->db->where('filter',$filter);
+            $this->db->where('filter',$client_filter);
+            if($remove_links) {
+				//we remove users that have only link to the client without any group access
+            	$this->db->where('NOT (role_id = 9 AND groups = 0)');
+			}
             $this->db->group_by('user_id,first_name,last_name,display_name,user_name,user_email,organization,registered,count_login,last_login,lang,active,phone,filter,scope');
             $query = $this->db->get('users_view_for_clients');
         }
@@ -23,6 +27,7 @@ class User_model extends CI_Model
         return $query->result_array();
     }
 
+    //TODO this is duplicate, can be solved using function above and array_column to get only emails when needed
     function get_portal_users($role, $filter = NULL, $email_only = FALSE)
     {
         if($email_only) {

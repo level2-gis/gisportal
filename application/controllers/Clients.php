@@ -131,7 +131,7 @@ class Clients extends CI_Controller
 				throw new Exception('No permission!');
 			}
 
-			$emails = array_column($this->user_model->get_users($id), 'user_email');
+			$emails = array_column($this->user_model->get_users($id, TRUE), 'user_email');
 
 			if(count($emails) === 0) {
 				throw new Exception('No users!');
@@ -225,7 +225,7 @@ class Clients extends CI_Controller
                 }
             }
             $data['items'] = $this->build_child_groups($em['id'], null);
-			$data['users'] = $this->user_model->get_users($client_id);
+			$data['users'] = $this->user_model->get_users($client_id, TRUE);
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
             $data['logo'] = $this->getGisappClientLogo($em['name']);

@@ -124,11 +124,11 @@
 							data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
 						<th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
 						<th data-sortable="true" data-field="gp_organization"><?php echo $this->lang->line('gp_organization'); ?></th>
-						<th data-sortable="true" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
+						<th data-sortable="true" data-visible="false" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
 						<th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
 						<th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
 						<th data-sortable="true" data-field="gp_portal_role">Portal role</th>
-						<th data-sortable="true" data-visible="false" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
+						<th data-sortable="true" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
 						<th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
 						<th><?php echo $this->lang->line('gp_action'); ?></th>
 					</tr>

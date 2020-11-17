@@ -94,6 +94,90 @@ class Clients extends CI_Controller
 
     }
 
+	public function send_email($id = FALSE)
+	{
+		if(empty($id)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Client missing.</div>');
+			redirect('/clients/');
+		}
+
+		$task = 'clients_send_email';
+
+		$client = (array)$this->client_model->get_client($id);
+
+		if(empty($client)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Client does not exist.</div>');
+			redirect('/clients/');
+		}
+
+		//filter for client administrator
+		$user_role = $this->ion_auth->admin_scope();
+		$filter = $user_role->filter;
+		if(!empty($filter) && $filter !== (integer)$id) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">No permission!</div>');
+			redirect('/clients/');
+		}
+
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$this->load->model('user_model');
+
+		$this->form_validation->set_rules('subject', 'lang:gp_email_subject', 'required');
+		$this->form_validation->set_rules('body', 'lang:gp_email_body', 'required');
+
+		try {
+			if (!$this->ion_auth->can_execute_task($task)){
+				throw new Exception('No permission!');
+			}
+
+			$emails = array_column($this->user_model->get_users($id), 'user_email');
+
+			if(count($emails) === 0) {
+				throw new Exception('No users!');
+			}
+
+			if ($this->form_validation->run() == FALSE) {
+				$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+				$data['group'] = $client;
+				$data['title'] = lang('gp_send_email');
+				$data['subtitle'] = $this->get_name($client);
+				$data['logged_in'] = true;
+				$data['is_admin'] = $user_role->admin;
+				$data['own_email'] = $user_role->email;
+				$data['role'] = $user_role->role_name;
+				$data['emails'] = $emails;
+				$data['controller'] = 'clients';
+
+				$this->load->view('templates/header', $data);
+				$this->load->view('email/send_form', $data);
+
+			}
+
+			else {
+				$subject = $this->input->post('subject');
+				$body = $this->input->post('body');
+				$include = $this->input->post('include');
+
+				if(!empty($include)) {
+					array_push($emails,$include);
+				}
+
+				$data = array('body' => nl2br($body));
+
+				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'send_email.tpl.php', $data, TRUE);
+				$this->ion_auth->send_email($subject,$message,$emails);
+
+				$this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . lang('gp_email_sent') . '</div>');
+				redirect('clients/edit/' . $id);
+			}
+
+		} catch (Exception $e){
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
+			redirect('clients/edit/' . $id);
+		}
+	}
+
     public function edit($client_id = false)
     {
         $task = 'clients_edit';
@@ -110,8 +194,10 @@ class Clients extends CI_Controller
             redirect('/clients/');
         }
 
-        $this->load->helper('form');
+        $this->load->helper(array('eqwc_parse', 'form'));
         $this->load->library('form_validation');
+
+		$this->load->model('user_model');
 
         $this->form_validation->set_rules('name', 'lang:gp_name', 'trim|required|alpha_dash|callback__unique_name');
         $this->form_validation->set_rules('display_name', 'lang:gp_display_name', 'trim|required');
@@ -139,6 +225,7 @@ class Clients extends CI_Controller
                 }
             }
             $data['items'] = $this->build_child_groups($em['id'], null);
+			$data['users'] = $this->user_model->get_users($client_id);
             $data['client'] = $em;
             $data['image'] = $this->getImage($em['name']);
             $data['logo'] = $this->getGisappClientLogo($em['name']);
@@ -435,6 +522,10 @@ class Clients extends CI_Controller
             ->set_status_header(200)
             ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
+
+	private function get_name($el) {
+		return empty($el['display_name']) ? $el['name'] : $el['display_name'];
+	}
 
     private function extractPostData(){
         return array(

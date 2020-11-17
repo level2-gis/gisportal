@@ -18,7 +18,7 @@
     </div>
 
     <?php $attributes = array("class" => "form-horizontal");
-    echo form_open('project_groups/send_email/' . $group['id'], $attributes); ?>
+    echo form_open($controller . '/send_email/' . $group['id'], $attributes); ?>
 
     <fieldset>
         <div class="form-group">

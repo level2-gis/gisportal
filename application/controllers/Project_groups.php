@@ -149,6 +149,7 @@ class Project_groups extends CI_Controller
                 $data['own_email'] = $user_role->email;
                 $data['role'] = $user_role->role_name;
                 $data['emails'] = $emails;
+				$data['controller'] = 'project_groups';
 
                 $this->load->view('templates/header', $data);
                 $this->load->view('email/send_form', $data);

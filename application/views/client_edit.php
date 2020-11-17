@@ -1,6 +1,13 @@
 	<div class="page-header clearfix">
-<!--		<h1 class="col-md-8"><i class="fa fa-pencil"></i> <span>--><?php //echo $title; ?><!--</span></h1>-->
 		<h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
+		<div class="col-xs-4 col-md-1 btn-group actions pull-right">
+			<button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<?php echo lang('gp_action'); ?> <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="<?php echo site_url('clients/send_email/'.$client['id']); ?>"><?php echo lang('gp_send_email'); ?></a></li>
+			</ul>
+		</div>
 	</div>
 
 	<?php echo $this->session->flashdata('alert'); ?>
@@ -14,6 +21,7 @@
             <li class="active"><a href="#edit-client-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
             <?php if (!$creating) : ?>
                 <li><a href="#edit-client-items" data-toggle="tab"><?php echo $this->lang->line('gp_items'); ?></a></li>
+				<li><a href="#edit-users" data-toggle="tab"><?php echo $this->lang->line('gp_users_title'); ?></a></li>
             <?php endif; ?>
         </ul>
 
@@ -104,6 +112,47 @@
                     <?php endforeach; ?>
                 </table>
             </fieldset>
+
+			<fieldset id="edit-users" class="tab-pane">
+
+				<table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true" data-show-columns="true" data-row-style="userRowStyle">
+					<thead>
+					<tr>
+						<th data-sortable="true"
+							data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>
+						<th data-sortable="true"
+							data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
+						<th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
+						<th data-sortable="true" data-field="gp_organization"><?php echo $this->lang->line('gp_organization'); ?></th>
+						<th data-sortable="true" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
+						<th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
+						<th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
+						<th data-sortable="true" data-field="gp_portal_role">Portal role</th>
+						<th data-sortable="true" data-visible="false" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
+						<th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
+						<th><?php echo $this->lang->line('gp_action'); ?></th>
+					</tr>
+					</thead>
+					<?php foreach ($users as $user_item): ?>
+						<tr>
+							<td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
+							<td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
+							<td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
+							<td class="col-md-1"><?php echo $user_item['organization']; ?></td>
+							<td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
+							<td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
+							<td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>
+							<td class="col-md-1"><?php echo $user_item['role_display_name']; ?></td>
+							<td class="col-md-1"><?php echo $user_item['groups']; ?></td>
+							<td class="col-md-1"><?php echo set_check_icon($user_item['active']); ?></td>
+							<td class="col-md-1">
+								<a class="btn btn-default" href="<?php echo site_url('users/edit/'.$user_item['user_id']); ?>"><?php echo $this->lang->line('gp_user'); ?></a>
+
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</table>
+			</fieldset>
 
 			<div id="fixed-actions">
                 <hr>

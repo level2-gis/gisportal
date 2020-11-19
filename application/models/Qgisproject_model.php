@@ -336,6 +336,8 @@ class Qgisproject_model extends CI_Model
 			$prop->version = (string)$xml["version"];
 			$prop->crs_list = array_filter((array)($xml->properties->WMSCrsList->value));
 			$prop->description = (string)$xml->properties->WMSServiceAbstract;
+
+			$excluded = (array)$xml->properties->WMSRestrictedLayers->value;
 			try {
 
 				self::_read_layer_node($xml->xpath('layer-tree-group')[0],null, null);
@@ -343,14 +345,6 @@ class Qgisproject_model extends CI_Model
 				//get wfs layers
 				$wfs = (array)($xml->properties->WFSLayers->value);
 				foreach($this->qgs_layers as $lay) {
-
-					if($lay->visible) {
-						if($prop->use_ids) {
-							array_unshift($prop->visible_layers, $lay->id);
-						} else {
-							array_unshift($prop->visible_layers, $lay->layername);
-						}
-					}
 
 					$lay_object = self::get_layer_by_id($lay->id,$xml);
 					if($lay_object) {
@@ -363,6 +357,19 @@ class Qgisproject_model extends CI_Model
 							$lay->sql = (string)$lay_info["sql"];
 							$lay->key = (string)$lay_info["key"];
 							//$lay->identify = (int)$lay_info["identify"];
+						}
+					}
+
+					//continue if layer is excluded
+					if(in_array($lay->layername, $excluded)) {
+						continue;
+					}
+
+					if($lay->visible && !empty($lay->geom_type)) {
+						if($prop->use_ids) {
+							array_unshift($prop->visible_layers, $lay->id);
+						} else {
+							array_unshift($prop->visible_layers, $lay->layername);
 						}
 					}
 

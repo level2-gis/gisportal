@@ -893,16 +893,14 @@ class Ion_auth_model extends CI_Model
 		$id = $this->db->insert_id();
 
 		// add in groups array if it doesn't exists and stop adding into default group if default group ids are set
-		if (isset($default_group->id) && empty($groups))
-		{
-			$groups[] = $default_group->id;
-		}
+//		if (isset($default_group->id) && empty($groups))
+//		{
+//			$groups[] = $default_group->id;
+//		}
 
-		if (!empty($groups))
-		{
+		if (!empty($groups)) {
 			// add to groups
-			foreach ($groups as $group)
-			{
+			foreach ($groups as $group) {
 				$this->add_to_group($group, $id);
 			}
 		}
@@ -1968,24 +1966,29 @@ class Ion_auth_model extends CI_Model
 	public function set_session($user)
 	{
 		$this->trigger_events('pre_set_session');
-        $portal_role = $this->get_admin_scope($user->id);
+		$portal_role = $this->get_admin_scope($user->id);
+
+		//uros
+		$this->load->model('portal_model');
+		$version = $this->portal_model->get_version();
 
 		$session_data = [
-		    'identity'             => $user->{$this->identity_column},
-		    $this->identity_column => $user->{$this->identity_column},
-		    'email'                => $user->email,
-		    'user_id'              => $user->id, //everyone likes to overwrite id so we'll use user_id
-		    'old_last_login'       => $user->last_login,
-		    'last_check'           => time(),
-            'user_is_logged_in'    => true,  //gisportal for old gisapp
-            'user_display_name'    => $user->user_display_name, //gisportal
-            'user_name'            => $user->username,  //gisportal
-            'lang'                 => $user->lang,                           //gisportal
-            'upload_dir'           => $this->config->item('main_upload_dir'), //gisportal
-            'admin'                => $portal_role ? $portal_role->admin : null, //gisportal for old gisapp
-            'admin_filter'         => $portal_role ? $portal_role->filter : null,  //gisportal
-            'admin_scope'          => $portal_role ? $portal_role->scope : null,  //gisportal
-            'portal_role'          => $portal_role ? $portal_role->role_name : null  //gisportal
+			'identity' => $user->{$this->identity_column},
+			$this->identity_column => $user->{$this->identity_column},
+			'email' => $user->email,
+			'user_id' => $user->id, //everyone likes to overwrite id so we'll use user_id
+			'old_last_login' => $user->last_login,
+			'last_check' => time(),
+			'user_is_logged_in' => true,  //gisportal for old gisapp
+			'user_display_name' => $user->user_display_name, //gisportal
+			'user_name' => $user->username,  //gisportal
+			'lang' => $user->lang,                           //gisportal
+			'upload_dir' => $this->config->item('main_upload_dir'), //gisportal
+			'admin' => $portal_role ? $portal_role->admin : null, //gisportal for old gisapp
+			'admin_filter' => $portal_role ? $portal_role->filter : null,  //gisportal
+			'admin_scope' => $portal_role ? $portal_role->scope : null,  //gisportal
+			'portal_role' => $portal_role ? $portal_role->role_name : null, //gisportal
+			'db_version' => $version
 		];
 
 		$this->session->set_userdata($session_data);

@@ -16,7 +16,12 @@ get_project_data().
 Update script from v21 to v22. Adds more custom fields (custom3, custom4, link1, link2, link3) to project_groups table.
 This is optional and so not included in main setup file.
 
-4. setup_v21.sql
+4. 022_update.sql
+
+Update script from v22 to v23. Adds fields to projects, plugins and users_print tables. And modifies users_print_view with
+more fields.
+
+5. setup_v23.sql
 
 If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
 latest gisapp - https://github.com/uprel/gisapp

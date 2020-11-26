@@ -1,10 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('wkt-parser')) :
-    typeof define === 'function' && define.amd ? define(['wkt-parser'], factory) :
-    (global.proj4 = factory(global.wkt));
-}(this, (function (wkt) { 'use strict';
-
-    wkt = wkt && wkt.hasOwnProperty('default') ? wkt['default'] : wkt;
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.proj4 = factory());
+}(this, (function () { 'use strict';
 
     var globals = function(defs) {
       defs('EPSG:4326', "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
@@ -211,6 +209,475 @@
         self.datumCode = self.datumCode.toLowerCase();
       }
       return self;
+    };
+
+    var NEUTRAL = 1;
+    var KEYWORD = 2;
+    var NUMBER = 3;
+    var QUOTED = 4;
+    var AFTERQUOTE = 5;
+    var ENDED = -1;
+    var whitespace = /\s/;
+    var latin = /[A-Za-z]/;
+    var keyword = /[A-Za-z84]/;
+    var endThings = /[,\]]/;
+    var digets = /[\d\.E\-\+]/;
+    // const ignoredChar = /[\s_\-\/\(\)]/g;
+    function Parser(text) {
+      if (typeof text !== 'string') {
+        throw new Error('not a string');
+      }
+      this.text = text.trim();
+      this.level = 0;
+      this.place = 0;
+      this.root = null;
+      this.stack = [];
+      this.currentObject = null;
+      this.state = NEUTRAL;
+    }
+    Parser.prototype.readCharicter = function() {
+      var char = this.text[this.place++];
+      if (this.state !== QUOTED) {
+        while (whitespace.test(char)) {
+          if (this.place >= this.text.length) {
+            return;
+          }
+          char = this.text[this.place++];
+        }
+      }
+      switch (this.state) {
+        case NEUTRAL:
+          return this.neutral(char);
+        case KEYWORD:
+          return this.keyword(char)
+        case QUOTED:
+          return this.quoted(char);
+        case AFTERQUOTE:
+          return this.afterquote(char);
+        case NUMBER:
+          return this.number(char);
+        case ENDED:
+          return;
+      }
+    };
+    Parser.prototype.afterquote = function(char) {
+      if (char === '"') {
+        this.word += '"';
+        this.state = QUOTED;
+        return;
+      }
+      if (endThings.test(char)) {
+        this.word = this.word.trim();
+        this.afterItem(char);
+        return;
+      }
+      throw new Error('havn\'t handled "' +char + '" in afterquote yet, index ' + this.place);
+    };
+    Parser.prototype.afterItem = function(char) {
+      if (char === ',') {
+        if (this.word !== null) {
+          this.currentObject.push(this.word);
+        }
+        this.word = null;
+        this.state = NEUTRAL;
+        return;
+      }
+      if (char === ']') {
+        this.level--;
+        if (this.word !== null) {
+          this.currentObject.push(this.word);
+          this.word = null;
+        }
+        this.state = NEUTRAL;
+        this.currentObject = this.stack.pop();
+        if (!this.currentObject) {
+          this.state = ENDED;
+        }
+
+        return;
+      }
+    };
+    Parser.prototype.number = function(char) {
+      if (digets.test(char)) {
+        this.word += char;
+        return;
+      }
+      if (endThings.test(char)) {
+        this.word = parseFloat(this.word);
+        this.afterItem(char);
+        return;
+      }
+      throw new Error('havn\'t handled "' +char + '" in number yet, index ' + this.place);
+    };
+    Parser.prototype.quoted = function(char) {
+      if (char === '"') {
+        this.state = AFTERQUOTE;
+        return;
+      }
+      this.word += char;
+      return;
+    };
+    Parser.prototype.keyword = function(char) {
+      if (keyword.test(char)) {
+        this.word += char;
+        return;
+      }
+      if (char === '[') {
+        var newObjects = [];
+        newObjects.push(this.word);
+        this.level++;
+        if (this.root === null) {
+          this.root = newObjects;
+        } else {
+          this.currentObject.push(newObjects);
+        }
+        this.stack.push(this.currentObject);
+        this.currentObject = newObjects;
+        this.state = NEUTRAL;
+        return;
+      }
+      if (endThings.test(char)) {
+        this.afterItem(char);
+        return;
+      }
+      throw new Error('havn\'t handled "' +char + '" in keyword yet, index ' + this.place);
+    };
+    Parser.prototype.neutral = function(char) {
+      if (latin.test(char)) {
+        this.word = char;
+        this.state = KEYWORD;
+        return;
+      }
+      if (char === '"') {
+        this.word = '';
+        this.state = QUOTED;
+        return;
+      }
+      if (digets.test(char)) {
+        this.word = char;
+        this.state = NUMBER;
+        return;
+      }
+      if (endThings.test(char)) {
+        this.afterItem(char);
+        return;
+      }
+      throw new Error('havn\'t handled "' +char + '" in neutral yet, index ' + this.place);
+    };
+    Parser.prototype.output = function() {
+      while (this.place < this.text.length) {
+        this.readCharicter();
+      }
+      if (this.state === ENDED) {
+        return this.root;
+      }
+      throw new Error('unable to parse string "' +this.text + '". State is ' + this.state);
+    };
+
+    function parseString(txt) {
+      var parser = new Parser(txt);
+      return parser.output();
+    }
+
+    function mapit(obj, key, value) {
+      if (Array.isArray(key)) {
+        value.unshift(key);
+        key = null;
+      }
+      var thing = key ? {} : obj;
+
+      var out = value.reduce(function(newObj, item) {
+        sExpr(item, newObj);
+        return newObj
+      }, thing);
+      if (key) {
+        obj[key] = out;
+      }
+    }
+
+    function sExpr(v, obj) {
+      if (!Array.isArray(v)) {
+        obj[v] = true;
+        return;
+      }
+      var key = v.shift();
+      if (key === 'PARAMETER') {
+        key = v.shift();
+      }
+      if (v.length === 1) {
+        if (Array.isArray(v[0])) {
+          obj[key] = {};
+          sExpr(v[0], obj[key]);
+          return;
+        }
+        obj[key] = v[0];
+        return;
+      }
+      if (!v.length) {
+        obj[key] = true;
+        return;
+      }
+      if (key === 'TOWGS84') {
+        obj[key] = v;
+        return;
+      }
+      if (key === 'AXIS') {
+        if (!(key in obj)) {
+          obj[key] = [];
+        }
+        obj[key].push(v);
+        return;
+      }
+      if (!Array.isArray(key)) {
+        obj[key] = {};
+      }
+
+      var i;
+      switch (key) {
+        case 'UNIT':
+        case 'PRIMEM':
+        case 'VERT_DATUM':
+          obj[key] = {
+            name: v[0].toLowerCase(),
+            convert: v[1]
+          };
+          if (v.length === 3) {
+            sExpr(v[2], obj[key]);
+          }
+          return;
+        case 'SPHEROID':
+        case 'ELLIPSOID':
+          obj[key] = {
+            name: v[0],
+            a: v[1],
+            rf: v[2]
+          };
+          if (v.length === 4) {
+            sExpr(v[3], obj[key]);
+          }
+          return;
+        case 'PROJECTEDCRS':
+        case 'PROJCRS':
+        case 'GEOGCS':
+        case 'GEOCCS':
+        case 'PROJCS':
+        case 'LOCAL_CS':
+        case 'GEODCRS':
+        case 'GEODETICCRS':
+        case 'GEODETICDATUM':
+        case 'EDATUM':
+        case 'ENGINEERINGDATUM':
+        case 'VERT_CS':
+        case 'VERTCRS':
+        case 'VERTICALCRS':
+        case 'COMPD_CS':
+        case 'COMPOUNDCRS':
+        case 'ENGINEERINGCRS':
+        case 'ENGCRS':
+        case 'FITTED_CS':
+        case 'LOCAL_DATUM':
+        case 'DATUM':
+          v[0] = ['name', v[0]];
+          mapit(obj, key, v);
+          return;
+        default:
+          i = -1;
+          while (++i < v.length) {
+            if (!Array.isArray(v[i])) {
+              return sExpr(v, obj[key]);
+            }
+          }
+          return mapit(obj, key, v);
+      }
+    }
+
+    var D2R$1 = 0.01745329251994329577;
+    function rename(obj, params) {
+      var outName = params[0];
+      var inName = params[1];
+      if (!(outName in obj) && (inName in obj)) {
+        obj[outName] = obj[inName];
+        if (params.length === 3) {
+          obj[outName] = params[2](obj[outName]);
+        }
+      }
+    }
+
+    function d2r(input) {
+      return input * D2R$1;
+    }
+
+    function cleanWKT(wkt) {
+      if (wkt.type === 'GEOGCS') {
+        wkt.projName = 'longlat';
+      } else if (wkt.type === 'LOCAL_CS') {
+        wkt.projName = 'identity';
+        wkt.local = true;
+      } else {
+        if (typeof wkt.PROJECTION === 'object') {
+          wkt.projName = Object.keys(wkt.PROJECTION)[0];
+        } else {
+          wkt.projName = wkt.PROJECTION;
+        }
+      }
+      if (wkt.AXIS) {
+        var axisOrder = '';
+        for (var i = 0, ii = wkt.AXIS.length; i < ii; ++i) {
+          var axis = wkt.AXIS[i];
+          var descriptor = axis[0].toLowerCase();
+          if (descriptor.indexOf('north') !== -1) {
+            axisOrder += 'n';
+          } else if (descriptor.indexOf('south') !== -1) {
+            axisOrder += 's';
+          } else if (descriptor.indexOf('east') !== -1) {
+            axisOrder += 'e';
+          } else if (descriptor.indexOf('west') !== -1) {
+            axisOrder += 'w';
+          }
+        }
+        if (axisOrder.length === 2) {
+          axisOrder += 'u';
+        }
+        if (axisOrder.length === 3) {
+          wkt.axis = axisOrder;
+        }
+      }
+      if (wkt.UNIT) {
+        wkt.units = wkt.UNIT.name.toLowerCase();
+        if (wkt.units === 'metre') {
+          wkt.units = 'meter';
+        }
+        if (wkt.UNIT.convert) {
+          if (wkt.type === 'GEOGCS') {
+            if (wkt.DATUM && wkt.DATUM.SPHEROID) {
+              wkt.to_meter = wkt.UNIT.convert*wkt.DATUM.SPHEROID.a;
+            }
+          } else {
+            wkt.to_meter = wkt.UNIT.convert;
+          }
+        }
+      }
+      var geogcs = wkt.GEOGCS;
+      if (wkt.type === 'GEOGCS') {
+        geogcs = wkt;
+      }
+      if (geogcs) {
+        //if(wkt.GEOGCS.PRIMEM&&wkt.GEOGCS.PRIMEM.convert){
+        //  wkt.from_greenwich=wkt.GEOGCS.PRIMEM.convert*D2R;
+        //}
+        if (geogcs.DATUM) {
+          wkt.datumCode = geogcs.DATUM.name.toLowerCase();
+        } else {
+          wkt.datumCode = geogcs.name.toLowerCase();
+        }
+        if (wkt.datumCode.slice(0, 2) === 'd_') {
+          wkt.datumCode = wkt.datumCode.slice(2);
+        }
+        if (wkt.datumCode === 'new_zealand_geodetic_datum_1949' || wkt.datumCode === 'new_zealand_1949') {
+          wkt.datumCode = 'nzgd49';
+        }
+        if (wkt.datumCode === 'wgs_1984' || wkt.datumCode === 'world_geodetic_system_1984') {
+          if (wkt.PROJECTION === 'Mercator_Auxiliary_Sphere') {
+            wkt.sphere = true;
+          }
+          wkt.datumCode = 'wgs84';
+        }
+        if (wkt.datumCode.slice(-6) === '_ferro') {
+          wkt.datumCode = wkt.datumCode.slice(0, - 6);
+        }
+        if (wkt.datumCode.slice(-8) === '_jakarta') {
+          wkt.datumCode = wkt.datumCode.slice(0, - 8);
+        }
+        if (~wkt.datumCode.indexOf('belge')) {
+          wkt.datumCode = 'rnb72';
+        }
+        if (geogcs.DATUM && geogcs.DATUM.SPHEROID) {
+          wkt.ellps = geogcs.DATUM.SPHEROID.name.replace('_19', '').replace(/[Cc]larke\_18/, 'clrk');
+          if (wkt.ellps.toLowerCase().slice(0, 13) === 'international') {
+            wkt.ellps = 'intl';
+          }
+
+          wkt.a = geogcs.DATUM.SPHEROID.a;
+          wkt.rf = parseFloat(geogcs.DATUM.SPHEROID.rf, 10);
+        }
+
+        if (geogcs.DATUM && geogcs.DATUM.TOWGS84) {
+          wkt.datum_params = geogcs.DATUM.TOWGS84;
+        }
+        if (~wkt.datumCode.indexOf('osgb_1936')) {
+          wkt.datumCode = 'osgb36';
+        }
+        if (~wkt.datumCode.indexOf('osni_1952')) {
+          wkt.datumCode = 'osni52';
+        }
+        if (~wkt.datumCode.indexOf('tm65')
+          || ~wkt.datumCode.indexOf('geodetic_datum_of_1965')) {
+          wkt.datumCode = 'ire65';
+        }
+        if (wkt.datumCode === 'ch1903+') {
+          wkt.datumCode = 'ch1903';
+        }
+        if (~wkt.datumCode.indexOf('israel')) {
+          wkt.datumCode = 'isr93';
+        }
+      }
+      if (wkt.b && !isFinite(wkt.b)) {
+        wkt.b = wkt.a;
+      }
+
+      function toMeter(input) {
+        var ratio = wkt.to_meter || 1;
+        return input * ratio;
+      }
+      var renamer = function(a) {
+        return rename(wkt, a);
+      };
+      var list = [
+        ['standard_parallel_1', 'Standard_Parallel_1'],
+        ['standard_parallel_2', 'Standard_Parallel_2'],
+        ['false_easting', 'False_Easting'],
+        ['false_northing', 'False_Northing'],
+        ['central_meridian', 'Central_Meridian'],
+        ['latitude_of_origin', 'Latitude_Of_Origin'],
+        ['latitude_of_origin', 'Central_Parallel'],
+        ['scale_factor', 'Scale_Factor'],
+        ['k0', 'scale_factor'],
+        ['latitude_of_center', 'Latitude_Of_Center'],
+        ['latitude_of_center', 'Latitude_of_center'],
+        ['lat0', 'latitude_of_center', d2r],
+        ['longitude_of_center', 'Longitude_Of_Center'],
+        ['longitude_of_center', 'Longitude_of_center'],
+        ['longc', 'longitude_of_center', d2r],
+        ['x0', 'false_easting', toMeter],
+        ['y0', 'false_northing', toMeter],
+        ['long0', 'central_meridian', d2r],
+        ['lat0', 'latitude_of_origin', d2r],
+        ['lat0', 'standard_parallel_1', d2r],
+        ['lat1', 'standard_parallel_1', d2r],
+        ['lat2', 'standard_parallel_2', d2r],
+        ['azimuth', 'Azimuth'],
+        ['alpha', 'azimuth', d2r],
+        ['srsCode', 'name']
+      ];
+      list.forEach(renamer);
+      if (!wkt.long0 && wkt.longc && (wkt.projName === 'Albers_Conic_Equal_Area' || wkt.projName === 'Lambert_Azimuthal_Equal_Area')) {
+        wkt.long0 = wkt.longc;
+      }
+      if (!wkt.lat_ts && wkt.lat1 && (wkt.projName === 'Stereographic_South_Pole' || wkt.projName === 'Polar Stereographic (variant B)')) {
+        wkt.lat0 = d2r(wkt.lat1 > 0 ? 90 : -90);
+        wkt.lat_ts = wkt.lat1;
+      }
+    }
+    var wkt = function(wkt) {
+      var lisp = parseString(wkt);
+      var type = lisp.shift();
+      var name = lisp.shift();
+      lisp.unshift(['name', name]);
+      lisp.unshift(['type', type]);
+      var obj = {};
+      sExpr(lisp, obj);
+      cleanWKT(obj);
+      return obj;
     };
 
     function defs(name) {
@@ -1333,10 +1800,16 @@
         }
         switch (crs.axis[i]) {
         case 'e':
-        case 'w':
-        case 'n':
-        case 's':
           out[t] = v;
+          break;
+        case 'w':
+          out[t] = -v;
+          break;
+        case 'n':
+          out[t] = v;
+          break;
+        case 's':
+          out[t] = -v;
           break;
         case 'u':
           if (point[t] !== undefined) {
@@ -6089,6 +6562,172 @@
         names: names$30
     };
 
+    var mode = {
+      N_POLE: 0,
+      S_POLE: 1,
+      EQUIT: 2,
+      OBLIQ: 3
+    };
+
+    var params = {
+      h:     { def: 100000, num: true },           // default is Karman line, no default in PROJ.7
+      azi:   { def: 0, num: true, degrees: true }, // default is North
+      tilt:  { def: 0, num: true, degrees: true }, // default is Nadir
+      long0: { def: 0, num: true },                // default is Greenwich, conversion to rad is automatic
+      lat0:  { def: 0, num: true }                 // default is Equator, conversion to rad is automatic
+    };
+
+    function init$30() {
+      Object.keys(params).forEach(function (p) {
+        if (typeof this[p] === "undefined") {
+          this[p] = params[p].def;
+        } else if (params[p].num && isNaN(this[p])) {
+          throw new Error("Invalid parameter value, must be numeric " + p + " = " + this[p]);
+        } else if (params[p].num) {
+          this[p] = parseFloat(this[p]);
+        }
+        if (params[p].degrees) {
+          this[p] = this[p] * D2R;
+        }
+      }.bind(this));
+
+      if (Math.abs((Math.abs(this.lat0) - HALF_PI)) < EPSLN) {
+        this.mode = this.lat0 < 0 ? mode.S_POLE : mode.N_POLE;
+      } else if (Math.abs(this.lat0) < EPSLN) {
+        this.mode = mode.EQUIT;
+      } else {
+        this.mode = mode.OBLIQ;
+        this.sinph0 = Math.sin(this.lat0);
+        this.cosph0 = Math.cos(this.lat0);
+      }
+
+      this.pn1 = this.h / this.a;  // Normalize relative to the Earth's radius
+
+      if (this.pn1 <= 0 || this.pn1 > 1e10) {
+        throw new Error("Invalid height");
+      }
+      
+      this.p = 1 + this.pn1;
+      this.rp = 1 / this.p;
+      this.h1 = 1 / this.pn1;
+      this.pfact = (this.p + 1) * this.h1;
+      this.es = 0;
+
+      var omega = this.tilt;
+      var gamma = this.azi;
+      this.cg = Math.cos(gamma);
+      this.sg = Math.sin(gamma);
+      this.cw = Math.cos(omega);
+      this.sw = Math.sin(omega);
+    }
+
+    function forward$29(p) {
+      p.x -= this.long0;
+      var sinphi = Math.sin(p.y);
+      var cosphi = Math.cos(p.y);
+      var coslam = Math.cos(p.x);
+      var x, y;
+      switch (this.mode) {
+        case mode.OBLIQ:
+          y = this.sinph0 * sinphi + this.cosph0 * cosphi * coslam;
+          break;
+        case mode.EQUIT:
+          y = cosphi * coslam;
+          break;
+        case mode.S_POLE:
+          y = -sinphi;
+          break;
+        case mode.N_POLE:
+          y = sinphi;
+          break;
+      }
+      y = this.pn1 / (this.p - y);
+      x = y * cosphi * Math.sin(p.x);
+
+      switch (this.mode) {
+        case mode.OBLIQ:
+          y *= this.cosph0 * sinphi - this.sinph0 * cosphi * coslam;
+          break;
+        case mode.EQUIT:
+          y *= sinphi;
+          break;
+        case mode.N_POLE:
+          y *= -(cosphi * coslam);
+          break;
+        case mode.S_POLE:
+          y *= cosphi * coslam;
+          break;
+      }
+
+      // Tilt 
+      var yt, ba;
+      yt = y * this.cg + x * this.sg;
+      ba = 1 / (yt * this.sw * this.h1 + this.cw);
+      x = (x * this.cg - y * this.sg) * this.cw * ba;
+      y = yt * ba;
+
+      p.x = x * this.a;
+      p.y = y * this.a;
+      return p;
+    }
+
+    function inverse$29(p) {
+      p.x /= this.a;
+      p.y /= this.a;
+      var r = { x: p.x, y: p.y };
+
+      // Un-Tilt
+      var bm, bq, yt;
+      yt = 1 / (this.pn1 - p.y * this.sw);
+      bm = this.pn1 * p.x * yt;
+      bq = this.pn1 * p.y * this.cw * yt;
+      p.x = bm * this.cg + bq * this.sg;
+      p.y = bq * this.cg - bm * this.sg;
+
+      var rh = hypot(p.x, p.y);
+      if (Math.abs(rh) < EPSLN) {
+        r.x = 0;
+        r.y = p.y;
+      } else {
+        var cosz, sinz;
+        sinz = 1 - rh * rh * this.pfact;
+        sinz = (this.p - Math.sqrt(sinz)) / (this.pn1 / rh + rh / this.pn1);
+        cosz = Math.sqrt(1 - sinz * sinz);
+        switch (this.mode) {
+          case mode.OBLIQ:
+            r.y = Math.asin(cosz * this.sinph0 + p.y * sinz * this.cosph0 / rh);
+            p.y = (cosz - this.sinph0 * Math.sin(r.y)) * rh;
+            p.x *= sinz * this.cosph0;
+            break;
+          case mode.EQUIT:
+            r.y = Math.asin(p.y * sinz / rh);
+            p.y = cosz * rh;
+            p.x *= sinz;
+            break;
+          case mode.N_POLE:
+            r.y = Math.asin(cosz);
+            p.y = -p.y;
+            break;
+          case mode.S_POLE:
+            r.y = -Math.asin(cosz);
+            break;
+        }
+        r.x = Math.atan2(p.x, p.y);
+      }
+
+      p.x = r.x + this.long0;
+      p.y = r.y;
+      return p;
+    }
+
+    var names$31 = ["Tilted_Perspective", "tpers"];
+    var tpers = {
+      init: init$30,
+      forward: forward$29,
+      inverse: inverse$29,
+      names: names$31
+    };
+
     var includedProjections = function(proj4){
       proj4.Proj.projections.add(tmerc);
       proj4.Proj.projections.add(etmerc);
@@ -6117,6 +6756,7 @@
       proj4.Proj.projections.add(qsc);
       proj4.Proj.projections.add(robin);
       proj4.Proj.projections.add(geocent);
+      proj4.Proj.projections.add(tpers);
     };
 
     proj4$1.defaultDatum = 'WGS84'; //default datum
@@ -6127,7 +6767,7 @@
     proj4$1.defs = defs;
     proj4$1.transform = transform;
     proj4$1.mgrs = mgrs;
-    proj4$1.version = '2.6.2';
+    proj4$1.version = '2.6.3';
     includedProjections(proj4$1);
 
     return proj4$1;

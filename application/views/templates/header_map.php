@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200417"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol.css?v=6.3.1"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol.css?v=6.4.3"); ?>">
 
 	<style>
 		/*does not work on Firefox and MS browsers*/
@@ -37,12 +37,37 @@
 		.map:fullscreen {
 			height: 100%;
 		}
+
+		.ol-rotate {
+			top: 3em;
+			right: .5em;
+		}
+
+		div.ol-overviewmap,
+		div.ol-overviewmap.ol-uncollapsible {
+			bottom: 42px;
+			left: auto;
+			right: 7px;
+			top: auto;
+		}
+
+		div.ol-overviewmap div.ol-overviewmap-map {
+			border: 1px solid #7b98bc;
+			height: 150px;
+			margin: 2px;
+			width: 180px;
+		}
+
+		div.ol-overviewmap-box {
+			border: 3px solid rgba(0,60,136,0.7);
+		}
 	</style>
 
 	<script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/map/proj4.js?v=2.6.2"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/map/ol.js?v=6.3.1"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap3-typeahead.min.js"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/map/proj4.js?v=2.6.3"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/map/ol.js?v=6.4.3"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("../gisapp/client_common/customProjections.js"); ?>"></script>
 	<script type="text/javascript">
 

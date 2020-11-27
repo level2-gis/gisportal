@@ -61,23 +61,24 @@ function setBaseLayer(lay) {
 
 			definition = $.parseJSON(lay.definition);
 
-			$.ajax(definition.capabilitiesUrl).then(function(response) {
-			   var result = new ol.format.WMTSCapabilities().read(response);
-			   var options = ol.source.WMTS.optionsFromCapabilities(result, {
-			       layer: definition.layer,
-			       matrixSet: definition.matrixSet,
-			       requestEncoding: definition.requestEncoding,
-			       style: definition.style,
-			       projection: projection,
-			       format: definition.format
-			   });
+			$.ajax(definition.capabilitiesUrl).then(function (response) {
+				var result = new ol.format.WMTSCapabilities().read(response);
+				var options = ol.source.WMTS.optionsFromCapabilities(result, {
+					layer: definition.layer,
+					matrixSet: definition.matrixSet,
+					requestEncoding: definition.requestEncoding,
+					style: definition.style,
+					projection: projection,
+					format: definition.format
+				});
 
-			   layOl = new ol.layer.Tile({
-			       visible: true,
-			       //name: lay.name,
-			       source: new ol.source.WMTS(options)
-			   });
+				layOl = new ol.layer.Tile({
+					visible: true,
+					//name: lay.name,
+					source: new ol.source.WMTS(options)
+				});
 
+				//layer from
 				layOl.name = lay.name;
 				// add background as base layer
 				GP.map.olMap.addLayer(layOl);
@@ -131,7 +132,7 @@ function setBaseLayer(lay) {
 
 			definition = $.parseJSON(lay.definition);
 
-			if(definition.singleTile) {
+			if (definition.singleTile) {
 				layOl = new ol.layer.Image({
 					visible: true,
 					source: new ol.source.ImageWMS({
@@ -155,7 +156,7 @@ function setBaseLayer(lay) {
 
 	}
 
-	if(layOl) {
+	if (layOl) {
 		//this is layer id, must be same as layer name from database!
 		layOl.name = lay.name;
 
@@ -166,14 +167,30 @@ function setBaseLayer(lay) {
 }
 
 var projection = 'EPSG:3857';
-if((GP.map.crs != 'EPSG:3857') && (GP.map.crs != 'EPSG:4326')) {
+if ((GP.map.crs != 'EPSG:3857') && (GP.map.crs != 'EPSG:4326')) {
 	proj4.defs(GP.map.crs, GP.map.proj4);
 	ol.proj.proj4.register(proj4);
 
 	projection = new ol.proj.Projection({
 		code: GP.map.crs,
 		units: CustomProj[GP.map.crs].units,
-		extent:	CustomProj[GP.map.crs].extent
+		extent: CustomProj[GP.map.crs].extent
+	});
+}
+
+if (GP.map.overview > '') {
+	var ov = $.parseJSON(GP.map.overview.definition);
+	var overviewMapControl = new ol.control.OverviewMap({
+		layers: [
+			new ol.layer.Tile({
+				visible: true,
+				//name: lay.name,
+				source: new ol.source.XYZ(ov)
+			})
+		],
+		view: new ol.View({projection: projection}),
+		collapseLabel: '\u00BB',
+		label: '\u00AB'
 	});
 }
 
@@ -181,25 +198,30 @@ GP.map.olMap = new ol.Map({
 	target: 'map',
 	controls: ol.control.defaults().extend([
 		new ol.control.FullScreen(),
-		new ol.control.ScaleLine(),
-		new ol.control.MousePosition({
-			target: document.getElementById('mouse-position'),
-			undefinedHTML: '&nbsp;',
-			className: 'custom-mouse-position help-block',
-			coordinateFormat: ol.coordinate.createStringXY(2)
-		})
+		new ol.control.ScaleLine()
 	]),
 	layers: [],
 	view: new ol.View({
-		center: [0,0],
+		center: [0, 0],
 		zoom: 2,
 		projection: projection,
-		enableRotation: false
+		enableRotation: true
 	})
 });
 
+if (GP.map.showCoords) {
+	GP.map.olMap.addControl(new ol.control.MousePosition({
+		target: document.getElementById('mouse-position'),
+		undefinedHTML: '&nbsp;',
+		className: 'custom-mouse-position help-block',
+		coordinateFormat: ol.coordinate.createStringXY(2)
+	}))
+}
+if (GP.map.overview > '') {
+	GP.map.olMap.addControl(overviewMapControl);
+}
 //set center or extent
-if(GP.map.startCenter) {
+if (GP.map.startCenter) {
 	GP.map.olMap.getView().setCenter(ol.proj.fromLonLat(GP.map.startCenter, GP.map.crs));
 	GP.map.olMap.getView().setZoom(GP.map.startZoom);
 } else {
@@ -215,6 +237,7 @@ for (var i = 0; i < baseLayers.length; i++) {
 	setBaseLayer(el);
 }
 
-$('#projection').html(GP.map.olMap.getView().getProjection().code_);
-
+if (GP.map.showProjection) {
+	$('#projection').html(GP.map.olMap.getView().getProjection().code_);
+}
 

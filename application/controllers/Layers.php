@@ -192,11 +192,13 @@ class Layers extends CI_Controller{
 		$data['logged_in'] = true;
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;
-		$data['edit_url'] = 'layers/edit/'. $layer['id'];
+		$data['edit_url'] = 'layers/edit/' . $layer['id'];
 		$data['center'] = empty($this->config->item('layer_preview_start_lonlat')) ? '[-21.949,64.167]' : $this->config->item('layer_preview_start_lonlat');
 		$data['zoom'] = empty($this->config->item('layer_preview_start_zoom')) ? 8 : $this->config->item('layer_preview_start_zoom');
-		$data['crs'] =  $crs;
-		$data['proj4'] =  $proj4;
+		$data['crs'] = $crs;
+		$data['proj4'] = $proj4;
+		$data['showCoords'] = true;
+		$data['showProjection'] = true;
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);

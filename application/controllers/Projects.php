@@ -685,14 +685,16 @@ class Projects extends CI_Controller
 		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
 		$data['subtitle'] = $wms['version'];
 
-		$data['baselayers'] = [$project];	//TODO get project group related base+overlay layers [$layer]
+		$data['baselayers'] = [$project];    //TODO get project group related base+overlay layers [$layer]
 		$data['logged_in'] = true;
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;
-		$data['edit_url'] = 'projects/edit/'. $project['id'];
-		$data['extent'] =  $wms['extent'];
-		$data['crs'] =  $wms['crs'];
-		$data['proj4'] =  $wms['proj4'];
+		$data['edit_url'] = 'projects/edit/' . $project['id'];
+		$data['extent'] = $wms['extent'];
+		$data['crs'] = $wms['crs'];
+		$data['proj4'] = $wms['proj4'];
+		$data['showCoords'] = true;
+		$data['showProjection'] = true;
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('map', $data);

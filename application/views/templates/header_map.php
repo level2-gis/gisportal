@@ -125,17 +125,20 @@
 		GP.map = {};
 
 		<?php if (!empty($center)) : ?>
-				GP.map.startCenter = <?php echo $center; ?>;	//lon lat
-				GP.map.startZoom = <?php echo $zoom; ?>;
+		GP.map.startCenter = <?php echo $center; ?>;	//lon lat
+		GP.map.startZoom = <?php echo $zoom; ?>;
 		<?php else : ?>
-			GP.map.startExtent = [<?php echo implode(",",$extent); ?>];	//use instead of center and zoom in project CRS
+		GP.map.startExtent = [<?php echo implode(",", $extent); ?>];	//use instead of center and zoom in project CRS
 		<?php endif; ?>
 		GP.map.crs = '<?php echo $crs; ?>';
 		GP.map.proj4 = '<?php echo $proj4; ?>';
-		GP.map.baselayers = function() {
+		GP.map.showCoords = <?php echo isset($showCoords) ? json_encode($showCoords) : json_encode(false); ?>;
+		GP.map.showProjection = <?php echo isset($showProjection) ? json_encode($showProjection) : json_encode(false); ?>;
+		GP.map.baselayers = function () {
 			var bl = eval(<?php echo json_encode($baselayers); ?>);
 			return bl;
 		}
+		GP.map.overview =  <?php echo isset($overview) ? json_encode($overview) : json_encode(''); ?>;
 	</script>
 </head>
 

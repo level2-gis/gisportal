@@ -65,7 +65,6 @@
 
 	<script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap3-typeahead.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/proj4.js?v=2.6.3"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/ol.js?v=6.4.3"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("../gisapp/client_common/customProjections.js"); ?>"></script>

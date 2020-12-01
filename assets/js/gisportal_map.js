@@ -18,7 +18,7 @@ function extractStringFromObject(objName, string) {
 	return ret;
 }
 
-function setBaseLayer(lay) {
+function setBaseLayer(lay, projection) {
 
 	//taken with changes from /gisapp/client_mobile/src/map.js
 	var layOl, definition;
@@ -61,70 +61,70 @@ function setBaseLayer(lay) {
 
 			definition = $.parseJSON(lay.definition);
 
-			$.ajax(definition.capabilitiesUrl).then(function (response) {
-				var result = new ol.format.WMTSCapabilities().read(response);
-				var options = ol.source.WMTS.optionsFromCapabilities(result, {
+			// $.ajax(definition.capabilitiesUrl).then(function (response) {
+			// 	var result = new ol.format.WMTSCapabilities().read(response);
+			// 	var options = ol.source.WMTS.optionsFromCapabilities(result, {
+			// 		layer: definition.layer,
+			// 		matrixSet: definition.matrixSet,
+			// 		requestEncoding: definition.requestEncoding,
+			// 		style: definition.style,
+			// 		projection: projection,
+			// 		format: definition.format
+			// 	});
+			//
+			// 	layOl = new ol.layer.Tile({
+			// 		visible: true,
+			// 		//name: lay.name,
+			// 		source: new ol.source.WMTS(options)
+			// 	});
+			//
+			// 	//layer from
+			// 	layOl.name = lay.name;
+			// 	// add background as base layer
+			// 	GP.map.olMap.addLayer(layOl);
+			// });
+
+			var matrixIds = [];
+			var resolutions = [];
+			var serverResolutions = eval(definition.serverResolutions);
+			var projectionExtent = projection.getExtent();
+			var size = ol.extent.getWidth(projectionExtent) / 256;
+			var num = serverResolutions !== undefined ? serverResolutions.length : eval(definition.numZoomLevels);
+
+			//FIX for removing extent from OL2 definition
+			var extent = extractStringFromObject("OpenLayers", definition.maxExtent);
+
+			for (var z = 0; z < num; ++z) {
+				matrixIds[z] = z;
+				resolutions[z] = size / Math.pow(2, z);
+			}
+
+			if (definition.matrixIds !== undefined) {
+				matrixIds = eval(definition.matrixIds);
+			}
+
+			if (serverResolutions !== undefined) {
+				resolutions = serverResolutions;
+			}
+
+			layOl = new ol.layer.Tile({
+				visible: true,
+				opacity: definition.opacity,
+				source: new ol.source.WMTS({
+					url: definition.url,
 					layer: definition.layer,
 					matrixSet: definition.matrixSet,
 					requestEncoding: definition.requestEncoding,
 					style: definition.style,
 					projection: projection,
-					format: definition.format
-				});
-
-				layOl = new ol.layer.Tile({
-					visible: true,
-					//name: lay.name,
-					source: new ol.source.WMTS(options)
-				});
-
-				//layer from
-				layOl.name = lay.name;
-				// add background as base layer
-				GP.map.olMap.addLayer(layOl);
+					format: definition.format,
+					tileGrid: new ol.tilegrid.WMTS({
+						extent: eval(extent),
+						resolutions: resolutions,
+						matrixIds: matrixIds
+					})
+				})
 			});
-
-			// var matrixIds = [];
-			// var resolutions = [];
-			// var serverResolutions = eval(definition.serverResolutions);
-			// var projectionExtent = olMap.getView().getProjection().getExtent();
-			// var size = ol.extent.getWidth(projectionExtent) / 256;
-			// var num = serverResolutions !== undefined ? serverResolutions.length : eval(definition.numZoomLevels);
-			//
-			// //FIX for removing extent from OL2 definition
-			// var extent = extractStringFromObject("OpenLayers", definition.maxExtent);
-			//
-			// for (var z = 0; z < num; ++z) {
-			// 	matrixIds[z] = z;
-			// 	resolutions[z] = size / Math.pow(2, z);
-			// }
-			//
-			// if (definition.matrixIds !== undefined) {
-			// 	matrixIds = eval(definition.matrixIds);
-			// }
-			//
-			// if (serverResolutions !== undefined) {
-			// 	resolutions = serverResolutions;
-			// }
-			//
-			// layOl = new ol.layer.Tile({
-			// 	visible: true,
-			// 	opacity: definition.opacity,
-			// 	source: new ol.source.WMTS({
-			// 		url: definition.url,
-			// 		layer: definition.layer,
-			// 		matrixSet: definition.matrixSet,
-			// 		requestEncoding: definition.requestEncoding,
-			// 		style: definition.style,
-			// 		projection: olMap.getView().getProjection(),
-			// 		format: definition.format,
-			// 		tileGrid: new ol.tilegrid.WMTS({
-			// 			extent: eval(extent),
-			// 			resolutions: resolutions,
-			// 			matrixIds: matrixIds
-			// 		})
-			// 	})
-			// });
 
 			break;
 
@@ -160,52 +160,36 @@ function setBaseLayer(lay) {
 		//this is layer id, must be same as layer name from database!
 		layOl.name = lay.name;
 
-		// add background as base layer
-		GP.map.olMap.addLayer(layOl);
-		//olMap.addLayer(layOl);			//getLayers().insertAt(0, layOl3);
+		return layOl;
 	}
+	return null;
 }
 
-var projection = 'EPSG:3857';
 if ((GP.map.crs != 'EPSG:3857') && (GP.map.crs != 'EPSG:4326')) {
 	proj4.defs(GP.map.crs, GP.map.proj4);
 	ol.proj.proj4.register(proj4);
-
-	projection = new ol.proj.Projection({
-		code: GP.map.crs,
-		units: CustomProj[GP.map.crs].units,
-		extent: CustomProj[GP.map.crs].extent
-	});
 }
+var projection = new ol.proj.Projection({
+	code: GP.map.crs ? GP.map.crs : 'EPSG:3857',
+	units: CustomProj[GP.map.crs].units,
+	extent: CustomProj[GP.map.crs].extent,
+	axisOrientation: CustomProj[GP.map.crs].yx === false ? 'enu' : 'neu'
+});
 
-if (GP.map.overview > '') {
-	var ov = $.parseJSON(GP.map.overview.definition);
-	var overviewMapControl = new ol.control.OverviewMap({
-		layers: [
-			new ol.layer.Tile({
-				visible: true,
-				//name: lay.name,
-				source: new ol.source.XYZ(ov)
-			})
-		],
-		view: new ol.View({projection: projection}),
-		collapseLabel: '\u00BB',
-		label: '\u00AB'
-	});
-}
 
 GP.map.olMap = new ol.Map({
 	target: 'map',
 	controls: ol.control.defaults().extend([
+		new ol.control.Rotate({duration: 0}),	//default is duration set and goes to view.animate which fails
 		new ol.control.FullScreen(),
-		new ol.control.ScaleLine()
+		new ol.control.ScaleLine(),
+		new ol.control.Attribution()
 	]),
 	layers: [],
 	view: new ol.View({
-		center: [0, 0],
-		zoom: 2,
 		projection: projection,
-		enableRotation: true
+		minResolution: 0.01,
+		extent: projection.getExtent()
 	})
 });
 
@@ -217,9 +201,7 @@ if (GP.map.showCoords) {
 		coordinateFormat: ol.coordinate.createStringXY(2)
 	}))
 }
-if (GP.map.overview > '') {
-	GP.map.olMap.addControl(overviewMapControl);
-}
+
 //set center or extent
 if (GP.map.startCenter) {
 	GP.map.olMap.getView().setCenter(ol.proj.fromLonLat(GP.map.startCenter, GP.map.crs));
@@ -234,10 +216,13 @@ for (var i = 0; i < baseLayers.length; i++) {
 	var el = baseLayers[i];
 
 	//create ol layer object, first time only, visibility false
-	setBaseLayer(el);
+	var lay = setBaseLayer(el, projection);
+	if (lay) {
+		GP.map.olMap.addLayer(lay);
+	}
 }
 
 if (GP.map.showProjection) {
-	$('#projection').html(GP.map.olMap.getView().getProjection().code_);
+	$('#projection').html(projection.getCode());
 }
 

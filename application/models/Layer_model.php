@@ -6,24 +6,32 @@ class Layer_model extends CI_Model {
         $this->load->database();
     }
 
-    /*
-    * Get layer by id
-    */
-    function get_layer($id)
-    {
-        $this->db->where('id', $id);
-        $query = $this->db->get('layers');
-        return $query->result()[0];
-    }
+	/*
+	* Get layer by id
+	*/
+	function get_layer($id)
+	{
+		$this->db->where('id', $id);
+		$query = $this->db->get('layers');
+		return $query->result()[0];
+	}
 
-    function get_layers($client_id = NULL, $list_only = FALSE)
-    {
-        //$this->db->order_by('type', 'ASC');
-        $this->db->order_by('name', 'ASC');
+	function get_layer_by_name($name)
+	{
+		$this->db->where('name', $name);
+		$query = $this->db->get('layers');
 
-        if($list_only) {
-            $this->db->select("id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type", FALSE);
-        }
+		return $query->result();
+	}
+
+	function get_layers($client_id = NULL, $list_only = FALSE)
+	{
+		//$this->db->order_by('type', 'ASC');
+		$this->db->order_by('name', 'ASC');
+
+		if ($list_only) {
+			$this->db->select("id, name, display_name, display_name || ' ('||name||', '||type||')' AS full_name, type", FALSE);
+		}
 
         if(!empty($client_id)) {
             $this->db->where('client_id', null);

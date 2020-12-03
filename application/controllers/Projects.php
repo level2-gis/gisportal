@@ -674,10 +674,12 @@ class Projects extends CI_Controller
 
 		$wms = self::get_project_wms_definition($id);
 
-		if(empty($wms)) {
+		if (empty($wms)) {
 			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Project not valid</div>');
-			redirect("/projects/edit/".$id);
+			redirect("/projects/edit/" . $id);
 		}
+
+		$group = (array)$this->project_group_model->get_project_group($project['project_group_id']);
 
 		$project['definition'] = json_encode($wms);
 		$project['type'] = 'WMS';
@@ -685,7 +687,10 @@ class Projects extends CI_Controller
 		$data['title'] = $this->lang->line('gp_project') . ' ' . $project['display_name'];
 		$data['subtitle'] = $wms['version'];
 
-		$data['baselayers'] = [$project];    //TODO get project group related base+overlay layers [$layer]
+		$base = $this->layer_model->get_layers_filtered($group['base_layers_ids'], 1);
+		$extra = $this->layer_model->get_layers_filtered($group['extra_layers_ids'], 0);
+		$data['baselayers'] = array_merge($base, [$project], $extra);
+
 		$data['logged_in'] = true;
 		$data['is_admin'] = $user_role->admin;
 		$data['role'] = $user_role->role_name;

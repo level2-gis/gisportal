@@ -157,8 +157,10 @@ function setBaseLayer(lay, projection) {
 	}
 
 	if (layOl) {
-		//this is layer id, must be same as layer name from database!
-		layOl.name = lay.name;
+
+		layOl.set('name', lay.name);
+		layOl.set('title', lay.display_name);
+		layOl.set('type', lay.base ? 'base' : null);
 
 		return layOl;
 	}
@@ -180,6 +182,7 @@ var projection = new ol.proj.Projection({
 GP.map.olMap = new ol.Map({
 	target: 'map',
 	controls: ol.control.defaults().extend([
+		new ol.control.LayerSwitcher(),
 		new ol.control.Rotate({duration: 0}),	//default is duration set and goes to view.animate which fails
 		new ol.control.FullScreen(),
 		new ol.control.ScaleLine(),
@@ -188,8 +191,8 @@ GP.map.olMap = new ol.Map({
 	layers: [],
 	view: new ol.View({
 		projection: projection,
-		minResolution: 0.01,
-		extent: projection.getExtent()
+		minResolution: 0.01
+		//extent: projection.getExtent()	//this is view restriction to extent
 	})
 });
 
@@ -215,9 +218,13 @@ var baseLayers = GP.map.baselayers();
 for (var i = 0; i < baseLayers.length; i++) {
 	var el = baseLayers[i];
 
-	//create ol layer object, first time only, visibility false
+	//create ol layer object, first time only
 	var lay = setBaseLayer(el, projection);
 	if (lay) {
+		//fix visibility for baselayers
+		if (i > 0 && el.base) {
+			lay.setVisible(false);
+		}
 		GP.map.olMap.addLayer(lay);
 	}
 }

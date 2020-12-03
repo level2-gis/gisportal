@@ -12,19 +12,21 @@
 	<title><?php echo $title; ?> | <?php echo $this->config->item('site_title'); ?></title>
 	<!--link the bootstrap css file-->
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css');?>">
+	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css'); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200417"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol.css?v=6.4.3"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol-layerswitcher.css?v=3.8.1"); ?>">
 
 	<style>
 		/*does not work on Firefox and MS browsers*/
 		input[type="search"]::-webkit-search-cancel-button {
 			-webkit-appearance: searchfield-cancel-button;
 		}
+
 		.map {
 			width: 100%;
-			height:500px;
+			height: 500px;
 			position: relative;
 		}
 		.map:-webkit-full-screen {
@@ -59,18 +61,38 @@
 		}
 
 		div.ol-overviewmap-box {
-			border: 3px solid rgba(0,60,136,0.7);
+			border: 3px solid rgba(0, 60, 136, 0.7);
 		}
+
+		/*clear ol-switcher button and make it default ol style, icon added in code*/
+		div.layer-switcher button {
+			width: 1.375em;
+			height: 1.375em;
+			background-color: rgba(0, 60, 136, 0.5);
+			background-image: none;
+		}
+
+		div.layer-switcher {
+			top: 3em;
+		}
+
+		span.icon {
+			font-family: FontAwesome;
+			color: white;
+		}
+
 	</style>
 
 	<script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/proj4.js?v=2.6.3"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/map/ol.js?v=6.4.3"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("../gisapp/client_common/customProjections.js"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/map/ol-layerswitcher.js?v=3.8.1"); ?>"></script>
+	<script type="text/javascript"
+			src="<?php echo base_url("../gisapp/client_common/customProjections.js"); ?>"></script>
 	<script type="text/javascript">
 
-		$(function(){
+		$(function () {
 			var hash = window.location.hash;
 			hash && $('ul.nav a[href="' + hash + '"]').tab('show');
 
@@ -80,10 +102,13 @@
 				window.location.hash = this.hash;
 				$('html,body').scrollTop(scrollmem);
 			});
+
+			//change layer switcher icon (fa-bars)
+			$('.layer-switcher button').html('<span class="icon">&#xf0c9;</span>');
 		});
 
 		var GP = {
-			name:                   '<?php echo lang('gp_name'); ?>',
+			name: '<?php echo lang('gp_name'); ?>',
 			displayName:            '<?php echo lang('gp_display_name'); ?>',
 			action:                 '<?php echo lang('gp_action'); ?>',
 			group:                  '<?php echo lang('gp_group'); ?>',

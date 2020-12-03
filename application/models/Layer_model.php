@@ -84,19 +84,20 @@ class Layer_model extends CI_Model {
     }
 
 
-    public function get_layers_filtered($ids) {
+    public function get_layers_filtered($ids, $base = 0)
+	{
 
-        if(empty($ids)) {
-            return [];
-        }
+		if (empty($ids)) {
+			return [];
+		}
 
-        $this->db->order_by('idx', 'ASC');
-        $this->db->select("id,name,display_name,type FROM (SELECT *,idx('".$ids."',id) FROM layers_view) l",FALSE);
-        $this->db->where('idx>0');
+		//$this->db->order_by('idx', 'ASC');
+		$this->db->select("id,name,display_name,type,definition, " . $base . "::boolean AS base FROM (SELECT *,idx('" . $ids . "',id) FROM layers) l", FALSE);
+		$this->db->where('idx>0');
 
-        $query = $this->db->get();
-        return $query->result_array();
-    }
+		$query = $this->db->get();
+		return $query->result_array();
+	}
 
     function search($text, $filter) {
 

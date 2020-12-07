@@ -91,7 +91,7 @@ class Layer_model extends CI_Model {
 			return [];
 		}
 
-		//$this->db->order_by('idx', 'ASC');
+		$this->db->order_by('idx', 'ASC');
 		$this->db->select("id,name,display_name,type,definition, " . $base . "::boolean AS base FROM (SELECT *,idx('" . $ids . "',id) FROM layers) l", FALSE);
 		$this->db->where('idx>0');
 

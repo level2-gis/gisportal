@@ -9,8 +9,8 @@ class Login extends CI_Controller
     }
 
     /**
-     * This controller is only for backwards compatibility to redirect old /login request to root where it will be handled
-     */
+	 * This controller is only for backwards compatibility to redirect old and gisapp /login request to root where it will be handled
+	 */
     function index()
     {
         $ru = $this->input->get('ru');
@@ -22,8 +22,9 @@ class Login extends CI_Controller
         if (empty($ru)) {
             redirect("/auth/login");
         } else {
-            redirect("/auth/login?ru=".$ru);
-        }
+			$query = http_build_query($this->input->get());
+			redirect("/auth/login?" . $query);
+		}
     }
 }
 

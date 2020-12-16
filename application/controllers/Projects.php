@@ -64,16 +64,16 @@ class Projects extends CI_Controller
         $client = $this->client_model->get_client($client_id);
         $user_role = $this->ion_auth->admin_scope();
 
-        $data['title'] = $this->lang->line('gp_projects_title');
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;
-        $data['role'] = $user_role->role_name;
-        $data['projects'] = $this->get_user_projects($data['is_admin'],$client_id);
-        $data['navigation'] = $this->build_user_navigation($client);
+		$data['title'] = $this->lang->line('gp_projects_title');
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
+		$data['projects'] = $this->get_user_projects($data['is_admin'], $client_id);
+		$data['navigation'] = $this->build_user_navigation($client);
 
 		//rss
-		if(!empty($this->config->item('rss_feed_url'))) {
+		if (!empty($this->config->item('rss_feed_url'))) {
 			$rss_config['url'] = $this->config->item('rss_feed_url');
 			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
 			$this->load->library('rss_parser', $rss_config);
@@ -637,29 +637,112 @@ class Projects extends CI_Controller
                     $this->copy_template($project["template"],$project["name"],$client->name);
                 }
 
-                $project_id = $this->project_model->upsert_project($project);
-                $db_error = $this->db->error();
-                if (!empty($db_error['message'])) {
-                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-                }
-                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_project').' <strong>' . $project['name'] . '</strong>'.$this->lang->line('gp_saved').'</div>');
-                $this->user_model->clear_gisapp_session();
-            }
-            catch (Exception $e){
-                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
-            }
-            if($this->input->post('return') == null){
-                redirect('/projects/edit/' . $project_id);
-            } else {
-                redirect('/projects');
-            }
-        }
-    }
+				$project_id = $this->project_model->upsert_project($project);
+				$db_error = $this->db->error();
+				if (!empty($db_error['message'])) {
+					throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+				}
+				$this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_project') . ' <strong>' . $project['name'] . '</strong>' . $this->lang->line('gp_saved') . '</div>');
+				$this->user_model->clear_gisapp_session();
+			} catch (Exception $e) {
+				$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+			}
+			if ($this->input->post('return') == null) {
+				redirect('/projects/edit/' . $project_id);
+			} else {
+				redirect('/projects');
+			}
+		}
+	}
+
+	function public_map($project_name = FALSE)
+	{
+		try {
+			if ($project_name === FALSE) {
+				throw new Exception('Project required!');
+			}
+
+			$project = $this->project_model->get_project_by_name($project_name);
+
+			if (empty($project)) {
+				throw new Exception('Project not correct!');
+			}
+
+			$project = (array)$project[0];
+
+			$wms = self::get_project_wms_definition($project['id']);
+			if (empty($wms)) {
+				throw new Exception('Project not valid');
+			}
+
+			$wms_public = self::check_service('wms', 'public', basename($this->qgisproject_model->qgs_file));
+			if (!$wms_public['published']) {
+				throw new Exception('Project not published');
+			}
+
+			$client = $this->client_model->get_client($project['client_id']);
+			if (empty($client)) {
+				throw new Exception('Client not valid');
+			}
+
+			$group = (array)$this->project_group_model->get_project_group($project['project_group_id']);
+			if (empty($group)) {
+				throw new Exception('Project group not valid');
+			}
+
+		} catch (Exception $e) {
+			$data['title'] = $project_name;
+			$data['logged_in'] = false;
+			$data['is_admin'] = false;
+			$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+
+			$data['message'] = $e->getMessage();
+			$data['type'] = 'danger';
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('message_view', $data);
+			$this->load->view('templates/footer');
+			return;
+		}
+
+		//fix public URL
+		$wms['url'] = str_replace('proxy', 'wms-public', $wms['url']);
+
+		$project['definition'] = json_encode($wms);
+		$project['type'] = 'WMS';
+
+		$data['title'] = $project['display_name'];
+		$data['subtitle'] = $project['description'];
+		$data['logged_in'] = false;
+		$data['is_admin'] = false;
+
+		$base = $this->layer_model->get_layers_filtered($group['base_layers_ids'], 1);
+		$extra = $this->layer_model->get_layers_filtered($group['extra_layers_ids'], 0);
+		$data['baselayers'] = array_merge($base, [$project], $extra);
+
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		//$data['overview'] = $overview;
+
+		$data['url'] = $client->url;
+		$data['logo'] = $this->getGisappClientLogo($client->name);
+
+		$data['extent'] = $wms['extent'];
+		$data['crs'] = $wms['crs'];
+		$data['proj4'] = $wms['proj4'];
+		$data['showCoords'] = true;
+		$data['showProjection'] = true;
+
+		$this->load->view('templates/header_map', $data);
+		$this->load->view('templates/header_public', $data);
+		$this->load->view('map_public', $data);
+		$this->load->view('templates/footer');
+	}
 
 	/*
 	 * Show Openlayers map project preview
 	 */
-	function map($id = FALSE) {
+	function map($id = FALSE)
+	{
 
 		if ($id === FALSE) {
 			redirect("/");
@@ -1049,12 +1132,13 @@ class Projects extends CI_Controller
 
 			$this->user_model->clear_gisapp_session();
 			$this->session->set_userdata('map', $project_name);
+			$this->session->set_userdata('project_path', $project_full_path);
 
 			//default gisapp url, user must be logged in, cannot use outside of session
 			$ret = [
 				"url" => site_url('/proxy/' . $project_name),
 				"params" => [
-					"LAYERS" => implode(',',$properties->visible_layers)
+					"LAYERS" => implode(',', $properties->visible_layers)
 				],
 				"extent" => $properties->extent,
 				"singleTile" => TRUE,
@@ -1105,41 +1189,47 @@ class Projects extends CI_Controller
         }
 
         return $ret;
-    }
+	}
 
-    private function check_dir($path) {
-        if(!is_dir($path) || !is_writable($path)) {
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Directory does not exist or not writable: <strong>'.$path.'</strong></div>');
-            return false;
-        }
-        return true;
-    }
+	private function check_dir($path)
+	{
+		if (!is_dir($path) || !is_writable($path)) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Directory does not exist or not writable: <strong>' . $path . '</strong></div>');
+			return false;
+		}
+		return true;
+	}
 
-    private function check_service($name, $type, $fn) {
-        $main_dir = $this->config->item('main_services_dir');
+	private function check_service($name, $type, $fn)
+	{
+		$main_dir = set_realpath($this->config->item('main_services_dir'));
 
-        $dir1 = set_realpath($main_dir . DIRECTORY_SEPARATOR . $type);
-        $dir2 = set_realpath($dir1 . $name);
+		$dir1 = set_realpath($main_dir . $type);
+		$dir2 = set_realpath($dir1 . $name);
 
-        if(!self::check_dir($dir2)) {
-            return false;   //['name' => $name, 'type' => $type, 'published' => false];
-        }
+		if (!self::check_dir($dir1)) {
+			return false;   //['name' => $name, 'type' => $type, 'published' => false];
+		}
 
-        $project = basename($fn,'.qgs');
-        if($type=='private') {
-            $project .= '__'.crc32($project);
-            $fn = $project.'.qgs';
-        }
-        $url = $name.'-'.$type.'/'.$project;
-        $cap = http_build_query([
-            "SERVICE" => strtoupper($name),
-            "VERSION" => $name=='wms' ? '1.3.0' : '1.1.0',
-            "REQUEST" => 'GetCapabilities'
-        ]);
+		if (!self::check_dir($dir2)) {
+			return false;   //['name' => $name, 'type' => $type, 'published' => false];
+		}
 
-        $icon = $type =='public' ? 'fa fa-group' : 'glyphicon glyphicon-lock';
+		$project = basename($fn, '.qgs');
+		if ($type == 'private') {
+			$project .= '__' . crc32($project);
+			$fn = $project . '.qgs';
+		}
+		$url = $name . '-' . $type . '/' . $project;
+		$cap = http_build_query([
+			"SERVICE" => strtoupper($name),
+			"VERSION" => $name == 'wms' ? '1.3.0' : '1.1.0',
+			"REQUEST" => 'GetCapabilities'
+		]);
 
-        if(file_exists($dir2.$fn) && is_readable($dir2.$fn)) {
+		$icon = $type == 'public' ? 'fa fa-group' : 'glyphicon glyphicon-lock';
+
+		if (file_exists($dir2 . $fn) && is_readable($dir2 . $fn)) {
             $info = get_file_info($dir2.$fn);
             return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => true, 'date' => $info["date"], 'url' => $url, 'capabilities' => $url.'?'.$cap];
         } else {
@@ -1210,16 +1300,32 @@ class Projects extends CI_Controller
 
 
     private function getImage($name) {
-        $path = 'assets/img/projects/'.$name.'.png';
-        $fn = set_realpath(FCPATH.$path, false);
+		$path = 'assets/img/projects/' . $name . '.png';
+		$fn = set_realpath(FCPATH . $path, false);
 
-        if (is_file($fn)) {
-			return "<img title='".$fn."' class='img-responsive' src='" . base_url($path) . "'>";
-        }
-        else {
-            return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (250x177px)</br>".$fn."</div>";
-        }
-    }
+		if (is_file($fn)) {
+			return "<img title='" . $fn . "' class='img-responsive' src='" . base_url($path) . "'>";
+		} else {
+			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing (250x177px)</br>" . $fn . "</div>";
+		}
+	}
+
+	private function getGisappClientLogo($name)
+	{
+		$path = 'gisapp/admin/resources/images/' . $name . '.png';
+		$fn = set_realpath(dirname(FCPATH) . DIRECTORY_SEPARATOR . $path, false);
+		$url_arr = parse_url(base_url());
+		$base = $url_arr['scheme'] . '://' . $url_arr['host'];
+		if (!empty($url_arr['port'])) {
+			$base .= ':' . $url_arr['port'];
+		}
+
+		if (is_file($fn)) {
+			return "<img height='32px' src='" . $base . '/' . $path . "'>";
+		} else {
+			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>" . $fn . "</div>";
+		}
+	}
 
 //    private function qgisinfo(&$data){
 //        if ($data['project']['name'] == '') {

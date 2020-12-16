@@ -17,18 +17,24 @@
                     <i class="<?php echo $service['icon']; ?>"></i>
                 </div>
                 <div class="col-md-1">
-                    <p><?php echo ucfirst($service['type']); ?></p>
-                </div>
-                <div class="col-md-1">
-                    <p><a target="_blank" href="<?php echo base_url($service['url']); ?>">URL</a></p>
-                </div>
-                <div class="col-md-2">
-                    <p><a target="_blank" href="<?php echo base_url($service['capabilities']); ?>">GetCapabilities</a></p>
-                </div>
-                <div class="col-md-2">
-                    <a class="btn btn-danger" onclick="confirmLink(GP.stopService,'<?php echo strtoupper($service['name']).' '.ucfirst($service['type']).' '.$project['name']; ?>','<?php echo site_url('projects/stop_service/'.$project['id'].'/'.$service['name'].'/'.$service['type']); ?>')"><?php echo $this->lang->line('gp_stop'); ?></a>
-                </div>
-                <?php else: ?>
+					<p><?php echo ucfirst($service['type']); ?></p>
+				</div>
+				<div class="col-md-1">
+					<p><a target="_blank" href="<?php echo base_url($service['url']); ?>">URL</a></p>
+				</div>
+				<div class="col-md-2">
+					<p><a target="_blank" href="<?php echo base_url($service['capabilities']); ?>">GetCapabilities</a>
+					</p>
+				</div>
+				<div class="col-md-2">
+					<a class="btn btn-danger"
+					   onclick="confirmLink(GP.stopService,'<?php echo strtoupper($service['name']) . ' ' . ucfirst($service['type']) . ' ' . $project['name']; ?>','<?php echo site_url('projects/stop_service/' . $project['id'] . '/' . $service['name'] . '/' . $service['type']); ?>')"><?php echo $this->lang->line('gp_stop'); ?></a>
+					<?php if ($service['type'] == 'public' && $service['name'] == 'wms'): ?>
+						<a class="btn btn-default" target="_blank"
+						   href="<?php echo site_url('projects/public_map/' . $project['name']); ?>"><?php echo "Public map"; ?></a>
+					<?php endif; ?>
+				</div>
+			<?php else: ?>
                 <div class="col-md-2">
                     <a class="btn btn-default" onclick="confirmLink(GP.publishPublicService,'<?php echo strtoupper($service['name']).' '.$project['name']; ?>','<?php echo site_url('projects/publish_service/'.$project['id'].'/'.$service['name'].'/public'); ?>')"><i class="fa fa-group"></i> <?php echo $this->lang->line('gp_publish_public'); ?></a>
                 </div>

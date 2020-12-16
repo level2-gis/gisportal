@@ -70,24 +70,32 @@ class Project_model extends CI_Model
     }
 
     public function get_project($id, $use_view = FALSE)
-    {
-        $this->db->where('id', $id);
-        if ($use_view) {
-            $query = $this->db->get('projects_view');
-        } else {
-            $query = $this->db->get('projects');
-        }
-        return $query->result()[0];
-    }
+	{
+		$this->db->where('id', $id);
+		if ($use_view) {
+			$query = $this->db->get('projects_view');
+		} else {
+			$query = $this->db->get('projects');
+		}
+		return $query->result()[0];
+	}
 
-    function project_exists($name)
-    {
-        $this->db->where('name', $name);
-        $query = $this->db->get('projects');
-        $row = $query->row();
+	function get_project_by_name($name)
+	{
+		$this->db->where('name', $name);
+		$query = $this->db->get('projects');
 
-        return isset($row);
-    }
+		return $query->result();
+	}
+
+	function project_exists($name)
+	{
+		$this->db->where('name', $name);
+		$query = $this->db->get('projects');
+		$row = $query->row();
+
+		return isset($row);
+	}
 
     public function get_public_projects()
     {

@@ -24,19 +24,20 @@ class Project_groups extends CI_Controller
 
         //filter for client administrator
         $user_role = $this->ion_auth->admin_scope();
-        $filter = $user_role->filter;
+		$filter = $user_role->filter;
 
-        $data['title'] = $this->lang->line('gp_groups_title');
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['groups'] = $this->project_group_model->get_project_groups($filter);
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;
-        $data['role'] = $user_role->role_name;
+		$data['title'] = $this->lang->line('gp_groups_title');
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['groups'] = $this->project_group_model->get_project_groups($filter);
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('project_groups_admin', $data);
-        $this->load->view('templates/footer', $data);
-    }
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('project_groups_admin', $data);
+		$this->load->view('templates/footer');
+	}
 
     /*
      * Portal view
@@ -81,22 +82,23 @@ class Project_groups extends CI_Controller
 				}
             }
 
-            $data['navigation'] = $this->build_user_navigation($client,$parent_id);
-        } catch (Exception $e) {
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
-            redirect("/");
-        }
+			$data['navigation'] = $this->build_user_navigation($client, $parent_id);
+		} catch (Exception $e) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+			redirect("/");
+		}
 
-        $data['client_id'] = $client_id;
+		$data['client_id'] = $client_id;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('project_groups', $data);
-		if(!empty($rss)) {
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('project_groups', $data);
+		if (!empty($rss)) {
 			$this->load->view('rss_short', $rss);
 		}
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 
-    }
+	}
 
     public function send_email($id = FALSE)
     {
@@ -142,19 +144,20 @@ class Project_groups extends CI_Controller
             if ($this->form_validation->run() == FALSE) {
                 $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
                 $data['group'] = $group;
-                $data['title'] = lang('gp_send_email');
-                $data['subtitle'] = $this->get_name($group);
-                $data['logged_in'] = true;
-                $data['is_admin'] = $user_role->admin;
-                $data['own_email'] = $user_role->email;
-                $data['role'] = $user_role->role_name;
-                $data['emails'] = $emails;
+				$data['title'] = lang('gp_send_email');
+				$data['subtitle'] = $this->get_name($group);
+				$data['logged_in'] = true;
+				$data['is_admin'] = $user_role->admin;
+				$data['own_email'] = $user_role->email;
+				$data['role'] = $user_role->role_name;
+				$data['emails'] = $emails;
 				$data['controller'] = 'project_groups';
 
-                $this->load->view('templates/header', $data);
-                $this->load->view('email/send_form', $data);
+				$this->load->view('templates/header', $data);
+				$this->load->view('templates/header_navigation', $data);
+				$this->load->view('email/send_form', $data);
 
-            }
+			}
 
             else {
                 $subject = $this->input->post('subject');
@@ -301,18 +304,19 @@ class Project_groups extends CI_Controller
             $data['link3'] = $this->config->item('project_group_link3_name');
             $data['logged_in'] = true;
             $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
-            $data['can_edit_properties'] = $this->ion_auth->can_execute_task('project_groups_edit_properties');
-            $data['can_edit_contacts'] = $this->ion_auth->can_execute_task('project_groups_edit_contacts');
-            $data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
-            $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
-            $data['return'] = $this->get_group_return_url($group);
+			$data['role'] = $user_role->role_name;
+			$data['can_edit_properties'] = $this->ion_auth->can_execute_task('project_groups_edit_properties');
+			$data['can_edit_contacts'] = $this->ion_auth->can_execute_task('project_groups_edit_contacts');
+			$data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
+			$data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
+			$data['return'] = $this->get_group_return_url($group);
 
-            $this->loadmeta($data);
+			$this->loadmeta($data);
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('project_group_edit', $data);
-        } else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('project_group_edit', $data);
+		} else {
             $group = $this->extractPostData();
 
             try {
@@ -376,18 +380,19 @@ class Project_groups extends CI_Controller
                 $data['parents'] = $this->project_group_model->get_parents($group['client_id'], null);
             } else {
                 $data['parents'] = [];
-            }
-            $data['types'] = array(
-                ['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')],
-                ['id' => SUB_GROUP,     'name' => $this->lang->line('gp_sub_group')]
-            );
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
+			}
+			$data['types'] = array(
+				['id' => PROJECT_GROUP, 'name' => $this->lang->line('gp_project_group')],
+				['id' => SUB_GROUP, 'name' => $this->lang->line('gp_sub_group')]
+			);
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('project_group_create', $data);
-        } else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('project_group_create', $data);
+		} else {
             try {
                 $group_id = $this->project_group_model->upsert_project_group($group);
                 $db_error = $this->db->error();

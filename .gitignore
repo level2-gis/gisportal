@@ -36,8 +36,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 /assets/img/
 /application/config/gisportal.php
-/application/controllers/Modules/
-/application/models/Modules/
+/application/controllers/modules/
+/application/models/modules/
 /application/views/modules/
 
 

@@ -29,23 +29,24 @@ class Projects extends CI_Controller
         $user_role = $this->ion_auth->admin_scope();
 
 		$data['title'] = $this->lang->line('gp_projects_title');
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;;
-        $data['role'] = $user_role->role_name;
-        $data['projects'] = $this->get_user_projects($data['is_admin']);
-        $data['can_edit'] = $this->ion_auth->can_execute_task($task);
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;;
+		$data['role'] = $user_role->role_name;
+		$data['projects'] = $this->get_user_projects($data['is_admin']);
+		$data['can_edit'] = $this->ion_auth->can_execute_task($task);
 
-        $this->load->view('templates/header', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
 
-        if(empty($data['projects'])) {
-            $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
-        } else {
-            $this->load->view('projects_admin', $data);
-        }
+		if (empty($data['projects'])) {
+			$this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+		} else {
+			$this->load->view('projects_admin', $data);
+		}
 
-        $this->load->view('templates/footer', $data);
-    }
+		$this->load->view('templates/footer');
+	}
 
     /*
      * Portal view user projects by client
@@ -80,14 +81,15 @@ class Projects extends CI_Controller
 			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
 		}
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('projects', $data);
-		if(!empty($rss)) {
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('projects', $data);
+		if (!empty($rss)) {
 			$this->load->view('rss_short', $rss);
 		}
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 
-    }
+	}
 
     /*
      * Portal view user projects by group
@@ -121,22 +123,23 @@ class Projects extends CI_Controller
 			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
 		}
 
-        try {
-            $data['projects'] = $this->get_user_projects_for_group($data['is_admin'],$client_id,$group_id);
-            $data['navigation'] = $this->build_user_navigation($client,$group_id);
-        } catch (Exception $e) {
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
-            redirect("/");
-        }
+		try {
+			$data['projects'] = $this->get_user_projects_for_group($data['is_admin'], $client_id, $group_id);
+			$data['navigation'] = $this->build_user_navigation($client, $group_id);
+		} catch (Exception $e) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+			redirect("/");
+		}
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('projects', $data);
-		if(!empty($rss)) {
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('projects', $data);
+		if (!empty($rss)) {
 			$this->load->view('rss_short', $rss);
 		}
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 
-    }
+	}
 
 
     /**
@@ -514,22 +517,23 @@ class Projects extends CI_Controller
             $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
             $data['layers'] = $this->layer_model->get_layers($filter, TRUE); //used only for overview layer selection
             $data['admin_navigation'] = $this->build_admin_navigation($em);
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
-            $data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
+			$data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
 
-            $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+			$data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
 
-            //$this->qgisinfo($data);
+			//$this->qgisinfo($data);
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('project_title', $data);
-            $this->load->view('project_check', $data);
-            $this->load->view('project_upload_form', $data);
-            $this->load->view('project_edit', $data);
-            //$this->load->view('templates/footer', $data);
-        } else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('project_title', $data);
+			$this->load->view('project_check', $data);
+			$this->load->view('project_upload_form', $data);
+			$this->load->view('project_edit', $data);
+			//$this->load->view('templates/footer');
+		} else {
 
             $project = $this->extractProjectData();
             //$users = $this->extractUserProjectData();
@@ -592,25 +596,26 @@ class Projects extends CI_Controller
                 $data['templates'] = $this->get_templates($em["client_id"],true);
             } else {
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
-                $data['groups'] = $this->project_group_model->get_project_groups($filter, true);
-                $data['templates'] = $this->get_templates($filter,true);
-                $data['project']['client_id'] = $filter;
-            }
+				$data['groups'] = $this->project_group_model->get_project_groups($filter, true);
+				$data['templates'] = $this->get_templates($filter, true);
+				$data['project']['client_id'] = $filter;
+			}
 
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('project_title', $data);
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('project_title', $data);
 
-            if($action==NEW_UPLOAD) {
-                $this->load->view('project_upload_form', $data);
-            }
+			if ($action == NEW_UPLOAD) {
+				$this->load->view('project_upload_form', $data);
+			}
 
-            $this->load->view('project_create', $data);
+			$this->load->view('project_create', $data);
 
-        } else {
+		} else {
 
             $project = $this->project_model->new_project();
 
@@ -702,8 +707,9 @@ class Projects extends CI_Controller
 		$data['showProjection'] = true;
 
 		$this->load->view('templates/header_map', $data);
+		$this->load->view('templates/header_navigation', $data);
 		$this->load->view('map', $data);
-		$this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 	}
 
     public function remove($id, $remove_files = FALSE)
@@ -804,20 +810,21 @@ class Projects extends CI_Controller
         $data['is_admin'] = $user_role->admin;
         $data['role'] = $user_role->role_name;
 
-        $data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+		$data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
 
-        //$this->qgisinfo($data);
-        if($data['qgis_check']['valid']) {
-            $data['services'] = self::get_project_services($data['qgis_check']['name']);
-        } else {
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> '.$data['qgis_check']['name'].'</div>');
-        }
+		//$this->qgisinfo($data);
+		if ($data['qgis_check']['valid']) {
+			$data['services'] = self::get_project_services($data['qgis_check']['name']);
+		} else {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> ' . $data['qgis_check']['name'] . '</div>');
+		}
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('project_services', $data);
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('project_services', $data);
+		$this->load->view('templates/footer');
 
-    }
+	}
 
     public function publish_service($project_id = FALSE, $name = null, $type = null) {
         if(!$project_id || !$name || !$type) {

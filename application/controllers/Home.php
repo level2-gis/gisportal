@@ -29,7 +29,7 @@ class Home extends CI_Controller
         $data['open_groups'] = empty($this->config->item('portal_show_groups_for_client')) ? FALSE : $this->config->item('portal_show_groups_for_client');
 
 		//rss
-		if(!empty($this->config->item('rss_feed_url'))) {
+		if (!empty($this->config->item('rss_feed_url'))) {
 			$rss_config['url'] = $this->config->item('rss_feed_url');
 			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
 			$this->load->library('rss_parser', $rss_config);
@@ -37,17 +37,18 @@ class Home extends CI_Controller
 			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
 		}
 
-        $this->load->view('templates/header', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
 
-        if (($data['clients'] === null) or (empty($data['clients']))) {
-            $data['projects_public'] = $this->project_model->get_public_projects();
-            if ($this->session->userdata('user_name') !== 'guest') {
-                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
-            }
-            if (($data['projects_public'] === null) or (empty($data['projects_public']))) {
-                $this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' => 'info'));
-            } else {
-                $this->load->view('public_projects_view', $data);
+		if (($data['clients'] === null) or (empty($data['clients']))) {
+			$data['projects_public'] = $this->project_model->get_public_projects();
+			if ($this->session->userdata('user_name') !== 'guest') {
+				$this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+			}
+			if (($data['projects_public'] === null) or (empty($data['projects_public']))) {
+				$this->load->view('message_view', array('message' => $this->lang->line('gp_no_public_projects'), 'type' => 'info'));
+			} else {
+				$this->load->view('public_projects_view', $data);
             }
         } else if (count($data['clients']) === 1) {
             if( $data['open_groups']) {
@@ -61,7 +62,7 @@ class Home extends CI_Controller
 		if(!empty($rss)) {
 			$this->load->view('rss_short', $rss);
 		}
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
     }
 
     private function get_user_clients($is_admin)

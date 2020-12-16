@@ -33,13 +33,14 @@ class Signup extends CI_Controller
             }
 
         } catch (Exception $e) {
-            $data['logged_in'] = FALSE;
-            $data['message'] = $e->getMessage();
-            $data['type'] = 'danger';
-            $this->load->view('templates/header', $data);
-            $this->load->view('message_view', $data);
-            return;
-        }
+			$data['logged_in'] = FALSE;
+			$data['message'] = $e->getMessage();
+			$data['type'] = 'danger';
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('message_view', $data);
+			return;
+		}
 
 	    // set form validation rules
 		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|max_length[30]');
@@ -51,20 +52,20 @@ class Signup extends CI_Controller
         $this->form_validation->set_rules('organization', $this->lang->line('gp_organization'), 'trim');
 
         // submit
-		if ($this->form_validation->run() == FALSE)
-        {
+		if ($this->form_validation->run() == FALSE) {
 			// fails
-            $data['client'] = empty($client) ? null : (array)$client[0];
-            $data['title'] = $this->lang->line('gp_register');
-            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-            //we allow registration also if user is logged in
-            $data['logged_in'] = $this->ion_auth->logged_in();
-            $data['is_admin'] = $data['logged_in'] ? $data['logged_in'] : false;
+			$data['client'] = empty($client) ? null : (array)$client[0];
+			$data['title'] = $this->lang->line('gp_register');
+			$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+			//we allow registration also if user is logged in
+			$data['logged_in'] = $this->ion_auth->logged_in();
+			$data['is_admin'] = $data['logged_in'] ? $data['logged_in'] : false;
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('signup_view');
-            $this->load->view('templates/footer', $data);
-        }
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('signup_view');
+			$this->load->view('templates/footer');
+		}
 		else
 		{
 			//signup ok, insert data to db

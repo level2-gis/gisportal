@@ -23,19 +23,20 @@ class Users extends CI_Controller {
 
         //filter for client administrator
         $user_role = $this->ion_auth->admin_scope();
-        $filter = $user_role->filter;
+		$filter = $user_role->filter;
 
 		$data['title'] = $this->lang->line('gp_users_title');
-        $data['users'] = $this->user_model->get_users($filter);
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;
-        $data['role'] = $user_role->role_name;
+		$data['users'] = $this->user_model->get_users($filter);
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('users_admin', $data);
-        $this->load->view('templates/footer', $data);
-    }
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('users_admin', $data);
+		$this->load->view('templates/footer');
+	}
 
     public function edit($user_id = false)
     {
@@ -120,17 +121,18 @@ class Users extends CI_Controller {
             $data['is_admin'] = $user_role->admin;
             $data['role'] = $user_role->role_name;
 
-            $data['role_scope'] = empty($edit_user_role->scope) ? $this->lang->line('gp_admin_full_name') : $edit_user_role->scope;
-            if($edit_user_role) {
-                $data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $edit_user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
-            }
+			$data['role_scope'] = empty($edit_user_role->scope) ? $this->lang->line('gp_admin_full_name') : $edit_user_role->scope;
+			if ($edit_user_role) {
+				$data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $edit_user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+			}
 
-            $data['current_role_filter'] = $filter;  //filter for current logged in user
-            $data['logged_id'] =  $this->session->userdata('user_id');    //current user id
+			$data['current_role_filter'] = $filter;  //filter for current logged in user
+			$data['logged_id'] = $this->session->userdata('user_id');    //current user id
 
 			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
 			$this->load->view('user_edit', $data);
-			$this->load->view('templates/footer', $data);
+			$this->load->view('templates/footer');
 		} else {
 
 			$user = $this->extractUserData();

@@ -32,26 +32,27 @@ class Profile extends CI_Controller
         $data['available_languages'] = get_languages();
         $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $data['logged_in'] = true;
-        $data['is_admin'] = $is_admin;
-        $data['role'] = $user_role->role_name;
-        $data['role_scope'] = $scope;
-        if(!empty($user_role->role_name)) {
-            $data['role_name'] = $this->user_model->get_role($user_role->role_name)->name;
-        } else {
-            $data['role_name'] = null;
-        }
+		$data['is_admin'] = $is_admin;
+		$data['role'] = $user_role->role_name;
+		$data['role_scope'] = $scope;
+		if (!empty($user_role->role_name)) {
+			$data['role_name'] = $this->user_model->get_role($user_role->role_name)->name;
+		} else {
+			$data['role_name'] = null;
+		}
 
-        $this->load->view('templates/header', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
 
-        if ($this->session->userdata('user_id') !== null) {
-            $data['user'] = $details;
-            //$data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
+		if ($this->session->userdata('user_id') !== null) {
+			$data['user'] = $details;
+			//$data['projects'] = $this->project_model->get_projects(false, $details->project_ids, $details->admin);
 
-            $this->load->view('profile_view', $data);
-        } else {
-            $data['user'] = null;
-            $data['projects'] = null;
-        }
+			$this->load->view('profile_view', $data);
+		} else {
+			$data['user'] = null;
+			$data['projects'] = null;
+		}
 
 //        if (($data['projects'] === null) or (empty($data['projects']))) {
 //            if ($this->session->userdata('user_name') !== 'guest') {
@@ -67,7 +68,7 @@ class Profile extends CI_Controller
             $this->load->view('public_projects_view', $data);
         }
 
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 
     }
 }

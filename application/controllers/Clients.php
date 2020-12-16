@@ -40,8 +40,9 @@ class Clients extends CI_Controller
         $data['role'] = $user_role->role_name;
 
         $this->load->view('templates/header', $data);
-        $this->load->view('clients_admin', $data);
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('clients_admin', $data);
+		$this->load->view('templates/footer');
     }
 
     //TODO decide what to do with this page and if it is open to all users, currently there is no link to this page
@@ -58,26 +59,26 @@ class Clients extends CI_Controller
         $client = $this->client_model->get_client($client_id);
         $client_name = $client->name;
         $upload_dir = set_realpath($this->config->item('main_upload_dir'), false);
-        $user_role = $this->ion_auth->admin_scope();
+		$user_role = $this->ion_auth->admin_scope();
 
-        $data['client'] = $client;
-        $data['title'] = $client->display_name;
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;
-        $data['role'] = $user_role->role_name;
+		$data['client'] = $client;
+		$data['title'] = $client->display_name;
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
 
-        $this->load->view('templates/header', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		//client info
+		$this->load->view('client_view', $data);
 
-        //client info
-        $this->load->view('client_view', $data);
+		//folder uploads
+		$upload['main'] = $this->lang->line('gp_uploaded_files');
+		$upload['test'] = check_main_upload_dir();
 
-        //folder uploads
-        $upload['main'] = $this->lang->line('gp_uploaded_files');
-        $upload['test'] = check_main_upload_dir();
-
-        $upload['files'] = get_dir_file_info($upload_dir.$client_name);
-        $upload['dir'] = $this->config->item('main_upload_web') . $client_name . DIRECTORY_SEPARATOR;
+		$upload['files'] = get_dir_file_info($upload_dir . $client_name);
+		$upload['dir'] = $this->config->item('main_upload_web') . $client_name . DIRECTORY_SEPARATOR;
 
         if($upload['files']) {
             $this->load->view('client_files', $upload);
@@ -90,7 +91,7 @@ class Clients extends CI_Controller
         else {
             $this->load->view('message_view', array('message' => $upload['test'], 'type' => 'danger'));
         }
-        $this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 
     }
 
@@ -150,6 +151,7 @@ class Clients extends CI_Controller
 				$data['controller'] = 'clients';
 
 				$this->load->view('templates/header', $data);
+				$this->load->view('templates/header_navigation', $data);
 				$this->load->view('email/send_form', $data);
 
 			}
@@ -226,18 +228,19 @@ class Clients extends CI_Controller
             }
             $data['items'] = $this->build_child_groups($em['id'], null);
 			$data['users'] = $this->user_model->get_users($client_id, TRUE);
-            $data['client'] = $em;
-            $data['image'] = $this->getImage($em['name']);
-            $data['logo'] = $this->getGisappClientLogo($em['name']);
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
-            $data['register'] = '/signup?code='.base64_encode($em['name']);
+			$data['client'] = $em;
+			$data['image'] = $this->getImage($em['name']);
+			$data['logo'] = $this->getGisappClientLogo($em['name']);
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
+			$data['register'] = '/signup?code=' . base64_encode($em['name']);
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('client_edit', $data);
-            //$this->load->view('templates/footer', $data);
-        } else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('client_edit', $data);
+			//$this->load->view('templates/footer');
+		} else {
 
             $client = $this->extractPostData();
             try {

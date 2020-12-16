@@ -20,19 +20,20 @@ class Layers extends CI_Controller{
             redirect('/auth/login?ru=/' . uri_string());
         }
 
-        $user_role = $this->ion_auth->admin_scope();
+		$user_role = $this->ion_auth->admin_scope();
 
-        $data['title'] = $this->lang->line('gp_layers_title');
-        $data['layers'] = $this->layer_model->get_layers($user_role->filter);
-        $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-        $data['logged_in'] = true;
-        $data['is_admin'] = $user_role->admin;
-        $data['role'] = $user_role->role_name;
+		$data['title'] = $this->lang->line('gp_layers_title');
+		$data['layers'] = $this->layer_model->get_layers($user_role->filter);
+		$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+		$data['logged_in'] = true;
+		$data['is_admin'] = $user_role->admin;
+		$data['role'] = $user_role->role_name;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('layers_admin', $data);
-        $this->load->view('templates/footer', $data);
-    }
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('layers_admin', $data);
+		$this->load->view('templates/footer');
+	}
 
     /*
      * Adding a new layer
@@ -127,19 +128,20 @@ class Layers extends CI_Controller{
                 $data['clients'] = [(array)$this->client_model->get_client($filter)];
             }
 
-            $data['groups'] = $this->project_group_model->get_project_groups_with_layer($layer_id, $filter);
-            $data['destination'] = array(
-                ['id' => BASE_LAYER, 'name' => $this->lang->line('gp_base_layers')],
-                ['id' => EXTRA_LAYER, 'name' => $this->lang->line('gp_overlay_layers')]
-            );
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
+			$data['groups'] = $this->project_group_model->get_project_groups_with_layer($layer_id, $filter);
+			$data['destination'] = array(
+				['id' => BASE_LAYER, 'name' => $this->lang->line('gp_base_layers')],
+				['id' => EXTRA_LAYER, 'name' => $this->lang->line('gp_overlay_layers')]
+			);
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('layer_edit', $data);
-            //$this->load->view('templates/footer', $data);
-        } else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/header_navigation', $data);
+			$this->load->view('layer_edit', $data);
+			//$this->load->view('templates/footer');
+		} else {
             $layer = $this->extractPostData();
             try {
                 $layer_id = $this->layer_model->upsert_layer($layer);
@@ -201,8 +203,9 @@ class Layers extends CI_Controller{
 		$data['showProjection'] = true;
 
 		$this->load->view('templates/header_map', $data);
+		$this->load->view('templates/header_navigation', $data);
 		$this->load->view('map', $data);
-		$this->load->view('templates/footer', $data);
+		$this->load->view('templates/footer');
 	}
 
     /*

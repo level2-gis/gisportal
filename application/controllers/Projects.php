@@ -584,22 +584,28 @@ class Projects extends CI_Controller
             $em["display_name"] = $this->input->post('display_name');
             $em["project_group_id"] = $this->session->flashdata('project_group_id') ? $this->session->flashdata('project_group_id') : $this->input->post('project_group_id');
 
-            $data['project'] = $em;
             $data['action'] = $action;
 
             //filter for client administrator
             $user_role = $this->ion_auth->admin_scope();
             $filter = $user_role->filter;
             if(empty($filter)) {
-                $data['clients'] = $this->client_model->get_clients();
-                $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
-                $data['templates'] = $this->get_templates($em["client_id"],true);
-            } else {
-                $data['clients'] = [(array)$this->client_model->get_client($filter)];
+				$data['clients'] = $this->client_model->get_clients();
+				$data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
+				$data['templates'] = $this->get_templates($em["client_id"], true);
+			} else {
+				$data['clients'] = [(array)$this->client_model->get_client($filter)];
 				$data['groups'] = $this->project_group_model->get_project_groups($filter, true);
 				$data['templates'] = $this->get_templates($filter, true);
 				$data['project']['client_id'] = $filter;
 			}
+
+			//set client_id if there is only one client available
+			if (count($data['clients']) == 1) {
+				$em['client_id'] = $data['clients'][0]['id'];
+			}
+
+			$data['project'] = $em;
 
 			$data['logged_in'] = true;
 			$data['is_admin'] = $user_role->admin;

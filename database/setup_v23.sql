@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -901,7 +901,7 @@ CREATE TABLE public.users_print (
 -- Name: users_print_view; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE VIEW users_print_view AS
+CREATE VIEW public.users_print_view AS
  SELECT up.user_name,
     u.user_email,
     (u.first_name || ' '::text) || u.last_name AS display_name,
@@ -918,11 +918,11 @@ CREATE VIEW users_print_view AS
     c.id as client_id,
     c.name as client,
     c.display_name as client_display_name
-   FROM users u,
-    users_print up,
-    projects p,
-    project_groups g,
-    clients c
+   FROM public.users u,
+    public.users_print up,
+    public.projects p,
+    public.project_groups g,
+    public.clients c
   WHERE up.user_name = u.user_name AND
   up.project = p.name AND
   p.project_group_id = g.id AND

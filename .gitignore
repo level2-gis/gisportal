@@ -29,12 +29,14 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-project
 .idea/
 
-.gitignore
 .vs/
 *.phpproj*
 *.sln
 
-/assets/img/
+/assets/img/clients/
+/assets/img/groups/
+/assets/img/modules/
+/assets/img/projects/
 /application/config/gisportal.php
 /application/controllers/modules/
 /application/models/modules/

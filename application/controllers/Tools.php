@@ -1,18 +1,26 @@
 <?php
-class Tools extends CI_Controller {
+class Tools extends CI_Controller
+{
 
-	public function index() {
+	public function index()
+	{
 		echo 'Tools controller for running tasks on server with Command line interface' . PHP_EOL;
 	}
 
+	/*
+	 * This script will create missing thumbnail images for every client subproject folder in uploads folder
+	 * Usage:
+	 * Open server cmd in gisportal folder
+	 * php index.php tools image_thumb_fix [client_name]
+	 */
 	public function image_thumb_fix($client_name = FALSE)
 	{
 		try {
 			if (!is_cli()) {
-				throw new Exception('You have to run this only through command line interface!'. PHP_EOL.'TODO Write short how-to'. PHP_EOL);
+				throw new Exception('You have to run this only through command line interface!' . PHP_EOL . 'TODO Write short how-to' . PHP_EOL);
 			}
-			if(empty($client_name)) {
-				throw new Exception ('Client name missing!'. PHP_EOL);
+			if (empty($client_name)) {
+				throw new Exception ('Client name missing!' . PHP_EOL);
 			}
 			//check client and upload dir
 			$this->load->model('client_model');
@@ -83,7 +91,7 @@ class Tools extends CI_Controller {
 	}
 
 	/*
-	 * Copy from projects controller
+	 * Copied from projects controller
 	 */
 	private function imageResize($dir, $fn) {
 

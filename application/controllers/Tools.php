@@ -83,7 +83,7 @@ class Tools extends CI_Controller {
 	}
 
 	/*
-	 * Copy from projects controller (modify library clear and initialition for batch process
+	 * Copy from projects controller
 	 */
 	private function imageResize($dir, $fn) {
 

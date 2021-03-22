@@ -286,11 +286,12 @@ class Projects extends CI_Controller
 
             //create thumb if upload is image
             if (strpos($this->upload->file_type, 'image/') > -1) {
-                $res = self::imageResize($dir, $this->upload->file_name);
-                if (!$res) {
-                    throw new Exception ($dir.$this->upload->file_name.' '.$this->image_lib->display_errors('', ''));
-                }
-            }
+				$this->load->library('image_lib', $config);
+				$res = self::imageResize($dir, $this->upload->file_name);
+				if (!$res) {
+					throw new Exception ($dir . $this->upload->file_name . ' ' . $this->image_lib->display_errors('', ''));
+				}
+			}
 
             $this->output
                 ->set_content_type('text/html')
@@ -1250,16 +1251,64 @@ class Projects extends CI_Controller
 				mkdir($dir . 'thumb', 0777, true);
 			}
 
+			$config = array();
 			$config['image_library'] = 'gd2';
 			$config['source_image'] = $dir . $fn;
 			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
 			$config['maintain_ratio'] = TRUE;
 			$config['master_dim'] = 'width';
+
 			$config['width'] = 300;
 
-			$this->load->library('image_lib', $config);
+			$this->image_lib->clear();
+			$this->image_lib->initialize($config);
 
-			return $this->image_lib->resize();
+			if (!$this->image_lib->resize()) {
+				return false;
+			} else {
+				$imgdata = exif_read_data($config['source_image'], 'IFD0');
+
+				$this->image_lib->clear();
+				$config2 = array();
+
+				$config2['image_library'] = 'gd2';
+				$config2['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
+
+				switch ($imgdata['Orientation']) {
+					case 2:
+						//mirror?
+						break;
+					case 3:
+						$config2['rotation_angle'] = '180';
+						break;
+					case 4:
+						$config2['rotation_angle'] = '180';
+						//mirror?
+						break;
+					case 5:
+						$config2['rotation_angle'] = '270';
+						//mirror?
+						break;
+					case 6:
+						$config2['rotation_angle'] = '270';
+						break;
+					case 7:
+						$config2['rotation_angle'] = '90';
+						//mirror?
+						break;
+					case 8:
+						$config2['rotation_angle'] = '90';
+						break;
+				}
+
+				$this->image_lib->initialize($config2);
+				if (!empty($config2['rotation_angle'])) {
+					if (!$this->image_lib->rotate()) {
+						return false;
+					}
+				}
+			}
+			return true;
 		}
         catch (Exception $e){
             return false;

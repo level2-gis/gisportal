@@ -96,14 +96,7 @@ class Tools extends CI_Controller {
 			$config['source_image'] = $dir . $fn;
 			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
 			$config['maintain_ratio'] = TRUE;
-			$config['master_dim'] = 'auto';
-
-			list($width, $height) = getimagesize($config['source_image']);
-			if ($width >= $height) {
-				$config['width'] = 300;
-			} else {
-				$config['height'] = 300;
-			}
+			$config['master_dim'] = 'width';
 
 			$this->image_lib->clear();
 			$this->image_lib->initialize($config);
@@ -120,11 +113,26 @@ class Tools extends CI_Controller {
 				$config['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
 
 				switch ($imgdata['Orientation']) {
+					case 2:
+						//mirror?
+						break;
 					case 3:
 						$config['rotation_angle'] = '180';
 						break;
+					case 4:
+						$config['rotation_angle'] = '180';
+						//mirror?
+						break;
+					case 5:
+						$config['rotation_angle'] = '270';
+						//mirror?
+						break;
 					case 6:
 						$config['rotation_angle'] = '270';
+						break;
+					case 7:
+						$config['rotation_angle'] = '90';
+						//mirror?
 						break;
 					case 8:
 						$config['rotation_angle'] = '90';
@@ -138,6 +146,7 @@ class Tools extends CI_Controller {
 					}
 				}
 			}
+			return true;
 		}
 		catch (Exception $e){
 			return false;

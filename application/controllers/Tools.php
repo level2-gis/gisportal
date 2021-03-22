@@ -96,8 +96,8 @@ class Tools extends CI_Controller {
 			$config['source_image'] = $dir . $fn;
 			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
 			$config['maintain_ratio'] = TRUE;
-			$config['width'] = 225;
-			$config['height'] = 150;
+			$config['master_dim'] = 'width';
+			$config['width'] = 300;
 
 			$this->image_lib->clear();
 			$this->image_lib->initialize($config);

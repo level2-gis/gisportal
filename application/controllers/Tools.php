@@ -108,40 +108,40 @@ class Tools extends CI_Controller {
 				$imgdata = exif_read_data($config['source_image'], 'IFD0');
 
 				$this->image_lib->clear();
-				$config = array();
+				$config2 = array();
 
-				$config['image_library'] = 'gd2';
-				$config['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
+				$config2['image_library'] = 'gd2';
+				$config2['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
 
 				switch ($imgdata['Orientation']) {
 					case 2:
 						//mirror?
 						break;
 					case 3:
-						$config['rotation_angle'] = '180';
+						$config2['rotation_angle'] = '180';
 						break;
 					case 4:
-						$config['rotation_angle'] = '180';
+						$config2['rotation_angle'] = '180';
 						//mirror?
 						break;
 					case 5:
-						$config['rotation_angle'] = '270';
+						$config2['rotation_angle'] = '270';
 						//mirror?
 						break;
 					case 6:
-						$config['rotation_angle'] = '270';
+						$config2['rotation_angle'] = '270';
 						break;
 					case 7:
-						$config['rotation_angle'] = '90';
+						$config2['rotation_angle'] = '90';
 						//mirror?
 						break;
 					case 8:
-						$config['rotation_angle'] = '90';
+						$config2['rotation_angle'] = '90';
 						break;
 				}
 
-				$this->image_lib->initialize($config);
-				if (!empty($config['rotation_angle'])) {
+				$this->image_lib->initialize($config2);
+				if (!empty($config2['rotation_angle'])) {
 					if (!$this->image_lib->rotate()) {
 						return false;
 					}

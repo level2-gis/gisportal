@@ -1259,11 +1259,11 @@ class Projects extends CI_Controller
 			//check image orientation before generating thumb
 			list($width, $height) = getimagesize($config['source_image']);
 			if ($width >= $height) {
-				$config['width'] = 225;
-				$config['height'] = 150;
+				$config['width'] = 300;
+				//$config['height'] = 150;
 			} else {
-				$config['width'] = 150;
-				$config['height'] = 225;
+				//$config['width'] = 150;
+				$config['height'] = 300;
 			}
 
 			$this->load->library('image_lib', $config);

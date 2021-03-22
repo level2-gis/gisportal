@@ -102,7 +102,34 @@ class Tools extends CI_Controller {
 			$this->image_lib->clear();
 			$this->image_lib->initialize($config);
 
-			return $this->image_lib->resize();
+			if (!$this->image_lib->resize()) {
+				return false;
+			} else {
+				$imgdata = exif_read_data($config['source_image'], 'IFD0');
+
+				$this->image_lib->clear();
+				$config = array();
+
+				$config['image_library'] = 'gd2';
+				$config['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
+
+				switch ($imgdata['Orientation']) {
+					case 3:
+						$config['rotation_angle'] = '180';
+						break;
+					case 6:
+						$config['rotation_angle'] = '270';
+						break;
+					case 8:
+						$config['rotation_angle'] = '90';
+						break;
+				}
+
+				$this->image_lib->initialize($config);
+				if (!$this->image_lib - rotate()) {
+					return false;
+				}
+			}
 		}
 		catch (Exception $e){
 			return false;

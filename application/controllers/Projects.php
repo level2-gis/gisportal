@@ -1246,21 +1246,30 @@ class Projects extends CI_Controller
     private function imageResize($dir, $fn) {
 
         try {
-            if (!file_exists($dir . 'thumb')) {
-                mkdir($dir . 'thumb', 0777, true);
-            }
+			if (!file_exists($dir . 'thumb')) {
+				mkdir($dir . 'thumb', 0777, true);
+			}
 
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = $dir . $fn;
-            $config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
-            $config['maintain_ratio'] = TRUE;
-            $config['width'] = 225;
-            $config['height'] = 150;
+			$config['image_library'] = 'gd2';
+			$config['source_image'] = $dir . $fn;
+			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
+			$config['maintain_ratio'] = TRUE;
+			$config['master_dim'] = 'auto';
 
-            $this->load->library('image_lib', $config);
+			//check image orientation before generating thumb
+			list($width, $height) = getimagesize($config['source_image']);
+			if ($width >= $height) {
+				$config['width'] = 225;
+				$config['height'] = 150;
+			} else {
+				$config['width'] = 150;
+				$config['height'] = 225;
+			}
 
-            return $this->image_lib->resize();
-        }
+			$this->load->library('image_lib', $config);
+
+			return $this->image_lib->resize();
+		}
         catch (Exception $e){
             return false;
         }

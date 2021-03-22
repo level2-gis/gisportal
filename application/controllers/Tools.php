@@ -112,7 +112,7 @@ class Tools extends CI_Controller {
 
 				$config['image_library'] = 'gd2';
 				$config['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
-				$config['rotation_angle'] = '0';
+				$config['rotation_angle'] = '';
 
 				switch ($imgdata['Orientation']) {
 					case 3:

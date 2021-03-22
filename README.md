@@ -124,7 +124,7 @@ navbar-inverse
 to
 navbar-default
 ```
-in [/application/views/templates/header.php](https://github.com/uprel/gisportal/blob/9a657cf05c7fb6d6b9b6d38f561143656804eb57/application/views/templates/header.php#L26)
+/application/views/templates/header_template.php
 
 Or add lines below to /assets/css/style.css:
 

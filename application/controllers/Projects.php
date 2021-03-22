@@ -1254,17 +1254,18 @@ class Projects extends CI_Controller
 			$config['source_image'] = $dir . $fn;
 			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder
 			$config['maintain_ratio'] = TRUE;
-			$config['master_dim'] = 'auto';
+			$config['master_dim'] = 'width';
+			$config['width'] = 300;
 
 			//check image orientation before generating thumb
-			list($width, $height) = getimagesize($config['source_image']);
-			if ($width >= $height) {
-				$config['width'] = 300;
-				//$config['height'] = 150;
-			} else {
-				//$config['width'] = 150;
-				$config['height'] = 300;
-			}
+			//list($width, $height) = getimagesize($config['source_image']);
+			//if ($width >= $height) {
+			//	$config['width'] = 300;
+			//	//$config['height'] = 150;
+			//} else {
+			//	//$config['width'] = 150;
+			//	$config['height'] = 300;
+			//}
 
 			$this->load->library('image_lib', $config);
 

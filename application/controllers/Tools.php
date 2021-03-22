@@ -99,6 +99,8 @@ class Tools extends CI_Controller {
 			$config['maintain_ratio'] = TRUE;
 			$config['master_dim'] = 'width';
 
+			$config['width'] = 300;
+
 			$this->image_lib->clear();
 			$this->image_lib->initialize($config);
 

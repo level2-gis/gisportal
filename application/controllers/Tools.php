@@ -92,6 +92,7 @@ class Tools extends CI_Controller {
 				mkdir($dir . 'thumb', 0777, true);
 			}
 
+			$config = array();
 			$config['image_library'] = 'gd2';
 			$config['source_image'] = $dir . $fn;
 			$config['new_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR;    //only have to specify new folder

@@ -90,6 +90,7 @@ function setBaseLayer(lay, projection) {
 			var projectionExtent = projection.getExtent();
 			var size = ol.extent.getWidth(projectionExtent) / 256;
 			var num = serverResolutions !== undefined ? serverResolutions.length : eval(definition.numZoomLevels);
+			var origins;
 
 			//FIX for removing extent from OL2 definition
 			var extent = extractStringFromObject("OpenLayers", definition.maxExtent);
@@ -107,6 +108,10 @@ function setBaseLayer(lay, projection) {
 				resolutions = serverResolutions;
 			}
 
+			if (definition.origins !== undefined) {
+				origins = JSON.parse(definition.origins);
+			}
+
 			layOl = new ol.layer.Tile({
 				visible: true,
 				opacity: definition.opacity,
@@ -121,7 +126,8 @@ function setBaseLayer(lay, projection) {
 					tileGrid: new ol.tilegrid.WMTS({
 						extent: eval(extent),
 						resolutions: resolutions,
-						matrixIds: matrixIds
+						matrixIds: matrixIds,
+						origins: origins
 					})
 				})
 			});

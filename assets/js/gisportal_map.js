@@ -184,11 +184,9 @@ var projection = new ol.proj.Projection({
 	axisOrientation: CustomProj[GP.map.crs].yx === false ? 'enu' : 'neu'
 });
 
-
 GP.map.olMap = new ol.Map({
 	target: 'map',
 	controls: ol.control.defaults().extend([
-		new ol.control.LayerSwitcher(),
 		new ol.control.Rotate({duration: 0}),	//default is duration set and goes to view.animate which fails
 		new ol.control.FullScreen(),
 		new ol.control.ScaleLine(),
@@ -201,6 +199,30 @@ GP.map.olMap = new ol.Map({
 		//extent: projection.getExtent()	//this is view restriction to extent
 	})
 });
+
+if (GP.map.showLayerSwitcher) {
+	GP.map.olMap.addControl(new ol.control.LayerSwitcher());
+}
+
+if (GP.map.overview > '') {
+	var lay = setBaseLayer(GP.map.overview, projection);
+
+	if (lay) {
+		//tole je iz ol-ext, vendar samo zaradi tega jih ne uporabljam
+		// var overviewMapControl = new ol.control.Overview({
+		//     layers: [lay],
+		//     projection: projection,
+		//     align: 'bottom-right',
+		//     //minZoom: 4.5,
+		//     maxZoom: 8
+		// });
+		var overviewMapControl = new ol.control.OverviewMap({
+			layers: [lay],
+			rotateWithView: false
+		});
+		GP.map.olMap.addControl(overviewMapControl);
+	}
+}
 
 if (GP.map.showCoords) {
 	GP.map.olMap.addControl(new ol.control.MousePosition({

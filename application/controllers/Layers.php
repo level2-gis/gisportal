@@ -201,9 +201,11 @@ class Layers extends CI_Controller{
 		$data['proj4'] = $proj4;
 		$data['showCoords'] = true;
 		$data['showProjection'] = true;
+		$data['showLayerSwitcher'] = false;
 
 		$this->load->view('templates/header_map', $data);
 		$this->load->view('templates/header_navigation', $data);
+		$this->load->view('map_edit', $data);
 		$this->load->view('map', $data);
 		$this->load->view('templates/footer');
 	}

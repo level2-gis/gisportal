@@ -7,8 +7,12 @@
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/pannellum.css?v=2.5.6"); ?>">
 	<script type="text/javascript" src="<?php echo base_url("assets/js/pannellum.js?v=2.5.6"); ?>"></script>
 	<style>
+		body, html {
+			height: 99%;
+		}
+
 		#panorama {
-			height: 400px;
+			height: 100%;
 		}
 	</style>
 </head>

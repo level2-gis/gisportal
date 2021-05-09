@@ -18,7 +18,7 @@
 <script>
 	pannellum.viewer('panorama', {
 		"type": "equirectangular",
-		"panorama": "<?php echo $panorama; ?>",
+		"panorama": "<?php echo base_url($panorama); ?>",
 		"autoLoad": true
 	});
 </script>

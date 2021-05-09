@@ -25,7 +25,7 @@ class Files extends CI_Controller
 			//todo check filename on server?
 
 			$data['title'] = $filename;
-			$data['panorama'] = './uploads/' . $client_name . '/' . $folder . '/' . $filename;
+			$data['panorama'] = 'uploads/' . $client_name . '/' . $folder . '/' . $filename;
 
 			$this->load->view('image360', $data);
 

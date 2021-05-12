@@ -1240,16 +1240,32 @@ class Projects extends CI_Controller
 		$icon = $type == 'public' ? 'fa fa-group' : 'glyphicon glyphicon-lock';
 
 		if (file_exists($dir2 . $fn) && is_readable($dir2 . $fn)) {
-            $info = get_file_info($dir2.$fn);
-            return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => true, 'date' => $info["date"], 'url' => $url, 'capabilities' => $url.'?'.$cap];
-        } else {
-            return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => false, 'url' => $url];
-        }
-    }
+			$info = get_file_info($dir2 . $fn);
+			return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => true, 'date' => $info["date"], 'url' => $url, 'capabilities' => $url . '?' . $cap];
+		} else {
+			return ['name' => $name, 'file_name' => $fn, 'type' => $type, 'icon' => $icon, 'path' => $dir2, 'published' => false, 'url' => $url];
+		}
+	}
 
-    private function imageResize($dir, $fn) {
+	private function imageExtract($path, $sec)
+	{
+		if (false === $exifData = @exif_read_data($path, $sec, false, false)) {
+			try {
+				if (false === $exifData = @exif_read_data($path, $sec, false, false)) {
+					return array();
+				}
+			} catch (\Exception $e) {
+				return array();
+			}
+		}
 
-        try {
+		return exif_read_data($path, $sec, false, false);
+	}
+
+	private function imageResize($dir, $fn)
+	{
+
+		try {
 			if (!file_exists($dir . 'thumb')) {
 				mkdir($dir . 'thumb', 0777, true);
 			}
@@ -1269,7 +1285,7 @@ class Projects extends CI_Controller
 			if (!$this->image_lib->resize()) {
 				return false;
 			} else {
-				$imgdata = exif_read_data($config['source_image'], 'IFD0');
+				$imgdata = self::imageExtract($config['source_image'], 'IFD0');
 
 				$this->image_lib->clear();
 				$config2 = array();
@@ -1277,31 +1293,33 @@ class Projects extends CI_Controller
 				$config2['image_library'] = 'gd2';
 				$config2['source_image'] = $dir . 'thumb' . DIRECTORY_SEPARATOR . $fn;
 
-				switch ($imgdata['Orientation']) {
-					case 2:
-						//mirror?
-						break;
-					case 3:
-						$config2['rotation_angle'] = '180';
-						break;
-					case 4:
-						$config2['rotation_angle'] = '180';
-						//mirror?
-						break;
-					case 5:
-						$config2['rotation_angle'] = '270';
-						//mirror?
-						break;
-					case 6:
-						$config2['rotation_angle'] = '270';
-						break;
-					case 7:
-						$config2['rotation_angle'] = '90';
-						//mirror?
-						break;
-					case 8:
-						$config2['rotation_angle'] = '90';
-						break;
+				if (array_key_exists('Orientation', $imgdata)) {
+					switch ($imgdata['Orientation']) {
+						case 2:
+							//mirror?
+							break;
+						case 3:
+							$config2['rotation_angle'] = '180';
+							break;
+						case 4:
+							$config2['rotation_angle'] = '180';
+							//mirror?
+							break;
+						case 5:
+							$config2['rotation_angle'] = '270';
+							//mirror?
+							break;
+						case 6:
+							$config2['rotation_angle'] = '270';
+							break;
+						case 7:
+							$config2['rotation_angle'] = '90';
+							//mirror?
+							break;
+						case 8:
+							$config2['rotation_angle'] = '90';
+							break;
+					}
 				}
 
 				$this->image_lib->initialize($config2);

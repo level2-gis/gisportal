@@ -206,23 +206,32 @@ class Projects extends CI_Controller
                 $ext = $this->upload->file_ext;
                 $project_name = str_replace($ext,'',$file_name);
 
-                $this->session->set_flashdata('project_name',$project_name);
-                $this->session->set_flashdata('client_id',$client_id);
-                $this->session->set_flashdata('project_group_id',$group_id);
+				$this->session->set_flashdata('project_name', $project_name);
+				$this->session->set_flashdata('client_id', $client_id);
+				$this->session->set_flashdata('project_group_id', $group_id);
 
-                //set permission to 777
-                if(is_file($dir . $file_name))
-                {
-                    chmod($dir . $file_name, 0777);
-                }
+				//set permission to 777
+				if (is_file($dir . $file_name)) {
+					chmod($dir . $file_name, 0777);
+				}
 
-                $this->user_model->clear_gisapp_session();
-                if(!empty($project_id)) {
-                    redirect('projects/edit/'.$project_id);
-                } else {
-                    redirect('projects/create/'.NEW_UPLOAD);
-                }
-            }
+				$data['file_name'] = $file_name;
+				$id = $this->session->userdata('user_id');
+				$data['user'] = (array)$this->user_model->get_user_by_id($id);
+				$data['client'] = (array)$client;
+
+				//send email to all admins that project was uploaded
+				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'upload_project.tpl.php', $data, TRUE);
+				$admin_emails = $this->user_model->get_client_admins($client_id);
+				$this->ion_auth->send_email(lang('gp_upload'), $message, $admin_emails);
+
+				$this->user_model->clear_gisapp_session();
+				if (!empty($project_id)) {
+					redirect('projects/edit/' . $project_id);
+				} else {
+					redirect('projects/create/' . NEW_UPLOAD);
+				}
+			}
 
         } catch (Exception $e) {
 

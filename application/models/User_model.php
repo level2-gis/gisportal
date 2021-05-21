@@ -36,25 +36,44 @@ class User_model extends CI_Model
 
         if(!empty($role)) {
             $this->db->where('role_name',$role);
-        }
+		}
 
-        //if(!empty($filter)) {
-            $this->db->where('filter', $filter);
-        //}
+		//if(!empty($filter)) {
+		$this->db->where('filter', $filter);
+		//}
 
-        $query = $this->db->get('users_view_for_clients');
-        return $query->result_array();
-    }
+		$query = $this->db->get('users_view_for_clients');
+		return $query->result_array();
+	}
 
-    /**
-     * @param $text
-     * @param $filter
-     * @return mixed
-     */
-    function search($text, $filter) {
+	function get_client_admins($client_id)
+	{
 
-        //$this->db->like('first_name', $text);
-        //$this->db->or_like('last_name', $text);
+		$admins = array_column($this->get_portal_users('admin', null, true), 'user_email');
+		//add system admin from config
+		array_push($admins, $this->config->item('admin_email'));
+		$admins2 = [];
+		$admins3 = [];
+
+		if (!empty($client_id)) {
+			$admins2 = array_column($this->get_portal_users('admin', $client_id, true), 'user_email');
+			$admins3 = array_column($this->get_portal_users('power', $client_id, true), 'user_email');
+		}
+
+		//remove duplicates
+		return array_unique(array_merge($admins, $admins2, $admins3));
+	}
+
+	/**
+	 * @param $text
+	 * @param $filter
+	 * @return mixed
+	 */
+	function search($text, $filter)
+	{
+
+		//$this->db->like('first_name', $text);
+		//$this->db->or_like('last_name', $text);
         //$this->db->or_like('user_email', $text);
 
         //for ilike search we have to use direct sql

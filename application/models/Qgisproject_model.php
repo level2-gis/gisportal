@@ -1,15 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(__DIR__.'/../../../gisapp/admin/settings.php');
+if (file_exists(__DIR__ . '/../../../gisapp/admin/settings.php')) {
+	require_once(__DIR__ . '/../../../gisapp/admin/settings.php');
+}
 
 class Qgisproject_model extends CI_Model
 {
     function __construct()
-    {
-        parent::__construct();
-        $this->load->helper(array('path'));
-        $this->main_path = set_realpath(PROJECT_PATH);
-    }
+	{
+		parent::__construct();
+		$this->load->helper(array('path'));
+		if (!defined('PROJECT_PATH')) {
+			$ci =& get_instance();
+			define('PROJECT_PATH', $ci->config->item('main_projects_dir'));
+		}
+		$this->main_path = set_realpath(PROJECT_PATH);
+	}
 
     public $qgs_file    = null;
     public $qgs_xml     = null;

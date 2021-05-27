@@ -127,6 +127,12 @@ $config['keep_wfs-t_from_qgs'] = FALSE;
 $config['main_services_dir'] = '/home/services/';
 
 /*
+ * This setting is only relevant when using standalone gisportal setup without gisapp
+ * If gisapp exists then projects location will be taken from PROJECT_PATH in settings.php
+ */
+$config['main_projects_dir'] = '/home/projects/';
+
+/*
  * In portal view show first groups when open client (TRUE) or show directly all available
  * projects for client (default, FALSE)
  */

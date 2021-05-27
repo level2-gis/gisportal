@@ -12,7 +12,8 @@
   },
   "require": {
 	"php": ">=5.3.7",
-	"ext-exif": "*"
+	"ext-exif": "*",
+	"ext-zip": "*"
   },
   "suggest": {
 	"paragonie/random_compat": "Provides better randomness in PHP 5.x"

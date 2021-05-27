@@ -34,20 +34,21 @@ function onUploadFormSubmit() {
     var file = $('#userfile')[0].files[0].name;
     var newProject = file.split('.')[0];
     var ext = file.split('.')[1];
+	var allow = ['qgs', 'zip'];
 
     form.action = GP.settings.siteUrl + '/projects/upload_admin/'+client+'/'+group;
 
     //client side validation
-    if (ext.toLowerCase() !== 'qgs') {
-        showError(GP.onlyQgs);
-        form.reset();
-        return false;
-    }
-    if (editingProject && editingProject !== newProject) {
-        showError(GP.differentProjects+" "+editingProject+ ": "+newProject);
-        form.reset();
-        return false;
-    }
+	if (allow.indexOf(ext.toLowerCase()) == -1) {
+		showError(GP.onlyQgs);
+		form.reset();
+		return false;
+	}
+	if (editingProject && editingProject !== newProject) {
+		showError(GP.differentProjects + " " + editingProject + ": " + newProject);
+		form.reset();
+		return false;
+	}
 }
 
 function confirmLink(msg,name,url) {

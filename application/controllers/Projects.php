@@ -186,8 +186,8 @@ class Projects extends CI_Controller
             }
 
             $config['upload_path'] = $dir;
-            $config['allowed_types'] = 'qgs';
-            $config['overwrite'] = true;
+			$config['allowed_types'] = ['qgs', 'zip'];
+			$config['overwrite'] = true;
             $config['file_ext_tolower'] = true;
 
             $this->load->library('upload', $config);
@@ -200,7 +200,6 @@ class Projects extends CI_Controller
                     redirect('projects/create/'.NEW_UPLOAD);
                 }
             } else {
-                $this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' ('.$this->upload->file_name.')</div>');
                 //pass qgis project name and client_id
                 $file_name = $this->upload->file_name;
                 $ext = $this->upload->file_ext;
@@ -213,6 +212,21 @@ class Projects extends CI_Controller
 				//set permission to 777
 				if (is_file($dir . $file_name)) {
 					chmod($dir . $file_name, 0777);
+				}
+
+				echo $dir . $file_name;
+
+				if ($ext == '.zip') {
+					$zip = new ZipArchive;
+					if ($zip->open($dir . $file_name) === TRUE) {
+						$zip->extractTo($dir);
+						$zip->close();
+						$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
+					} else {
+						throw new Exception('ZIP Unpack error: ' . $this->upload->file_name);
+					}
+				} else {
+					$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' (' . $this->upload->file_name . ')</div>');
 				}
 
 				$data['file_name'] = $file_name;

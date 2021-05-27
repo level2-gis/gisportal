@@ -1155,7 +1155,7 @@ class Projects extends CI_Controller
 
 			//default gisapp url, user must be logged in, cannot use outside of session
 			$ret = [
-				"url" => site_url('/proxy/' . $project_name),
+				"url" => str_replace('gisportal/', '', base_url('/proxy/' . $project_name)),
 				"params" => [
 					"LAYERS" => implode(',', $properties->visible_layers)
 				],

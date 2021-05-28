@@ -221,6 +221,7 @@ class Projects extends CI_Controller
 					if ($zip->open($dir . $file_name) === TRUE) {
 						$zip->extractTo($dir);
 						$zip->close();
+						unlink($dir . $file_name);
 						$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
 					} else {
 						throw new Exception('ZIP Unpack error: ' . $this->upload->file_name);

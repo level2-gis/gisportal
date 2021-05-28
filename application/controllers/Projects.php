@@ -40,7 +40,11 @@ class Projects extends CI_Controller
 		$this->load->view('templates/header_navigation', $data);
 
 		if (empty($data['projects'])) {
-			$this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+			if ($user_role->admin) {
+				$this->load->view('projects_admin', $data);
+			} else {
+				$this->load->view('message_view', array('message' => $this->lang->line('gp_no_projects'), 'type' => 'warning'));
+			}
 		} else {
 			$this->load->view('projects_admin', $data);
 		}

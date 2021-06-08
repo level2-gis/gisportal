@@ -101,7 +101,7 @@ class Signup extends CI_Controller
 				}
 
 				//notify administrators
-				$admin_emails = $this->user_model > get_client_admins($client_id);
+				$admin_emails = $this->user_model->get_client_admins($client_id);
 				$this->ion_auth->send_email($this->lang->line('gp_new_user'), $message, $admin_emails);
 
 				redirect('auth/login', 'refresh');

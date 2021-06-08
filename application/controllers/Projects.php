@@ -426,6 +426,8 @@ class Projects extends CI_Controller
 	public function download($type, $project_id = false)
 	{
 		$this->load->library('zip');
+		//extending default 128M limit
+		ini_set('memory_limit', '512M');
 
 		if (!$this->ion_auth->is_admin()) {
 			redirect('/');

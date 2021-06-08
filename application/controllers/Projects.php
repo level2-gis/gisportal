@@ -147,8 +147,8 @@ class Projects extends CI_Controller
 
 
     /**
-     * Upload QGIS project file
-     */
+	 * Upload QGIS project or ZIP file
+	 */
     public function upload_admin($client_id = false, $group_id = false) {
 
         if (!$this->ion_auth->is_admin()){
@@ -420,20 +420,22 @@ class Projects extends CI_Controller
         }
     }
 
-    /**
-     * Method to download QGIS project file for administrators
-     */
-    public function download($project_id = false)
-    {
-        if (!$this->ion_auth->is_admin()) {
-            redirect('/');
-        }
+	/**
+	 * Method to download QGIS project file or ZIP file with /data subfolder for administrators
+	 */
+	public function download($type, $project_id = false)
+	{
+		$this->load->library('zip');
 
-        if ($project_id === FALSE) {
-            redirect("/");
-        }
+		if (!$this->ion_auth->is_admin()) {
+			redirect('/');
+		}
 
-        try {
+		if ($project_id === FALSE) {
+			redirect("/");
+		}
+
+		try {
 //            $project = $this->project_model->get_project($project_id);
 //            //TODO client_id on project!
 //            $client = $this->client_model->get_client($project->client_id);
@@ -445,19 +447,37 @@ class Projects extends CI_Controller
 //            $client_name = $client->name;
 
 
+			$qgs_file = '';
+			$check = $this->qgisproject_model->check_qgs_file($project_id);
 
-            $qgs_file = '';
-            $check = $this->qgisproject_model->check_qgs_file($project_id);
+			if ($check['valid']) {
+				$qgs_file = $check["name"];
+			} else {
+				throw new Exception($check['name']);
+			}
 
-            if($check['valid']) {
-                $qgs_file = $check["name"];
-            } else {
-                throw new Exception($check['name']);
-            }
+			if ($type == 'qgs') {
+				force_download($qgs_file, NULL);
+			} elseif ($type == 'zip') {
+				$dir = dirname($qgs_file);
+				$path = set_realpath($dir . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR);
+				$base = pathinfo($qgs_file)['filename'];
+				if (is_dir($path)) {
+					$this->zip->read_dir($path);
+				}
+				$list = array_diff(scandir($dir), array('..', '.'));
+				foreach ($list as $fn) {
+					$full = $dir . DIRECTORY_SEPARATOR . $fn;
+					//we add to zip project.* files
+					if (is_file($full) && pathinfo($full)['filename'] == $base) {
+						$this->zip->read_file($full);
+					}
+				}
 
-            force_download($qgs_file, NULL);
+				$this->zip->download($base . '.zip');
+			}
 
-        } catch (Exception $e) {
+		} catch (Exception $e) {
 
             $this->output
                 ->set_content_type('text/html')

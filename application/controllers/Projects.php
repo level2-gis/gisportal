@@ -465,7 +465,7 @@ class Projects extends CI_Controller
 				$path = set_realpath($dir . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR);
 				$base = pathinfo($qgs_file)['filename'];
 				if (is_dir($path)) {
-					$this->zip->read_dir($path);
+					$this->zip->read_dir($path, FALSE);
 				}
 				$list = array_diff(scandir($dir), array('..', '.'));
 				foreach ($list as $fn) {

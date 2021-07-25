@@ -36,7 +36,7 @@
 			src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
 	<script type="text/javascript"
 			src="<?php echo base_url("assets/js/locale/bootstrap-table-" . $lang . ".js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20210528"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20210725"); ?>"></script>
 	<script type="text/javascript">
 
 		$(function () {
@@ -83,7 +83,8 @@
 			adminFullName: '<?php echo lang('gp_admin_full_name'); ?>',
 			adminAdd: '<?php echo lang('gp_admin_add'); ?>',
 			adminAddMsg: '<?php echo lang('gp_admin_add_msg'); ?>',
-			adminRemove: '<?php echo lang('gp_admin_remove'); ?>'
+			adminRemove: '<?php echo lang('gp_admin_remove'); ?>',
+			fileToBig: '<?php echo lang('gp_file_to_big'); ?>'
 		};
 
 		//other stuff, not language strings

@@ -183,26 +183,27 @@ class Projects extends CI_Controller
             if ($project_id) {
                 //editing existing project, get project directory
                 //$project = $this->project_model->get_project($project_id);
-                $qgis = $this->qgisproject_model->check_qgs_file($project_id);
-                if ($qgis["valid"]) {
-                    $dir = set_realpath(dirname($qgis["name"]));
-                }
-            }
+				$qgis = $this->qgisproject_model->check_qgs_file($project_id);
+				if ($qgis["valid"]) {
+					$dir = set_realpath(dirname($qgis["name"]));
+				}
+			}
 
-            $config['upload_path'] = $dir;
+			$config['upload_path'] = $dir;
 			$config['allowed_types'] = ['qgs', 'zip'];
 			$config['overwrite'] = true;
-            $config['file_ext_tolower'] = true;
+			$config['file_ext_tolower'] = true;
+			$config['max_size'] = round($this->file_upload_max_size() / 1024);    //convert bytes to KB, still I don't get correct error message if this exceeds!
 
-            $this->load->library('upload', $config);
+			$this->load->library('upload', $config);
 
-            if (!$this->upload->do_upload('userfile')) {
-                $this->session->set_flashdata('upload_msg', '<div class="alert alert-danger">' . $dir . $this->upload->display_errors() . ' ('.$this->upload->file_name.')</div>');
-                if(!empty($project_id)) {
-                    redirect('projects/edit/'.$project_id);
-                } else {
-                    redirect('projects/create/'.NEW_UPLOAD);
-                }
+			if (!$this->upload->do_upload('userfile')) {
+				$this->session->set_flashdata('alert', '<div class="alert alert-danger">' . $dir . $this->upload->display_errors() . ' (' . $this->upload->file_name . ')</div>');
+				if (!empty($project_id)) {
+					redirect('projects/edit/' . $project_id);
+				} else {
+					redirect('projects/');
+				}
             } else {
                 //pass qgis project name and client_id
                 $file_name = $this->upload->file_name;
@@ -565,15 +566,18 @@ class Projects extends CI_Controller
             $data['image'] = $this->getImage($em['name']);
             $data['clients'] = [(array)$this->client_model->get_client($em['client_id'])];
             $data['groups'] = $this->project_group_model->get_project_groups($em["client_id"], true);
-            $data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
-            $data['layers'] = $this->layer_model->get_layers($filter, TRUE); //used only for overview layer selection
-            $data['admin_navigation'] = $this->build_admin_navigation($em);
+			$data['plugins'] = $this->plugin_model->get_plugins_with_project_flag($data['project']['plugin_ids']);
+			$data['layers'] = $this->layer_model->get_layers($filter, TRUE); //used only for overview layer selection
+			$data['admin_navigation'] = $this->build_admin_navigation($em);
 			$data['logged_in'] = true;
 			$data['is_admin'] = $user_role->admin;
 			$data['role'] = $user_role->role_name;
 			$data['can_edit_plugins'] = $this->ion_auth->can_execute_task('projects_edit_plugins');
 
 			$data['qgis_check'] = $this->qgisproject_model->check_qgs_file($project_id);
+
+			$data['upload_size'] = round($this->file_upload_max_size());
+			$data['upload_size_text'] = byte_format($this->file_upload_max_size());
 
 			//$this->qgisinfo($data);
 
@@ -1601,14 +1605,49 @@ class Projects extends CI_Controller
 
             //update parent_id, because current group we already have
             $parent_id = $group['parent_id'];
-        }
+		}
 
-        while (!empty($parent_id)) {
-            $parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
-        }
+		while (!empty($parent_id)) {
+			$parent_id = $this->build_parent_link($parent_id, $sep, $group_full);
+		}
 
 
+		return $client_full . $sep . $group_full;
+	}
 
-        return $client_full . $sep . $group_full;
-    }
+	// Returns a file size limit in bytes based on the PHP upload_max_filesize
+	// and post_max_size
+	private function file_upload_max_size()
+	{
+		static $max_size = -1;
+
+		if ($max_size < 0) {
+			// Start with post_max_size.
+			$post_max_size = $this->parse_size(ini_get('post_max_size'));
+			if ($post_max_size > 0) {
+				$max_size = $post_max_size;
+			}
+
+			// If upload_max_size is less, then reduce. Except if upload_max_size is
+			// zero, which indicates no limit.
+			$upload_max = $this->parse_size(ini_get('upload_max_filesize'));
+			if ($upload_max > 0 && $upload_max < $max_size) {
+				$max_size = $upload_max;
+			}
+		}
+		return $max_size;
+	}
+
+	private function parse_size($size)
+	{
+		$unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+		$size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+		if ($unit) {
+			// Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+			return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+		} else {
+			return round($size);
+		}
+	}
+
 }

@@ -26,19 +26,23 @@ function onUploadFormSubmit() {
 
     var editingProject = $('#project_name')[0].value;
 
-    if ($('#userfile')[0].files.length === 0) {
-        showError(GP.noFile);
-        return false;
-    }
+	if ($('#userfile')[0].files.length === 0) {
+		showError(GP.noFile);
+		return false;
+	}
 
-    var file = $('#userfile')[0].files[0].name;
-    var newProject = file.split('.')[0];
-    var ext = file.split('.')[1];
+	var file = $('#userfile')[0].files[0].name;
+	var size = $('#userfile')[0].files[0].size;
+	var newProject = file.split('.')[0];
+	var ext = file.split('.')[1];
 	var allow = ['qgs', 'zip'];
 
-    form.action = GP.settings.siteUrl + '/projects/upload_admin/'+client+'/'+group;
+	var upload_size = form['upload_size'].value
+	var upload_size_text = form['upload_size_text'].value;
 
-    //client side validation
+	form.action = GP.settings.siteUrl + '/projects/upload_admin/' + client + '/' + group;
+
+	//client side validation
 	if (allow.indexOf(ext.toLowerCase()) == -1) {
 		showError(GP.onlyQgs);
 		form.reset();
@@ -46,6 +50,11 @@ function onUploadFormSubmit() {
 	}
 	if (editingProject && editingProject !== newProject) {
 		showError(GP.differentProjects + " " + editingProject + ": " + newProject);
+		form.reset();
+		return false;
+	}
+	if (size > upload_size) {
+		showError(GP.fileToBig + " " + upload_size_text);
 		form.reset();
 		return false;
 	}

@@ -190,3 +190,4 @@ $lang['gp_admin_full_name'] = 'Full GIS PORTAL';    //Text Administrator is adde
 $lang['gp_admin_add'] = 'Add user <b>{name}</b> as new {role}';
 $lang['gp_admin_add_msg'] = 'You must select new {role} scope';
 $lang['gp_admin_remove'] = 'Remove user <b>{name}</b> as <b>{role}</b>?</br></br>Please confirm!';
+$lang['gp_file_to_big'] = 'Datoteka je prevelika. Največja velikost je: ';

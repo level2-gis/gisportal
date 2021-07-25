@@ -190,3 +190,4 @@ $lang['gp_admin_full_name'] = 'Komplett tillgång till Kartportalen';    //Text 
 $lang['gp_admin_add'] = 'Sätt användare <b>{name}</b> till ny {role}';
 $lang['gp_admin_add_msg'] = 'Du måste välja ny {role} omfattning';
 $lang['gp_admin_remove'] = 'Radera rättigheter för <b>{name}</b> som roll: <b>{role}</b>?</br></br>Vänligan bekräfta!';
+$lang['gp_file_to_big'] = 'File is too big. Upload limit is set to: ';

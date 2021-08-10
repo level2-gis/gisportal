@@ -21,7 +21,11 @@ This is optional and so not included in main setup file.
 Update script from v22 to v23. Adds fields to projects, plugins and users_print tables. And modifies users_print_view with
 more fields.
 
-5. setup_v23.sql
+5. 023_update.sql
+
+Update script from v23 to v24. This is optional update for using dynamic mask filters and so not included in main setup file.
+
+6. setup_v23.sql
 
 If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
 latest gisapp - https://github.com/uprel/gisapp

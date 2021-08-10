@@ -403,16 +403,19 @@ class User_model extends CI_Model
     public function clear_gisapp_session()
     {
         $sess_items = array(
-            'client_path',
-            'project',
-            'project_path',
-            'data',
-            'settings',
-            'description',
-            'gis_projects',
-            'qgs',
-			'map'
-        );
+			'client_path',
+			'project',
+			'project_path',
+			'data',
+			'settings',
+			'description',
+			'gis_projects',
+			'qgs',
+			'map',
+			'mask_layer',
+			'mask_filter',
+			'mask_wkt'
+		);
 
         $this->session->unset_userdata($sess_items);
     }

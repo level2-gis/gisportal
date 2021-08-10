@@ -54,14 +54,19 @@ COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-
 -- Name: check_user_project(text, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.check_user_project(uname text, project text) RETURNS TABLE(check_user_project text, role text)
-    LANGUAGE plpgsql COST 1
-    AS $_$
+CREATE FUNCTION check_user_project(
+CREATE FUNCTION check_user_project(
+    IN uname text,
+    IN project text)
+  RETURNS TABLE(check_user_project text, role text, mask_filter text, mask_wkt text) AS
+$BODY$
 declare projid integer;
 declare groupid integer;
 declare clientid integer;
 declare is_public boolean;
 declare role text;
+declare mask_f text;
+declare mask_w text;
 begin
 projid:=0;
 role:=null;
@@ -69,39 +74,42 @@ select p.id,public,project_group_id,g.client_id from projects p,project_groups g
 
 --RAISE NOTICE '%', projid;
 if projid=0 OR projid IS NULL then
-	RETURN QUERY SELECT 'TR.noProject'::text,role;
+	RETURN QUERY SELECT 'TR.noProject'::text,role, null, null;
 else
 	if lower($1) = 'guest' then
-			if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text;
-			else RETURN QUERY SELECT 'TR.noPublicAccess'::text,role; 
+			if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text, null, null;
+			else RETURN QUERY SELECT 'TR.noPublicAccess'::text,role, null, null;
 			end if;
 	else
 			--first check if user is (client) administrator
-			select roles.name 
-			from users,users_roles,roles 
+			select roles.name
+			from users,users_roles,roles
 			where users.user_id=users_roles.user_id AND users_roles.role_id=roles.id AND roles.name='admin' AND
 			user_name=$1 and  ((client_id is null and project_group_id is null) or (client_id=clientid and project_group_id is null)) INTO role;
 			if role > '' then
 				--RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
-				RETURN QUERY SELECT 'OK'::text, role;
+				RETURN QUERY SELECT 'OK'::text, role, null, null;
 			else
-				select roles.name 
-				from users,users_roles,roles 
-				where users.user_id=users_roles.user_id AND users_roles.role_id=roles.id AND 
-				user_name=$1 and project_group_id=groupid INTO role;
+				select roles.name, ur.mask_filter, ur.mask_geom
+				from users,users_roles ur,roles
+				where users.user_id=ur.user_id AND ur.role_id=roles.id AND
+				user_name=$1 and project_group_id=groupid INTO role, mask_f, mask_w;
 				if role > '' then
 					--RAISE NOTICE 'user, group:%, client:%', groupid, clientid;
-					RETURN QUERY SELECT 'OK'::text, role;
+					RETURN QUERY SELECT 'OK'::text, role, mask_f, mask_w;
 				else
-					if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text;
-					else RETURN QUERY SELECT 'TR.noPermission'::text, role;
+					if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text, null, null;
+					else RETURN QUERY SELECT 'TR.noPermission'::text, role, null, null;
 					end if;
 				end if;
 			end if;
 	end if;
 end if;
 end;
-$_$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 1
+  ROWS 1000;
 
 
 --
@@ -110,7 +118,7 @@ $_$;
 -- Name: FUNCTION check_user_project(uname text, project text); Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON FUNCTION public.check_user_project(uname text, project text) IS 'IN uname, project --> validates project, user and user permissions and role on project';
+COMMENT ON FUNCTION check_user_project(uname text, project text) IS 'IN uname, project --> validates project, user and user permissions and role on project';
 
 
 --
@@ -599,7 +607,9 @@ CREATE TABLE public.users_roles (
     user_id integer NOT NULL,
     role_id integer NOT NULL,
     client_id integer,
-    project_group_id integer
+    project_group_id integer,
+    mask_filter text,
+    mask_geom text
 );
 
 
@@ -1352,7 +1362,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.settings VALUES (23, '2020-11-24');
+INSERT INTO public.settings VALUES (24, '2021-08-10');
 
 
 --

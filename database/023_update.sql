@@ -1,13 +1,9 @@
 ﻿--gisapp upgrade script v24
---this is optional update for using dynamic mask filters
---adds postgis extension if not already in database
-
-CREATE EXTENSION IF NOT EXISTS postgis;
 
 INSERT INTO settings (version, date) VALUES (24, now());
 
 ALTER TABLE users_roles ADD COLUMN mask_filter text;
-ALTER TABLE users_roles ADD COLUMN mask_geom geometry;
+ALTER TABLE users_roles ADD COLUMN mask_geom text;
 
 DROP FUNCTION public.check_user_project(text, text);
 
@@ -46,7 +42,7 @@ else
 				--RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
 				RETURN QUERY SELECT 'OK'::text, role, null, null;
 			else
-				select roles.name, ur.mask_filter, st_astext(ur.mask_geom)
+				select roles.name, ur.mask_filter, ur.mask_geom
 				from users,users_roles ur,roles
 				where users.user_id=ur.user_id AND ur.role_id=roles.id AND
 				user_name=$1 and project_group_id=groupid INTO role, mask_f, mask_w;
@@ -54,7 +50,7 @@ else
 					--RAISE NOTICE 'user, group:%, client:%', groupid, clientid;
 					RETURN QUERY SELECT 'OK'::text, role, mask_f, mask_w;
 				else
-					if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text;
+					if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text, null, null;
 					else RETURN QUERY SELECT 'TR.noPermission'::text, role, null, null;
 					end if;
 				end if;

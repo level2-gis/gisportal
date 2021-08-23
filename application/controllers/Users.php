@@ -455,25 +455,34 @@ class Users extends CI_Controller {
             $db_error = $this->db->error();
             if (!empty($db_error['message'])) {
                 throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-        }
-        catch (Exception $e){
-            $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
-        }
-        finally {
-            redirect('project_groups/edit/' . $destination . '#edit-access');
-        }
-    }
+			}
+		} catch (Exception $e) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+		} finally {
+			redirect('project_groups/edit/' . $destination . '#edit-access');
+		}
+	}
 
-    public function search() {
+	public function roles_list()
+	{
+		$roles = $this->user_model->get_roles();
 
-        $query = $this->input->get('query');
+		$this->output
+			->set_content_type('text/html')
+			->set_status_header(200)
+			->set_output(json_encode($roles, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+	}
 
-        //filter for client administrator
-        $filter = $this->ion_auth->admin_scope()->filter;
+	public function search()
+	{
 
-        if(empty($query)) {
-            return;
+		$query = $this->input->get('query');
+
+		//filter for client administrator
+		$filter = $this->ion_auth->admin_scope()->filter;
+
+		if (empty($query)) {
+			return;
         }
 
         $result = $this->user_model->search(urldecode($query),$filter);

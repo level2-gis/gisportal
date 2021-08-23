@@ -178,6 +178,7 @@ $lang['gp_del_general'] = 'Bekräfta att du vill radera <b>{name}</b> från data
 $lang['gp_del_role'] = 'Bekräfta borttagandet av tillgång för </br><b>{name}</b>?';
 $lang['gp_del_all_roles'] = 'Bekräfta borttagandet av all tillgång för </br><b>{name}</b>?';
 $lang['gp_del_layer_group'] = 'Bekräfta radering av lager </br><b>{name}</b>?';
+$lang['gp_select_new_role'] = 'Select new role';
 $lang['gp_copy_title'] = 'Kopiera inställningarna för tillgång från vald grupp till denna grupp.';
 $lang['gp_copy_msg'] = 'Välj grupp att kopiera från:';
 $lang['gp_stop_service'] = 'Är du säker att du vill stoppa tjänsten: <b>{name}</b>?';

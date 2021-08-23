@@ -36,7 +36,7 @@
 			src="<?php echo base_url("assets/js/bootstrap-table-reorder-rows.min.js"); ?>"></script>
 	<script type="text/javascript"
 			src="<?php echo base_url("assets/js/locale/bootstrap-table-" . $lang . ".js"); ?>"></script>
-	<script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20210725"); ?>"></script>
+	<script type="text/javascript" src="<?php echo base_url("assets/js/gisportal_common.js?v=20210823"); ?>"></script>
 	<script type="text/javascript">
 
 		$(function () {
@@ -71,6 +71,7 @@
 			deleteAllRoles: '<?php echo lang('gp_del_all_roles'); ?>',
 			deleteGeneral: '<?php echo lang('gp_del_general'); ?>',
 			deleteLayerGroup: '<?php echo lang('gp_del_layer_group'); ?>',
+			selectNewRole: '<?php echo lang('gp_select_new_role'); ?>',
 			stopService: '<?php echo lang('gp_stop_service'); ?>',
 			publishPublicService: '<?php echo lang('gp_publish_public_service'); ?>',
 			publishPrivateService: '<?php echo lang('gp_publish_private_service'); ?>',

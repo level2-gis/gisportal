@@ -178,6 +178,7 @@ $lang['gp_del_general'] = 'Are you sure you want to remove <b>{name}</b> from da
 $lang['gp_del_role'] = 'Are you sure you want to remove access for</br><b>{name}</b>?';
 $lang['gp_del_all_roles'] = 'Are you sure you want to remove all access permissions for</br><b>{name}</b>?';
 $lang['gp_del_layer_group'] = 'Are you sure you want to remove layer </br><b>{name}</b>?';
+$lang['gp_select_new_role'] = 'Select new role';
 $lang['gp_copy_title'] = 'Copy user access from selected group to this group.';
 $lang['gp_copy_msg'] = 'Please select group to copy from:';
 $lang['gp_stop_service'] = 'Are you sure you want to stop service: <b>{name}</b>?';

@@ -266,18 +266,33 @@ function chooseGroup(client, target) {
 }
 
 function switchRole(group, user, role, back) {
-    //assuming we only have roles 20 and 21 to switch between.
-    var newRole = 0;
 
-    if (role === 20) {
-        newRole = 21;
-    } else if (role === 21) {
-        newRole = 20;
-    }
+	var title = GP.selectNewRole;
 
-    if(newRole>0) {
-        window.location = GP.settings.siteUrl + "/users/set_role/"+group+"/"+user+"/"+newRole+"/"+back;
-    }
+	var roles = [];
+	var url = GP.settings.siteUrl + '/users/roles_list/';
+
+	$.getJSON(url, function (data) {
+		$.each(data, function (key, entry) {
+			roles.push({"value": entry.id, "text": entry.name});
+		});
+
+		bootbox.prompt({
+			title: title,
+			inputType: 'radio',
+			value: role,
+			inputOptions: roles,
+			callback: function (newRole) {
+				if (newRole) {
+					if (newRole != role) {
+						window.location = GP.settings.siteUrl + "/users/set_role/" + group + "/" + user + "/" + newRole + "/" + back;
+					}
+				}
+			}
+		});
+	});
+
+
 }
 
 function onProjectGroupEditClick(item) {

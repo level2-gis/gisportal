@@ -1345,6 +1345,7 @@ INSERT INTO public.roles VALUES (2, 'power', 'Power user');
 INSERT INTO public.roles VALUES (9, 'link', NULL);
 INSERT INTO public.roles VALUES (20, 'user', 'Project user (viewer)');
 INSERT INTO public.roles VALUES (21, 'editor', 'Project editor');
+INSERT INTO public.roles VALUES (22, 'user-limit', 'Limited user (viewer, no export)');
 
 
 --
@@ -1362,7 +1363,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.settings VALUES (24, '2021-08-10');
+INSERT INTO public.settings VALUES (25, '2021-08-23');
 
 
 --

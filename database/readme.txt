@@ -25,7 +25,7 @@ more fields.
 
 Update script from v23 to v24. This update is for using dynamic mask filtering.
 
-6. setup_v24.sql
+6. setup_v25.sql
 
 If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
 latest gisapp - https://github.com/uprel/gisapp

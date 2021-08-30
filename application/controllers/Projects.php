@@ -666,6 +666,9 @@ class Projects extends CI_Controller
 			$data['is_admin'] = $user_role->admin;
 			$data['role'] = $user_role->role_name;
 
+			$data['upload_size'] = round($this->file_upload_max_size());
+			$data['upload_size_text'] = byte_format($this->file_upload_max_size());
+
 			$this->load->view('templates/header', $data);
 			$this->load->view('templates/header_navigation', $data);
 			$this->load->view('project_title', $data);

@@ -208,26 +208,26 @@ class Clients extends CI_Controller
 
         if ($this->form_validation->run() == FALSE)
         {
-            $data['title'] = $this->lang->line('gp_new_client');
-            $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
-            $data['creating'] = true;
+			$data['title'] = $this->lang->line('gp_new_client');
+			$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
+			$data['creating'] = true;
 
-            $em = $this->extractPostData();
-            if(sizeof($_POST) > 0){
-                $data['title'] = $this->lang->line('gp_client') .' '. $em['display_name'];
-                $data['creating'] = false;
-            } else {
-                if ($client_id !== false){
-                    $dq = $this->client_model->get_client($client_id);
-                    if ($dq->id != null){
-                        $em = (array)$dq;
-                        $data['title'] = $this->lang->line('gp_client') .' '. $em['display_name'];
-                        $data['creating'] = false;
-                    }
-                }
-            }
-            $data['items'] = $this->build_child_groups($em['id'], null);
-			$data['users'] = $this->user_model->get_users($client_id, TRUE);
+			$em = $this->extractPostData();
+			if (sizeof($_POST) > 0) {
+				$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+				$data['creating'] = false;
+			} else {
+				if ($client_id !== false) {
+					$dq = $this->client_model->get_client($client_id);
+					if ($dq->id != null) {
+						$em = (array)$dq;
+						$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+						$data['creating'] = false;
+					}
+				}
+			}
+			$data['items'] = $this->build_child_groups($em['id'], null);
+			$data['users'] = $this->user_model->get_users($client_id);
 			$data['client'] = $em;
 			$data['image'] = $this->getImage($em['name']);
 			$data['logo'] = $this->getGisappClientLogo($em['name']);

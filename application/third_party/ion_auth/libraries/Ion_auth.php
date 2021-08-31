@@ -291,10 +291,9 @@ class Ion_auth
 			}
 			else
 			{
-			    $message = $this->load->view($this->config->item('email_templates', 'ion_auth').$this->config->item('email_activate', 'ion_auth'), $data, true);
+				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->config->item('email_activate', 'ion_auth'), $data, true);
 
-				if ($this->send_email($this->lang->line('email_activation_subject'),$message,$email) === TRUE)
-				{
+				if ($this->send_email($this->lang->line('email_activation_subject'), $message, $email) === TRUE) {
 					$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_successful']);
 					$this->set_message('activation_email_successful');
 					return $id;
@@ -302,9 +301,9 @@ class Ion_auth
 
 			}
 
-			$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_unsuccessful', 'activation_email_unsuccessful']);
+			$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_unsuccessful']);
 			$this->set_error('activation_email_unsuccessful');
-			return FALSE;
+			return $id;
 		}
 	}
 

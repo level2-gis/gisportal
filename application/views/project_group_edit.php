@@ -342,7 +342,8 @@
 					<a id="copyBtn" class="btn btn-info"
 					   onclick="chooseGroup(<?php echo $group['client_id']; ?>,<?php echo $group['id']; ?>)"><?php echo $this->lang->line('gp_copy'); ?></a>
 					<a class="btn btn-danger"
-					   onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?><?php echo $this->lang->line('gp_all'); ?></a>
+					   onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?>
+						&nbsp;<?php echo $this->lang->line('gp_all'); ?></a>
 				</div>
 			</div>
 

@@ -145,7 +145,8 @@
 							</div>
 							<div class="pull-right">
 								<a class="btn btn-danger"
-								   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?><?php echo $this->lang->line('gp_all'); ?></a>
+								   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?>
+									&nbsp;<?php echo $this->lang->line('gp_all'); ?></a>
 							</div>
 						</div>
 

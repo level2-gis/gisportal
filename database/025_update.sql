@@ -1,7 +1,5 @@
 ﻿--gisapp upgrade script v25
 
---TODO dodaj v setup!
-
 INSERT INTO settings (version, date) VALUES (26, now());
 
 ALTER TABLE users_roles DROP COLUMN IF EXISTS mask_filter;

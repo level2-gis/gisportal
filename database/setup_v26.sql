@@ -54,8 +54,7 @@ COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-
 -- Name: check_user_project(text, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION check_user_project(
-CREATE FUNCTION check_user_project(
+CREATE OR REPLACE FUNCTION public.check_user_project(
     IN uname text,
     IN project text)
   RETURNS TABLE(check_user_project text, role text, mask_filter text, mask_wkt text) AS
@@ -65,6 +64,7 @@ declare groupid integer;
 declare clientid integer;
 declare is_public boolean;
 declare role text;
+declare mask integer;
 declare mask_f text;
 declare mask_w text;
 begin
@@ -90,11 +90,14 @@ else
 				--RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
 				RETURN QUERY SELECT 'OK'::text, role, null, null;
 			else
-				select roles.name, ur.mask_filter, ur.mask_geom
+				select roles.name, ur.mask_id
 				from users,users_roles ur,roles
 				where users.user_id=ur.user_id AND ur.role_id=roles.id AND
-				user_name=$1 and project_group_id=groupid INTO role, mask_f, mask_w;
+				user_name=$1 and project_group_id=groupid INTO role, mask;
 				if role > '' then
+				    IF mask IS NOT NULL THEN
+				        SELECT filter, geom_wkt FROM MASKS where id = mask INTO mask_f, mask_w;
+				    END IF;
 					--RAISE NOTICE 'user, group:%, client:%', groupid, clientid;
 					RETURN QUERY SELECT 'OK'::text, role, mask_f, mask_w;
 				else
@@ -608,10 +611,17 @@ CREATE TABLE public.users_roles (
     role_id integer NOT NULL,
     client_id integer,
     project_group_id integer,
-    mask_filter text,
-    mask_geom text
+    mask_id integer
 );
 
+CREATE TABLE public.masks
+(
+    id serial PRIMARY KEY,
+    display_name text,
+    filter text,
+    geom_wkt text,
+    client_id integer
+);
 
 --
 -- TOC entry 215 (class 1259 OID 207899)
@@ -1363,7 +1373,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.settings VALUES (25, '2021-08-23');
+INSERT INTO public.settings VALUES (26, '2021-09-01');
 
 
 --
@@ -1828,6 +1838,9 @@ ALTER TABLE ONLY public.users_roles
 
 ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+ALTER TABLE ONLY public.masks ADD FOREIGN KEY (client_id) REFERENCES public.clients(id);
+ALTER TABLE ONLY public.users_roles ADD FOREIGN KEY (mask_id) REFERENCES public.masks(id);
 
 
 --

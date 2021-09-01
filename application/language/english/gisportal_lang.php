@@ -149,6 +149,11 @@ $lang['gp_select_groups'] = 'Select client groups';
 $lang['gp_parent'] = 'Parent';
 $lang['gp_items'] = 'Items';
 
+$lang['gp_area'] = 'Area';
+$lang['gp_area_restrict'] = 'Area restriction';
+$lang['gp_area_no_restrict'] = 'Without area restriction';
+$lang['gp_area_restrict_missing'] = 'No area restrinctions defined';
+
 $lang['gp_user_registration_link'] = 'User registration link';
 $lang['gp_user_registration_help'] = 'New users registered using above link will be connected to the client.';
 

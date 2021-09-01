@@ -291,19 +291,64 @@ function switchRole(group, user, role, back) {
 			}
 		});
 	});
+}
 
+//here we don't redirect URL, just call ajax, maybe example for other stuff. Don't have to bother with redirecting back
+function restrictArea(group, user, client, mask) {
+	var title = GP.areaRestrict + ":";
 
+	if (mask == undefined) {
+		mask = -1;
+	}
+
+	var masks = [];
+	var url = GP.settings.siteUrl + '/clients/masks_list/' + client;
+
+	masks.push({"value": -1, "text": GP.areaNoRestrict});
+
+	$.getJSON(url, function (data) {
+		$.each(data, function (key, entry) {
+			masks.push({"value": entry.id, "text": entry.name});
+		});
+
+		if (masks.length == 1) {
+			bootbox.alert(GP.areaRestrictMissing);
+			return;
+		}
+
+		bootbox.prompt({
+			title: title,
+			inputType: 'select',
+			value: mask,
+			inputOptions: masks,
+			callback: function (newMask) {
+				if (newMask) {
+					if (newMask != mask) {
+						$.ajax({
+							url: GP.settings.siteUrl + "/users/set_mask/" + group + "/" + user + "/" + newMask,
+							success: function (result) {
+								location.reload(); //need to reload page to get mask true/false from server to the table
+							},
+							error: function (xhr, status, error) {
+								bootbox.alert(xhr.responseText);
+							}
+						});
+					}
+				}
+			}
+		});
+	});
 }
 
 function onProjectGroupEditClick(item) {
-    var group = $('#'+item).val();
-    if(group) {
-        var url = GP.settings.siteUrl + '/project_groups/edit/' + group;
-        window.location = url;
-    }
+	var group = $('#' + item).val();
+	if (group) {
+		var url = GP.settings.siteUrl + '/project_groups/edit/' + group;
+		window.location = url;
+	}
 }
 
-function onProjectEditGroupChange(id,sel) {
+function onProjectEditGroupChange(id, sel) {
     var btn = $('#projectGroupEditBtn');
     var val = parseInt(sel.value);
     if(id === val) {

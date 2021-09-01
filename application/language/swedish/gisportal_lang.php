@@ -149,6 +149,11 @@ $lang['gp_select_groups'] = 'Välj kundgrupper';
 $lang['gp_parent'] = 'Överliggande';
 $lang['gp_items'] = 'post';
 
+$lang['gp_area'] = 'Area';
+$lang['gp_area_restrict'] = 'Area restriction';
+$lang['gp_area_no_restrict'] = 'Without area restriction';
+$lang['gp_area_restrict_missing'] = 'No area restrinctions defined';
+
 $lang['gp_user_registration_link'] = 'Länk för användarregistrering';
 $lang['gp_user_registration_help'] = 'Användare som registreras med följande länk kopplas till er verksamhet och kan sedan ges tillgång till utvalda projekt.';
 

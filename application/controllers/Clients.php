@@ -516,25 +516,37 @@ class Clients extends CI_Controller
 
         if(empty($filter)) {
             $groups = $this->client_model->get_clients(FALSE, TRUE, TRUE, $list_only);
-        } else {
-            $groups = [$this->client_model->get_client($filter, $list_only)];
-        }
+		} else {
+			$groups = [$this->client_model->get_client($filter, $list_only)];
+		}
 
-        $this->output
-            ->set_content_type('text/html')
-            ->set_status_header(200)
-            ->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    }
+		$this->output
+			->set_content_type('text/html')
+			->set_status_header(200)
+			->set_output(json_encode($groups, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+	}
 
-	private function get_name($el) {
+	public function masks_list($id)
+	{
+		$roles = $this->client_model->get_masks($id);
+
+		$this->output
+			->set_content_type('text/html')
+			->set_status_header(200)
+			->set_output(json_encode($roles, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+	}
+
+	private function get_name($el)
+	{
 		return empty($el['display_name']) ? $el['name'] : $el['display_name'];
 	}
 
-    private function extractPostData(){
-        return array(
-            'id' => $this->input->post('id'),
-            //'theme_id' => '1',
-            'name' => $this->input->post('name'),
+	private function extractPostData()
+	{
+		return array(
+			'id' => $this->input->post('id'),
+			//'theme_id' => '1',
+			'name' => $this->input->post('name'),
             'url' => $this->input->post('url'),
             //'ordr' => $this->input->post('ordr'),
             'display_name' => $this->input->post('display_name'),

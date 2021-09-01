@@ -91,14 +91,30 @@ class Client_model extends CI_Model {
         unset($data['id']);
         $this->db->insert('clients', $data);
 
-        return $this->db->insert_id();
-    }
+		return $this->db->insert_id();
+	}
 
-    /*
-    * function to delete client
-    */
-    function delete_client($id)
-    {
-        return $this->db->delete('clients',array('id'=>$id));
-    }
+	/*
+	* function to delete client
+	*/
+	function delete_client($id)
+	{
+		return $this->db->delete('clients', array('id' => $id));
+	}
+
+	//masks, we don't have separate model for it, but is client related
+	function get_masks($id)
+	{
+		$this->db->select("id, display_name AS name", FALSE);
+		$this->db->where('client_id', $id);
+
+		$query = $this->db->get('masks');
+		return $query->result_array();
+	}
+
+	//just for checking if there are any masks to show the button
+	function count_masks()
+	{
+		return $this->db->count_all('masks');
+	}
 }

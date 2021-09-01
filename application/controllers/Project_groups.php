@@ -301,15 +301,17 @@ class Project_groups extends CI_Controller
             $data['custom4'] = $this->config->item('project_group_custom4_name');
             $data['link1'] = $this->config->item('project_group_link1_name');
             $data['link2'] = $this->config->item('project_group_link2_name');
-            $data['link3'] = $this->config->item('project_group_link3_name');
-            $data['logged_in'] = true;
-            $data['is_admin'] = $user_role->admin;
+			$data['link3'] = $this->config->item('project_group_link3_name');
+			$data['logged_in'] = true;
+			$data['is_admin'] = $user_role->admin;
 			$data['role'] = $user_role->role_name;
 			$data['can_edit_properties'] = $this->ion_auth->can_execute_task('project_groups_edit_properties');
 			$data['can_edit_contacts'] = $this->ion_auth->can_execute_task('project_groups_edit_contacts');
 			$data['can_edit_layers'] = $this->ion_auth->can_execute_task('project_groups_edit_layers');
 			$data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 			$data['return'] = $this->get_group_return_url($group);
+
+			$data['masks_count'] = $this->client_model->count_masks();
 
 			$this->loadmeta($data);
 

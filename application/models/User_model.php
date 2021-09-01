@@ -159,25 +159,44 @@ class User_model extends CI_Model
 
         $this->db->set('role_id', $role_id);
         $this->db->where('user_id', $user_id);
-        $this->db->where('project_group_id', $group_id);
-        $this->db->update('users_roles');
+		$this->db->where('project_group_id', $group_id);
+		$this->db->update('users_roles');
 
-        if ($this->db->affected_rows() === 1)
-        {
-            return TRUE;
-        }
-        return FALSE;
-    }
+		if ($this->db->affected_rows() === 1) {
+			return TRUE;
+		}
+		return FALSE;
+	}
 
-    function delete_project_group_role($group_id, $user_id) {
+	function update_project_group_mask($group_id, $user_id, $mask_id)
+	{
 
-        //we delete only project roles, role_id over 10
+		if ($mask_id == -1) {
+			$mask_id = NULL;
+		}
 
-        if(!empty($user_id)) {
-            $this->db->where('user_id', $user_id);
-        }
-        if(!empty($group_id)) {
-            $this->db->where('project_group_id', $group_id);
+		$this->db->set('mask_id', $mask_id);
+		$this->db->where('user_id', $user_id);
+		$this->db->where('project_group_id', $group_id);
+		$this->db->update('users_roles');
+
+		if ($this->db->affected_rows() === 1) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+
+	function delete_project_group_role($group_id, $user_id)
+	{
+
+		//we delete only project roles, role_id over 10
+
+		if (!empty($user_id)) {
+			$this->db->where('user_id', $user_id);
+		}
+		if (!empty($group_id)) {
+			$this->db->where('project_group_id', $group_id);
         }
 
         $this->db->where('role_id >', 10);
@@ -236,8 +255,8 @@ class User_model extends CI_Model
      * @return mixed
      */
     function get_project_group_users($group_id) {
-        $this->db->select('ur.id, ur.user_id, ur.role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name, users_view.active');
-        $this->db->from('users_roles ur');
+		$this->db->select('ur.id, ur.user_id, ur.role_id, project_group_id, user_name, user_email, r.display_name as role, last_login, count_login, registered, organization, first_name, last_name, phone, name as role_name, users_view.active, mask_id');
+		$this->db->from('users_roles ur');
         $this->db->join('users_view', 'users_view.user_id = ur.user_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('project_group_id',$group_id);
@@ -248,8 +267,8 @@ class User_model extends CI_Model
     }
 
     function get_project_groups_for_user($user_id, $filter = NULL) {
-        $this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || \' (\' || p.name || \')\' END AS name, p.client, p.client_name, p.projects, r.display_name as role');
-        $this->db->from('users_roles ur');
+		$this->db->select('ur.id, ur.user_id, role_id, ur.project_group_id, CASE WHEN p.display_name IS NULL THEN p.name ELSE p.display_name || \' (\' || p.name || \')\' END AS name, p.client_id, p.client, p.client_name, p.projects, r.display_name as role, mask_id');
+		$this->db->from('users_roles ur');
         $this->db->join('project_groups_view p', 'p.id = ur.project_group_id');
         $this->db->join('roles r', 'r.id = ur.role_id');
         $this->db->where('user_id',$user_id);

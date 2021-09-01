@@ -108,18 +108,20 @@ class Users extends CI_Controller {
             $edit_user_role = $this->ion_auth->admin_scope($user_id);
 
             $data['groups'] = $this->user_model->get_project_groups_for_user($user_id, $filter);
-            $data['roles'] = $this->user_model->get_roles();
-            $data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
-            $data['role_power'] = $this->user_model->get_role('power')->name; //get role name from database
+			$data['roles'] = $this->user_model->get_roles();
+			$data['role_admin'] = $this->user_model->get_role('admin')->name; //get role name from database
+			$data['role_power'] = $this->user_model->get_role('power')->name; //get role name from database
 
-            $data['user_role'] = $edit_user_role;
-            $data['user']['admin'] = $edit_user_role ? $edit_user_role->admin : null;
-            $data['role_filter'] = $edit_user_role ? $edit_user_role->filter : null;
+			$data['user_role'] = $edit_user_role;
+			$data['user']['admin'] = $edit_user_role ? $edit_user_role->admin : null;
+			$data['role_filter'] = $edit_user_role ? $edit_user_role->filter : null;
 			$data['logged_in'] = true;
-            $data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
+			$data['can_edit_access'] = $this->ion_auth->can_execute_task('project_groups_edit_access');
 
-            $data['is_admin'] = $user_role->admin;
-            $data['role'] = $user_role->role_name;
+			$data['masks_count'] = $this->client_model->count_masks();
+
+			$data['is_admin'] = $user_role->admin;
+			$data['role'] = $user_role->role_name;
 
 			$data['role_scope'] = empty($edit_user_role->scope) ? $this->lang->line('gp_admin_full_name') : $edit_user_role->scope;
 			if ($edit_user_role) {
@@ -389,24 +391,45 @@ class Users extends CI_Controller {
         finally {
             $id = 0;
             if($back == 'users') {
-                $id = $user_id;
-            } else if ($back == 'project_groups') {
-                $id = $group_id;
-            }
-            if($id>0) {
-                redirect($back . '/edit/' . $id . '#edit-access');
-            }
-        }
-    }
+				$id = $user_id;
+			} else if ($back == 'project_groups') {
+				$id = $group_id;
+			}
+			if ($id > 0) {
+				redirect($back . '/edit/' . $id . '#edit-access');
+			}
+		}
+	}
 
-    public function remove_role($group_id, $user_id, $back) {
+	public function set_mask($group_id, $user_id, $mask_id)
+	{
 
-        $task = 'project_groups_edit_access';
+		$task = 'project_groups_edit_access';
 
-        try {
-            if (!$this->ion_auth->can_execute_task($task)){
-                throw new Exception('No permission!');
-            }
+		try {
+			if (!$this->ion_auth->can_execute_task($task)) {
+				throw new Exception('No permission!');
+			}
+
+			$res = $this->user_model->update_project_group_mask($group_id, $user_id, $mask_id);
+			$db_error = $this->db->error();
+			if (!empty($db_error['message'])) {
+				throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+			}
+		} catch (Exception $e) {
+			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
+		}
+	}
+
+	public function remove_role($group_id, $user_id, $back)
+	{
+
+		$task = 'project_groups_edit_access';
+
+		try {
+			if (!$this->ion_auth->can_execute_task($task)) {
+				throw new Exception('No permission!');
+			}
 
             if($user_id === 'null') {
                 $user_id = null;

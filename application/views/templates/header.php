@@ -85,7 +85,10 @@
 			adminAdd: '<?php echo lang('gp_admin_add'); ?>',
 			adminAddMsg: '<?php echo lang('gp_admin_add_msg'); ?>',
 			adminRemove: '<?php echo lang('gp_admin_remove'); ?>',
-			fileToBig: '<?php echo lang('gp_file_to_big'); ?>'
+			fileToBig: '<?php echo lang('gp_file_to_big'); ?>',
+			areaRestrict: '<?php echo lang('gp_area_restrict'); ?>',
+			areaNoRestrict: '<?php echo lang('gp_area_no_restrict'); ?>',
+			areaRestrictMissing: '<?php echo lang('gp_area_restrict_missing'); ?>'
 		};
 
 		//other stuff, not language strings

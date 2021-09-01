@@ -135,16 +135,16 @@
                                     <option value="" disabled><?php echo $this->lang->line('gp_select_groups'); ?></option>
                                 </select>
 
-                                <select class="form-control" id="user_role" name="user_role">
-                                    <?php foreach ($roles as $role): ?>
-                                        <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <a onclick="addRoleMulti(<?php echo $user['user_id']; ?>)"
-                                   class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
-                            </div>
-                            <div class="pull-right">
-                                <a class="btn btn-danger"
+								<select class="form-control" id="user_role" name="user_role">
+									<?php foreach ($roles as $role): ?>
+										<option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
+									<?php endforeach; ?>
+								</select>
+								<a onclick="addRoleMulti(<?php echo $user['user_id']; ?>)"
+								   class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
+							</div>
+							<div class="pull-right">
+								<a class="btn btn-danger"
 								   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?><?php echo $this->lang->line('gp_all'); ?></a>
 							</div>
 						</div>

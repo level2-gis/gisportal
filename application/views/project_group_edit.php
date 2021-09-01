@@ -331,16 +331,17 @@
                     <input type="search" id="user_search" class="form-control typeahead" size="30" placeholder="<?php echo $this->lang->line('gp_find_user'); ?>..."
                            autocomplete="off">
                     <select class="form-control" id="user_role" name="user_role">
-                        <?php foreach ($roles as $role): ?>
-                            <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <a onclick="addRole(<?php echo $group['id']; ?>,'project_groups')"
-                       class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
-                </div>
-                <div class="pull-right">
-                    <a id="copyBtn" class="btn btn-info" onclick="chooseGroup(<?php echo $group['client_id']; ?>,<?php echo $group['id']; ?>)"><?php echo $this->lang->line('gp_copy'); ?></a>
-                    <a class="btn btn-danger"
+						<?php foreach ($roles as $role): ?>
+							<option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
+						<?php endforeach; ?>
+					</select>
+					<a onclick="addRole(<?php echo $group['id']; ?>,'project_groups')"
+					   class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_add'); ?></a>
+				</div>
+				<div class="pull-right">
+					<a id="copyBtn" class="btn btn-info"
+					   onclick="chooseGroup(<?php echo $group['client_id']; ?>,<?php echo $group['id']; ?>)"><?php echo $this->lang->line('gp_copy'); ?></a>
+					<a class="btn btn-danger"
 					   onclick="confirmLink(GP.deleteAllRoles,'Users in Group: <?php echo $group['name']; ?>','<?php echo site_url('users/remove_role/' . $group['id'] . '/null/project_groups'); ?>')"><?php echo $this->lang->line('gp_remove'); ?><?php echo $this->lang->line('gp_all'); ?></a>
 				</div>
 			</div>

@@ -7,7 +7,6 @@ class Mail extends CI_Controller
     {
         parent::__construct();
 
-        //Load email library
         $this->load->library('email');
     }
 
@@ -59,19 +58,12 @@ class Mail extends CI_Controller
         $this->email->subject($data->subject);
         $this->email->message($data->body);
 
-        //Send email
         if (!$this->email->send()) {
-            //i don't get this to write to error log so commenting out
-            //log_message('error', 'GISPORTAL Mail sending error: '. $this->email->print_debugger(array('headers')););
 
-            $this->output
-                ->set_content_type('application/json')
-                ->set_status_header(500)
-                ->set_output(json_encode(array(
-                    'success' => 'false',
-                    'message' => 'Error sending email.'
-                )));
-        } else {
+			echo "Error sending email";
+			show_error($this->email->print_debugger());
+
+		} else {
 
             $this->output
                 ->set_content_type('application/json')

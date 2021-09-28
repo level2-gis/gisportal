@@ -1,30 +1,34 @@
-	<div class="row">
-		<div class="col-md-4 col-md-offset-4 well">
-			<?php $attributes = array("name" => "signupform");
-			echo form_open("signup/", $attributes);?>
-            <input name="client_id" type="hidden" value="<?php echo $client['id']; ?>" />
-			<?php if(!empty($client)) : ?>
-                <h3 class="text-center"><?php echo $client['display_name']; ?></h3>
-            <?php endif; ?>
-            <legend><?php echo $title; ?></legend>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4 well">
+		<?php $attributes = array("name" => "signupform");
+		echo form_open("signup/", $attributes); ?>
+		<input name="client_id" type="hidden" value="<?php echo $client['id']; ?>"/>
+		<input name="client_display_name" type="hidden" value="<?php echo $client['display_name']; ?>"/>
+		<?php if (!empty($client)) : ?>
+			<h3 class="text-center"><?php echo $client['display_name']; ?></h3>
+		<?php endif; ?>
+		<legend><?php echo $title; ?></legend>
 
-			<div class="form-group">
-				<label for="name"><?php echo $this->lang->line('gp_first_name'); ?></label>
-				<input class="form-control" name="fname" placeholder="" type="text" value="<?php echo set_value('fname'); ?>" />
-				<span class="text-danger"><?php echo form_error('fname'); ?></span>
-			</div>			
-		
-			<div class="form-group">
-				<label for="name"><?php echo $this->lang->line('gp_last_name'); ?></label>
-				<input class="form-control" name="lname" placeholder="" type="text" value="<?php echo set_value('lname'); ?>" />
-				<span class="text-danger"><?php echo form_error('lname'); ?></span>
-			</div>
-		
-			<div class="form-group">
-				<label for="email"><?php echo $this->lang->line('gp_email'); ?></label>
-				<input class="form-control" name="email" placeholder="" type="text" value="<?php echo set_value('email'); ?>" />
-				<span class="text-danger"><?php echo form_error('email'); ?></span>
-			</div>
+		<div class="form-group">
+			<label for="name"><?php echo $this->lang->line('gp_first_name'); ?></label>
+			<input class="form-control" name="fname" placeholder="" type="text"
+				   value="<?php echo set_value('fname'); ?>"/>
+			<span class="text-danger"><?php echo form_error('fname'); ?></span>
+		</div>
+
+		<div class="form-group">
+			<label for="name"><?php echo $this->lang->line('gp_last_name'); ?></label>
+			<input class="form-control" name="lname" placeholder="" type="text"
+				   value="<?php echo set_value('lname'); ?>"/>
+			<span class="text-danger"><?php echo form_error('lname'); ?></span>
+		</div>
+
+		<div class="form-group">
+			<label for="email"><?php echo $this->lang->line('gp_email'); ?></label>
+			<input class="form-control" name="email" placeholder="" type="text"
+				   value="<?php echo set_value('email'); ?>"/>
+			<span class="text-danger"><?php echo form_error('email'); ?></span>
+		</div>
 
             <div class="form-group">
                 <label for="username"><?php echo $this->lang->line('gp_username'); ?></label>

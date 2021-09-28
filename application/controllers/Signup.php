@@ -93,6 +93,7 @@ class Signup extends CI_Controller
 				//prepare message for administrators
 				$additional_data["id"] = $new_id;
 				$additional_data["email"] = $email;
+				$additional_data["client"] = $this->input->post('client_display_name');
 				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_user.tpl.php', $additional_data, TRUE);
 
 				//set link in case client exists

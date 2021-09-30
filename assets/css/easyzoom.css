@@ -35,7 +35,7 @@
 	margin: -1em 0 0 -5em;
 	line-height: 2em;
 	text-align: center;
-	background: #FFF;
+	background: rgba(0, 0, 0, 0.5);
 	box-shadow: 0 0 10px #888;
 }
 
@@ -43,7 +43,7 @@
 	position: absolute;
 	z-index: 100;
 	overflow: hidden;
-	background: #FFF;
+	/*background: #FFF;*/
 }
 
 /**

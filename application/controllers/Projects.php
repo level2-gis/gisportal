@@ -147,7 +147,7 @@ class Projects extends CI_Controller
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/header_navigation', $data);
 		$this->load->view('projects', $data);
-		if (!empty($modules)) {
+		if (!empty($modules['modules'])) {
 			$this->load->view('modules/view', $modules);
 		}
 		if (!empty($rss)) {

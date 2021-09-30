@@ -130,6 +130,15 @@ class Projects extends CI_Controller
 		try {
 			$data['projects'] = $this->get_user_projects_for_group($data['is_admin'], $client_id, $group_id);
 			$data['navigation'] = $this->build_user_navigation($client, $group_id);
+
+			//get modules only if model exists first (extension to gisportal)
+			$modules['modules'] = [];
+			if (file_exists(APPPATH . "models/modules/Module_model.php")) {
+				$this->load->model('modules/module_model');
+				$modules['modules'] = $this->module_model->get_modules($client_id, $group_id);
+				$modules['client'] = $client->name;
+			}
+
 		} catch (Exception $e) {
 			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
 			redirect("/");
@@ -138,6 +147,9 @@ class Projects extends CI_Controller
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/header_navigation', $data);
 		$this->load->view('projects', $data);
+		if (!empty($modules)) {
+			$this->load->view('modules/view', $modules);
+		}
 		if (!empty($rss)) {
 			$this->load->view('rss_short', $rss);
 		}

@@ -370,24 +370,34 @@ class User_model extends CI_Model
 
     function remove_link($user_id, $client_id = NULL) {
 
-        $link_group = 9;
+		$link_group = 9;
 
-        $this->db->where('user_id',$user_id);
-        $this->db->where('role_id',$link_group);
-        if(!empty($client_id)) {
-            $this->db->where('client_id', $client_id);
-        }
-        $this->db->delete('users_roles');
-    }
+		$this->db->where('user_id', $user_id);
+		$this->db->where('role_id', $link_group);
+		if (!empty($client_id)) {
+			$this->db->where('client_id', $client_id);
+		}
+		$this->db->delete('users_roles');
+	}
+
+	function get_contact_group_ids($user_id)
+	{
+
+		$this->db->select('id');
+		$this->db->where('contact_id', $user_id);
+		$query = $this->db->get('project_groups');
+
+		return array_column($query->result_array(), 'id');
+	}
 
 	public function save_user($data)
-    {
+	{
 		$id = $data['user_id'];
 
 		//if ($id != null){
-			$this->db->where('user_id',$id);
-			$this->db->update('users',$data);
-			return $id;
+		$this->db->where('user_id', $id);
+		$this->db->update('users', $data);
+		return $id;
 		//}
 
 		//unset($data['id']);

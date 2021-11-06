@@ -170,23 +170,29 @@ class Users extends CI_Controller {
         {
             try {
 
-                //remove link
-                $this->user_model->remove_link($id, $filter);
+				//remove link
+				$this->user_model->remove_link($id, $filter);
 
-                $test = $this->user_model->has_project_group_role($id,null);
-                if($test) {
-                    throw new Exception('Cannot delete, user has roles!');
-                }
+				$test = $this->user_model->has_project_group_role($id, null);
+				if ($test) {
+					throw new Exception('Cannot delete, user has roles!');
+				}
 
-                $this->user_model->clear_print($user['user_name']);
-                $this->user_model->delete_user($id);
-                $db_error = $this->db->error();
-                if (!empty($db_error['message'])) {
-                    throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-                }
-                $this->session->set_flashdata('alert', '<div class="alert alert-success text-center">'.$this->lang->line('gp_user').' <strong>' . $this->input->post('name') . '</strong>'.$this->lang->line('gp_deleted').'</div>');
-                redirect('/users');
-            }
+				//check if user is contact attached to any of the groups
+				$groups_array = (array)$this->user_model->get_contact_group_ids($id);
+				if (!empty($groups_array)) {
+					throw new Exception('Cannot delete, user is set as contact in groups: ' . implode($groups_array, ','));
+				}
+
+				$this->user_model->clear_print($user['user_name']);
+				$this->user_model->delete_user($id);
+				$db_error = $this->db->error();
+				if (!empty($db_error['message'])) {
+					throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+				}
+				$this->session->set_flashdata('alert', '<div class="alert alert-success text-center">' . $this->lang->line('gp_user') . ' <strong>' . $this->input->post('name') . '</strong>' . $this->lang->line('gp_deleted') . '</div>');
+				redirect('/users');
+			}
             catch (Exception $e){
                 $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">'.$e->getMessage().'</div>');
                 redirect('/users/edit/'.$id);

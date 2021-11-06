@@ -278,10 +278,11 @@ class Ion_auth
 			$user            = $this->ion_auth_model->user($id)->row();
 
 			$data = [
-				'identity'   => $user->{$identity},
-				'id'         => $user->id,
-				'email'      => $email,
+				'identity' => $user->{$identity},
+				'id' => $user->id,
+				'email' => $email,
 				'activation' => $activation_code,
+				'name' => $additional_data['first_name'] . ' ' . $additional_data['last_name']
 			];
 			if(!$this->config->item('use_ci_email', 'ion_auth'))
 			{

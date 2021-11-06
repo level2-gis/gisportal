@@ -23,11 +23,12 @@ class Client_model extends CI_Model {
 
     function get_client_by_name($name)
     {
-        $this->db->where('name', $name);
-        $query = $this->db->get('clients');
+		$this->db->where('name', $name);
+		$query = $this->db->get('clients');
 
-        return $query->result();
-    }
+		$result = $query->result();
+		return $result ? $result[0] : null;
+	}
 
     function client_exists($name)
     {

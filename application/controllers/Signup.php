@@ -13,26 +13,24 @@ class Signup extends CI_Controller
 	
 	function index()
 	{
-        try {
-            if(sizeof($_POST) == 0) {
-                $cl_query = $this->input->get('code', TRUE);
+		try {
+			$cl_query = $this->input->get('code', TRUE);
 
-                $client = NULL;
-                if (!empty($cl_query)) {
-                    $cl_decode = base64_decode($cl_query);
-                    $client = $this->client_model->get_client_by_name($cl_decode);
-                } else {
-                    if ($this->config->item('public_registration') === FALSE) {
-                        throw new Exception('Client required!');
-                    }
-                }
+			$client = NULL;
+			if (!empty($cl_query)) {
+				$cl_decode = base64_decode($cl_query);
+				$client = $this->client_model->get_client_by_name($cl_decode);
+			} else {
+				if ($this->config->item('public_registration') === FALSE) {
+					throw new Exception('Client required!');
+				}
+			}
 
-                if (empty($client) && ($this->config->item('public_registration') === FALSE)) {
-                    throw new Exception('Client not correct!');
-                }
-            }
+			if (empty($client) && ($this->config->item('public_registration') === FALSE)) {
+				throw new Exception('Client not correct!');
+			}
 
-        } catch (Exception $e) {
+		} catch (Exception $e) {
 			$data['logged_in'] = FALSE;
 			$data['message'] = $e->getMessage();
 			$data['type'] = 'danger';
@@ -54,7 +52,8 @@ class Signup extends CI_Controller
         // submit
 		if ($this->form_validation->run() == FALSE) {
 			// fails
-			$data['client'] = empty($client) ? null : (array)$client[0];
+			$data['client'] = empty($client) ? null : (array)$client;
+			$data['code'] = $cl_query;
 			$data['title'] = $this->lang->line('gp_register');
 			$data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
 			//we allow registration also if user is logged in

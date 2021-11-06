@@ -1,7 +1,11 @@
 <div class="row">
 	<div class="col-md-4 col-md-offset-4 well">
 		<?php $attributes = array("name" => "signupform");
-		echo form_open("signup/", $attributes); ?>
+		if (empty($code)) {
+			echo form_open("signup", $attributes);
+		} else {
+			echo form_open("signup?code=" . $code, $attributes);
+		} ?>
 		<input name="client_id" type="hidden" value="<?php echo $client['id']; ?>"/>
 		<input name="client_display_name" type="hidden" value="<?php echo $client['display_name']; ?>"/>
 		<?php if (!empty($client)) : ?>

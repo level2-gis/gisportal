@@ -26,26 +26,26 @@ $lang['account_creation_missing_default_group'] = 'Default group is not set';
 $lang['account_creation_invalid_default_group'] = 'Invalid default group name set';
 
 // Geslo
-$lang['password_change_successful'] 	 	 = 'Geslo je bilo uspešno spremenjeno';
-$lang['password_change_unsuccessful'] 	  	 = 'Ni mogoče spremeniti gesla';
-$lang['forgot_password_successful'] 	 	 = 'Zahteva za ponastavitev gesla je bila uspešno poslana';
-$lang['forgot_password_unsuccessful'] 	 	 = 'Gesla ni mogoče ponastaviti';
+$lang['password_change_successful'] = 'Geslo je bilo uspešno spremenjeno';
+$lang['password_change_unsuccessful'] = 'Ni mogoče spremeniti gesla';
+$lang['forgot_password_successful'] = 'Zahteva za ponastavitev gesla je bila uspešno poslana';
+$lang['forgot_password_unsuccessful'] = 'Gesla ni mogoče ponastaviti';
 
 // Aktivacija
-$lang['activate_successful'] 		  	     = 'Račun aktiviran';
-$lang['activate_unsuccessful'] 		 	     = 'Ni mogoče aktivirati računa';
-$lang['deactivate_successful'] 		  	     = 'Račun deaktiviran';
-$lang['deactivate_unsuccessful'] 	  	     = 'Ni mogoče deaktivirati računa';
-$lang['activation_email_successful'] 	  	 = 'Aktivacijska pošta uspešno poslana';
-$lang['activation_email_unsuccessful']   	 = 'Aktivacijske pošte ni možno poslati';
-$lang['deactivate_current_user_unsuccessful']= 'You cannot De-Activate your self.';
+$lang['activate_successful'] = 'Račun aktiviran';
+$lang['activate_unsuccessful'] = 'Ni mogoče aktivirati računa';
+$lang['deactivate_successful'] = 'Račun deaktiviran';
+$lang['deactivate_unsuccessful'] = 'Ni mogoče deaktivirati računa';
+$lang['activation_email_successful'] = 'Aktivacijska e-pošta uspešno poslana. Preverite vaš e-poštni predal za aktivacijo računa.';
+$lang['activation_email_unsuccessful'] = 'Aktivacijske e-pošte ni možno poslati';
+$lang['deactivate_current_user_unsuccessful'] = 'You cannot De-Activate your self.';
 
 // Prijava / Odjava
-$lang['login_successful'] 		  	         = 'Uspešna prijava';
-$lang['login_unsuccessful'] 		  	     = 'Neuspešna prijava';
-$lang['login_unsuccessful_not_active'] 		 = 'Račun je neaktiven';
-$lang['login_timeout']                       = 'Začasno zaklenjen. Poskusite ponovno pozneje.';
-$lang['logout_successful'] 		 	         = 'Uspešna odjava';
+$lang['login_successful'] = 'Uspešna prijava';
+$lang['login_unsuccessful'] = 'Neuspešna prijava';
+$lang['login_unsuccessful_not_active'] = 'Račun je neaktiven';
+$lang['login_timeout'] = 'Začasno zaklenjen. Poskusite ponovno pozneje.';
+$lang['logout_successful'] = 'Uspešna odjava';
 
 // Sprememba računa
 $lang['update_successful'] 		 	         = 'Informacije računa so bile uspešno posodobljene';

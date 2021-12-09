@@ -81,17 +81,25 @@ else
 			else RETURN QUERY SELECT 'TR.noPublicAccess'::text,role, null, null;
 			end if;
 	else
-			--first check if user is (client) administrator
-			select roles.name
-			from users,users_roles,roles
-			where users.user_id=users_roles.user_id AND users_roles.role_id=roles.id AND roles.name='admin' AND
-			user_name=$1 and  ((client_id is null and project_group_id is null) or (client_id=clientid and project_group_id is null)) INTO role;
-			if role > '' then
-				--RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
-				RETURN QUERY SELECT 'OK'::text, role, null, null;
-			else
-				select roles.name, ur.mask_id
-				from users,users_roles ur,roles
+        --first check if user is (client) administrator/power user
+        select roles.name
+        from users,
+             users_roles,
+             roles
+        where users.user_id = users_roles.user_id
+          AND users_roles.role_id = roles.id
+          AND roles.id < 9
+          AND user_name = $1
+          and ((client_id is null and project_group_id is null) or (client_id = clientid and project_group_id is null))
+        INTO role;
+        if role > '' then
+            --RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
+            RETURN QUERY SELECT 'OK'::text, role, null, null;
+        else
+            select roles.name, ur.mask_id
+            from users,
+                 users_roles ur,
+                 roles
 				where users.user_id=ur.user_id AND ur.role_id=roles.id AND
 				user_name=$1 and project_group_id=groupid INTO role, mask;
 				if role > '' then
@@ -575,28 +583,29 @@ ALTER SEQUENCE public.project_groups_id_seq OWNED BY public.project_groups.id;
 --
 
 CREATE TABLE public.users (
-    user_id integer NOT NULL,
-    user_name text,
-    user_password_hash text,
-    user_email text,
-    last_login timestamp with time zone,
-    registered timestamp with time zone,
-    count_login integer DEFAULT 0,
-    lang text,
-    organization text,
-    ip_address text,
-    activation_selector text,
-    activation_code text,
-    forgotten_password_selector text,
-    forgotten_password_code text,
-    forgotten_password_time integer,
-    remember_selector text,
-    remember_code text,
-    active integer,
-    first_name text,
-    last_name text,
-    phone text,
-    CONSTRAINT check_active CHECK ((active >= 0))
+                              user_id integer NOT NULL,
+                              user_name                   text,
+                              user_password_hash          text,
+                              user_email                  text,
+                              last_login                  timestamp with time zone,
+                              registered                  timestamp with time zone,
+                              count_login                 integer DEFAULT 0,
+                              lang                        text,
+                              organization                text,
+                              ip_address                  text,
+                              activation_selector         text,
+                              activation_code             text,
+                              forgotten_password_selector text,
+                              forgotten_password_code     text,
+                              forgotten_password_time     integer,
+                              remember_selector           text,
+                              remember_code               text,
+                              active                      integer,
+                              first_name                  text,
+                              last_name                   text,
+                              phone                       text,
+                              receive_system_emails       boolean NOT NULL DEFAULT true,
+                              CONSTRAINT check_active CHECK ((active >= 0))
 );
 
 
@@ -999,31 +1008,32 @@ ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 CREATE VIEW public.users_view AS
  SELECT users.user_id,
-    users.first_name,
-    users.last_name,
-    ((users.first_name || ' '::text) || users.last_name) AS display_name,
-    users.user_name,
-    users.user_email,
-    users.organization,
-    users.registered,
-    users.count_login,
-    users.last_login,
-    users.lang,
-    users.active,
-    users.phone,
+        users.first_name,
+        users.last_name,
+        ((users.first_name || ' '::text) || users.last_name) AS display_name,
+        users.user_name,
+        users.user_email,
+        users.organization,
+        users.registered,
+        users.count_login,
+        users.last_login,
+        users.lang,
+        users.active,
+        users.phone,
+        users.receive_system_emails,
         CASE
-            WHEN (adm.name = 'admin'::text) THEN true
+            WHEN adm.id < 9 THEN true
             ELSE false
-        END AS admin,
-    adm.filter,
-    adm.scope,
-    adm.id AS role_id,
-    adm.name AS role_name,
-    adm.display_name AS role_display_name,
+            END                                              AS admin,
+        adm.filter,
+        adm.scope,
+        adm.id                                               AS role_id,
+        adm.name                                             AS role_name,
+        adm.display_name                                     AS role_display_name,
         CASE
             WHEN (groups.count IS NULL) THEN (0)::bigint
             ELSE groups.count
-        END AS groups
+        END                                                  AS groups
    FROM ((public.users
      LEFT JOIN ( SELECT users_roles.user_id,
             users_roles.client_id AS filter,
@@ -1050,30 +1060,28 @@ CREATE VIEW public.users_view AS
 
 CREATE VIEW public.users_view_for_clients AS
  SELECT users.user_id,
-    users.first_name,
-    users.last_name,
-    ((users.first_name || ' '::text) || users.last_name) AS display_name,
-    users.user_name,
-    users.user_email,
-    users.organization,
-    users.registered,
-    users.count_login,
-    users.last_login,
-    users.lang,
-    users.active,
-    users.phone,
-        CASE
-            WHEN (adm.admin IS NULL) THEN false
-            ELSE adm.admin
-        END AS admin,
-    adm.filter,
-    ( SELECT clients.display_name
-           FROM public.clients
-          WHERE (clients.id = adm.filter)) AS scope,
-    adm.role_id,
-    adm.role_name,
-    adm.role_display_name,
-    adm.count AS groups
+        users.first_name,
+        users.last_name,
+        ((users.first_name || ' '::text) || users.last_name) AS display_name,
+        users.user_name,
+        users.user_email,
+        users.organization,
+        users.registered,
+        users.count_login,
+        users.last_login,
+        users.lang,
+        users.active,
+        users.phone,
+        users.receive_system_emails,
+        adm.admin,
+        adm.filter,
+        (SELECT clients.display_name
+         FROM public.clients
+         WHERE (clients.id = adm.filter))                    AS scope,
+        adm.role_id,
+        adm.role_name,
+        adm.role_display_name,
+        adm.count                                            AS groups
    FROM (public.users
      LEFT JOIN ( SELECT data.user_id,
             sum(data.count) AS count,
@@ -1086,7 +1094,7 @@ CREATE VIEW public.users_view_for_clients AS
                     0 AS count,
                     users_roles.client_id AS filter,
                         CASE
-                            WHEN (roles.name = 'admin'::text) THEN true
+                            WHEN roles.id < 9 THEN true
                             ELSE false
                         END AS admin,
                     roles.id AS role_id,
@@ -1373,7 +1381,8 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.settings VALUES (26, '2021-09-01');
+INSERT INTO public.settings
+VALUES (27, '2021-12-09');
 
 
 --
@@ -1382,8 +1391,10 @@ INSERT INTO public.settings VALUES (26, '2021-09-01');
 -- Data for Name: tasks; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.tasks VALUES (1, 'clients_table_view', true, true);
-INSERT INTO public.tasks VALUES (2, 'clients_edit', true, true);
+INSERT INTO public.tasks
+VALUES (1, 'clients_table_view', true, true);
+INSERT INTO public.tasks
+VALUES (2, 'clients_edit', true, true);
 INSERT INTO public.tasks VALUES (3, 'clients_send_email', true, true);
 INSERT INTO public.tasks VALUES (4, 'project_groups_table_view', true, true);
 INSERT INTO public.tasks VALUES (5, 'project_groups_edit', true, true);

@@ -26,7 +26,11 @@ Here are PostgreSQL scripts for gisportal2:
 025_update.sql
 - Update script from v25 to v26. This update improves dynamic mask filtering with own table masks
 
-6. setup_v26.sql
+026_update.sql
+- Update script from v26 to v27. New field on users table and treat power users also as administrators (access to all
+  client projects) and then allow actions depending on tasks table
+
+setup_v27.sql
 
 If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
 latest gisapp - https://github.com/uprel/gisapp

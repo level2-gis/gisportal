@@ -217,22 +217,24 @@ class Users extends CI_Controller {
         }
 
         try {
-            if (!$this->ion_auth->can_execute_task($task)){
-                throw new Exception('No permission!');
-            }
+			if (!$this->ion_auth->can_execute_task($task)) {
+				throw new Exception('No permission!');
+			}
 
-            if($user_role->admin && !empty($filter) && $filter === (integer)$client_id) {
-                throw new Exception('User is Client Administrator and has already access to all groups for client!');
-            }
+			if (!empty($filter) && $filter === (integer)$client_id) {
+				$role_scope = empty($user_role->scope) ? $this->lang->line('gp_admin_full_name') : $user_role->scope;
+				$msg = str_replace('{name}', $role_scope . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+				throw new Exception($msg);
+			}
 
-            $groups = urldecode($groups);
-            $groups_array = array_map("intval", explode(',', $groups));
+			$groups = urldecode($groups);
+			$groups_array = array_map("intval", explode(',', $groups));
 
-            //get existing groups for user
-            $existing_groups = $this->user_model->get_project_group_ids($user_id, FALSE);
-            if(!empty($existing_groups)) {
-                $existing_groups_array = array_map("map_existing", $existing_groups);
-                $diff = array_diff($groups_array,$existing_groups_array);
+			//get existing groups for user
+			$existing_groups = $this->user_model->get_project_group_ids($user_id, FALSE);
+			if (!empty($existing_groups)) {
+				$existing_groups_array = array_map("map_existing", $existing_groups);
+				$diff = array_diff($groups_array, $existing_groups_array);
             } else {
                 $diff = $groups_array;
             }
@@ -285,23 +287,25 @@ class Users extends CI_Controller {
         $filter = $user_role->filter;
 
         try {
-            if (!$this->ion_auth->can_execute_task($task)){
-                throw new Exception('No permission!');
-            }
+			if (!$this->ion_auth->can_execute_task($task)) {
+				throw new Exception('No permission!');
+			}
 
-            if($user_role->admin && !empty($filter) && $filter === (integer)$client_id) {
-                throw new Exception('User is Client Administrator and has already access to all groups for client!');
-            }
+			if (!empty($filter) && $filter === (integer)$client_id) {
+				$role_scope = empty($user_role->scope) ? $this->lang->line('gp_admin_full_name') : $user_role->scope;
+				$msg = str_replace('{name}', $role_scope . ' ' . $user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+				throw new Exception($msg);
+			}
 
-            $data = [
-                "user_id"           => $user_id,
-                "role_id"           => $role_id,
-                "project_group_id"  => $group_id
-            ];
+			$data = [
+				"user_id" => $user_id,
+				"role_id" => $role_id,
+				"project_group_id" => $group_id
+			];
 
-            //check first if user already has role for that group
-            $check = $this->user_model->has_project_group_role($user_id,$group_id);
-            if($check) {
+			//check first if user already has role for that group
+			$check = $this->user_model->has_project_group_role($user_id, $group_id);
+			if ($check) {
                 throw new Exception('Cannot add new role: User already has access!');
             }
 
@@ -533,8 +537,9 @@ class Users extends CI_Controller {
 			'first_name' => $this->input->post('first_name'),
 			'last_name' => $this->input->post('last_name'),
 			//'admin' => $this->ion_auth->is_admin($id),
-            'organization' => $this->input->post('organization'),
-            'phone' => $this->input->post('phone')
+			'organization' => $this->input->post('organization'),
+			'phone' => $this->input->post('phone'),
+			'receive_system_emails' => set_bool($this->input->post('receive_system_emails'))
 		);
 
 //		$data['admin'] = $data['admin'] != '' ? $data['admin'] : 'false';

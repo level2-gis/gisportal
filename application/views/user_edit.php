@@ -34,97 +34,130 @@
 			<input name="user_id" type="hidden" value="<?php echo $user['user_id']; ?>" />
 
 			<ul class="nav nav-tabs">
-			  <li class="active"><a href="#edit-user-meta" data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
-              <?php if($can_edit_access) : ?>
-                <li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a></li>
-              <?php endif; ?>
+				<li class="active"><a href="#edit-user-meta"
+									  data-toggle="tab"><?php echo $this->lang->line('gp_properties'); ?></a></li>
+				<?php if ($can_edit_access) : ?>
+					<li><a href="#edit-access" data-toggle="tab"><?php echo $this->lang->line('gp_groups_title'); ?></a>
+					</li>
+				<?php endif; ?>
 			</ul>
 
-			<div class="tab-content">
+		<div class="tab-content">
 
-				<fieldset id="edit-user-meta" class="tab-pane active">
-					<div class="form-group">
-						<label for="user_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_username'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="user_name" placeholder="" readonly="readonly" type="text" value="<?php echo $user['user_name']; ?>" />
-							<span class="text-danger"><?php echo form_error('user_name'); ?></span>
-						</div>	
-					</div>	
-					<div class="form-group">
-						<label for="user_email" class="control-label col-md-2"><?php echo $this->lang->line('gp_email'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="user_email" placeholder="" readonly="readonly" type="text" value="<?php echo $user['user_email']; ?>" />
-							<span class="text-danger"><?php echo form_error('user_email'); ?></span>
-						</div>	
-					</div>	
-					<div class="form-group">
-						<label for="first_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_first_name'); ?></label>
-						<div class="col-md-5">
-							<input class="form-control" name="first_name" placeholder="" type="text" value="<?php echo $user['first_name']; ?>" />
-							<span class="text-danger"><?php echo form_error('first_name'); ?></span>
-						</div>	
+			<fieldset id="edit-user-meta" class="tab-pane active">
+				<div class="form-group">
+					<label for="user_name"
+						   class="control-label col-md-3"><?php echo $this->lang->line('gp_username'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="user_name" placeholder="" readonly="readonly" type="text"
+							   value="<?php echo $user['user_name']; ?>"/>
+						<span class="text-danger"><?php echo form_error('user_name'); ?></span>
 					</div>
-                    <div class="form-group">
-                        <label for="last_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_last_name'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="last_name" placeholder="" type="text" value="<?php echo $user['last_name']; ?>" />
-                            <span class="text-danger"><?php echo form_error('last_name'); ?></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="organization" class="control-label col-md-2"><?php echo $this->lang->line('gp_organization'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="organization" placeholder="" type="text" value="<?php echo $user['organization']; ?>" />
-                            <span class="text-danger"><?php echo form_error('organization'); ?></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone" class="control-label col-md-2"><?php echo lang('edit_user_validation_phone_label'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="phone" placeholder="" type="text" value="<?php echo $user['phone']; ?>" />
-                            <span class="text-danger"><?php echo form_error('phone'); ?></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="registered" class="control-label col-md-2"><?php echo lang('gp_registered'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="registered" readonly="readonly" value="<?php echo $user['registered']; ?>" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="last_login" class="control-label col-md-2"><?php echo lang('gp_last_login'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="last_login" readonly="readonly" value="<?php echo $user['last_login']; ?>" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="count_login" class="control-label col-md-2"><?php echo lang('gp_count_login'); ?></label>
-                        <div class="col-md-5">
-                            <input class="form-control" name="count_login" readonly="readonly" value="<?php echo $user['count_login']; ?>" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-2"><?php echo lang('index_status_th'); ?></label>
-                        <div class="col-md-5">
-                            <?php if($user['active']): ?>
-                                <a href="<?php echo site_url('auth/deactivate/' . $user['user_id']); ?>"
-                                   class="btn"><?php echo lang('index_active_link'); ?></a>
-                            <?php else: ?>
-                                <a href="<?php echo site_url('auth/activate/' . $user['user_id']); ?>"
-                                   class="btn"><?php echo lang('index_inactive_link'); ?></a>
-                            <?php endif; ?>
-                        </div>
+				</div>
+				<div class="form-group">
+					<label for="user_email"
+						   class="control-label col-md-3"><?php echo $this->lang->line('gp_email'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="user_email" placeholder="" readonly="readonly" type="text"
+							   value="<?php echo $user['user_email']; ?>"/>
+						<span class="text-danger"><?php echo form_error('user_email'); ?></span>
 					</div>
-		
-				</fieldset>
+				</div>
+				<div class="form-group">
+					<label for="first_name"
+						   class="control-label col-md-3"><?php echo $this->lang->line('gp_first_name'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="first_name" placeholder="" type="text"
+							   value="<?php echo $user['first_name']; ?>"/>
+						<span class="text-danger"><?php echo form_error('first_name'); ?></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="last_name"
+						   class="control-label col-md-3"><?php echo $this->lang->line('gp_last_name'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="last_name" placeholder="" type="text"
+							   value="<?php echo $user['last_name']; ?>"/>
+						<span class="text-danger"><?php echo form_error('last_name'); ?></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="organization"
+						   class="control-label col-md-3"><?php echo $this->lang->line('gp_organization'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="organization" placeholder="" type="text"
+							   value="<?php echo $user['organization']; ?>"/>
+						<span class="text-danger"><?php echo form_error('organization'); ?></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="phone"
+						   class="control-label col-md-3"><?php echo lang('edit_user_validation_phone_label'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="phone" placeholder="" type="text"
+							   value="<?php echo $user['phone']; ?>"/>
+						<span class="text-danger"><?php echo form_error('phone'); ?></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="registered" class="control-label col-md-3"><?php echo lang('gp_registered'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="registered" readonly="readonly"
+							   value="<?php echo $user['registered']; ?>"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="last_login" class="control-label col-md-3"><?php echo lang('gp_last_login'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="last_login" readonly="readonly"
+							   value="<?php echo $user['last_login']; ?>"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="count_login"
+						   class="control-label col-md-3"><?php echo lang('gp_count_login'); ?></label>
+					<div class="col-md-5">
+						<input class="form-control" name="count_login" readonly="readonly"
+							   value="<?php echo $user['count_login']; ?>"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-3"><?php echo lang('index_status_th'); ?></label>
+					<div class="col-md-5">
+						<?php if ($user['active']): ?>
+							<a href="<?php echo site_url('auth/deactivate/' . $user['user_id']); ?>"
+							   class="btn"><?php echo lang('index_active_link'); ?></a>
+						<?php else: ?>
+							<a href="<?php echo site_url('auth/activate/' . $user['user_id']); ?>"
+							   class="btn"><?php echo lang('index_inactive_link'); ?></a>
+						<?php endif; ?>
+					</div>
+				</div>
 
-                <fieldset id="edit-access" class="tab-pane">
-                    <?php if ($user['admin']) : ?>
-                        <div class="alert alert-info" role="alert"><?php echo $user_admin_msg; ?></div>
-                    <?php endif ?>
-                    <?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter) && count($clients)>1)) : ?>
-                        <div class="col-xs-12 form-inline well">
-                            <div class="form-group">
+				<?php if ($user['admin']): ?>
+					<div class="form-group">
+						<label for="receive_system_emails"
+							   class="control-label col-md-3"><?php echo lang('gp_receive_system_emails'); ?></label>
+						<div class="col-md-5">
+							<label class="checkbox checkbox-inline">
+								<input type="checkbox" name="receive_system_emails"
+									   value="true" <?php if ($user['receive_system_emails']) {
+									echo "checked='checked'";
+								}; ?> />
+							</label>
+						</div>
+					</div>
+				<?php endif; ?>
+
+			</fieldset>
+
+			<fieldset id="edit-access" class="tab-pane">
+				<?php if ($user['admin']) : ?>
+					<div class="alert alert-info" role="alert"><?php echo $user_admin_msg; ?></div>
+				<?php endif ?>
+				<?php if ((!$user['admin']) || ($user['admin'] && !empty($role_filter) && count($clients) > 1)) : ?>
+					<div class="col-xs-12 form-inline well">
+						<div class="form-group">
                                 <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">
                                     <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                                     <?php foreach ($clients as $client_item): ?>

@@ -31,8 +31,9 @@ class User_model extends CI_Model
     function get_portal_users($role, $filter = NULL, $email_only = FALSE)
     {
         if($email_only) {
-            $this->db->select('user_email');
-        }
+			$this->db->select('user_email');
+			$this->db->where('receive_system_emails', true);
+		}
 
         if(!empty($role)) {
             $this->db->where('role_name',$role);

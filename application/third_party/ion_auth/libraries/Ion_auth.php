@@ -469,26 +469,27 @@ class Ion_auth
     public function can_execute_task($name) {
         $this->load->model('portal_model');
 
-        if (!$this->logged_in()) {
-            return FALSE;
-        }
+		if (!$this->logged_in()) {
+			return FALSE;
+		}
 
-        $user_role = $this->admin_scope();
+		$user_role = $this->admin_scope();
 
-        if(empty($user_role->role_name)) {
-            return FALSE;
-        }
+		if (empty($user_role->role_name)) {
+			return FALSE;
+		}
 
-        if($user_role->admin) {
-            return TRUE;
-        }
+		//for administrators don't check task, assume true in all cases
+		if ($user_role->role_name == 'admin') {
+			return TRUE;
+		}
 
-        //get task from db
-        $task = (array)$this->portal_model->get_task($name);
+		//get task from db
+		$task = (array)$this->portal_model->get_task($name);
 
-        if(empty($task)) {
-            return FALSE;
-        }
+		if (empty($task)) {
+			return FALSE;
+		}
 
         return $task[$user_role->role_name];
     }

@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Registrerad';
 $lang['gp_last_login'] = 'Senaste inlggning';
 $lang['gp_count_login'] = 'Antal inloggningar';
 $lang['gp_language'] = 'Språk';
+$lang['gp_receive_system_emails'] = 'Receive system emails';
 
 $lang['gp_no_projects'] = 'Du har inte tillgång till några privata projekt!';
 $lang['gp_no_public_projects'] = 'Det finns inte några publika projekt tillgängliga!';

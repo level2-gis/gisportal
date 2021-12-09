@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Registracija';
 $lang['gp_last_login'] = 'Zadnja prijava';
 $lang['gp_count_login'] = 'Št. prijav';
 $lang['gp_language'] = 'Jezik';
+$lang['gp_receive_system_emails'] = 'Prejemanje sistemske e-pošte';
 
 $lang['gp_no_projects'] = 'Zaenkrat ni projektov dodeljenih tebi!';
 $lang['gp_no_public_projects'] = 'Zaenkrat ni javnih projektov za ogled!';

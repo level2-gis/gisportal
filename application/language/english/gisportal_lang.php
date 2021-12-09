@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Registered';
 $lang['gp_last_login'] = 'Last login';
 $lang['gp_count_login'] = 'Count login';
 $lang['gp_language'] = 'Language';
+$lang['gp_receive_system_emails'] = 'Receive system emails';
 
 $lang['gp_no_projects'] = 'Currently no private projects for you!';
 $lang['gp_no_public_projects'] = 'Currently no public projects to browse!';

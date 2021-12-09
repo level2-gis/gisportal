@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Registrert';
 $lang['gp_last_login'] = 'Forrige innlogging';
 $lang['gp_count_login'] = 'Antall innlogginger';
 $lang['gp_language'] = 'Språk';
+$lang['gp_receive_system_emails'] = 'Receive system emails';
 
 $lang['gp_no_projects'] = 'Ingen private prosjekter!';
 $lang['gp_no_public_projects'] = 'Ingen offentlige prosjekter!';

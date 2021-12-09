@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Дата регистрации';
 $lang['gp_last_login'] = 'Последняя авторизация';
 $lang['gp_count_login'] = 'Количество авторизаций';
 $lang['gp_language'] = 'Язык';
+$lang['gp_receive_system_emails'] = 'Receive system emails';
 
 $lang['gp_no_projects'] = 'Отсутствуют права на редактирование какого-либо проекта.';
 $lang['gp_no_public_projects'] = 'Currently no public projects to browse!';

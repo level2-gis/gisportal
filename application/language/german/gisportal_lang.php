@@ -49,6 +49,7 @@ $lang['gp_registered'] = 'Registriert';
 $lang['gp_last_login'] = 'Letzter Login';
 $lang['gp_count_login'] = 'Login Zähler';
 $lang['gp_language'] = 'Sprache';
+$lang['gp_receive_system_emails'] = 'Receive system emails';
 
 $lang['gp_no_projects'] = 'Momentan sind keine Projekte für Dich freigegeben!';
 $lang['gp_no_public_projects'] = 'Momentan sind keine öffentlichen Projekte verfügbar!';

@@ -24,6 +24,10 @@ $lang['gp_confirm'] = 'Potrdite';
 $lang['gp_here'] = 'tukaj';
 $lang['gp_session_timeout'] = "Vaša seja je potekla. Ponovno se prijavite!";
 
+$lang['gp_terms_read'] = "Strinjam se s ";
+$lang['gp_terms_name'] = "pogoji uporabe";
+$lang['gp_terms_required'] = "Moraš prebrati in se strinjati s pogoji uporabe!";
+
 $lang['gp_view_projects'] = 'Poglej projekte';
 $lang['gp_open_project'] = 'Odpri projekt';
 

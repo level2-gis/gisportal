@@ -15,16 +15,18 @@
 */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$config['site_title']           = "GIS PORTAL";             // Site Title
+$config['site_title'] = "GIS PORTAL";             // Site Title
 
-$config['company']              = 'My company';             // Name of company/organization who manages this GIS PORTAL
-$config['company_url']          = 'http://www.company.com';
-$config['admin_email']          = "admin@company.com";      // Company system email
+$config['company'] = 'My company';             // Name of company/organization who manages this GIS PORTAL
+$config['company_url'] = 'http://www.company.com';
+$config['admin_email'] = "admin@company.com";      // Company system email
 
-$config['web_client_url']       = '../../gisapp/';          //relative to base_site defined on top
+$config['web_client_url'] = '../../gisapp/';          //relative to base_site defined on top
 
-$config['public_registration'] = TRUE;                      //Visible registration link on login page and allow register
-                                                            // without client parameter
+$config['public_registration'] = TRUE;                        //Visible registration link on login page and allow register
+// without client parameter
+
+$config['terms_use'] = '';                        //url to terms of use, if set checkbox is added to signup page
 
 /*
  * Set which languages show up for user selection.

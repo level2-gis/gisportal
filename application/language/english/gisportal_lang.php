@@ -24,6 +24,10 @@ $lang['gp_confirm'] = 'Confirm';
 $lang['gp_here'] = 'here';
 $lang['gp_session_timeout'] = "Your session has expired. Please login again!";
 
+$lang['gp_terms_read'] = "I agree with ";
+$lang['gp_terms_name'] = "terms of use";
+$lang['gp_terms_required'] = "You need to read and agree with terms of use!";
+
 $lang['gp_view_projects'] = 'View projects';
 $lang['gp_open_project'] = 'Open project';
 

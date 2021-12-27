@@ -48,6 +48,7 @@ class Signup extends CI_Controller
         $this->form_validation->set_rules('password', $this->lang->line('gp_password'), 'trim|required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']');
         $this->form_validation->set_rules('cpassword', $this->lang->line('gp_confirm') . ' ' . $this->lang->line('gp_password'), 'trim|required|matches[password]');
         $this->form_validation->set_rules('organization', $this->lang->line('gp_organization'), 'trim');
+		$this->form_validation->set_rules('terms', '', 'required', array('required' => $this->lang->line('gp_terms_required')));
 
         // submit
 		if ($this->form_validation->run() == FALSE) {
@@ -59,6 +60,7 @@ class Signup extends CI_Controller
 			//we allow registration also if user is logged in
 			$data['logged_in'] = $this->ion_auth->logged_in();
 			$data['is_admin'] = $data['logged_in'] ? $data['logged_in'] : false;
+			$data['terms'] = empty($this->config->item('terms_use')) ? null : lang('gp_terms_read') . anchor($this->config->item('terms_use'), lang('gp_terms_name'), 'target="_blank"');
 
 			$this->load->view('templates/header', $data);
 			$this->load->view('templates/header_navigation', $data);

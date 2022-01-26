@@ -8,12 +8,13 @@ class Tools extends CI_Controller
 	}
 
 	/*
-	 * This script will create missing thumbnail images for every client subproject folder in uploads folder
+	 * This script will create missing thumbnail images for every client subproject folder in uploads folder.
+	 * If images are in project subfolder add it to second parameter
 	 * Usage:
 	 * Open server cmd in gisportal folder
-	 * php index.php tools image_thumb_fix [client_name]
+	 * php index.php tools image_thumb_fix [client_name] [optional_subfolder]
 	 */
-	public function image_thumb_fix($client_name = FALSE)
+	public function image_thumb_fix($client_name = FALSE, $subfolder = NULL)
 	{
 		try {
 			if (!is_cli()) {
@@ -55,7 +56,14 @@ class Tools extends CI_Controller
 				//get only project subfolders
 				if (is_dir($value["server_path"])) {
 					echo 'PROJECT: ' . $value['name'] . PHP_EOL;
-					$project_dir = set_realpath($value["server_path"], false);
+					if (empty($subfolder)) {
+						$project_dir = set_realpath($value["server_path"], false);
+					} else {
+						$project_dir = set_realpath($value["server_path"] . DIRECTORY_SEPARATOR . $subfolder, false);
+					}
+					if (!is_dir($project_dir)) {
+						continue;
+					}
 					$project_files = get_dir_file_info($project_dir);
 					foreach ($project_files as $key => $value) {
 						if (is_dir($value["server_path"])) {
@@ -64,7 +72,7 @@ class Tools extends CI_Controller
 						$file = $value['name'];
 						$type = get_mime_by_extension($file);
 
-						if(strpos($type,'image') !== FALSE) {
+						if (strpos($type, 'image') !== FALSE) {
 							//echo $file . PHP_EOL;
 							$thumb_dir = set_realpath($project_dir . 'thumb' . DIRECTORY_SEPARATOR, false);
 							if(!file_exists($thumb_dir . $file)) {

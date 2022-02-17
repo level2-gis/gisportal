@@ -40,17 +40,19 @@ class Signup extends CI_Controller
 			return;
 		}
 
-	    // set form validation rules
+		// set form validation rules
 		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|max_length[30]');
 		$this->form_validation->set_rules('lname', $this->lang->line('gp_last_name'), 'trim|max_length[30]');
 		$this->form_validation->set_rules('email', $this->lang->line('gp_email'), 'trim|required|valid_email|is_unique[users.user_email]');
-        $this->form_validation->set_rules('username', $this->lang->line('gp_username'), 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');
-        $this->form_validation->set_rules('password', $this->lang->line('gp_password'), 'trim|required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']');
-        $this->form_validation->set_rules('cpassword', $this->lang->line('gp_confirm') . ' ' . $this->lang->line('gp_password'), 'trim|required|matches[password]');
-        $this->form_validation->set_rules('organization', $this->lang->line('gp_organization'), 'trim');
-		$this->form_validation->set_rules('terms', '', 'required', array('required' => $this->lang->line('gp_terms_required')));
+		$this->form_validation->set_rules('username', $this->lang->line('gp_username'), 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');
+		$this->form_validation->set_rules('password', $this->lang->line('gp_password'), 'trim|required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']');
+		$this->form_validation->set_rules('cpassword', $this->lang->line('gp_confirm') . ' ' . $this->lang->line('gp_password'), 'trim|required|matches[password]');
+		$this->form_validation->set_rules('organization', $this->lang->line('gp_organization'), 'trim');
+		if (!empty($this->config->item('terms_use'))) {
+			$this->form_validation->set_rules('terms', '', 'required', array('required' => $this->lang->line('gp_terms_required')));
+		}
 
-        // submit
+		// submit
 		if ($this->form_validation->run() == FALSE) {
 			// fails
 			$data['client'] = empty($client) ? null : (array)$client;

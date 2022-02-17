@@ -42,7 +42,6 @@ $lang['index_status_th']         = 'Status';
 $lang['index_action_th']         = 'Aktion';
 $lang['index_active_link']       = 'Aktiv';
 $lang['index_inactive_link']     = 'Inaktiv';
-$lang['index_inactive_link']     = 'Inaktiv';
 $lang['index_create_user_link']  = 'Einen neuen Benutzer anlegen';
 $lang['index_create_group_link'] = 'Eine neue Gruppe anlegen';
 

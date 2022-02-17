@@ -303,6 +303,7 @@ class Ion_auth
 			}
 
 			$this->ion_auth_model->trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_unsuccessful']);
+			$this->set_message('activate_successful');
 			$this->set_error('activation_email_unsuccessful');
 			return $id;
 		}

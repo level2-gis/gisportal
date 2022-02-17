@@ -30,27 +30,31 @@
 						<input class="form-control" name="name" placeholder="" type="text" value="<?php echo $layer['name']; ?>" />
 						<span class="text-danger"><?php echo form_error('name'); ?></span>
                         <p class="help-block"><?php echo $this->lang->line('gp_name_help'); ?></p>
-					</div>	
-				</div>	
+					</div>
+				</div>
 				<div class="form-group">
-					<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
+					<label for="display_name"
+						   class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
 					<div class="col-md-6">
-						<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $layer['display_name']; ?>" />
+						<input class="form-control" name="display_name" placeholder="" type="text"
+							   value="<?php echo $layer['display_name']; ?>"/>
 						<span class="text-danger"><?php echo form_error('display_name'); ?></span>
-					</div>	
-				</div>	
+					</div>
+				</div>
 				<div class="form-group">
-					<label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
+					<label for="type" class="control-label col-md-2"><?php echo $this->lang->line('gp_type'); ?></label>
 					<div class="col-md-6">
-                        <select class="form-control" name="type">
-                            <option value="">Select Type</option>
-                            <?php foreach ($types as $type): ?>
-                                <option <?php if ($type == $layer['type']) { echo "selected='selected'"; }; ?> value="<?php echo $type; ?>"><?php echo $type; ?></option>
-                            <?php endforeach; ?>
-                        </select>
+						<select class="form-control" name="type">
+							<option value="">Select Type</option>
+							<?php foreach ($types as $type): ?>
+								<option <?php if ($type == $layer['type']) {
+									echo "selected='selected'";
+								}; ?> value="<?php echo $type; ?>"><?php echo $type; ?></option>
+							<?php endforeach; ?>
+						</select>
 						<span class="text-danger"><?php echo form_error('type'); ?></span>
-					</div>	
-				</div>	
+					</div>
+				</div>
 				<div class="form-group">
 					<label for="definition" class="control-label col-md-2"><?php echo $this->lang->line('gp_definition'); ?></label>
 					<div class="col-md-6">

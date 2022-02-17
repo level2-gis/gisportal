@@ -13,7 +13,8 @@ class Layer_model extends CI_Model {
 	{
 		$this->db->where('id', $id);
 		$query = $this->db->get('layers');
-		return $query->result()[0];
+		$result = $query->result();
+		return $result ? $result[0] : null;
 	}
 
 	function get_layer_by_name($name)

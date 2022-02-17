@@ -37,30 +37,33 @@
             <div class="form-group">
                 <label for="username"><?php echo $this->lang->line('gp_username'); ?></label>
                 <input class="form-control" name="username" placeholder="" type="text" value="<?php echo set_value('username'); ?>" />
-                <span class="text-danger"><?php echo form_error('username'); ?></span>
-            </div>
-
-            <div class="form-group">
-                <label for="organization"><?php echo $this->lang->line('gp_organization'); ?></label>
-                <input class="form-control" name="organization" placeholder="" type="text" value="<?php echo set_value('organization'); ?>" />
-                <span class="text-danger"><?php echo form_error('organization'); ?></span>
-            </div>
-
-            <div class="form-group">
-                <label for="phone"><?php echo lang('edit_user_validation_phone_label'); ?></label>
-                <input class="form-control" name="phone" placeholder="" type="text" value="<?php echo set_value('phone'); ?>" />
-                <span class="text-danger"><?php echo form_error('phone'); ?></span>
-            </div>
-
-			<div class="form-group">
-				<label for="subject"><?php echo $this->lang->line('gp_password'); ?></label>
-				<input class="form-control" name="password" placeholder="" type="password"/>
-				<span class="text-danger"><?php echo form_error('password'); ?></span>
+				<span class="text-danger"><?php echo form_error('username'); ?></span>
 			</div>
 
 		<div class="form-group">
+			<label for="organization"><?php echo $this->lang->line('gp_organization'); ?></label>
+			<input class="form-control" name="organization" placeholder="" type="text"
+				   value="<?php echo set_value('organization'); ?>"/>
+			<span class="text-danger"><?php echo form_error('organization'); ?></span>
+		</div>
+
+		<div class="form-group">
+			<label for="phone"><?php echo lang('create_user_phone_label'); ?></label>
+			<input class="form-control" name="phone" placeholder="" type="text"
+				   value="<?php echo set_value('phone'); ?>"/>
+			<span class="text-danger"><?php echo form_error('phone'); ?></span>
+		</div>
+
+		<div class="form-group">
+			<label for="subject"><?php echo $this->lang->line('gp_password'); ?></label>
+			<input class="form-control" name="password" placeholder="" type="password"/>
+			<span class="text-danger"><?php echo form_error('password'); ?></span>
+		</div>
+
+		<div class="form-group">
 			<label
-				for="subject"><?php echo $this->lang->line('gp_confirm'); ?><?php echo $this->lang->line('gp_password'); ?></label>
+				for="subject"><?php echo $this->lang->line('gp_confirm'); ?>
+				&nbsp;<?php echo $this->lang->line('gp_password'); ?></label>
 			<input class="form-control" name="cpassword" placeholder="" type="password"/>
 			<span class="text-danger"><?php echo form_error('cpassword'); ?></span>
 		</div>

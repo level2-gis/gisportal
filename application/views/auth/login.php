@@ -3,7 +3,7 @@
 
         <?php echo form_open("auth/login"); ?>
 
-        <img height="50px" class="center-block" src="<?php echo base_url("assets/img/header_logo.png") . '?v=' . $this->config->item('header_logo_version'); ?>" alt="">
+        <img height="50px" class="center-block" src="<?php echo base_url("assets/img/header_logo.svg") . '?v=' . $this->config->item('header_logo_version'); ?>" alt="">
         <?php if(!$this->config->item('logo_contains_site_title')) : ?>
             <h3 class="text-center"><?php echo $heading; ?></h3>
         <?php endif; ?>
@@ -39,8 +39,12 @@
                 <?php echo $this->lang->line('gp_new_user'); ?>? <a
                     href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a></br>
             <?php endif; ?>
-            <a href="forgot_password"><?php echo lang('login_forgot_password'); ?></a>
+			<a href="forgot_password"><?php echo lang('login_forgot_password'); ?></a>
+			
         </p>
+		<p class="text-center">
+			<a href="https://site.geo-portal.si"><?php echo "Kaj je GEO-PORTAL?"; ?></a>
+		</p>
     </div>
 </div>
 <?php if (!empty($rss)): ?>

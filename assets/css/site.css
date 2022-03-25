@@ -146,3 +146,11 @@ body {
 	padding-bottom: 10px;
 	padding-top: 5px;
 }
+
+.navbar-brand{
+    padding-top: 5px;
+}
+
+.grey {
+    -webkit-text-fill-color: grey;
+}

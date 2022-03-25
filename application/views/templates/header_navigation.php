@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <?php if ($logged_in) : ?>
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -11,8 +11,8 @@
 					<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="<?php echo base_url(); ?>">
-					<img height="32px"
-						 src="<?php echo base_url("assets/img/header_logo.png") . '?v=' . $this->config->item('header_logo_version'); ?>"
+					<img height="40px"
+						 src="<?php echo base_url("assets/img/header_logo.svg") . '?v=' . $this->config->item('header_logo_version'); ?>"
 						 alt="">
 				</a>
 				<?php if (!$this->config->item('logo_contains_site_title')) : ?>

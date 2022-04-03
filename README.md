@@ -126,16 +126,6 @@ navbar-default
 ```
 /application/views/templates/header_template.php
 
-Or add lines below to /assets/css/style.css:
-
-```
-.navbar-inverse {
-    background-color: #222;
-    border-color: #080808;
-}
-```
-And change colors as you wish.
-
 ## Contributing
 
 Support this project by [**DONATING**](http://level2.si/product/donation-extended-qgis-web-client/).

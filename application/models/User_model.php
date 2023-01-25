@@ -90,7 +90,7 @@ class User_model extends CI_Model
         }
 
         $this->db->where('admin', FALSE);
-        $this->db->or_where('admin = TRUE AND filter IS NOT NULL');
+        //$this->db->or_where('admin = TRUE AND filter IS NOT NULL');
         $this->db->order_by('name', 'DESC');
 
         if(!empty($filter)) {

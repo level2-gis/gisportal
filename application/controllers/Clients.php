@@ -460,7 +460,7 @@ class Clients extends CI_Controller
         //TODO TRY with OGR_GEOMETRY
         //$sql = "SELECT 'aaaa' AS createdby, SetSRID(GEOMETRY,3794) AS GEOMETRY FROM " . explode('.',$file_name)[0];
 		$layer_type = $qgs_lay_info['type'];
-		$sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . addslashes('"' . $layer_name . '"');	// WHERE OGR_GEOMETRY = '".$qgs_lay_info['type']."'";
+        $sql = "SELECT *, '".$project."' AS project, '".$user."' AS createdby FROM " . addslashes('"' . $layer_name . '"');	// WHERE OGR_GEOMETRY = '".$qgs_lay_info['type']."'";
 
         $cnt_before = $qgs->get_layer_feature_count($conn, $table);
         if($cnt_before == -1) {

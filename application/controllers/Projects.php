@@ -235,26 +235,30 @@ class Projects extends CI_Controller
 
 				if ($ext == '.zip') {
 					$zip = new ZipArchive;
-					$zipErrorMsg =  [];
+					$zipMsg =  [];
+					$zipError = FALSE;
 					if ($zip->open($dir . $file_name) === TRUE) {
 						//we go file by file
 						for ($i = 0; $i < $zip -> numFiles; $i++) {
-							$zipError = FALSE;
+							$zipOK = FALSE;
 							$zipFile = $zip->getNameIndex($i);
-							$zipError = $zip->extractTo($dir,$zipFile);
+							$zipOK = $zip->extractTo($dir,$zipFile);
 
-							if(!$zipError) {
-								array_push($zipErrorMsg,$zipFile." ... [ ERROR ]");
+							if($zipOK) {
+								array_push($zipMsg,"[ OK ] ... " . $zipFile);
+							} else {
+								array_push($zipMsg,"[ ERROR ] ... " . $zipFile);
+								$zipError = TRUE;
 							}
 
 						}
 
 						$zip->close();
 						unlink($dir . $file_name);
-						if (empty($zipErrorMsg)) {
-							$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
+						if ($zipError) {
+							throw new Exception(implode('<br>',$zipMsg));
 						} else {
-							throw new Exception($zipErrorMsg.join('<br>'));
+							$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . implode('<br>',$zipMsg) . '</div>');
 						}
 					} else {
 						throw new Exception('ZIP Unpack error: ' . $this->upload->file_name);

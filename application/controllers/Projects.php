@@ -258,7 +258,7 @@ class Projects extends CI_Controller
 						if ($zipError) {
 							throw new Exception(implode('<br>',$zipMsg));
 						} else {
-							$$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
+							$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
 						}
 					} else {
 						throw new Exception('ZIP Unpack error: ' . $this->upload->file_name);

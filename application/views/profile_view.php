@@ -1,5 +1,5 @@
 <div class="page-header clearfix">
-	<h1 class="col-md-8"><span class="glyphicon glyphicon-user"
+	<h1 class="col-xs-8"><span class="glyphicon glyphicon-user"
 							   aria-hidden="true"></span> <?php echo html_escape($user->display_name); ?></h1>
 	<?php if ($is_admin) : ?>
 		<div class="actions pull-right">

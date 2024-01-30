@@ -2,7 +2,6 @@
     <h1 class="col-md-8"><?php echo $title; ?></h1>
     <div class="actions pull-right">
         <a href="<?php echo site_url('project_groups/create'); ?>" class="btn btn-mini btn-success ">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			<?php echo $this->lang->line('gp_new_group'); ?></a>
     </div>
 </div>

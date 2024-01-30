@@ -231,15 +231,30 @@ class Projects extends CI_Controller
 					chmod($dir . $file_name, 0777);
 				}
 
-				echo $dir . $file_name;
+				//echo $dir . $file_name;
 
 				if ($ext == '.zip') {
-					$zip = new ZipArchive;
+					$this->load->library('Ziparchivesub');
+					$zip = new ZipArchiveSub();
+					$zipMsg =  [];
 					if ($zip->open($dir . $file_name) === TRUE) {
-						$zip->extractTo($dir);
+
+						if (dirname($zip->getNameIndex(0)) == $project_name) {
+							$zipMsg = $zip->extractSubdirTo($dir, $project_name . DIRECTORY_SEPARATOR);
+						}
+						else {
+							throw new Exception('ZIP file must contain folder: '.$project_name);
+						}
+
 						$zip->close();
 						unlink($dir . $file_name);
-						$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
+
+						if (!empty($zipMsg)) {
+							throw new Exception(implode('<br>',$zipMsg));
+						} else {
+							$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . 'Unzip OK' . ' (' . $this->upload->file_name . ')</div>');
+						}
+
 					} else {
 						throw new Exception('ZIP Unpack error: ' . $this->upload->file_name);
 					}

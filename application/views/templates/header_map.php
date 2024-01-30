@@ -8,6 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<meta name="description" content="">
 	<meta name="author" content="">
+	<meta name="robots" content="noindex, nofollow">
 
 	<title><?php echo $title; ?> | <?php echo $this->config->item('site_title'); ?></title>
 	<!--link the bootstrap css file-->

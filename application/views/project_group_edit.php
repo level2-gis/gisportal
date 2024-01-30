@@ -18,7 +18,7 @@
 <div class="page-header clearfix">
     <h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
     <?php if($group['type'] == PROJECT_GROUP) : ?>
-		<div class="col-xs-4 col-md-1 btn-group actions pull-right">
+		<div class="btn-group actions pull-right">
 			<button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<?php echo lang('gp_action'); ?> <span class="caret"></span>
 			</button>

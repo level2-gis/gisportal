@@ -1,5 +1,5 @@
 <div class="page-header clearfix">
-	<h1 class="col-md-8"><?php echo $title; ?></h1>
+	<h1 class="col-xs-8"><?php echo $title; ?></h1>
     <?php if ($is_admin){ ?>
         <div class="btn-group actions pull-right">
             <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

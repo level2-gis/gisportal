@@ -1,5 +1,5 @@
 <div class="page-header clearfix">
-    <h1 class="col-md-8"><?php echo $title; ?></h1>
+    <h1 class="col-xs-8"><?php echo $title; ?></h1>
     <?php if (empty($current_role_filter)) : ?>
         <div class="actions pull-right">
             <a href="<?php echo site_url('clients/edit/'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_client'); ?></a>

@@ -1,13 +1,15 @@
 <div class="page-header clearfix">
-    <h1 class="col-xs-8"><?php echo $title; ?></h1>
-    <div class="col-xs-4 col-md-1 actions  pull-right">
-        <a href="<?php echo site_url('project_groups/create'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_group'); ?></a>
+    <h1 class="col-md-8"><?php echo $title; ?></h1>
+    <div class="actions pull-right">
+        <a href="<?php echo site_url('project_groups/create'); ?>" class="btn btn-mini btn-success ">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			<?php echo $this->lang->line('gp_new_group'); ?></a>
     </div>
 </div>
 
 <?php echo $this->session->flashdata('alert'); ?>
 
-<div>
+<div class="col-md-12">
 
     <table data-pagination="true" data-search="true" data-toggle="table" data-show-pagination-switch="true">
         <thead>
@@ -16,7 +18,7 @@
             <th data-sortable="true" data-field="gp_name"><?php echo $this->lang->line('gp_name'); ?></th>
             <th data-sortable="true" data-field="gp_display_name"><?php echo $this->lang->line('gp_display_name'); ?></th>
             <th data-sortable="true" data-field="gp_client"><?php echo $this->lang->line('gp_client'); ?></th>
-            <th data-sortable="true" data-field="gp_parent"><?php echo $this->lang->line('gp_parent'); ?></th>
+            <th data-sortable="true" data-visible="false" data-field="gp_parent"><?php echo $this->lang->line('gp_parent'); ?></th>
             <th class="text-uppercase" data-sortable="true" data-field="gp_crs"><?php echo $this->lang->line('gp_crs'); ?></th>
             <th data-sortable="true" data-align="right" data-field="gp_projects_title"><?php echo $this->lang->line('gp_projects_title'); ?></th>
             <th data-sortable="true" data-align="right" data-field="gp_base_layers"><?php echo get_first($this->lang->line('gp_base_layers')); ?></th>

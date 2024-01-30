@@ -174,6 +174,9 @@ $lang['gp_rss_new'] = 'new';
 
 $lang['gp_map'] = 'Map';
 
+$lang['gp_portal_role'] = 'Portal role';
+$lang['gp_scope'] = 'Scope';
+
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!
 $lang['gp_client_required'] = 'Client required';

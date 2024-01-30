@@ -17,8 +17,8 @@
             <th data-sortable="true" data-visible="false" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
             <th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
             <th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
-            <th data-sortable="true" data-field="gp_portal_role">Portal role</th>
-            <th data-sortable="true" data-field="gp_scope">Scope</th>
+            <th data-sortable="true" data-field="gp_portal_role"><?php echo $this->lang->line('gp_portal_role'); ?></th>
+            <th data-sortable="true" data-field="gp_scope"><?php echo $this->lang->line('gp_scope'); ?></th>
             <th data-sortable="true" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
             <th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
             <th><?php echo $this->lang->line('gp_action'); ?></th>

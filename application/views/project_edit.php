@@ -37,12 +37,12 @@
                             </select>
                             <span class="text-danger"><?php echo form_error('project_group_id'); ?></span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <a class="btn btn-primary" id="projectGroupEditBtn" onclick="onProjectGroupEditClick('project_group_id');">
                                 <?php echo $this->lang->line('gp_edit'); ?>
                             </a>
                             <a onclick="addGroup('projects/edit/<?php echo $project['id']; ?>')"
-                               class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new'); ?></a>
+                               class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_group'); ?></a>
 <!--                            <a class="btn btn-info"-->
 <!--                               href="--><?php //echo site_url('projects/services/'); ?><!--">-->
 <!--                                --><?php //echo $this->lang->line('gp_publish'); ?>

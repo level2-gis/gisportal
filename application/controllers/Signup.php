@@ -19,7 +19,10 @@ class Signup extends CI_Controller
 			$client = NULL;
 			if (!empty($cl_query)) {
 				$cl_decode = base64_decode($cl_query);
-				$client = $this->client_model->get_client_by_name($cl_decode);
+				//here we match codeigniter alpha_dash check
+				if (preg_match('/^[a-z0-9_-]+$/i', $cl_decode)) {
+					$client = $this->client_model->get_client_by_name($cl_decode);
+				}
 			} else {
 				if ($this->config->item('public_registration') === FALSE) {
 					throw new Exception('Client required!');

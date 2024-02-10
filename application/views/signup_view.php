@@ -6,8 +6,6 @@
 		} else {
 			echo form_open("signup?code=" . $code, $attributes);
 		} ?>
-		<input name="client_id" type="hidden" value="<?php echo $client['id']; ?>"/>
-		<input name="client_display_name" type="hidden" value="<?php echo $client['display_name']; ?>"/>
 		<?php if (!empty($client)) : ?>
 			<h3 class="text-center"><?php echo $client['display_name']; ?></h3>
 		<?php endif; ?>

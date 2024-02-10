@@ -79,7 +79,7 @@ class Signup extends CI_Controller
             $password = $this->input->post('password');
             $username = $this->input->post('username');
 
-            $client_id = $this->input->post('client_id');
+            $client_id = empty($client) ? null : $client->id;
 
 		    //insert user details into db
 			$additional_data = array(
@@ -99,7 +99,7 @@ class Signup extends CI_Controller
 				//prepare message for administrators
 				$additional_data["id"] = $new_id;
 				$additional_data["email"] = $email;
-				$additional_data["client"] = $this->input->post('client_display_name');
+				$additional_data["client"] = empty($client) ? null : $client->display_name;
 				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'new_user.tpl.php', $additional_data, TRUE);
 
 				//set link in case client exists

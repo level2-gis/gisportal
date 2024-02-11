@@ -319,7 +319,8 @@ class Ion_auth
 	{
 		$this->ion_auth_model->trigger_events('logout');
 
-		$identity = $this->config->item('identity', 'ion_auth');
+		//change, uros
+		$identity = $this->session->userdata('identity');
 
 		$this->session->unset_userdata([$identity, 'id', 'user_id']);
 
@@ -327,18 +328,19 @@ class Ion_auth
 		delete_cookie($this->config->item('remember_cookie_name', 'ion_auth'));
 
 		// Clear all codes
-		$this->ion_auth_model->clear_forgotten_password_code($identity);
-		$this->ion_auth_model->clear_remember_code($identity);
+		//if, uros
+		if($identity) {
+			$this->ion_auth_model->clear_forgotten_password_code($identity);
+			$this->ion_auth_model->clear_remember_code($identity);
+		}
 
 		// Destroy the session
 		$this->session->sess_destroy();
 
 		// Recreate the session
-        // Uros comment out this, don't see a point, session was not deleted completely after logout, user stayed logged in
-		//session_start();
-		//$this->session->sess_regenerate(TRUE);
+		session_start();
+		$this->session->sess_regenerate(TRUE);
 
-        //uros: after change above login does not get this message, session is later deleted?
 		$this->set_message('logout_successful');
 		return TRUE;
 	}

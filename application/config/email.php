@@ -10,6 +10,7 @@ $config = array(
     'smtp_user' => 'gmail email',
     'smtp_pass' => 'gmail password',
     'charset'   => 'utf-8',
+    'crlf'      => "\r\n",
     'newline'   => "\r\n",
     'mailtype'  => 'html'
 );

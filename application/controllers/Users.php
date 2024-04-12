@@ -181,7 +181,7 @@ class Users extends CI_Controller {
 				//check if user is contact attached to any of the groups
 				$groups_array = (array)$this->user_model->get_contact_group_ids($id);
 				if (!empty($groups_array)) {
-					throw new Exception('Cannot delete, user is set as contact in groups: ' . implode($groups_array, ','));
+					throw new Exception('Cannot delete, user is set as contact in groups: ' . implode(',', $groups_array));
 				}
 
 				$this->user_model->clear_print($user['user_name']);
@@ -545,7 +545,7 @@ class Users extends CI_Controller {
 //		$data['admin'] = $data['admin'] != '' ? $data['admin'] : 'false';
 //		$data['project_ids'] = null;
 //		if ($this->input->post('project_ids') != null){
-//			$blids = implode($this->input->post('project_ids'),',');
+//			$blids = implode(',', $this->input->post('project_ids'));
 //			if ($blids != ''){
 //				$data['project_ids'] = '{' . $blids . '}';
 //			}

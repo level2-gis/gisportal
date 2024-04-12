@@ -1449,7 +1449,7 @@ class Projects extends CI_Controller
         );
 
         if ($this->input->post('plugin_ids') != null){
-            $blids = implode($this->input->post('plugin_ids'),',');
+            $blids = implode(',', $this->input->post('plugin_ids'));
             if ($blids != ''){
                 $data['plugin_ids'] = '{' . $blids . '}';
             }

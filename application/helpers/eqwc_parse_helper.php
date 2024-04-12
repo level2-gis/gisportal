@@ -58,7 +58,7 @@ if (!function_exists('set_arr')) {
     function set_arr($val)
     {
         if ($val != null){
-            $blids = implode($val,',');
+            $blids = implode(',', $val);
             if ($blids != ''){
                 return '{' . $blids . '}';
             }

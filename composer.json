@@ -14,6 +14,12 @@
 	"php": ">=5.5",
 	"ext-exif": "*",
 	"ext-zip": "*",
-		"guzzlehttp/guzzle": "^7.8"
+		"guzzlehttp/guzzle": "^7.8"},
+  "suggest": {
+	"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+  },
+  "require-dev": {
+	"mikey179/vfsStream": "1.1.*",
+	"phpunit/phpunit": "4.* || 5.*"
   }
 }

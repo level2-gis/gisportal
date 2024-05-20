@@ -107,6 +107,7 @@ $lang['gp_print'] = 'Drukowanie';
 $lang['gp_zoom_back_forward'] = 'Poprzedni/następny zoom';
 $lang['gp_identify_mode'] = 'Wybór trybu identyfikacji';
 $lang['gp_permalink'] = 'Link do widoku';
+$lang['gp_version'] = 'Version';
 $lang['gp_available'] = 'Dostępne';
 $lang['gp_in_project'] = 'w projekcie';
 $lang['gp_access'] = 'Dostęp';

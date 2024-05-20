@@ -107,6 +107,7 @@ $lang['gp_print'] = 'Tiskanje';
 $lang['gp_zoom_back_forward'] = 'Pogled nazaj/naprej';
 $lang['gp_identify_mode'] = 'Način poizvedbe';
 $lang['gp_permalink'] = 'Trenutna povezava';
+$lang['gp_version'] = 'Verzija';
 $lang['gp_available'] = 'Available';
 $lang['gp_in_project'] = 'in project';
 $lang['gp_access'] = 'Vključen';

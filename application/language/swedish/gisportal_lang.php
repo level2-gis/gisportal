@@ -107,6 +107,7 @@ $lang['gp_print'] = 'Utskrift';
 $lang['gp_zoom_back_forward'] = 'Zooma ut/in';
 $lang['gp_identify_mode'] = 'Identifiera';
 $lang['gp_permalink'] = 'Permalänk';
+$lang['gp_version'] = 'Version';
 $lang['gp_available'] = 'Tillgänglig';
 $lang['gp_in_project'] = 'i projektet';
 $lang['gp_access'] = 'Tillgång';

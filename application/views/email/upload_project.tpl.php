@@ -1,6 +1,6 @@
 <html>
 <body>
-<p>Uporabnik <?php echo $user['display_name']; ?> je naložil novo verzijo projekta <?php echo $file_name; ?>.</p>
+<p>Uporabnik <?php echo $user['display_name']; ?> je naložil novo verzijo projekta <b><?php echo $file_name; ?></b>.</p>
 <p><?php echo $client['display_name']; ?></p>
 <br><br>
 <hr>

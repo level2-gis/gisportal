@@ -262,7 +262,7 @@ class Projects extends CI_Controller
 					$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' (' . $this->upload->file_name . ')</div>');
 				}
 
-				$data['file_name'] = $file_name;
+				$data['file_name'] = $project_name;
 				$id = $this->session->userdata('user_id');
 				$data['user'] = (array)$this->user_model->get_user_by_id($id);
 				$data['client'] = (array)$client;
@@ -270,7 +270,7 @@ class Projects extends CI_Controller
 				//send email to all admins that project was uploaded
 				$message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'upload_project.tpl.php', $data, TRUE);
 				$admin_emails = $this->user_model->get_client_admins($client_id);
-				$this->ion_auth->send_email(lang('gp_upload'), $message, $admin_emails);
+				$this->ion_auth->send_email('Nova verzija projekta', $message, $admin_emails);
 
 				$this->user_model->clear_gisapp_session();
 				if (!empty($project_id)) {

@@ -36,7 +36,13 @@ class Mail extends CI_Controller
     function send()
     {
 		if (!$this->ion_auth->logged_in()) {
-			echo "No permissions for sending email!";
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(403)
+				->set_output(json_encode(array(
+						'success' => 'false',
+						'message' => 'No permissions for sending emails!')
+				));
 		} else {
 
 			$data = new  stdClass();

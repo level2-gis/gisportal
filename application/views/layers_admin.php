@@ -1,6 +1,6 @@
 <div class="page-header clearfix">
     <h1 class="col-xs-8"><?php echo $title; ?></h1>
-    <div class="col-xs-4 col-md-1 actions  pull-right">
+    <div class="actions pull-right">
         <a href="<?php echo site_url('layers/edit/'); ?>" class="btn btn-mini btn-success "><?php echo $this->lang->line('gp_new_layer'); ?></a>
     </div>
 </div>

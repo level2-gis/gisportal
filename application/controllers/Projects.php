@@ -262,7 +262,7 @@ class Projects extends CI_Controller
 					$this->session->set_flashdata('upload_msg', '<div class="alert alert-success">' . $this->lang->line('gp_upload_success') . ' (' . $this->upload->file_name . ')</div>');
 				}
 
-				$data['file_name'] = $file_name;
+				$data['file_name'] = $project_name;
 				$id = $this->session->userdata('user_id');
 				$data['user'] = (array)$this->user_model->get_user_by_id($id);
 				$data['client'] = (array)$client;

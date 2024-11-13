@@ -18,7 +18,7 @@
 <div class="page-header clearfix">
     <h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
     <?php if($group['type'] == PROJECT_GROUP) : ?>
-		<div class="col-xs-4 col-md-1 btn-group actions pull-right">
+		<div class="btn-group actions pull-right">
 			<button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<?php echo lang('gp_action'); ?> <span class="caret"></span>
 			</button>
@@ -230,7 +230,7 @@
 
             <?php if ( $group['type'] == PROJECT_GROUP &&  $can_edit_contacts) : ?>
                 <div class="row form-group">
-                    <label for="contact" class="control-label col-md-2"><?php echo ucfirst(lang('gp_contact')) . ' ' . lang('gp_name'); ?></label>
+                    <label for="contact" class="control-label col-md-2"><?php echo ucfirst(lang('gp_contact')); ?></label>
                     <div class="col-md-5">
                         <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact" name="contact" placeholder="" type="text" value="<?php echo $group['contact']; ?>" />
                         <span class="text-danger"><?php echo form_error('contact'); ?></span>

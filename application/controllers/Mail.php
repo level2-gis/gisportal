@@ -35,20 +35,31 @@ class Mail extends CI_Controller
 
     function send()
     {
-        $data = new  stdClass();
-        $data->mailto = $this->input->post("mailto") == null ? $this->config->item('admin_email') : $this->input->post("mailto");
-        $data->subject = $this->input->post("subject");
-
-        //check template
-		if(empty($this->input->post("template"))) {
-			$data->body = $this->input->post("body");
+		if (!$this->ion_auth->logged_in()) {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(403)
+				->set_output(json_encode(array(
+						'success' => 'false',
+						'message' => 'No permissions for sending emails!')
+				));
 		} else {
-			$body_data = json_decode($this->input->post("body"));
-			$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->input->post("template"), $body_data, TRUE);
-			$data->body = $body;
-		}
 
-        $this->sendMailWithResponse($data);
+			$data = new  stdClass();
+			$data->mailto = $this->input->post("mailto") == null ? $this->config->item('admin_email') : $this->input->post("mailto");
+			$data->subject = $this->input->post("subject");
+
+			//check template
+			if (empty($this->input->post("template"))) {
+				$data->body = $this->input->post("body");
+			} else {
+				$body_data = json_decode($this->input->post("body"));
+				$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $this->input->post("template"), $body_data, TRUE);
+				$data->body = $body;
+			}
+
+			$this->sendMailWithResponse($data);
+		}
     }
 
     private function sendMailWithResponse($data)

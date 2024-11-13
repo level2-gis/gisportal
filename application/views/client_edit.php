@@ -1,6 +1,6 @@
 	<div class="page-header clearfix">
 		<h1 class="col-xs-8"><span><?php echo $title; ?></span></h1>
-		<div class="col-xs-4 col-md-1 btn-group actions pull-right">
+		<div class="btn-group actions pull-right">
 			<button type="button" class="btn btn-mini btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<?php echo lang('gp_action'); ?> <span class="caret"></span>
 			</button>
@@ -58,7 +58,7 @@
 					</div>	
 				</div>
                 <div class="form-group">
-                    <label class="control-label col-md-2">Portal <?php echo $this->lang->line('gp_image'); ?></label>
+                    <label class="control-label col-md-2"><?php echo $this->lang->line('gp_image'); ?></label>
                     <div class="col-md-5">
                         <?php echo $image; ?>
                     </div>
@@ -122,12 +122,13 @@
 							data-field="gp_first_name"><?php echo $this->lang->line('gp_first_name'); ?></th>
 						<th data-sortable="true"
 							data-field="gp_last_name"><?php echo $this->lang->line('gp_last_name'); ?></th>
+						<th data-sortable="true" data-visible="false" data-field="gp_username"><?php echo $this->lang->line('gp_username'); ?></th>
 						<th data-sortable="true" data-field="gp_email"><?php echo $this->lang->line('gp_email'); ?></th>
 						<th data-sortable="true" data-field="gp_organization"><?php echo $this->lang->line('gp_organization'); ?></th>
 						<th data-sortable="true" data-visible="false" data-field="gp_registered"><?php echo $this->lang->line('gp_registered'); ?></th>
 						<th data-sortable="true" data-align="right" data-field="gp_count_login"><?php echo $this->lang->line('gp_count_login'); ?></th>
 						<th data-sortable="true" data-field="gp_last_login"><?php echo $this->lang->line('gp_last_login'); ?></th>
-						<th data-sortable="true" data-field="gp_portal_role">Portal role</th>
+						<th data-sortable="true" data-field="gp_portal_role"><?php echo $this->lang->line('gp_portal_role'); ?></th>
 						<th data-sortable="true" data-align="right" data-field="gp_groups"><?php echo $this->lang->line('gp_groups_title'); ?></th>
 						<th data-sortable="true" data-visible="false" data-field="gp_active"><?php echo lang('index_active_link'); ?></th>
 						<th><?php echo $this->lang->line('gp_action'); ?></th>
@@ -137,6 +138,7 @@
 						<tr>
 							<td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
 							<td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
+							<td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
 							<td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
 							<td class="col-md-1"><?php echo $user_item['organization']; ?></td>
 							<td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>

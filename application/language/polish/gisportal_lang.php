@@ -107,6 +107,7 @@ $lang['gp_print'] = 'Drukowanie';
 $lang['gp_zoom_back_forward'] = 'Poprzedni/następny zoom';
 $lang['gp_identify_mode'] = 'Wybór trybu identyfikacji';
 $lang['gp_permalink'] = 'Link do widoku';
+$lang['gp_version'] = 'Version';
 $lang['gp_available'] = 'Dostępne';
 $lang['gp_in_project'] = 'w projekcie';
 $lang['gp_access'] = 'Dostęp';
@@ -172,6 +173,9 @@ $lang['gp_rss_latest_news'] = 'Latest news';
 $lang['gp_rss_new'] = 'new';
 
 $lang['gp_map'] = 'Map';
+
+$lang['gp_portal_role'] = 'Portal role';
+$lang['gp_scope'] = 'Scope';
 
 //client side strings, must be added to /views/templates/header.php
 //keep {name} as it is!!

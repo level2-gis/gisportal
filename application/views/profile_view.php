@@ -2,7 +2,7 @@
 	<h1 class="col-xs-8"><span class="glyphicon glyphicon-user"
 							   aria-hidden="true"></span> <?php echo html_escape($user->display_name); ?></h1>
 	<?php if ($is_admin) : ?>
-		<div class="col-xs-4 col-md-1 actions  pull-right">
+		<div class="actions pull-right">
 			<a href="<?php echo site_url('users/edit/' . $user->user_id); ?>"
 			   class="btn btn-mini btn-primary"><?php echo lang('gp_edit'); ?></a>
 		</div>

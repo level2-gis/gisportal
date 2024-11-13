@@ -1,4 +1,4 @@
-﻿--gisapp upgrade script v28
+﻿--gisapp upgrade script v29
 
 INSERT INTO settings (version, date) VALUES (29, now());
 

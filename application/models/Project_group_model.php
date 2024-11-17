@@ -126,7 +126,8 @@ class Project_group_model extends CI_Model {
      */
     function get_child_groups($client_id, $id, $user_groups = NULL) {
 
-        $this->db->order_by('name', 'ASC');
+		$this->db->order_by('ordr', 'ASC');
+    	$this->db->order_by('name', 'ASC');
 
         if(empty($id)) {
             $this->db->where('parent_id IS NULL');
@@ -142,7 +143,7 @@ class Project_group_model extends CI_Model {
             $this->db->where("(id = ANY('".$user_groups."') OR children && ('".$user_groups."'))");
         }
 
-        $this->db->select('* FROM (SELECT id, name, client_id, display_name, parent_id, type, contact, contact_id, contact_phone, contact_email, CASE WHEN type=1 THEN get_child_groups(id) ELSE null END AS children FROM project_groups_view) p', FALSE);
+        $this->db->select('* FROM (SELECT id, name, client_id, display_name, ordr, parent_id, type, contact, contact_id, contact_phone, contact_email, CASE WHEN type=1 THEN get_child_groups(id) ELSE null END AS children FROM project_groups_view) p', FALSE);
         $query = $this->db->get();
         return $query->result_array();
     }

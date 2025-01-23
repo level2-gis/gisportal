@@ -12,6 +12,10 @@
 				</li>
 				<li>|</li>
 				<li>
+					<a class="grey" href="https://site.geo-portal.si/news" target="_blank">Novice</a>
+				</li>
+				<li>|</li>
+				<li>
 					&copy; <a class="grey" href="<?php echo $this->config->item('company_url'); ?>"
 							  target="_blank"><?php echo $this->config->item('company'); ?></a> <?php echo date("Y"); ?>
 				</li>

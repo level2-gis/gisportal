@@ -6,7 +6,8 @@
 <table border="1">
 	<thead>
 	<tr>
-		<th>Opomba</th>
+		<th>FID</th>
+    	<th>Opomba</th>
     	<th>Priloge</th>
 	</tr>
 	</thead>
@@ -21,7 +22,8 @@
 
 	?>
 		<tr>
-			<td><?php echo $row->attributes->opomba; ?></td>
+			<td><?php echo $row->fid; ?></td>
+    		<td><?php echo $row->attributes->opomba; ?></td>
             <td><?php echo $files; ?></td>
 		</tr>
 	<?php endforeach; ?>

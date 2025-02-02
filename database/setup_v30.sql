@@ -55,57 +55,49 @@ COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-
 --
 
 CREATE OR REPLACE FUNCTION public.check_user_project(
-    IN uname text,
-    IN project text)
-  RETURNS TABLE(check_user_project text, role text, mask_filter text, mask_wkt text) AS
+	IN uname text,
+	IN project text)
+	RETURNS TABLE(check_user_project text, role text, mask_filter text, mask_wkt text) AS
 $BODY$
 declare projid integer;
-declare groupid integer;
-declare clientid integer;
-declare is_public boolean;
-declare role text;
-declare mask integer;
-declare mask_f text;
-declare mask_w text;
+	declare groupid integer;
+	declare clientid integer;
+	declare is_public boolean;
+	declare role text;
+	declare mask integer;
+	declare mask_f text;
+	declare mask_w text;
 begin
-projid:=0;
-role:=null;
-select p.id,public,project_group_id,g.client_id from projects p,project_groups g where p.project_group_id = g.id and p.name=$2 into projid,is_public,groupid,clientid;
+	projid:=0;
+	role:=null;
+	select p.id,public,project_group_id,g.client_id from projects p,project_groups g where p.project_group_id = g.id and p.name=$2 into projid,is_public,groupid,clientid;
 
 --RAISE NOTICE '%', projid;
-if projid=0 OR projid IS NULL then
-	RETURN QUERY SELECT 'TR.noProject'::text,role, null, null;
-else
-	if lower($1) = 'guest' then
+	if projid=0 OR projid IS NULL then
+		RETURN QUERY SELECT 'TR.noProject'::text,role, null, null;
+	else
+		if lower($1) = 'guest' then
 			if is_public = true then RETURN QUERY SELECT 'OK'::text,'public'::text, null, null;
 			else RETURN QUERY SELECT 'TR.noPublicAccess'::text,role, null, null;
 			end if;
-	else
-        --first check if user is (client) administrator/power user
-        select roles.name
-        from users,
-             users_roles,
-             roles
-        where users.user_id = users_roles.user_id
-          AND users_roles.role_id = roles.id
-          AND roles.id < 9
-          AND user_name = $1
-          and ((client_id is null and project_group_id is null) or (client_id = clientid and project_group_id is null))
-        INTO role;
-        if role > '' then
-            --RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
-            RETURN QUERY SELECT 'OK'::text, role, null, null;
-        else
-            select roles.name, ur.mask_id
-            from users,
-                 users_roles ur,
-                 roles
+		else
+			--first check if user is (client) administrator/power user
+			select roles.name
+			from users,users_roles,roles
+			where users.user_id=users_roles.user_id AND users_roles.role_id=roles.id AND roles.id<9 AND
+					user_name=$1 and  ((client_id is null and project_group_id is null) or (client_id=clientid and project_group_id is null)) INTO role;
+			if role > '' then
+				--RAISE NOTICE 'admin, proj:%, client:%', projid, clientid;
+				RETURN QUERY SELECT 'OK'::text, role, null, null;
+			else
+				select roles.name, ur.mask_id
+				from users,users_roles ur,roles
 				where users.user_id=ur.user_id AND ur.role_id=roles.id AND
-				user_name=$1 and project_group_id=groupid INTO role, mask;
+						user_name=$1 and project_group_id=groupid INTO role, mask;
 				if role > '' then
-				    IF mask IS NOT NULL THEN
-				        SELECT filter, geom_wkt FROM MASKS where id = mask INTO mask_f, mask_w;
-				    END IF;
+					IF mask IS NOT NULL THEN
+						SELECT filter, geom_wkt FROM MASKS where id = mask INTO mask_f, mask_w;
+					END IF;
 					--RAISE NOTICE 'user, group:%, client:%', groupid, clientid;
 					RETURN QUERY SELECT 'OK'::text, role, mask_f, mask_w;
 				else
@@ -114,13 +106,13 @@ else
 					end if;
 				end if;
 			end if;
+		end if;
 	end if;
-end if;
 end;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 1
-  ROWS 1000;
+	LANGUAGE plpgsql VOLATILE
+					 COST 1
+					 ROWS 1000;
 
 
 --
@@ -279,7 +271,8 @@ CREATE TABLE public.clients (
     theme_id integer DEFAULT 1 NOT NULL,
     url text,
     description text,
-    ordr integer DEFAULT 0 NOT NULL
+    ordr integer DEFAULT 0 NOT NULL,
+	max_users integer
 );
 
 
@@ -637,62 +630,63 @@ CREATE TABLE public.masks
 -- Name: project_groups_view; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE VIEW public.project_groups_view AS
- SELECT g.id,
-    g.name,
-    g.display_name,
-    g.parent_id,
-    ( SELECT project_groups.name
-           FROM public.project_groups
-          WHERE (project_groups.id = g.parent_id)) AS parent,
-    g.type,
-    g.client_id,
-    c.display_name AS client,
-    c.name AS client_name,
-    p.project_crs,
-        CASE
-            WHEN (p.count IS NULL) THEN (0)::bigint
-            ELSE p.count
-        END AS projects,
-        CASE
-            WHEN (public.icount(g.base_layers_ids) IS NULL) THEN 0
-            ELSE public.icount(g.base_layers_ids)
-        END AS base_layers,
-        CASE
-            WHEN (public.icount(g.extra_layers_ids) IS NULL) THEN 0
-            ELSE public.icount(g.extra_layers_ids)
-        END AS extra_layers,
-        CASE
-            WHEN (ur.count IS NULL) THEN (0)::bigint
-            ELSE ur.count
-        END AS users,
-    g.contact_id,
-        CASE
-            WHEN (g.contact_id IS NULL) THEN g.contact
-            ELSE ((u.first_name || ' '::text) || u.last_name)
-        END AS contact,
-        CASE
-            WHEN (g.contact_id IS NULL) THEN g.contact_email
-            ELSE u.user_email
-        END AS contact_email,
-        CASE
-            WHEN (g.contact_id IS NULL) THEN g.contact_phone
-            ELSE u.phone
-        END AS contact_phone,
-    g.custom1,
-    g.custom2
-   FROM ((((public.project_groups g
-     JOIN public.clients c ON ((g.client_id = c.id)))
-     LEFT JOIN ( SELECT count(p_1.id) AS count,
-            string_agg(DISTINCT p_1.crs, ','::text) AS project_crs,
-            p_1.project_group_id
-           FROM public.projects p_1
-          GROUP BY p_1.project_group_id) p ON ((p.project_group_id = g.id)))
-     LEFT JOIN ( SELECT users_roles.project_group_id,
-            count(*) AS count
-           FROM public.users_roles
-          GROUP BY users_roles.project_group_id) ur ON ((ur.project_group_id = g.id)))
-     LEFT JOIN public.users u ON ((g.contact_id = u.user_id)));
+CREATE OR REPLACE VIEW public.project_groups_view AS
+SELECT g.id,
+	   g.name,
+	   g.display_name,
+	   g.ordr,
+	   g.parent_id,
+	   ( SELECT project_groups.name
+		 FROM project_groups
+		 WHERE project_groups.id = g.parent_id) AS parent,
+	   g.type,
+	   g.client_id,
+	   c.display_name AS client,
+	   c.name AS client_name,
+	   p.project_crs,
+	   CASE
+		   WHEN p.count IS NULL THEN 0::bigint
+		   ELSE p.count
+		   END AS projects,
+	   CASE
+		   WHEN icount(g.base_layers_ids) IS NULL THEN 0
+		   ELSE icount(g.base_layers_ids)
+		   END AS base_layers,
+	   CASE
+		   WHEN icount(g.extra_layers_ids) IS NULL THEN 0
+		   ELSE icount(g.extra_layers_ids)
+		   END AS extra_layers,
+	   CASE
+		   WHEN ur.count IS NULL THEN 0::bigint
+		   ELSE ur.count
+		   END AS users,
+	   g.contact_id,
+	   CASE
+		   WHEN g.contact_id IS NULL THEN g.contact
+		   ELSE (u.first_name || ' '::text) || u.last_name
+		   END AS contact,
+	   CASE
+		   WHEN g.contact_id IS NULL THEN g.contact_email
+		   ELSE u.user_email
+		   END AS contact_email,
+	   CASE
+		   WHEN g.contact_id IS NULL THEN g.contact_phone
+		   ELSE u.phone
+		   END AS contact_phone,
+	   g.custom1,
+	   g.custom2
+FROM project_groups g
+		 JOIN clients c ON g.client_id = c.id
+		 LEFT JOIN ( SELECT count(p_1.id) AS count,
+							string_agg(DISTINCT p_1.crs, ','::text) AS project_crs,
+							p_1.project_group_id
+					 FROM projects p_1
+					 GROUP BY p_1.project_group_id) p ON p.project_group_id = g.id
+		 LEFT JOIN ( SELECT users_roles.project_group_id,
+							count(*) AS count
+					 FROM users_roles
+					 GROUP BY users_roles.project_group_id) ur ON ur.project_group_id = g.id
+		 LEFT JOIN users u ON g.contact_id = u.user_id;
 
 
 --
@@ -722,34 +716,42 @@ ALTER SEQUENCE public.projects_id_seq OWNED BY public.projects.id;
 -- Name: projects_view; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE VIEW public.projects_view AS
- SELECT p.id,
-    p.name,
-    g.client_id,
-    p.public,
-        CASE
-            WHEN (p.display_name IS NULL) THEN p.name
-            ELSE p.display_name
-        END AS display_name,
-    p.crs,
-    p.description,
-    p.ordr,
-    p.project_path,
-    c.display_name AS client,
-    c.name AS client_name,
-        CASE
-            WHEN (g.display_name IS NULL) THEN g.name
-            ELSE (((g.display_name || ' ('::text) || g.name) || ')'::text)
-        END AS "group",
-    g.id AS group_id,
-    g.name AS group_name,
-    p.overview_layer_id,
-    ( SELECT layers.display_name
-           FROM public.layers
-          WHERE (layers.id = p.overview_layer_id)) AS overview_layer
-   FROM ((public.projects p
-     JOIN public.project_groups g ON ((g.id = p.project_group_id)))
-     JOIN public.clients c ON ((c.id = g.client_id)));
+CREATE OR REPLACE VIEW public.projects_view AS
+SELECT p.id,
+	   p.name,
+	   g.client_id,
+	   p.public,
+	   CASE
+		   WHEN p.display_name IS NULL THEN p.name
+		   ELSE p.display_name
+		   END AS display_name,
+	   p.crs,
+	   p.version,
+	   p.description,
+	   p.ordr,
+	   p.project_path,
+	   pl.plugins,
+	   c.display_name AS client,
+	   c.name AS client_name,
+	   CASE
+		   WHEN g.display_name IS NULL THEN g.name
+		   ELSE ((g.display_name || ' ('::text) || g.name) || ')'::text
+		   END AS "group",
+	   g.id AS group_id,
+	   g.name AS group_name,
+	   p.overview_layer_id,
+	   ( SELECT layers.display_name
+		 FROM layers
+		 WHERE layers.id = p.overview_layer_id) AS overview_layer
+FROM projects p
+		 JOIN project_groups g ON g.id = p.project_group_id
+		 JOIN clients c ON c.id = g.client_id
+		 LEFT JOIN (
+	select project_id,string_agg(name,'<br>') as plugins from plugins pl,
+															  (select id as project_id,unnest(plugin_ids) from projects) x
+	where pl.id=unnest
+	group by project_id
+) pl ON pl.project_id = p.id;
 
 
 --
@@ -1007,51 +1009,50 @@ ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 --
 
 CREATE VIEW public.users_view AS
- SELECT users.user_id,
-        users.first_name,
-        users.last_name,
-        ((users.first_name || ' '::text) || users.last_name) AS display_name,
-        users.user_name,
-        users.user_email,
-        users.organization,
-        users.registered,
-        users.count_login,
-        users.last_login,
-        users.lang,
-        users.active,
-        users.phone,
-        users.receive_system_emails,
-        CASE
-            WHEN adm.id < 9 THEN true
-            ELSE false
-            END                                              AS admin,
-        adm.filter,
-        adm.scope,
-        adm.id                                               AS role_id,
-        adm.name                                             AS role_name,
-        adm.display_name                                     AS role_display_name,
-        CASE
-            WHEN (groups.count IS NULL) THEN (0)::bigint
-            ELSE groups.count
-        END                                                  AS groups
-   FROM ((public.users
-     LEFT JOIN ( SELECT users_roles.user_id,
-            users_roles.client_id AS filter,
-            ( SELECT clients.display_name
-                   FROM public.clients
-                  WHERE (clients.id = users_roles.client_id)) AS scope,
-            roles.id,
-            roles.name,
-            roles.display_name
-           FROM public.users_roles,
-            public.roles
-          WHERE ((users_roles.role_id = roles.id) AND (roles.id = ANY (ARRAY[1, 2])) AND (users_roles.project_group_id IS NULL))) adm ON ((users.user_id = adm.user_id)))
-     LEFT JOIN ( SELECT users_roles.user_id,
-            count(*) AS count
-           FROM public.users_roles
-          WHERE (users_roles.role_id > 10)
-          GROUP BY users_roles.user_id) groups ON ((users.user_id = groups.user_id)));
-
+SELECT users.user_id,
+	   users.first_name,
+	   users.last_name,
+	   ((users.first_name || ' '::text) || users.last_name) AS display_name,
+	   users.user_name,
+	   users.user_email,
+	   users.organization,
+	   users.registered,
+	   users.count_login,
+	   users.last_login,
+	   users.lang,
+	   users.active,
+	   users.phone,
+	   users.receive_system_emails,
+	   CASE
+		   WHEN adm.id < 9 THEN true
+		   ELSE false
+		   END AS admin,
+	   adm.filter,
+	   adm.scope,
+	   adm.id AS role_id,
+	   adm.name AS role_name,
+	   adm.display_name AS role_display_name,
+	   CASE
+		   WHEN (groups.count IS NULL) THEN (0)::bigint
+		   ELSE groups.count
+		   END AS groups
+FROM ((public.users
+	LEFT JOIN ( SELECT users_roles.user_id,
+					   users_roles.client_id AS filter,
+					   ( SELECT clients.display_name
+						 FROM public.clients
+						 WHERE (clients.id = users_roles.client_id)) AS scope,
+					   roles.id,
+					   roles.name,
+					   roles.display_name
+				FROM public.users_roles,
+					 public.roles
+				WHERE ((users_roles.role_id = roles.id) AND (roles.id = ANY (ARRAY[1, 2])) AND (users_roles.project_group_id IS NULL))) adm ON ((users.user_id = adm.user_id)))
+		 LEFT JOIN ( SELECT users_roles.user_id,
+							count(*) AS count
+					 FROM public.users_roles
+					 WHERE (users_roles.role_id > 10)
+					 GROUP BY users_roles.user_id) groups ON ((users.user_id = groups.user_id)));
 
 --
 -- TOC entry 212 (class 1259 OID 207884)
@@ -1059,64 +1060,64 @@ CREATE VIEW public.users_view AS
 --
 
 CREATE VIEW public.users_view_for_clients AS
- SELECT users.user_id,
-        users.first_name,
-        users.last_name,
-        ((users.first_name || ' '::text) || users.last_name) AS display_name,
-        users.user_name,
-        users.user_email,
-        users.organization,
-        users.registered,
-        users.count_login,
-        users.last_login,
-        users.lang,
-        users.active,
-        users.phone,
-        users.receive_system_emails,
-        adm.admin,
-        adm.filter,
-        (SELECT clients.display_name
-         FROM public.clients
-         WHERE (clients.id = adm.filter))                    AS scope,
-        adm.role_id,
-        adm.role_name,
-        adm.role_display_name,
-        adm.count                                            AS groups
-   FROM (public.users
-     LEFT JOIN ( SELECT data.user_id,
-            sum(data.count) AS count,
-            data.filter,
-            data.role_id,
-            data.admin,
-            data.role_name,
-            data.role_display_name
-           FROM ( SELECT users_roles.user_id,
-                    0 AS count,
-                    users_roles.client_id AS filter,
-                        CASE
-                            WHEN roles.id < 9 THEN true
-                            ELSE false
-                        END AS admin,
-                    roles.id AS role_id,
-                    roles.name AS role_name,
-                    roles.display_name AS role_display_name
-                   FROM public.users_roles,
-                    public.roles
-                  WHERE ((users_roles.role_id = roles.id) AND (roles.id < 10) AND (users_roles.project_group_id IS NULL))
-                UNION
-                 SELECT ur.user_id,
-                    (count(*))::integer AS count,
-                    g.client_id AS filter,
-                    false AS admin,
-                    9 AS role_id,
-                    'link'::text AS role_name,
-                    NULL::text AS role_display_name
-                   FROM public.users_roles ur,
-                    public.roles,
-                    public.project_groups g
-                  WHERE ((ur.role_id = roles.id) AND (ur.role_id > 10) AND (ur.project_group_id = g.id))
-                  GROUP BY ur.user_id, g.client_id) data
-          GROUP BY data.user_id, data.filter, data.role_id, data.admin, data.role_name, data.role_display_name) adm ON ((users.user_id = adm.user_id)));
+SELECT users.user_id,
+	   users.first_name,
+	   users.last_name,
+	   ((users.first_name || ' '::text) || users.last_name) AS display_name,
+	   users.user_name,
+	   users.user_email,
+	   users.organization,
+	   users.registered,
+	   users.count_login,
+	   users.last_login,
+	   users.lang,
+	   users.active,
+	   users.phone,
+	   users.receive_system_emails,
+	   adm.admin,
+	   adm.filter,
+	   ( SELECT clients.display_name
+		 FROM public.clients
+		 WHERE (clients.id = adm.filter)) AS scope,
+	   adm.role_id,
+	   adm.role_name,
+	   adm.role_display_name,
+	   adm.count AS groups
+FROM (public.users
+		 LEFT JOIN ( SELECT data.user_id,
+							sum(data.count) AS count,
+							data.filter,
+							data.role_id,
+							data.admin,
+							data.role_name,
+							data.role_display_name
+					 FROM ( SELECT users_roles.user_id,
+								   0 AS count,
+								   users_roles.client_id AS filter,
+								   CASE
+									   WHEN roles.id < 9 THEN true
+									   ELSE false
+									   END AS admin,
+								   roles.id AS role_id,
+								   roles.name AS role_name,
+								   roles.display_name AS role_display_name
+							FROM public.users_roles,
+								 public.roles
+							WHERE ((users_roles.role_id = roles.id) AND (roles.id < 10) AND (users_roles.project_group_id IS NULL))
+							UNION
+							SELECT ur.user_id,
+								   (count(*))::integer AS count,
+								   g.client_id AS filter,
+								   false AS admin,
+								   9 AS role_id,
+								   'link'::text AS role_name,
+								   NULL::text AS role_display_name
+							FROM public.users_roles ur,
+								 public.roles,
+								 public.project_groups g
+							WHERE ((ur.role_id = roles.id) AND (ur.role_id > 10) AND (ur.project_group_id = g.id))
+							GROUP BY ur.user_id, g.client_id) data
+					 GROUP BY data.user_id, data.filter, data.role_id, data.admin, data.role_name, data.role_display_name) adm ON ((users.user_id = adm.user_id)));
 
 
 --
@@ -1382,7 +1383,7 @@ SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 --
 
 INSERT INTO public.settings
-VALUES (27, '2021-12-09');
+VALUES (30, '2025-01-31');
 
 
 --

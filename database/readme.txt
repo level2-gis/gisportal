@@ -30,7 +30,7 @@ Here are PostgreSQL scripts for gisportal2:
 - Update script from v26 to v27. New field on users table and treat power users also as administrators (access to all
   client projects) and then allow actions depending on tasks table
 
-setup_v27.sql
+setup_v30.sql
 
-If you are installing from scratch, you can use this script to run on blank database and use it in gisportal2 with
+If you are installing from scratch, you can use this script to run on blank database and use it in gisportal with
 latest gisapp - https://github.com/uprel/gisapp

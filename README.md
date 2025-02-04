@@ -80,8 +80,10 @@ Administrator is every user with admin=true in database.
 
 ## Email service
 You need to configure email for password reset and other email actions from gisportal and gisapp.
-Current email configuration is for Gmail account to send emails using Google SMTP server. That means you don't need to setup own mail server.
+Current email configuration is example for Gmail account to send emails using Google SMTP server. That means you don't need to setup own mail server.
 Edit `application/config/email.php` with your own Gmail access.
+
+Read [official Codeigniter documentation](https://codeigniter.com/userguide3/libraries/email.html) on all email preferences that can be set to configure using other mail servers.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
 

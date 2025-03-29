@@ -72,18 +72,19 @@ class User_model extends CI_Model
 	 */
 	function search($text, $filter)
 	{
+		$like_text = '%' . $this->db->escape_like_str($text) . '%';
 
 		//$this->db->like('first_name', $text);
 		//$this->db->or_like('last_name', $text);
         //$this->db->or_like('user_email', $text);
 
         //for ilike search we have to use direct sql
-        $where = "(first_name ILIKE '%".$text."%' ESCAPE '!' OR ";
-        $where.= "last_name ILIKE '%".$text."%' ESCAPE '!' OR ";
-        $where.= "user_email ILIKE '%".$text."%' ESCAPE '!')";
+		$where = "(first_name ILIKE " . $this->db->escape($like_text) . " ESCAPE '!' OR "
+			. "last_name ILIKE " . $this->db->escape($like_text) . " ESCAPE '!' OR "
+			. "user_email ILIKE " . $this->db->escape($like_text) . " ESCAPE '!')";
 
         $this->db->select("user_id AS id, trim(coalesce(last_name,'') || ' ' || coalesce(first_name,'')) || ' (' || user_email || ')' AS name", FALSE);
-        $this->db->where($where);
+		$this->db->where($where, null, false);
 
         if(!empty($filter)) {
             $this->db->where('filter', $filter);

@@ -2046,7 +2046,8 @@ class Ion_auth_model extends CI_Model
 				set_cookie([
 					'name'   => $this->config->item('remember_cookie_name', 'ion_auth'),
 					'value'  => $token->user_code,
-					'expire' => $expire
+					'expire' => $expire,
+					'httponly' => TRUE
 				]);
 
 				$this->trigger_events(['post_remember_user', 'remember_user_successful']);

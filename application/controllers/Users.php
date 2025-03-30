@@ -498,6 +498,11 @@ class Users extends CI_Controller {
 
 	public function roles_list()
 	{
+		$task = 'project_groups_edit_access';
+		if (!$this->ion_auth->can_execute_task($task)){
+			return;
+		}
+
 		$roles = $this->user_model->get_roles();
 
 		$this->output
@@ -509,14 +514,18 @@ class Users extends CI_Controller {
 	public function search()
 	{
 
+		$task = 'project_groups_edit_access';
+		if (!$this->ion_auth->can_execute_task($task)){
+			return;
+		}
+
 		$query = $this->input->get('query');
+		if (empty($query)) {
+			return;
+		}
 
 		//filter for client administrator
 		$filter = $this->ion_auth->admin_scope()->filter;
-
-		if (empty($query)) {
-			return;
-        }
 
         $result = $this->user_model->search(urldecode($query),$filter);
 

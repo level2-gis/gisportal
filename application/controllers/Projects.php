@@ -380,7 +380,11 @@ class Projects extends CI_Controller
         }
 
         try {
-            $project = $this->project_model->get_project($project_id);
+			if (!$this->ion_auth->logged_in()){
+				throw new Exception(lang('gp_session_timeout'));
+			}
+
+			$project = $this->project_model->get_project($project_id);
             if ($project == null) {
                 throw new Exception('Project not found!');
             }

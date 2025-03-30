@@ -4,8 +4,6 @@ Built with Codeigniter and Bootstrap.
 
 Client part of EQWC is [**gisapp**](https://github.com/uprel/gisapp)
 
-> **Documentation below is obsolete and needs updating to gisportal v2**
-
 ## Users
 
 - start page
@@ -29,7 +27,7 @@ Administrator is every user with admin=true in database.
 
 ![admin1](https://github.com/uprel/gisportal/wiki/images/admin_projects_view1.png)
 
-## Setup v2
+## Setup
 
 > You go through this after you setup gisapp!
 
@@ -41,12 +39,7 @@ Administrator is every user with admin=true in database.
 	cd /var/www/html/
 	git clone https://github.com/level2-gis/gisportal.git
 	```
-    This got you latest code from master. If you need specific version type:
-    
-    ```
-    cd gisportal
-	git checkout v2.0.0
-	```
+    This got you latest code from master. 
 	
 1. Setup database connection in `application/config/database.php`
 1. Setup base site URL and default language in `application/config/config.php`
@@ -87,8 +80,10 @@ Administrator is every user with admin=true in database.
 
 ## Email service
 You need to configure email for password reset and other email actions from gisportal and gisapp.
-Current email configuration is for Gmail account to send emails using Google SMTP server. That means you don't need to setup own mail server.
+Current email configuration is example for Gmail account to send emails using Google SMTP server. That means you don't need to setup own mail server.
 Edit `application/config/email.php` with your own Gmail access.
+
+Read [official Codeigniter documentation](https://codeigniter.com/userguide3/libraries/email.html) on all email preferences that can be set to configure using other mail servers.
 
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
 
@@ -138,7 +133,7 @@ And change colors as you wish.
 
 ## Contributing
 
-Support this project by [**DONATING**](http://level2.si/product/donation-extended-qgis-web-client/).
+Support this project by [**DONATING**](https://github.com/sponsors/level2-gis).
 
 You are also welcome to contribute to the project by testing, requesting new features, translating, submitting code, ...
 Read this [tutorial about making changes to repositories](https://help.github.com/articles/fork-a-repo/).
@@ -163,4 +158,4 @@ Uroš Preložnik, http://level2.si
 
 ## Copyright
 
-Gisportal (c) 2017 - 2019, Level2 Uroš Preložnik s.p. 
+Gisportal (c) 2017 - 2025, Level2 Uroš Preložnik s.p. 

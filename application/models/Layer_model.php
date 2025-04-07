@@ -102,13 +102,15 @@ class Layer_model extends CI_Model {
 
     function search($text, $filter) {
 
+		$like_text = '%' . $this->db->escape_like_str($text) . '%';
+
         //for ilike search we have to use direct sql
-        $where = "(name ILIKE '%".$text."%' ESCAPE '!' OR ";
-        $where.= "display_name ILIKE '%".$text."%' ESCAPE '!' OR ";
-        $where.= "type ILIKE '%".$text."%' ESCAPE '!')";
+        $where = "(name ILIKE " . $this->db->escape($like_text) . " ESCAPE '!' OR ";
+        $where.= "display_name ILIKE " . $this->db->escape($like_text) . " ESCAPE '!' OR ";
+        $where.= "type ILIKE " . $this->db->escape($like_text) . " ESCAPE '!')";
 
         $this->db->select("id, trim(coalesce(display_name,'') || ' (' || coalesce(name,'')) || ', ' || type || ')' AS name", FALSE);
-        $this->db->where($where);
+		$this->db->where($where, null, false);
 
         if(!empty($filter)) {
             $this->db->where('(client_id = '.$filter.' OR client_id IS NULL)', null, FALSE);

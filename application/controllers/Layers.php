@@ -257,14 +257,18 @@ class Layers extends CI_Controller{
 
     public function search() {
 
+		$task = 'project_groups_edit_layers';
+		if (!$this->ion_auth->can_execute_task($task)){
+			return;
+		}
+
         $query = $this->input->get('query');
+		if(empty($query)) {
+			return;
+		}
 
         //filter for client administrator
         $filter = $this->ion_auth->admin_scope()->filter;
-
-        if(empty($query)) {
-            return;
-        }
 
         $result = $this->layer_model->search(urldecode($query), $filter);
 

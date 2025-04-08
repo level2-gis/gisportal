@@ -14,7 +14,7 @@ class Signup extends CI_Controller
 	function index()
 	{
 		try {
-			$cl_query = $this->input->get('code', TRUE);
+			$cl_query = $this->input->get('code');
 
 			$client = NULL;
 			if (!empty($cl_query)) {

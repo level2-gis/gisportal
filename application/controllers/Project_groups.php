@@ -160,9 +160,9 @@ class Project_groups extends CI_Controller
 			}
 
             else {
-                $subject = $this->input->post('subject');
-                $body = $this->input->post('body');
-                $include = $this->input->post('include');
+                $subject = $this->input->post('subject', TRUE);
+                $body = $this->input->post('body', TRUE);
+                $include = $this->input->post('include', TRUE);
 
                 if(!empty($include)) {
                     array_push($emails,$include);

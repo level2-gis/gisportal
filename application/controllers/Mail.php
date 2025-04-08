@@ -36,19 +36,17 @@ class Mail extends CI_Controller
 				)));
 		} else {
 			$data = new stdClass();
-			// Use CodeIgniter's XSS filtering by passing TRUE as second argument.
-			$mailto = $this->input->post("mailto", TRUE);
-			$data->mailto = empty($mailto) ? $this->config->item('admin_email') : $mailto;
-			$data->subject = $this->input->post("subject", TRUE);
 
-			// Check for template; sanitize input in both cases.
-			if (empty($this->input->post("template", TRUE))) {
-				$data->body = $this->input->post("body", TRUE);
+			$mailto = $this->input->post("mailto");
+			$data->mailto = empty($mailto) ? $this->config->item('admin_email') : $mailto;
+			$data->subject = $this->input->post("subject");
+
+			// Check for template
+			if (empty($this->input->post("template"))) {
+				$data->body = $this->input->post("body");
 			} else {
-				// Clean the JSON string and then decode it.
-				$clean_body = $this->security->xss_clean($this->input->post("body", TRUE));
-				$body_data = json_decode($clean_body);
-				$template = $this->input->post("template", TRUE);
+				$body_data = json_decode($this->input->post("body"));
+				$template = $this->input->post("template");
 				$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $template, $body_data, TRUE);
 				$data->body = $body;
 			}

@@ -395,17 +395,17 @@ class User_model extends CI_Model
 	public function save_user($data)
 	{
 		$id = $data['user_id'];
+		$uname = $data['user_name'];
 
-		//if ($id != null){
+		//remove user_email and user_name from updating
+		unset($data['user_email']);
+		unset($data['user_name']);
+
+		//to update we need user_id and user_name
 		$this->db->where('user_id', $id);
+		$this->db->where('user_name', $uname);
 		$this->db->update('users', $data);
 		return $id;
-		//}
-
-		//unset($data['id']);
-		//$this->db->insert('clients', $data);
-
-		//return $this->db->insert_id();
     }
 
 //	function get_projectusers($userid)

@@ -7,6 +7,9 @@
 	<thead>
 	<tr>
 		<th>FID</th>
+    	<th>Naslov</th>
+    	<th>Intervencija</th>
+    	<th>Ocenjene izgube (m^3/dan)</th>
     	<th>Opomba</th>
     	<th>Priloge</th>
 	</tr>
@@ -14,6 +17,13 @@
 	<?php foreach ($table as $row): ?>
 	<?php
 		$files = "";
+		$interv = "";
+		if($row->attributes->intervencija == 1) {
+        	$interv = "DA";
+        }
+		else {
+        	$interv = "NE";
+        }
 		if(!empty($row->files)) {
 			foreach(json_decode($row->files) as $file) {
 				$files .= $file . '<br>';
@@ -23,6 +33,9 @@
 	?>
 		<tr>
 			<td><?php echo $row->fid; ?></td>
+            <td><?php echo $row->attributes->naslov; ?></td>
+            <td><?php echo $interv; ?></td>
+            <td><?php echo $row->attributes->Ocenjeno; ?></td>
     		<td><?php echo $row->attributes->opomba; ?></td>
             <td><?php echo $files; ?></td>
 		</tr>

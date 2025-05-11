@@ -24,9 +24,9 @@
 		else {
         	$interv = "NE";
         }
-		if(!empty($row->files)) {
-			foreach(json_decode($row->files) as $file) {
-				$files .= $file . '<br>';
+		if(!empty($row->attributes->files)) {
+			foreach(json_decode($row->attributes->files) as $file) {
+				$files .= "<a href=" . $uploadDir . $file . ">" . $file . '</a><br>';
 			}
 		}
 
@@ -43,6 +43,6 @@
 </table>
 <br>
 <hr>
-<footer><?php echo $this->config->item('site_title') . ' - ' . $_SERVER['SERVER_NAME']; ?></footer>
+<footer><?php echo $this->config->item('site_title'); ?> - <?php echo $interface; ?> client - <?php echo $_SERVER['SERVER_NAME']; ?></footer>
 </body>
 </html>

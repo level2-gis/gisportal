@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css'); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200417"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20250525"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol.css?v=6.4.3"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol-layerswitcher.css?v=3.8.1"); ?>">
 

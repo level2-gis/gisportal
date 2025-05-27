@@ -1485,7 +1485,7 @@ class Projects extends CI_Controller
 		}
 
 		if (is_file($fn)) {
-			return "<img height='32px' src='" . $base . '/' . $path . "'>";
+			return "<img height='32px' src='" . $base . '/' . $path . "?v=". $this->config->item('header_logo_version') . "'>";
 		} else {
 			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>" . $fn . "</div>";
 		}

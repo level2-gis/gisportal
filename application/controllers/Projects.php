@@ -139,6 +139,11 @@ class Projects extends CI_Controller
 				$modules['client'] = $client->name;
 			}
 
+			//if there is single project and no modules, just open it
+			if(count($data['projects']) == 1 && count($modules['modules']) == 0) {
+				redirect(site_url($this->config->item('web_client_url').$data['projects'][0]['name']));
+			}
+
 		} catch (Exception $e) {
 			$this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">' . $e->getMessage() . '</div>');
 			redirect("/");

@@ -26,6 +26,18 @@ class Mail extends CI_Controller
 
 	function send()
 	{
+		// Only allow POST requests for sending emails
+		if ($this->input->method() !== 'post') {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(405)
+				->set_output(json_encode(array(
+					'success' => 'false',
+					'message' => 'Method not allowed. Only POST requests are accepted.'
+				)));
+			return;
+		}
+
 		if (!$this->ion_auth->logged_in()) {
 			$this->output
 				->set_content_type('application/json')

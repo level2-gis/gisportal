@@ -28,14 +28,9 @@ class Home extends CI_Controller
         $data['clients'] = $this->get_user_clients($data['is_admin']);
         $data['open_groups'] = empty($this->config->item('portal_show_groups_for_client')) ? FALSE : $this->config->item('portal_show_groups_for_client');
 
-		//rss
-		if (!empty($this->config->item('rss_feed_url'))) {
-			$rss_config['url'] = $this->config->item('rss_feed_url');
-			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
-			$this->load->library('rss_parser', $rss_config);
-			$rss['rss'] = $this->rss_parser->parse();
-			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
-		}
+		// Load RSS feed with caching support
+		$this->load->helper('rss');
+		$rss = load_rss_feed($this);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/header_navigation', $data);

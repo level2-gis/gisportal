@@ -185,5 +185,5 @@ return array(
 	'oth'	=>	'application/vnd.oasis.opendocument.text-web',
     'qgs'   =>  'text/html',
     'dxf'   =>  'text/plain',
-    'geojson'  =>	'text/plain'
+	'geojson' => array('application/geo+json', 'application/json', 'text/plain')
 );

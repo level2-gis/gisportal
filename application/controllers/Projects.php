@@ -76,14 +76,9 @@ class Projects extends CI_Controller
 		$data['projects'] = $this->get_user_projects($data['is_admin'], $client_id);
 		$data['navigation'] = $this->build_user_navigation($client);
 
-		//rss
-		if (!empty($this->config->item('rss_feed_url'))) {
-			$rss_config['url'] = $this->config->item('rss_feed_url');
-			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
-			$this->load->library('rss_parser', $rss_config);
-			$rss['rss'] = $this->rss_parser->parse();
-			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
-		}
+		//rss with caching support
+		$this->load->helper('rss');
+		$rss = load_rss_feed($this);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/header_navigation', $data);
@@ -118,14 +113,9 @@ class Projects extends CI_Controller
         $data['is_admin'] = $user_role->admin;
         $data['role'] = $user_role->role_name;
 
-		//rss
-		if(!empty($this->config->item('rss_feed_url'))) {
-			$rss_config['url'] = $this->config->item('rss_feed_url');
-			$rss_config['limit'] = empty($this->config->item('rss_feed_limit')) ? 10 : $this->config->item('rss_feed_limit');
-			$this->load->library('rss_parser', $rss_config);
-			$rss['rss'] = $this->rss_parser->parse();
-			$rss['rss']['last_login'] = $this->session->userdata('old_last_login');
-		}
+		//rss with caching support
+		$this->load->helper('rss');
+		$rss = load_rss_feed($this);
 
 		try {
 			$data['projects'] = $this->get_user_projects_for_group($data['is_admin'], $client_id, $group_id);
@@ -137,6 +127,11 @@ class Projects extends CI_Controller
 				$this->load->model('modules/module_model');
 				$modules['modules'] = $this->module_model->get_modules($client_id, $group_id);
 				$modules['client'] = $client->name;
+			}
+
+			//if there is single project and no modules, just open it
+			if(count($data['projects']) == 1 && count($modules['modules']) == 0) {
+				redirect(site_url($this->config->item('web_client_url').$data['projects'][0]['name']));
 			}
 
 		} catch (Exception $e) {

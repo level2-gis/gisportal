@@ -198,6 +198,11 @@ $config['rss_feed_url'] = '';
  */
 $config['rss_feed_limit'] = 10;
 
+// RSS Feed Caching Configuration
+$config['rss_cache_enabled'] = TRUE;           		// Enable/disable RSS caching
+$config['rss_cache_duration'] = 21600 ;          	// Cache duration in seconds (6 hours)
+$config['rss_cache_dir'] = APPPATH . 'cache/rss/'; 	// Cache directory
+
 /*
  * Layer map preview default map center position: [longitude, latitude]
  */

@@ -15,6 +15,18 @@ class Mail extends CI_Controller
 
 	function test()
 	{
+
+		if (!$this->ion_auth->logged_in()) {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(403)
+				->set_output(json_encode(array(
+					'success' => 'false',
+					'message' => 'No permissions for sending emails!'
+				)));
+			return;
+		}
+
 		// using temporary data for testing
 		$data = new stdClass();
 		$data->mailto = $this->config->item('admin_email');
@@ -26,6 +38,18 @@ class Mail extends CI_Controller
 
 	function send()
 	{
+		// Only allow POST requests for sending emails
+		if ($this->input->method() !== 'post') {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(405)
+				->set_output(json_encode(array(
+					'success' => 'false',
+					'message' => 'Method not allowed. Only POST requests are accepted.'
+				)));
+			return;
+		}
+
 		if (!$this->ion_auth->logged_in()) {
 			$this->output
 				->set_content_type('application/json')
@@ -34,25 +58,26 @@ class Mail extends CI_Controller
 					'success' => 'false',
 					'message' => 'No permissions for sending emails!'
 				)));
-		} else {
-			$data = new stdClass();
-
-			$mailto = $this->input->post("mailto");
-			$data->mailto = empty($mailto) ? $this->config->item('admin_email') : $mailto;
-			$data->subject = $this->input->post("subject");
-
-			// Check for template
-			if (empty($this->input->post("template"))) {
-				$data->body = $this->input->post("body");
-			} else {
-				$body_data = json_decode($this->input->post("body"));
-				$template = $this->input->post("template");
-				$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $template, $body_data, TRUE);
-				$data->body = $body;
-			}
-
-			$this->sendMailWithResponse($data);
+			return;
 		}
+
+		$data = new stdClass();
+
+		$mailto = $this->input->post("mailto");
+		$data->mailto = empty($mailto) ? $this->config->item('admin_email') : $mailto;
+		$data->subject = $this->input->post("subject");
+
+		// Check for template
+		if (empty($this->input->post("template"))) {
+			$data->body = $this->input->post("body");
+		} else {
+			$body_data = json_decode($this->input->post("body"));
+			$template = $this->input->post("template");
+			$body = $this->load->view($this->config->item('email_templates', 'ion_auth') . $template, $body_data, TRUE);
+			$data->body = $body;
+		}
+
+		$this->sendMailWithResponse($data);
 	}
 
 	private function sendMailWithResponse($data)

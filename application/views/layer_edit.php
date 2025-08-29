@@ -129,7 +129,7 @@
                     </thead>
                     <?php foreach ($groups as $group_item): ?>
                         <tr>
-                            <td class="col-md-2"><?php echo $group_item['name']; ?></td>
+                            <td class="col-md-2"><?php echo html_escape($group_item['name']); ?></td>
                             <td class="col-md-2"><?php echo html_escape($group_item['client']); ?></td>
                             <td class="col-md-1"><?php echo set_check_icon((boolean)$group_item['is_base']); ?></td>
                             <td class="col-md-1"><?php echo set_check_icon((boolean)$group_item['is_extra']); ?></td>

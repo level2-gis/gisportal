@@ -2,7 +2,7 @@
 <?php foreach ($clients as $item):
 
     $img_path = "assets/img/clients/" . $item['name'] . ".png";
-    $name = $item['display_name'];
+    $name = html_escape($item['display_name']);
     $edit_url = site_url('clients/edit/' . $item['id']);
 
     if (!file_exists(FCPATH . $img_path)) {
@@ -32,7 +32,7 @@
             </h4>
             <a target="_self" href="<?php echo $url; ?>"><img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
                 <div class="caption post-content">
-                    <p class="<?php echo $desc_class; ?>"><?php echo $item['description']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo html_escape($item['description']); ?></p>
                 </div>
             </a>
         </div>

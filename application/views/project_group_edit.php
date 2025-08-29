@@ -75,7 +75,7 @@
 							<option <?php if ($client_item['id'] == $group['client_id']) {
 								echo "selected='selected'";
 							}; ?>
-								value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+								value="<?php echo $client_item['id']; ?>"><?php echo html_escape($client_item['display_name']) . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
 					</select>
 					<span class="text-danger"><?php echo form_error('client_id'); ?></span>
 				</div>
@@ -305,8 +305,8 @@
                             <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
                         </td>
                         <td class="col-md-2"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
-                        <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
-                        <td class="col-md-2"><?php echo $project_item['client']; ?></td>
+                        <td class="col-md-2"><?php echo html_escape($project_item['display_name']); ?></td>
+                        <td class="col-md-2"><?php echo html_escape($project_item['client']); ?></td>
                         <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
                         <?php if ($is_admin){ ?>
                             <td class="col-md-2">
@@ -375,10 +375,10 @@
 				</thead>
 				<?php foreach ($users as $user_item): ?>
 					<tr>
-						<td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
-						<td class="col-md-1"><?php echo $user_item['last_name']; ?></td>
+						<td class="col-md-1"><?php echo html_escape($user_item['first_name']); ?></td>
+						<td class="col-md-1"><?php echo html_escape($user_item['last_name']); ?></td>
 						<td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-						<td class="col-md-1"><?php echo $user_item['organization']; ?></td>
+						<td class="col-md-1"><?php echo html_escape($user_item['organization']); ?></td>
 						<td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
 						<td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
 						<td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>
@@ -428,7 +428,7 @@
                     <tr>
                         <td id="<?php echo $key; ?>"><?php echo $layer_item['id']; ?></td>
                         <td class="col-md-2"><?php echo $layer_item['name']; ?></td>
-                        <td class="col-md-4"><?php echo $layer_item['display_name']; ?></td>
+                        <td class="col-md-4"><?php echo html_escape($layer_item['display_name']); ?></td>
                         <td class="col-md-1"><?php echo $layer_item['type']; ?></td>
                         <td class="col-md-2">
                             <a class="btn btn-default" href="<?php echo site_url('layers/edit/'.$layer_item['id']); ?>"><?php echo $this->lang->line('gp_layer'); ?></a>
@@ -466,7 +466,7 @@
                     <tr>
                         <td id="<?php echo $key; ?>"><?php echo $layer_item['id']; ?></td>
                         <td class="col-md-2"><?php echo $layer_item['name']; ?></td>
-                        <td class="col-md-4"><?php echo $layer_item['display_name']; ?></td>
+                        <td class="col-md-4"><?php echo html_escape($layer_item['display_name']); ?></td>
                         <td class="col-md-1"><?php echo $layer_item['type']; ?></td>
                         <td class="col-md-2">
                             <a class="btn btn-default" href="<?php echo site_url('layers/edit/'.$layer_item['id']); ?>"><?php echo $this->lang->line('gp_layer'); ?></a>

@@ -27,16 +27,16 @@
 	  <?php foreach ($users as $user_item): ?>
 
 		<tr>
-            <td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
-            <td class="col-md-1"><?php echo $user_item['last_name']; ?></td>
+            <td class="col-md-1"><?php echo html_escape($user_item['first_name']); ?></td>
+            <td class="col-md-1"><?php echo html_escape($user_item['last_name']); ?></td>
             <td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
             <td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-            <td class="col-md-1"><?php echo $user_item['organization']; ?></td>
+            <td class="col-md-1"><?php echo html_escape($user_item['organization']); ?></td>
             <td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
             <td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
             <td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>
             <td class="col-md-1"><?php echo $user_item['role_display_name']; ?></td>
-            <td class="col-md-1"><?php echo $user_item['scope']; ?></td>
+            <td class="col-md-1"><?php echo html_escape($user_item['scope']); ?></td>
             <td class="col-md-1"><?php echo $user_item['groups']; ?></td>
             <td class="col-md-1"><?php echo set_check_icon($user_item['active']); ?></td>
 		  <td class="col-md-1">

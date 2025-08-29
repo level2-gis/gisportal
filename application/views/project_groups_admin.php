@@ -49,8 +49,8 @@
                     <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
                 </td>
                 <td class="col-md-1"><?php echo $groups_item['name']; ?></td>
-                <td class="col-md-1"><?php echo $groups_item['display_name']; ?></td>
-                <td class="col-md-1"><?php echo $groups_item['client']; ?></td>
+                <td class="col-md-1"><?php echo html_escape($groups_item['display_name']); ?></td>
+                <td class="col-md-1"><?php echo html_escape($groups_item['client']); ?></td>
                 <td class="col-md-1"><?php echo $groups_item['parent']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['project_crs']; ?></td>
                 <td class="col-md-1"><?php echo $groups_item['projects']; ?></td>

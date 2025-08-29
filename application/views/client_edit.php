@@ -98,7 +98,7 @@
                     <?php foreach ($items as $group_item): ?>
                         <tr>
                             <td class="col-md-2"><?php echo $group_item['name']; ?></td>
-                            <td class="col-md-2"><?php echo $group_item['display_name']; ?></td>
+                            <td class="col-md-2"><?php echo html_escape($group_item['display_name']); ?></td>
                             <td><?php echo $group_item['type']; ?></td>
                             <td><?php echo json_encode($group_item['items']); ?></td>
                             <td>
@@ -136,11 +136,11 @@
 					</thead>
 					<?php foreach ($users as $user_item): ?>
 						<tr>
-							<td class="col-md-1"><?php echo $user_item['first_name']; ?></td>
-							<td class="col-md-2"><?php echo $user_item['last_name']; ?></td>
+							<td class="col-md-1"><?php echo html_escape($user_item['first_name']); ?></td>
+							<td class="col-md-2"><?php echo html_escape($user_item['last_name']); ?></td>
 							<td class="col-md-1"><?php echo $user_item['user_name']; ?></td>
 							<td class="col-md-1"><?php echo $user_item['user_email']; ?></td>
-							<td class="col-md-1"><?php echo $user_item['organization']; ?></td>
+							<td class="col-md-1"><?php echo html_escape($user_item['organization']); ?></td>
 							<td class="col-md-1"><?php echo set_datestr($user_item['registered']); ?></td>
 							<td class="col-md-1"><?php echo $user_item['count_login']; ?></td>
 							<td class="col-md-1"><?php echo set_datestr($user_item['last_login']); ?></td>

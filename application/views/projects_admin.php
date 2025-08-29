@@ -51,9 +51,9 @@
 			<img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
 		  </td>
 		  <td class="col-md-1"><a target="_self" href="<?php echo site_url($this->config->item('web_client_url').$project_item['name']); ?>"><?php echo $project_item['name']; ?></a></td>
-          <td class="col-md-2"><?php echo $project_item['display_name']; ?></td>
-		  <td class="col-md-1"><?php echo $project_item['client']; ?></td>
-		  <td class="col-md-2"><?php echo $project_item['group']; ?></td>
+          <td class="col-md-2"><?php echo html_escape($project_item['display_name']); ?></td>
+		  <td class="col-md-1"><?php echo html_escape($project_item['client']); ?></td>
+		  <td class="col-md-2"><?php echo html_escape($project_item['group']); ?></td>
           <td class="col-md-1"><?php echo $project_item['crs']; ?></td>
 		  <td class="col-md-1"><?php echo $project_item['version']; ?></td>
 		  <td class="col-md-1"><?php echo $project_item['plugins']; ?></td>

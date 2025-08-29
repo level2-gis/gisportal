@@ -15,7 +15,7 @@ class Mail extends CI_Controller
 
 	function test()
 	{
-		
+
 		if (!$this->ion_auth->logged_in()) {
 			$this->output
 				->set_content_type('application/json')
@@ -26,7 +26,7 @@ class Mail extends CI_Controller
 				)));
 			return;
 		}
-				
+
 		// using temporary data for testing
 		$data = new stdClass();
 		$data->mailto = $this->config->item('admin_email');

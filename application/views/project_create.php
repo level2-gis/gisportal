@@ -12,7 +12,7 @@
                     <option <?php if ($client_item['id'] == $project['client_id']) {
                         echo "selected='selected'";
                     }; ?>
-                        value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                        value="<?php echo $client_item['id']; ?>"><?php echo html_escape($client_item['display_name']) . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
             </select>
             <span class="text-danger"><?php echo form_error('client_id'); ?></span>
         </div>

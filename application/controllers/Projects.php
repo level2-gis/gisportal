@@ -559,7 +559,7 @@ class Projects extends CI_Controller
 
             if(sizeof($_POST) > 0){
                 $em = $this->extractProjectData();
-                $data['title'] = $this->lang->line('gp_project') .' '. $em['display_name'];
+                $data['title'] = $this->lang->line('gp_project') .' '. html_escape($em['display_name']);
                 $data['creating'] = false;
             } else {
                 try {
@@ -584,7 +584,7 @@ class Projects extends CI_Controller
                 if (!empty($this->session->flashdata('project_group_id'))) {
                     $em['project_group_id'] = $this->session->flashdata('project_group_id');
                 }
-                $data['title'] = $this->lang->line('gp_project') . ' ' . $em['display_name'];
+                $data['title'] = $this->lang->line('gp_project') . ' ' . html_escape($em['display_name']);
                 $data['creating'] = false;
             }
 
@@ -1480,7 +1480,7 @@ class Projects extends CI_Controller
 		}
 
 		if (is_file($fn)) {
-			return "<img height='32px' src='" . $base . '/' . $path . "?v=". $this->config->item('header_logo_version') . "'>";
+			return "<img height='32px' src='" . $base . '/' . $path . "'>";
 		} else {
 			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>" . $fn . "</div>";
 		}
@@ -1506,7 +1506,7 @@ class Projects extends CI_Controller
 //    }
 
     private function get_name($el) {
-        return empty($el['display_name']) ? $el['name'] : $el['display_name'];
+        return empty($el['display_name']) ? $el['name'] : html_escape($el['display_name']);
     }
 
     private function build_parent_link($id, $sep, &$result, $mode = NULL) {
@@ -1540,7 +1540,7 @@ class Projects extends CI_Controller
         }
 
         $client = $this->client_model->get_client($group['client_id']);
-        $client_full = anchor('clients/edit/'.$client->id, $client->display_name);
+        $client_full = anchor('clients/edit/'.$client->id, html_escape($client->display_name));
 
         return $client_full . $sep . $group_full;
     }
@@ -1630,7 +1630,7 @@ class Projects extends CI_Controller
             }
 
             $group_full = $this->get_name($group);
-            $client_full = anchor('project_groups/view/'.$client->id, $client->display_name);
+            $client_full = anchor('project_groups/view/'.$client->id, html_escape($client->display_name));
 
             //update parent_id, because current group we already have
             $parent_id = $group['parent_id'];

@@ -38,8 +38,8 @@
                 <td class="col-md-1">
                     <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="">
                 </td>
-                <td class="col-md-3"><?php echo $clients_item['name']; ?></td>
-                <td class="col-md-3"><?php echo $clients_item['display_name']; ?></td>
+                <td class="col-md-3"><?php echo html_escape($clients_item['name']); ?></td>
+                <td class="col-md-3"><?php echo html_escape($clients_item['display_name']); ?></td>
                 <td class="col-md-1"><?php echo $clients_item['count_groups']; ?></td>
                 <td class="col-md-1"><?php echo $clients_item['count']; ?></td>
                 <td class="col-md-3">

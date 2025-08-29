@@ -214,14 +214,14 @@ class Clients extends CI_Controller
 
 			$em = $this->extractPostData();
 			if (sizeof($_POST) > 0) {
-				$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+				$data['title'] = $this->lang->line('gp_client') . ' ' . html_escape($em['display_name']);
 				$data['creating'] = false;
 			} else {
 				if ($client_id !== false) {
 					$dq = $this->client_model->get_client($client_id);
 					if ($dq->id != null) {
 						$em = (array)$dq;
-						$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+						$data['title'] = $this->lang->line('gp_client') . ' ' . html_escape($em['display_name']);
 						$data['creating'] = false;
 					}
 				}
@@ -520,6 +520,11 @@ class Clients extends CI_Controller
 			$groups = [$this->client_model->get_client($filter, $list_only)];
 		}
 
+		// Escape HTML for all elements
+		array_walk_recursive($groups, function (&$value) {
+			$value = html_escape($value);
+		});
+
 		$this->output
 			->set_content_type('text/html')
 			->set_status_header(200)
@@ -576,7 +581,7 @@ class Clients extends CI_Controller
 		}
 
 		if (is_file($fn)) {
-			return "<img height='32px' src='" . $base . '/' . $path . "?v=". $this->config->item('header_logo_version') . "'>";
+			return "<img title='".$fn."' class='img-responsive' src='" . $base.'/'.$path . "'>";
 		}
 		else {
 			return "<div class='alert alert-danger'><span class='glyphicon glyphicon-alert' aria-hidden='true'></span> Image missing, using default logo: _temp.png</br>".$fn."</div>";

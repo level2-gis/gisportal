@@ -72,7 +72,7 @@ class Users extends CI_Controller {
 
 			if(sizeof($_POST) > 0){
 				$em = $this->extractUserData();
-				$data['title'] = lang('gp_edit') . ' ' .lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
+				$data['title'] = lang('gp_edit') . ' ' .lang('gp_user') . ' ' . html_escape($em['first_name']) . ' ' .  html_escape($em['last_name']);
 				$data['creating'] = false;
 			} else {
 				if ($user_id !== false){
@@ -91,7 +91,7 @@ class Users extends CI_Controller {
 
 					if ($dq->user_id != null){
 						$em = (array)$dq;
-						$data['title'] = lang('gp_user') . ' ' . $em['first_name'] . ' ' .  $em['last_name'];
+						$data['title'] = lang('gp_user') . ' ' . html_escape($em['first_name']) . ' ' .  html_escape($em['last_name']);
 						$data['creating'] = false;
 					}
 				}
@@ -125,7 +125,7 @@ class Users extends CI_Controller {
 
 			$data['role_scope'] = empty($edit_user_role->scope) ? $this->lang->line('gp_admin_full_name') : $edit_user_role->scope;
 			if ($edit_user_role) {
-				$data['user_admin_msg'] = str_replace('{name}', $data['role_scope'] . ' ' . $edit_user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
+				$data['user_admin_msg'] = str_replace('{name}', html_escape($data['role_scope']) . ' ' . $edit_user_role->role_display_name, $this->lang->line('gp_user_is_admin'));
 			}
 
 			$data['current_role_filter'] = $filter;  //filter for current logged in user

@@ -1,9 +1,9 @@
 <html>
 <body>
 <h3>Data change</h3>
-<p><?php echo lang('gp_user'); ?>: <?php echo $user; ?>
-	<br/><?php echo lang('gp_project'); ?>: <a href="<?php echo $projectLink; ?>"><?php echo $project; ?></a>
-	<br/><?php echo lang('gp_layer'); ?>: <a href="<?php echo $layerLink; ?>"><?php echo $layer; ?></a></p>
+<p><?php echo lang('gp_user'); ?>: <?php echo html_escape($user); ?>
+	<br/><?php echo lang('gp_project'); ?>: <a href="<?php echo $projectLink; ?>"><?php echo html_escape($project); ?></a>
+	<br/><?php echo lang('gp_layer'); ?>: <a href="<?php echo $layerLink; ?>"><?php echo html_escape($layer); ?></a></p>
 <table border="1">
 	<thead>
 	<tr>

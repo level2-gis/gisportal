@@ -4,7 +4,7 @@
 <?php foreach ($projects as $item):
 
     $img_path = "assets/img/projects/" . $item['name'] . ".png";
-    $name = empty($item['display_name']) ? $item['name'] : $item['display_name'];
+    $name = empty($item['display_name']) ? $item['name'] : html_escape($item['display_name']);
     $url = site_url($this->config->item('web_client_url').$item['name']);
     $edit_url = site_url('projects/edit/' . $item['id']);
 
@@ -28,7 +28,7 @@
             </h4>
             <a target="_self" href="<?php echo $url; ?>"><img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
                 <div class="caption post-content">
-                    <p class="<?php echo $desc_class; ?>"><?php echo $item['description']; ?></p>
+                    <p class="<?php echo $desc_class; ?>"><?php echo html_escape($item['description']); ?></p>
                     <p class="<?php echo $desc_class; ?>"><?php echo $item['crs']; ?></p>
                 </div>
             </a>

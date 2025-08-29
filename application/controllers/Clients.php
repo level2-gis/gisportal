@@ -214,14 +214,14 @@ class Clients extends CI_Controller
 
 			$em = $this->extractPostData();
 			if (sizeof($_POST) > 0) {
-				$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+				$data['title'] = $this->lang->line('gp_client') . ' ' . html_escape($em['display_name']);
 				$data['creating'] = false;
 			} else {
 				if ($client_id !== false) {
 					$dq = $this->client_model->get_client($client_id);
 					if ($dq->id != null) {
 						$em = (array)$dq;
-						$data['title'] = $this->lang->line('gp_client') . ' ' . $em['display_name'];
+						$data['title'] = $this->lang->line('gp_client') . ' ' . html_escape($em['display_name']);
 						$data['creating'] = false;
 					}
 				}
@@ -519,6 +519,11 @@ class Clients extends CI_Controller
 		} else {
 			$groups = [$this->client_model->get_client($filter, $list_only)];
 		}
+
+		// Escape HTML for all elements
+		array_walk_recursive($groups, function (&$value) {
+			$value = html_escape($value);
+		});
 
 		$this->output
 			->set_content_type('text/html')

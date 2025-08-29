@@ -24,9 +24,9 @@
 
             <tr>
                 <td class="col-md-2"><?php echo $layers_item['name']; ?></td>
-                <td class="col-md-2"><?php echo $layers_item['display_name']; ?></td>
+                <td class="col-md-2"><?php echo html_escape($layers_item['display_name']); ?></td>
                 <td class="col-md-2"><?php echo $layers_item['type']; ?></td>
-                <td class="col-md-2"><?php echo $layers_item['client']; ?></td>
+                <td class="col-md-2"><?php echo html_escape($layers_item['client']); ?></td>
                 <td class="col-md-1"><?php echo $layers_item['groups']; ?></td>
                 <td class="col-md-3">
                     <a class="btn btn-primary" href="<?php echo site_url('layers/edit/'.$layers_item['id']); ?>">

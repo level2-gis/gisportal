@@ -7,7 +7,7 @@
                     <?php if (($user['user_id'] === $logged_id) || (!empty($current_role_filter) && !($role == 'admin' && $user_role->role_name == 'power'))) : ?>
                         <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $user_role->role_display_name; ?></a>
                     <?php else: ?>
-                       <a onclick="removeAdmin('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo $user_role->scope . ' ' . $user_role->role_display_name; ?></a>
+                       <a onclick="removeAdmin('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo html_escape($user_role->scope) . ' ' . $user_role->role_display_name; ?></a>
                     <?php endif; ?>
                 <?php else: ?>
                     <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +161,7 @@
                                 <select class="form-control" name="client_id" id="client_id" onchange="onClientChange(this,3);">
                                     <option value="" selected="true" disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                                     <?php foreach ($clients as $client_item): ?>
-                                        <option value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                                        <option value="<?php echo $client_item['id']; ?>"><?php echo html_escape($client_item['display_name']) . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
                                 </select>
 
                                 <select class="form-control" style="vertical-align: top" multiple size="10" name="project_group_id" id="project_group_id">
@@ -202,8 +202,8 @@
 							</thead>
 							<?php foreach ($groups as $group_item): ?>
 								<tr>
-									<td class="col-md-2"><?php echo $group_item['name']; ?></td>
-									<td class="col-md-2"><?php echo $group_item['client']; ?></td>
+									<td class="col-md-2"><?php echo html_escape($group_item['name']); ?></td>
+									<td class="col-md-2"><?php echo html_escape($group_item['client']); ?></td>
 									<td class="col-md-1"><?php echo $group_item['projects']; ?></td>
 									<td class="col-md-2"><a href="#"
 															onclick="switchRole(<?php echo $group_item['project_group_id'] . ',' . $user['user_id'] . ',' . $group_item['role_id']; ?>,'users')"><?php echo $group_item['role']; ?></a>

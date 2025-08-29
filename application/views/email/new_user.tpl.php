@@ -3,13 +3,13 @@
 <h3><?php echo lang('gp_new_user'); ?></h3>
 
 <p><b><?php echo lang('gp_name'); ?>:</b><br/>
-	<?php echo $first_name; ?> <?php echo $last_name; ?></p>
+	<?php echo html_escape($first_name); ?> <?php echo html_escape($last_name); ?></p>
 
 <p><b><?php echo lang('gp_email'); ?>:</b><br/>
 	<?php echo $email; ?></p>
 
 <p><b><?php echo lang('gp_client'); ?>:</b><br/>
-	<?php echo $client; ?></p>
+	<?php echo html_escape($client); ?></p>
 
 <br/>
 

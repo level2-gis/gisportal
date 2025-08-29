@@ -230,7 +230,7 @@ class Project_groups extends CI_Controller
                 $group = $this->extractPostData();
             }
             $g_type = $group['type'];
-            $title = empty($group['display_name']) ? $group['name'] : $group['display_name'];
+            $title = empty($group['display_name']) ? $group['name'] : html_escape($group['display_name']);
 
 
             $data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
@@ -717,7 +717,7 @@ class Project_groups extends CI_Controller
     }
 
     private function get_name($el) {
-        return empty($el['display_name']) ? $el['name'] : $el['display_name'];
+        return empty($el['display_name']) ? $el['name'] : html_escape($el['display_name']);
     }
 
     private function build_parent_link($id, $sep, &$result, $mode = NULL) {
@@ -751,7 +751,7 @@ class Project_groups extends CI_Controller
         }
 
         $client = $this->client_model->get_client($group['client_id']);
-        $client_full = anchor('clients/edit/'.$client->id, $client->display_name);
+        $client_full = anchor('clients/edit/'.$client->id, html_escape($client->display_name));
 
         return $client_full . $sep . $group_full;
     }

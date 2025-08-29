@@ -80,7 +80,7 @@
                                 <option <?php if ($client_item['id'] == $layer['client_id']) {
                                     echo "selected='selected'";
                                 }; ?>
-                                        value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                                        value="<?php echo $client_item['id']; ?>"><?php echo html_escape($client_item['display_name']) . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
                         </select>
                         <span class="text-danger"><?php echo form_error('client_id'); ?></span>
                     </div>
@@ -95,7 +95,7 @@
                             <option value="" selected="true"
                                     disabled><?php echo $this->lang->line('gp_select_client'); ?></option>
                             <?php foreach ($clients as $client_item): ?>
-                                <option value="<?php echo $client_item['id']; ?>"><?php echo $client_item['display_name'] . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
+                                <option value="<?php echo $client_item['id']; ?>"><?php echo html_escape($client_item['display_name']) . " (" . $client_item['name'] . ")"; ?></option>                            <?php endforeach; ?>
                         </select>
 
                         <select class="form-control" style="vertical-align: top" multiple size="10" name="project_group_id"
@@ -130,7 +130,7 @@
                     <?php foreach ($groups as $group_item): ?>
                         <tr>
                             <td class="col-md-2"><?php echo $group_item['name']; ?></td>
-                            <td class="col-md-2"><?php echo $group_item['client']; ?></td>
+                            <td class="col-md-2"><?php echo html_escape($group_item['client']); ?></td>
                             <td class="col-md-1"><?php echo set_check_icon((boolean)$group_item['is_base']); ?></td>
                             <td class="col-md-1"><?php echo set_check_icon((boolean)$group_item['is_extra']); ?></td>
                             <td>

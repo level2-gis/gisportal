@@ -16,8 +16,7 @@
 						 alt="">
 				</a>
 				<?php if (!$this->config->item('logo_contains_site_title')) : ?>
-					<a class="navbar-brand"
-					   href="<?php echo base_url(); ?>"><?php echo $this->config->item('site_title'); ?></a>
+					<p id="client_header" class="navbar-text"><?php echo $this->config->item('site_title'); ?></p>
 				<?php endif; ?>
 			</div>
 			<!-- Collect the nav links, forms, and other content for toggling -->
@@ -48,9 +47,17 @@
 													   aria-hidden="true"></span> <?php echo $this->session->userdata('user_name'); ?>
 							<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="<?php echo site_url('/profile') ?>"><?php echo lang('gp_profile_title'); ?></a>
+							<li class="dropdown-header">
+								<?php echo $this->session->userdata('user_display_name'); ?>
 							</li>
-							<li><a href="<?php echo site_url('/auth/logout') ?>"><?php echo lang('gp_log_out'); ?></a>
+							<li role="separator" class="divider"></li>
+							<li><a href="<?php echo site_url('/profile') ?>">
+									<?php echo lang('gp_profile_title'); ?>
+								</a>
+							</li>
+							<li><a href="<?php echo site_url('/auth/logout') ?>">
+									<?php echo lang('gp_log_out'); ?>
+								</a>
 							</li>
 						</ul>
 					</li>

@@ -1,3 +1,6 @@
+<?php
+$color = $this->config->item('main_color') == null ? '#28377a' : $this->config->item('main_color');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,8 +19,8 @@
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table.min.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table-reorder-rows.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css'); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20250525"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20250830"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20250830"); ?>">
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,6 +31,10 @@
 	<meta name="theme-color" content="#ffffff">
 
 	<style>
+		:root {
+			--main-color: <?php echo $color ?>;
+			--light-color: <?php echo $color ?>4d;
+		}
 		/*does not work on Firefox and MS browsers*/
 		input[type="search"]::-webkit-search-cancel-button {
 			-webkit-appearance: searchfield-cancel-button;

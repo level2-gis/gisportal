@@ -24,17 +24,16 @@
     ?>
 
     <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-4 col-lg-offset-0">
-        <div class="thumbnail">
+        <div class="thumbnail" onclick="window.location='<?php echo $url; ?>';">
             <h4 class="top"><?php echo $name; ?>
                 <?php if($is_admin) : ?>
                     <a target="_self" href="<?php echo $edit_url; ?>"><span class="glyphicon small glyphicon-pencil pull-right" aria-hidden="true"></span></a>
                 <?php endif; ?>
             </h4>
-            <a target="_self" href="<?php echo $url; ?>"><img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
+            <img class="<?php echo $img_class; ?>" src="<?php echo $img; ?>" alt="<?php echo $item['name']; ?>"/>
                 <div class="caption post-content">
                     <p class="<?php echo $desc_class; ?>"><?php echo html_escape($item['description']); ?></p>
                 </div>
-            </a>
         </div>
     </div>
 

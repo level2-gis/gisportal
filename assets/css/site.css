@@ -101,6 +101,11 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 40px;
 }
+
+thead {
+	color: var(--main-color);
+}
+
 .footer {
     position: absolute;
     bottom: 0;
@@ -124,7 +129,8 @@ body {
 }
 
 .page-header {
-  margin-top: 0px;
+	margin-top: 0px;
+	color: var(--main-color);
 }
 
 .actions {

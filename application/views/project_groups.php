@@ -28,7 +28,7 @@
     }
     ?>
 
-    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-0 col-md-4 col-md-offset-0 col-lg-4 col-lg-offset-0">
+	<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
         <div class="thumbnail" onclick="window.location='<?php echo $url; ?>';">
             <h4 class="top"><?php echo $name; ?>
                 <?php if($is_admin) : ?>

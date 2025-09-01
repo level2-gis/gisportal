@@ -1,5 +1,5 @@
 <?php
-$color = $this->config->item('main_color') == null ? '#ec6600' : $this->config->item('main_color');
+$color = $this->config->item('main_color') == null ? '#28377a' : $this->config->item('main_color');
 ?>
 <!DOCTYPE html>
 <html lang="en">

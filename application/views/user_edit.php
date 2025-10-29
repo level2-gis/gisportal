@@ -7,7 +7,7 @@
                     <?php if (($user['user_id'] === $logged_id) || (!empty($current_role_filter) && !($role == 'admin' && $user_role->role_name == 'power'))) : ?>
                         <a href="#" class="btn btn-mini btn-danger" disabled="disabled"><?php echo $role_scope . ' ' . $user_role->role_display_name; ?></a>
                     <?php else: ?>
-                       <a onclick="removeAdmin('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo html_escape($user_role->scope) . ' ' . $user_role->role_display_name; ?></a>
+                       <a onclick="removeAdmin('<?php echo html_escape($user['display_name']); ?>','<?php echo $user['user_id']; ?>','<?php echo $user_role->role_name; ?>','<?php echo $user_role->role_display_name; ?>')" href="#" class="btn btn-mini btn-danger"><?php echo html_escape($user_role->scope) . ' ' . $user_role->role_display_name; ?></a>
                     <?php endif; ?>
                 <?php else: ?>
                     <button type="button" class="btn btn-mini btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -15,9 +15,9 @@
                     </button>
                     <ul class="dropdown-menu">
                         <?php if (empty($current_role_filter)) : ?>
-                            <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','admin','<?php echo $role_admin; ?>')" href="#"><?php echo $role_admin; ?></a></li>
+                            <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo html_escape($user['display_name']); ?>','<?php echo $user['user_id']; ?>','admin','<?php echo $role_admin; ?>')" href="#"><?php echo $role_admin; ?></a></li>
                         <?php endif; ?>
-                        <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo $user['display_name']; ?>','<?php echo $user['user_id']; ?>','power','<?php echo $role_power; ?>')" href="#"><?php echo $role_power; ?></a></li>
+                        <li><a id="adminBtn" onclick="chooseAdminScope('<?php echo html_escape($user['display_name']); ?>','<?php echo $user['user_id']; ?>','power','<?php echo $role_power; ?>')" href="#"><?php echo $role_power; ?></a></li>
                     </ul>
                 <?php endif; ?>
             <?php endif; ?>
@@ -68,7 +68,7 @@
 						   class="control-label col-md-3"><?php echo $this->lang->line('gp_first_name'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="first_name" placeholder="" type="text"
-							   value="<?php echo $user['first_name']; ?>"/>
+							   value="<?php echo html_escape($user['first_name']); ?>"/>
 						<span class="text-danger"><?php echo form_error('first_name'); ?></span>
 					</div>
 				</div>
@@ -77,7 +77,7 @@
 						   class="control-label col-md-3"><?php echo $this->lang->line('gp_last_name'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="last_name" placeholder="" type="text"
-							   value="<?php echo $user['last_name']; ?>"/>
+							   value="<?php echo html_escape($user['last_name']); ?>"/>
 						<span class="text-danger"><?php echo form_error('last_name'); ?></span>
 					</div>
 				</div>
@@ -86,7 +86,7 @@
 						   class="control-label col-md-3"><?php echo $this->lang->line('gp_organization'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="organization" placeholder="" type="text"
-							   value="<?php echo $user['organization']; ?>"/>
+							   value="<?php echo html_escape($user['organization']); ?>"/>
 						<span class="text-danger"><?php echo form_error('organization'); ?></span>
 					</div>
 				</div>
@@ -95,7 +95,7 @@
 						   class="control-label col-md-3"><?php echo lang('edit_user_validation_phone_label'); ?></label>
 					<div class="col-md-5">
 						<input class="form-control" name="phone" placeholder="" type="text"
-							   value="<?php echo $user['phone']; ?>"/>
+							   value="<?php echo html_escape($user['phone']); ?>"/>
 						<span class="text-danger"><?php echo form_error('phone'); ?></span>
 					</div>
 				</div>
@@ -178,7 +178,7 @@
 							</div>
 							<div class="pull-right">
 								<a class="btn btn-danger"
-								   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?>
+								   onclick="confirmLink(GP.deleteAllRoles,'Groups for user: <?php echo html_escape($user['first_name']) . ' ' . html_escape($user['last_name']); ?>','<?php echo site_url('users/remove_role/null/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?>
 									&nbsp;<?php echo $this->lang->line('gp_all'); ?></a>
 							</div>
 						</div>
@@ -217,7 +217,7 @@
 											   onclick="restrictArea(<?php echo $group_item['project_group_id'] . ',' . $user['user_id'] . ',' . $group_item['client_id'] . ',' . $group_item['mask_id']; ?>)"><?php echo $this->lang->line('gp_area'); ?></a>
 										<?php endif; ?>
 										<a class="btn btn-danger"
-										   onclick="confirmLink(GP.deleteRole,'Group: <?php echo $group_item['name']; ?>','<?php echo site_url('users/remove_role/' . $group_item['project_group_id'] . '/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
+										   onclick="confirmLink(GP.deleteRole,'Group: <?php echo html_escape($group_item['name']); ?>','<?php echo site_url('users/remove_role/' . $group_item['project_group_id'] . '/' . $user['user_id'] . '/users'); ?>')"><?php echo $this->lang->line('gp_remove'); ?></a>
 									</td>
 								</tr>
 							<?php endforeach; ?>

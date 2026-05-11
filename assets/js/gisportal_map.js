@@ -186,11 +186,18 @@ var projection = new ol.proj.Projection({
 
 GP.map.olMap = new ol.Map({
 	target: 'map',
-	controls: ol.control.defaults().extend([
-		new ol.control.Rotate({duration: 0}),	//default is duration set and goes to view.animate which fails
-		new ol.control.FullScreen(),
-		new ol.control.ScaleLine(),
-		new ol.control.Attribution()
+	controls: ol.control.defaults({
+		zoomOptions: {zoomOutTipLabel: 'Pomanjšaj', zoomInTipLabel: 'Povečaj'},
+		attributionOptions: {tipLabel: 'Izdelava'}
+	}).extend([
+		new ol.control.Rotate({
+			duration: 0,
+			tipLabel: 'Ponastavi usmerjenost karte na sever'
+		}),
+		new ol.control.FullScreen({
+			tipLabel: 'Preklopi celozaslonski način'
+		}),
+		new ol.control.ScaleLine()
 	]),
 	layers: [],
 	view: new ol.View({
@@ -218,7 +225,8 @@ if (GP.map.overview > '') {
 		// });
 		var overviewMapControl = new ol.control.OverviewMap({
 			layers: [lay],
-			rotateWithView: false
+			rotateWithView: false,
+			tipLabel: 'Pregledna karta'
 		});
 		GP.map.olMap.addControl(overviewMapControl);
 	}

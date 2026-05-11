@@ -39,21 +39,21 @@
 				<div class="form-group">
 					<label for="display_name" class="control-label col-md-2"><?php echo $this->lang->line('gp_display_name'); ?></label>
 					<div class="col-md-5">
-						<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo $client['display_name']; ?>" />
+						<input class="form-control" name="display_name" placeholder="" type="text" value="<?php echo html_escape($client['display_name']); ?>" />
 						<span class="text-danger"><?php echo form_error('display_name'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
 					<label for="url" class="control-label col-md-2"><?php echo $this->lang->line('gp_url'); ?></label>
 					<div class="col-md-5">
-						<input class="form-control" name="url" placeholder="" type="text" value="<?php echo $client['url']; ?>" />
+						<input class="form-control" name="url" placeholder="" type="text" value="<?php echo html_escape($client['url']); ?>" />
 						<span class="text-danger"><?php echo form_error('url'); ?></span>
 					</div>	
 				</div>	
 				<div class="form-group">
 					<label for="description" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_description')); ?></label>
 					<div class="col-md-5">
-						<textarea class="form-control" cols="20" rows="3" name="description" placeholder="" type="text"><?php echo $client['description']; ?></textarea>
+						<textarea class="form-control" cols="20" rows="3" name="description" placeholder="" type="text"><?php echo html_escape($client['description']); ?></textarea>
 						<span class="text-danger"><?php echo form_error('description'); ?></span>
 					</div>	
 				</div>
@@ -167,7 +167,7 @@
 				
 				<?php if ( $creating === false && !empty($client['id'])) : ?>
 				<div class="pull-right">
-                    <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'Client: <?php echo $client['display_name'].' ('.$client['name'].')'; ?>','<?php echo site_url('clients/remove/'.$client['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
+                    <a class="btn btn-danger" onclick="confirmLink(GP.deleteGeneral,'Client: <?php echo html_escape($client['display_name']).' ('.$client['name'].')'; ?>','<?php echo site_url('clients/remove/'.$client['id']); ?>')"><?php echo $this->lang->line('gp_delete'); ?></a>
 				</div>
 				 <?php endif; ?>
 				</div>

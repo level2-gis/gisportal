@@ -212,3 +212,9 @@ $config['layer_preview_start_lonlat'] = '[15, 46]';
  * Layer map preview default map zoom value
  */
 $config['layer_preview_start_zoom'] = 8;
+
+/*
+ * Main color of the portal, used in hovering effects, titles and table header
+ * Use color in hex format, for example #28377a
+ */
+$config['main_color'] = '#28377a';

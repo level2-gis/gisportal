@@ -101,12 +101,17 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 40px;
 }
+
+thead {
+	color: var(--main-color);
+}
+
 .footer {
     position: absolute;
     bottom: 0;
     /*width: 100%;*/
     /* Set the fixed height of the footer here */
-    height: 40px;
+    /*height: 40px;*/
     /*background-color: #f5f5f5;*/
     padding: 10px 0 0 0;
 }
@@ -124,7 +129,8 @@ body {
 }
 
 .page-header {
-  margin-top: 0px;
+	margin-top: 0px;
+	color: var(--main-color);
 }
 
 .actions {
@@ -145,4 +151,12 @@ body {
 	color: #323F3F;
 	padding-bottom: 10px;
 	padding-top: 5px;
+}
+
+.navbar-brand{
+    padding-top: 5px;
+}
+
+.grey {
+    -webkit-text-fill-color: grey;
 }

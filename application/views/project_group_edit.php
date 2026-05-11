@@ -97,7 +97,7 @@
 
                     <div class="col-md-5">
                         <input class="form-control" name="display_name" placeholder="" type="text"
-                               value="<?php echo $group['display_name']; ?>"/>
+                               value="<?php echo html_escape($group['display_name']); ?>"/>
                         <span class="text-danger"><?php echo form_error('display_name'); ?></span>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
 					<?php endif; ?>
                 <?php endif; ?>
             <?php else: ?>
-				<input name="display_name" type="hidden" value="<?php echo $group['display_name']; ?>">
+				<input name="display_name" type="hidden" value="<?php echo html_escape($group['display_name']); ?>">
 				<input name="parent_id" type="hidden" value="<?php echo $group['parent_id']; ?>">
 				<input name="type" type="hidden" value="<?php echo $group['type']; ?>">
 				<input name="name" type="hidden" value="<?php echo $group['name']; ?>" />
@@ -232,7 +232,7 @@
                 <div class="row form-group">
                     <label for="contact" class="control-label col-md-2"><?php echo ucfirst(lang('gp_contact')); ?></label>
                     <div class="col-md-5">
-                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact" name="contact" placeholder="" type="text" value="<?php echo $group['contact']; ?>" />
+                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact" name="contact" placeholder="" type="text" value="<?php echo html_escape($group['contact']); ?>" />
                         <span class="text-danger"><?php echo form_error('contact'); ?></span>
                     </div>
                     <div class="col-md-3">
@@ -250,7 +250,7 @@
                 <div class="row form-group">
                     <label for="contact_email" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_contact')) . ' ' . lang('gp_email'); ?></label>
                     <div class="col-md-5">
-                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_email" name="contact_email" placeholder="" type="text" value="<?php echo $group['contact_email']; ?>" />
+                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_email" name="contact_email" placeholder="" type="text" value="<?php echo html_escape($group['contact_email']); ?>" />
                         <span class="text-danger"><?php echo form_error('contact_email'); ?></span>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
                 <div class="row form-group">
                     <label for="contact_phone" class="control-label col-md-2"><?php echo ucfirst($this->lang->line('gp_contact')) . ' ' . lang('edit_user_validation_phone_label'); ?></label>
                     <div class="col-md-5">
-                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_phone" name="contact_phone" placeholder="" type="text" value="<?php echo $group['contact_phone']; ?>" />
+                        <input <?php if (!empty($group['contact_id'])) : echo 'disabled="true"'; endif; ?> class="form-control" id="contact_phone" name="contact_phone" placeholder="" type="text" value="<?php echo html_escape($group['contact_phone']); ?>" />
                         <span class="text-danger"><?php echo form_error('contact_phone'); ?></span>
                     </div>
                 </div>

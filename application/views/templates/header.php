@@ -1,3 +1,6 @@
+<?php
+$color = $this->config->item('main_color') == null ? '#28377a' : $this->config->item('main_color');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,10 +19,14 @@
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table.min.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-table-reorder-rows.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css'); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20190515"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20200417"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20250830"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20250830"); ?>">
 
 	<style>
+		:root {
+			--main-color: <?php echo $color ?>;
+			--light-color: <?php echo $color ?>4d;
+		}
 		/*does not work on Firefox and MS browsers*/
 		input[type="search"]::-webkit-search-cancel-button {
 			-webkit-appearance: searchfield-cancel-button;

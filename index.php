@@ -36,6 +36,20 @@
  * @filesource
  */
 
+$envFile = __DIR__ . '/.env';
+if (is_file($envFile)) {
+	$pairs = parse_ini_file($envFile, false, INI_SCANNER_RAW);
+	if (is_array($pairs)) {
+		foreach ($pairs as $k => $v) {
+			if (!getenv($k)) {
+				putenv($k . '=' . $v);
+				$_ENV[$k] = $v;
+				$_SERVER[$k] = $v;
+			}
+		}
+	}
+}
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

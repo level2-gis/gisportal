@@ -18,7 +18,7 @@ $color = $this->config->item('main_color') == null ? '#28377a' : $this->config->
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css'); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/css/1-col-portfolio.css?v=20250830"); ?>">
-	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20250830"); ?>">
+	<link rel="stylesheet" href="<?php echo base_url("assets/css/site.css?v=20260719"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol.css?v=6.4.3"); ?>">
 	<link rel="stylesheet" href="<?php echo base_url("assets/map/ol-layerswitcher.css?v=3.8.1"); ?>">
 

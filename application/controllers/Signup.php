@@ -105,6 +105,22 @@ class Signup extends CI_Controller
 				//set link in case client exists
 				if (!empty($client_id)) {
 					$this->user_model->set_link($new_id, $client_id);
+
+					//add also default project group with validto if exists to user with role 20
+					if (!empty($client->default_project_group)) {
+						
+						$validto = (!empty($client->default_trial_days) && is_numeric($client->default_trial_days)) 
+							? date('Y-m-d', strtotime('+' . $client->default_trial_days . ' days'))
+							: null;
+						
+						$data = [
+							"user_id" => $new_id,
+							"role_id" => 20,
+							"project_group_id" => $client->default_project_group,
+							"validto" => $validto
+						];
+						$this->user_model->insert_project_group_role($data);
+					}
 				}
 
 				//notify administrators

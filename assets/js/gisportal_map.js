@@ -21,22 +21,23 @@ function extractStringFromObject(objName, string) {
 function setBaseLayer(lay, projection) {
 
 	//taken with changes from /gisapp/client_mobile/src/map.js
-	var layOl, definition;
+	var layOl;
+	var definition = $.parseJSON(lay.definition);
+	var visible = definition.visibility ? lay.visible : !!lay.base;
 
 	switch (lay.type) {
 		case 'OSM' :
 			layOl = new ol.layer.Tile({
-				visible: true,
+				visible: visible,
 				//name: lay.name,
 				source: new ol.source.OSM
 			});
 
 			break;
 
-		case 'XYZ' :
-			definition = $.parseJSON(lay.definition);
+		case 'XYZ' :			
 			layOl = new ol.layer.Tile({
-				visible: true,
+				visible: visible,
 				//name: lay.name,
 				source: new ol.source.XYZ(definition)
 			});
@@ -44,9 +45,8 @@ function setBaseLayer(lay, projection) {
 			break;
 
 		case 'Bing' :
-			definition = $.parseJSON(lay.definition);
-			layOl = new ol.layer.Tile({
-				visible: true,
+				layOl = new ol.layer.Tile({
+				visible: visible,
 				//name: lay.name,
 				preload: Infinity,
 				source: new ol.source.BingMaps({
@@ -58,8 +58,6 @@ function setBaseLayer(lay, projection) {
 			break;
 
 		case 'WMTS' :
-
-			definition = $.parseJSON(lay.definition);
 
 			// $.ajax(definition.capabilitiesUrl).then(function (response) {
 			// 	var result = new ol.format.WMTSCapabilities().read(response);
@@ -113,7 +111,7 @@ function setBaseLayer(lay, projection) {
 			}
 
 			layOl = new ol.layer.Tile({
-				visible: true,
+				visible: visible,
 				opacity: definition.opacity,
 				source: new ol.source.WMTS({
 					url: definition.url,
@@ -136,11 +134,9 @@ function setBaseLayer(lay, projection) {
 
 		case 'WMS' :
 
-			definition = $.parseJSON(lay.definition);
-
 			if (definition.singleTile) {
 				layOl = new ol.layer.Image({
-					visible: true,
+					visible: visible,
 					source: new ol.source.ImageWMS({
 						url: definition.url,
 						params: definition.params
@@ -149,7 +145,7 @@ function setBaseLayer(lay, projection) {
 			} else {
 				//tiled wms layer
 				layOl = new ol.layer.Tile({
-					visible: true,
+					visible: visible,
 					//name: lay.name,
 					source: new ol.source.TileWMS({
 						url: definition.url,

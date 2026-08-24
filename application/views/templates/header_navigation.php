@@ -27,10 +27,9 @@
 								<span><?php echo lang('gp_clients_title'); ?></span></a></li>
 						<li><a href="<?php echo site_url('/project_groups'); ?>"><i class="fa fa-list"></i>
 								<span><?php echo lang('gp_groups_title'); ?></span></a></li>
-					<?php endif; ?>
-
-					<li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i>
+						<li><a href="<?php echo site_url('/projects'); ?>"><i class="fa fa-file-text"></i>
 							<span><?php echo lang('gp_projects_title'); ?></span></a></li>
+					<?php endif; ?>
 
 					<?php if (isset($role) && $role === 'admin') : ?>
 						<li><a href="<?php echo site_url('/layers'); ?>"><i class="fa fa-database"></i>

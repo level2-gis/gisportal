@@ -45,3 +45,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /application/views/modules/
 
 
+/application/config/level2_proxy.php

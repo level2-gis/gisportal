@@ -192,7 +192,7 @@ class User_model extends CI_Model
 	function delete_project_group_role($group_id, $user_id)
 	{
 
-		//we delete only project roles, role_id over 10
+		//we delete only project roles, role_id over 9
 
 		if (!empty($user_id)) {
 			$this->db->where('user_id', $user_id);
@@ -201,7 +201,7 @@ class User_model extends CI_Model
 			$this->db->where('project_group_id', $group_id);
         }
 
-        $this->db->where('role_id >', 10);
+        $this->db->where('role_id >', 9);
         $this->db->delete('users_roles');
 
         if ($this->db->affected_rows() >= 1)

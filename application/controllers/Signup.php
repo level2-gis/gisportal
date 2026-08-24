@@ -115,7 +115,7 @@ class Signup extends CI_Controller
 						
 						$data = [
 							"user_id" => $new_id,
-							"role_id" => 20,
+							"role_id" => !is_null($client->default_role) ? $client->default_role : 20,
 							"project_group_id" => $client->default_project_group,
 							"validto" => $validto
 						];

@@ -172,6 +172,21 @@ $lang['gp_send_copy_to'] = 'Send copy to';
 $lang['gp_rss_latest_news'] = 'Latest news';
 $lang['gp_rss_new'] = 'new';
 
+$lang['gp_module_login_required'] = 'Please sign in to open this module.';
+$lang['gp_module_register_for_client'] = 'Register for this module here';
+$lang['gp_module_request_access_option'] = 'I already have a portal account - request access to this module';
+$lang['gp_module_access_request'] = 'Request access to module';
+$lang['gp_module_access_request_info'] = 'Your portal account has no access to this module yet. Send a request and the administrators will contact you.';
+$lang['gp_module_access_request_note'] = 'Message for the administrators (optional)';
+$lang['gp_module_access_request_sent'] = 'Your request was sent to the administrators.';
+$lang['gp_module_access_grant_info'] = 'You can activate access to this module right away.';
+$lang['gp_module_access_activate'] = 'Activate access';
+$lang['gp_module_access_granted'] = 'Access to the module was activated.';
+$lang['gp_module'] = 'Module';
+$lang['gp_modules'] = 'Modules';
+$lang['gp_valid_to'] = 'Valid to';
+$lang['gp_module_my_access'] = 'My modules';
+
 $lang['gp_map'] = 'Map';
 
 $lang['gp_portal_role'] = 'Portal role';

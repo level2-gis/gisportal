@@ -173,6 +173,21 @@ $lang['gp_send_copy_to'] = 'Pošlji kopijo na';
 $lang['gp_rss_latest_news'] = 'Zadnje novice';
 $lang['gp_rss_new'] = 'novo';
 
+$lang['gp_module_login_required'] = 'Za dostop do modula se prijavite.';
+$lang['gp_module_register_for_client'] = 'Registrirajte se za dostop do modula ';
+$lang['gp_module_request_access_option'] = 'Sem že uporabnik in želim dostop do modula ';
+$lang['gp_module_access_request'] = 'Zaprosi za dostop do modula';
+$lang['gp_module_access_request_info'] = 'Vaš uporabniški račun še nima dostopa do tega modula. Pošljite prošnjo in skrbniki vas bodo kontaktirali.';
+$lang['gp_module_access_request_note'] = 'Sporočilo za skrbnike (neobvezno)';
+$lang['gp_module_access_request_sent'] = 'Vaša prošnja je bila poslana skrbnikom.';
+$lang['gp_module_access_grant_info'] = 'Dostop do tega modula lahko vklopite takoj.';
+$lang['gp_module_access_activate'] = 'Vklopi dostop';
+$lang['gp_module_access_granted'] = 'Dostop do modula je vklopljen.';
+$lang['gp_module'] = 'Modul';
+$lang['gp_modules'] = 'Moduli';
+$lang['gp_valid_to'] = 'Velja do';
+$lang['gp_module_my_access'] = 'Moji moduli';
+
 $lang['gp_map'] = 'Karta';
 
 $lang['gp_portal_role'] = 'Pravice';

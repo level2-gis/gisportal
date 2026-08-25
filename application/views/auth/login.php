@@ -1,3 +1,33 @@
+<?php if (!empty($module_context)) : ?>
+    <style>
+        .module-cta {
+            border: 2px solid #31708f;
+            border-radius: 4px;
+            background-color: #eaf4f9;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+        }
+        .module-cta label {
+            font-weight: 700;
+            color: #23527c;
+            margin-bottom: 0;
+        }
+        .module-cta input[type="checkbox"] {
+            margin-top: 3px;
+        }
+        .module-register {
+            border: 2px dashed #31708f;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .module-register .btn {
+            margin-top: 8px;
+            white-space: normal;
+        }
+    </style>
+<?php endif; ?>
 <div class="row">
     <div class="col-md-4 col-md-offset-4 well">
 
@@ -9,6 +39,16 @@
 		<?php else : ?>
 			<p>&nbsp</p>
 		<?php endif; ?>
+
+        <?php if (!empty($module_context)) : ?>
+            <div class="alert alert-info">
+                <h4><strong><?php echo html_escape($module_context['module']); ?></strong></h4>
+                <?php if (!empty($module_context['description'])) : ?>
+                    <p><?php echo html_escape($module_context['description']); ?></p>
+                <?php endif; ?>
+                <!-- <p><?php echo $this->lang->line('gp_module_login_required'); ?></p> -->
+            </div>
+        <?php endif; ?>
 
         <div class="form-group">
             <label for="identity"><?php echo $this->lang->line('gp_user'); ?></label>
@@ -29,6 +69,13 @@
             <label><input name="remember" id="remember" type="checkbox" value="1"><?php echo rtrim($this->lang->line('login_remember_label'),':'); ?></label>
         </div>
 
+        <?php if (!empty($module_context['request_access_url'])) : ?>
+            <div class="checkbox module-cta">
+                <label><input name="request_access" id="request_access" type="checkbox" value="1"
+                              <?php echo set_checkbox('request_access', '1'); ?>><?php echo $this->lang->line('gp_module_request_access_option'); ?><?php echo html_escape($module_context['module']); ?></label>
+            </div>
+        <?php endif; ?>
+
         <div class="form-group">
             <button name="submit" type="submit"
                     class="btn btn-info btn-block"><?php echo $this->lang->line('gp_login'); ?></button>
@@ -36,8 +83,17 @@
         <?php echo form_close(); ?>
         <?php echo $this->session->flashdata('message'); ?>
 
+        <?php if (!empty($module_context['register_url'])) : ?>
+            <div class="module-register">
+                <strong><?php echo $this->lang->line('gp_new_user'); ?>?</strong>
+                <a class="btn btn-success btn-block" href="<?php echo html_escape($module_context['register_url']); ?>">
+                    <?php echo $this->lang->line('gp_module_register_for_client'); ?><?php echo html_escape($module_context['module']); ?>
+                </a>
+            </div>
+        <?php endif; ?>
+
         <p class="text-center">
-            <?php if ($this->config->item('public_registration')) : ?>
+            <?php if ($this->config->item('public_registration') && empty($module_context['register_url'])) : ?>
                 <?php echo $this->lang->line('gp_new_user'); ?>? <a
                     href="<?php echo site_url('/signup') ?>"><?php echo $this->lang->line('gp_register'); ?> <?php echo $this->lang->line('gp_here'); ?></a></br>
             <?php endif; ?>

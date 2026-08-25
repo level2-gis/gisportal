@@ -41,6 +41,8 @@ class Profile extends CI_Controller
 			$data['role_name'] = null;
 		}
 
+		$data['modules'] = $this->user_modules($id);
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/header_navigation', $data);
 
@@ -70,5 +72,26 @@ class Profile extends CI_Controller
 
 		$this->load->view('templates/footer');
 
+    }
+
+    private function user_modules($user_id)
+    {
+        if (!$this->load_module_model()) {
+            return array();
+        }
+
+        return $this->module_model->get_user_modules($user_id);
+    }
+
+    //modules are an extension to gisportal, the model is not always deployed
+    private function load_module_model()
+    {
+        if (!file_exists(APPPATH . 'models/modules/Module_model.php')) {
+            return false;
+        }
+
+        $this->load->model('modules/module_model');
+
+        return true;
     }
 }

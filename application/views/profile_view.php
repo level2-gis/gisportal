@@ -56,5 +56,16 @@
 
 	</div>
 
+<?php if (!empty($modules)) : ?>
+	<div class="row">
+		<div class="col-md-8">
+			<?php $this->load->view('modules/user_modules', array(
+				'modules' => $modules,
+				'modules_heading' => lang('gp_module_my_access')
+			)); ?>
+		</div>
+	</div>
+<?php endif; ?>
+
     </br>
 

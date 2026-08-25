@@ -71,10 +71,18 @@ class Auth extends CI_Controller
             }
         }
 
+        //module details set by a module controller before redirecting here, they live as long as the return url does
+        $module_context = $this->session->flashdata('module_context');
+        if (!empty($module_context) && (!empty($ru) || !empty($ref))) {
+            $this->session->keep_flashdata('module_context');
+        } else {
+            $module_context = null;
+        }
+
         if ($this->ion_auth->logged_in()) {
         	empty($ref) ? redirect("/") : redirect($ref);
         } else {
-        	if(!empty($ru)) {
+        	if(!empty($ru) && empty($module_context)) {
 				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">'.lang("gp_session_timeout").'</div>');
 			}
 		}
@@ -87,6 +95,7 @@ class Auth extends CI_Controller
         $this->data['lang'] = $this->session->userdata('lang') == null ? get_code($this->config->item('language')) : $this->session->userdata('lang');
         $this->data['logged_in'] = false;
         $this->data['is_admin'] = false;
+        $this->data['module_context'] = $module_context;
 
         // validate form input
 		$this->form_validation->set_rules('identity', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
@@ -103,6 +112,12 @@ class Auth extends CI_Controller
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->set_flashdata('message', '<div class="alert alert-info text-center">' . $this->ion_auth->messages() . '</div>');
+
+				//user asked for access to the module he was redirected from
+				if ($this->input->post('request_access') && !empty($module_context['request_access_url'])) {
+					redirect($module_context['request_access_url'], 'refresh');
+				}
+
                 empty($ref) ? redirect("/", 'refresh') : redirect($ref, 'refresh');
 			}
 			else

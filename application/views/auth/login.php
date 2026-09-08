@@ -44,7 +44,9 @@
             <div class="alert alert-info">
                 <h4><strong><?php echo html_escape($module_context['module']); ?></strong></h4>
                 <?php if (!empty($module_context['description'])) : ?>
-                    <p><?php echo html_escape($module_context['description']); ?></p>
+                    <p><?php echo html_escape($module_context['description']); ?>
+					<b><a href="<?php echo html_escape($module_context['description_url']); ?>" target="_blank"> Več informacij</a></b>.
+					</p>
                 <?php endif; ?>
                 <!-- <p><?php echo $this->lang->line('gp_module_login_required'); ?></p> -->
             </div>

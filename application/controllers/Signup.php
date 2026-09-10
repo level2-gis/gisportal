@@ -44,7 +44,7 @@ class Signup extends CI_Controller
 		}
 
 		// set form validation rules
-		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|required|max_length[30]');
+		$this->form_validation->set_rules('fname', $this->lang->line('gp_first_name'), 'trim|max_length[30]');
 		$this->form_validation->set_rules('lname', $this->lang->line('gp_last_name'), 'trim|max_length[30]');
 		$this->form_validation->set_rules('email', $this->lang->line('gp_email'), 'trim|required|valid_email|is_unique[users.user_email]');
 		$this->form_validation->set_rules('username', $this->lang->line('gp_username'), 'trim|alpha_numeric|required|min_length[3]|max_length[30]|is_unique[users.user_name]');

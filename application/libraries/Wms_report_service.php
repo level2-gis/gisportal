@@ -248,6 +248,15 @@ class Wms_report_service
         $marginY = max(abs($maxY - $minY) * $margin, 1.0);
         $contextWidth = ($maxX - $minX) + (2 * $marginX);
         $contextHeight = ($maxY - $minY) + (2 * $marginY);
+        $minimumExtent = max(0, (float)$this->CI->config->item('wms_feature_report_min_extent_meters'));
+        if ($contextWidth < $minimumExtent) {
+            $marginX += ($minimumExtent - $contextWidth) / 2;
+            $contextWidth = $minimumExtent;
+        }
+        if ($contextHeight < $minimumExtent) {
+            $marginY += ($minimumExtent - $contextHeight) / 2;
+            $contextHeight = $minimumExtent;
+        }
         $width = max(1, (int)$this->CI->config->item('wms_feature_report_width'));
         $height = max(1, (int)round($width * ($contextHeight / $contextWidth)));
         return [

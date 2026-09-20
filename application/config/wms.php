@@ -35,6 +35,7 @@ $config['wms_max_image_size'] = 10 * 1024 * 1024; // 10MB
 $config['wms_feature_report_width'] = 800;
 $config['wms_feature_report_dpi'] = 200;
 $config['wms_feature_report_bbox_margin'] = 0.20; // 20% on each side
+$config['wms_feature_report_min_extent_meters'] = 100; // Minimum ground width and height for small features
 
 // External WMS layers clients may enable with external_layers[].
 $config['wms_feature_report_external_layers'] = [

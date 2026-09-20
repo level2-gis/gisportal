@@ -85,6 +85,11 @@ Edit `application/config/email.php` with your own Gmail access.
 
 Read [official Codeigniter documentation](https://codeigniter.com/userguide3/libraries/email.html) on all email preferences that can be set to configure using other mail servers.
 
+## Feature report API
+
+See [PHPWORD_INTEGRATION.md](PHPWORD_INTEGRATION.md) for the authenticated
+`GET /documents/feature_report` request and DOCX download examples.
+
 [Test mail - localhost example](http://localhost/gisportal/index.php/mail/test)
 
 If you have problems sending email check this settings for your Google account: [Google-account-configuration](../../wiki/Google-account-configuration)

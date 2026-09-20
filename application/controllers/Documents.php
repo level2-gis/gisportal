@@ -45,8 +45,8 @@ class Documents extends CI_Controller
         } catch (UnexpectedValueException $e) {
             log_message('error', 'Feature report project failure: ' . $e->getMessage());
             return $this->_jsonError(502, 'Project could not be loaded');
-        } catch (Exception $e) {
-            log_message('error', 'Feature report generation failed: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            log_message('error', 'Feature report generation failed: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
             return $this->_jsonError(502, 'Feature report generation failed');
         } finally {
             foreach ($temporaryFiles as $temporaryFile) {

@@ -281,8 +281,11 @@ class Wms_client
             }
             $tempDir = $this->buildPath(FCPATH, 'assets', 'temp_images') . DIRECTORY_SEPARATOR;
             
-            if (!is_dir($tempDir)) {
-                mkdir($tempDir, 0755, true);
+            if (!is_dir($tempDir) && !@mkdir($tempDir, 0755, true) && !is_dir($tempDir)) {
+                throw new Exception('Could not create temporary image directory: ' . $tempDir);
+            }
+            if (!is_writable($tempDir)) {
+                throw new Exception('Temporary image directory is not writable: ' . $tempDir);
             }
             
             $filename = 'map_' . uniqid() . '.png';

@@ -279,7 +279,7 @@ class Wms_client
             if (strlen($imageData) === 0 || strlen($imageData) > $maxImageSize || @getimagesizefromstring($imageData) === false) {
                 throw new Exception('WMS GetMap returned an invalid image');
             }
-            $tempDir = $this->buildPath(FCPATH, 'assets', 'temp_images') . DIRECTORY_SEPARATOR;
+            $tempDir = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR;
             
             if (!is_dir($tempDir) && !@mkdir($tempDir, 0755, true) && !is_dir($tempDir)) {
                 throw new Exception('Could not create temporary image directory: ' . $tempDir);

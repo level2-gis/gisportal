@@ -1,0 +1,33 @@
+line-profile.js - shared line elevation profile chart module
+==============================================================
+
+No dependencies (no jQuery/OpenLayers/ExtJS). Load it as a plain <script>
+tag before your code uses it; it exposes a global `GPLineProfile`
+(CommonJS `module.exports` also works if bundled).
+
+Typical usage:
+
+  1. Fetch profile data from the Level2 "geometry/drape" endpoint
+     (POST { geometry: <LINESTRING Z WKT>, ... }), response must contain
+     `geometry`, `distances`, `segment_slopes_percent`.
+
+  2. Build state from the response:
+       var state = GPLineProfile.stateFromResponse(data);
+       if (!state) { /* no usable profile in response */ }
+
+  3. Build the chart markup + pixel layout:
+       var chart = GPLineProfile.buildChart(state, { idPrefix: 'my_profile' });
+       containerEl.innerHTML = chart.svg;
+
+  4. Wire up hover interaction on the container that now holds the SVG:
+       var detach = GPLineProfile.attachHover(containerEl, state, chart.layout, {
+           onHover: function (point, slopePercent, projectedPoint) { ... },
+           onLeave: function () { ... }
+       });
+       // call detach() before re-rendering/removing the chart
+
+`idPrefix` must be unique per chart instance on the page (it's used for
+internal SVG element ids). Reuse the same GPLineProfile.formatNumber /
+formatWithUnit helpers to keep number formatting consistent across clients.
+
+See usage in gisportal-modules/application/views/modules/plan3d/map.php.

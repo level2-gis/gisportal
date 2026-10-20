@@ -23,6 +23,7 @@ class Qgisproject_model extends CI_Model
     public $main_path   = null;
     public $name		= null;
 	public $qgs_layers 	= [];
+	public $qgs_groups 	= [];
 
     /**
      * Default location of QGIS project file when uploading or using template
@@ -333,6 +334,9 @@ class Qgisproject_model extends CI_Model
 		$prop->version = "";
 		$prop->crs_list = [];
 		$prop->description = "";
+		$prop->groups = [];
+		$prop->skip_group_names = false;
+		$prop->layouts = [];
 
 		if(empty($this->error)) {
 			$prop->crs = (string)$xml->mapcanvas->destinationsrs->spatialrefsys->authid;
@@ -346,10 +350,15 @@ class Qgisproject_model extends CI_Model
 			$prop->version = (string)$xml["version"];
 			$prop->crs_list = array_filter((array)($xml->properties->WMSCrsList->value));
 			$prop->description = (string)$xml->properties->WMSServiceAbstract;
+			$prop->skip_group_names = filter_var($xml->properties->WMSSkipNameForGroup,FILTER_VALIDATE_BOOLEAN);
+			$prop->layouts = self::_get_print_layouts($xml);
 
 			$excluded = (array)$xml->properties->WMSRestrictedLayers->value;
+			//legacy projects (QGIS 2) store non-identifiable layers in a project property
+			$identifyDisabled = isset($xml->properties->Identify->disabledLayers->value) ? (array)$xml->properties->Identify->disabledLayers->value : [];
 			try {
 
+				$this->qgs_groups = [];
 				self::_read_layer_node($xml->xpath('layer-tree-group')[0],null, null);
 
 				//get wfs layers
@@ -368,7 +377,15 @@ class Qgisproject_model extends CI_Model
 							$lay->key = (string)$lay_info["key"];
 							//$lay->identify = (int)$lay_info["identify"];
 						}
+						if (isset($lay_object->flags->Identifiable)) {
+							$lay->identifiable = filter_var((string)$lay_object->flags->Identifiable, FILTER_VALIDATE_BOOLEAN);
+						}
 					}
+					if (in_array($lay->id, $identifyDisabled)) {
+						$lay->identifiable = false;
+					}
+					//QGIS Server hides all layers inside a restricted group
+					$lay->restricted = count(array_intersect($lay->group_path, $excluded)) > 0;
 
 					//continue if layer is excluded
 					if(in_array($lay->layername, $excluded)) {
@@ -403,6 +420,16 @@ class Qgisproject_model extends CI_Model
 					$prop->layers[$lay->id] = $lay;
 				}
 
+				foreach ($this->qgs_groups as $group) {
+					if (count(array_intersect($group->path, $excluded)) > 0) {
+						continue;
+					}
+					$group->layer_ids = array_values(array_filter($group->layer_ids, function ($id) use ($prop) {
+						return isset($prop->layers[$id]) && empty($prop->layers[$id]->restricted);
+					}));
+					$prop->groups[] = $group;
+				}
+
 			} catch (\Exception $e) {
 				$this->error = $e->getMessage();
 			}
@@ -417,14 +444,28 @@ class Qgisproject_model extends CI_Model
 	 * @param $groupname
 	 * @param $parent
 	 */
-    private function _read_layer_node($group,$groupname,$parent)
+    private function _read_layer_node($group,$groupname,$parent,$path = [])
 	{
+		$layerIds = [];
 		foreach ($group->children() as $el) {
 			$cnt = sizeof($this->qgs_layers);
 			$type = $el->getName();
 			$lay = new \stdClass();
 			if ($type == 'layer-tree-group') {
-				$this->_read_layer_node($el, (string)$el->attributes()["name"], $groupname);
+				$name = (string)$el->attributes()["name"];
+				$groupPath = array_merge($path, [$name]);
+				// Reserve the slot first so groups keep tree order (parents before children).
+				$groupIndex = count($this->qgs_groups);
+				$this->qgs_groups[$groupIndex] = null;
+				$childIds = $this->_read_layer_node($el, $name, $groupname, $groupPath);
+				$this->qgs_groups[$groupIndex] = (object)[
+					'name' => $name,
+					'short_name' => self::_get_custom_property($el, 'wmsShortName'),
+					'path' => $groupPath,
+					'mutually_exclusive' => filter_var((string)$el->attributes()["mutually-exclusive"], FILTER_VALIDATE_BOOLEAN),
+					'layer_ids' => $childIds
+				];
+				$layerIds = array_merge($layerIds, $childIds);
 
 			} else {
 				if ($el->attributes()["id"] > '') {
@@ -432,6 +473,7 @@ class Qgisproject_model extends CI_Model
 					$lay->topic = 'Topic';
 					$lay->parent = $parent;
 					$lay->groupname = $groupname;
+					$lay->group_path = $path;
 					$lay->layername = (string)$el->attributes()["name"];
 					$lay->toclayertitle = (string)$el->attributes()["name"];
 					$lay->visible = (string)$el->attributes()["checked"] == 'Qt::Checked' ? true : false;
@@ -444,11 +486,46 @@ class Qgisproject_model extends CI_Model
 					$lay->geom_type = '';   //fill later
 					$lay->geom_column = ''; //fill later
 					$lay->crs = ''; //fill later
+					$lay->identifiable = true; //fill later
 
 					array_push($this->qgs_layers, $lay);
+					$layerIds[] = $lay->id;
 				}
 			}
 		}
+		return $layerIds;
+	}
+
+	/**
+	 * Read a layer tree custom property, QGIS 3 (<Option>) and legacy (<property>) formats.
+	 */
+	private function _get_custom_property(SimpleXMLElement $el, $name)
+	{
+		if (!isset($el->customproperties)) {
+			return '';
+		}
+		$quoted = '"' . str_replace('"', '', $name) . '"';
+		$found = $el->customproperties->xpath('.//Option[@name=' . $quoted . '] | ./property[@key=' . $quoted . ']');
+		return !empty($found) ? (string)$found[0]['value'] : '';
+	}
+
+	/**
+	 * Print layout names published by QGIS Server (QGIS 3 <Layout>, QGIS 2 <Composer>),
+	 * without layouts listed in WMSRestrictedComposers.
+	 */
+	private function _get_print_layouts(SimpleXMLElement $xml)
+	{
+		$restricted = array_map('strval', $xml->xpath('properties/WMSRestrictedComposers/value') ?: []);
+		$layouts = [];
+		foreach ($xml->xpath('Layouts/Layout') ?: [] as $layout) {
+			$layouts[] = (string)$layout['name'];
+		}
+		foreach ($xml->xpath('Composer') ?: [] as $composer) {
+			$layouts[] = (string)$composer['title'];
+		}
+		return array_values(array_unique(array_filter($layouts, function ($name) use ($restricted) {
+			return $name !== '' && !in_array($name, $restricted, true);
+		})));
 	}
 
 	private function _get_project_extent($xml) {

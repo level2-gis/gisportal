@@ -105,6 +105,17 @@ class Wms_client
             $requestParams['FILTER'] = $params['FILTER'];
         }
 
+        foreach (['FI_POINT_TOLERANCE', 'FI_LINE_TOLERANCE', 'FI_POLYGON_TOLERANCE'] as $toleranceParam) {
+            if (isset($params[$toleranceParam]) && is_numeric($params[$toleranceParam]) && (int)$params[$toleranceParam] >= 0) {
+                $requestParams[$toleranceParam] = (int)$params[$toleranceParam];
+            }
+        }
+        foreach (['WITH_MAPTIP', 'STYLES'] as $optionalParam) {
+            if (isset($params[$optionalParam]) && is_scalar($params[$optionalParam])) {
+                $requestParams[$optionalParam] = (string)$params[$optionalParam];
+            }
+        }
+
         if (version_compare($version, '1.3.0', '>=')) {
             $requestParams['CRS'] = $crs;
             if (isset($params['I'], $params['J'])) {
@@ -122,21 +133,25 @@ class Wms_client
         
         $requestUrl = $this->getRequestUrl($params);
         $requestOptions = $this->getRequestOptions($requestParams, $params);
-        $requestOptions['timeout'] = $this->CI->config->item('wms_feature_info_timeout') ?: 10;
+        $requestOptions['timeout'] = isset($params['TIMEOUT']) && is_numeric($params['TIMEOUT']) && $params['TIMEOUT'] > 0
+            ? (float)$params['TIMEOUT']
+            : ($this->CI->config->item('wms_feature_info_timeout') ?: 10);
         $maxAttempts = max(1, (int)($this->CI->config->item('wms_feature_info_attempts') ?: 1));
         $retryDelayMs = max(0, (int)$this->CI->config->item('wms_feature_info_retry_delay_ms'));
+        $maxResponseSize = isset($params['MAX_RESPONSE_SIZE']) && is_numeric($params['MAX_RESPONSE_SIZE']) && $params['MAX_RESPONSE_SIZE'] > 0
+            ? (int)$params['MAX_RESPONSE_SIZE']
+            : ($this->CI->config->item('wms_max_feature_response_size') ?: (2 * 1024 * 1024));
 
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             try {
                 $response = $this->client->get($requestUrl, $requestOptions);
             
                 $body = $response->getBody()->getContents();
-                $maxResponseSize = $this->CI->config->item('wms_max_feature_response_size') ?: (2 * 1024 * 1024);
                 if (strlen($body) > $maxResponseSize) {
                     throw new Exception('WMS GetFeatureInfo response is too large');
                 }
                 $parsed = $this->parseFeatureInfoResponse($body, $requestParams['INFO_FORMAT']);
-                if (empty($parsed['bbox'])) {
+                if (empty($parsed['bbox']) && $hasFilter) {
                     log_message('error', 'WMS GetFeatureInfo raw response (no bbox): ' . substr($body, 0, 2000));
                 }
                 return $parsed;
@@ -310,6 +325,128 @@ class Wms_client
         return $params['URL'];
     }
 
+    /**
+     * Render QGIS Server print layouts (REQUEST=GetPrint, FORMAT=png) in parallel.
+     *
+     * Each request: URL, VERSION, CRS, TEMPLATE, EXTENT, LAYERS and optional DPI, HIGHLIGHT_GEOM,
+     * HIGHLIGHT_SYMBOL, EXTERNAL_WMS_PARAMS, TIMEOUT. Map parameters apply to the first layout map (map0).
+     *
+     * @param array $requests
+     * @return array Same keys as $requests: ['path' => PNG temp file, 'width' => px, 'height' => px]
+     *               on success, ['error' => message] on failure. Callers must delete the files.
+     */
+    public function getPrints(array $requests)
+    {
+        $maxImageSize = (int)($this->CI->config->item('wms_print_max_image_size') ?: (20 * 1024 * 1024));
+        $maxPixels = (int)($this->CI->config->item('wms_print_max_pixels') ?: 40000000);
+        $results = [];
+        $promises = [];
+
+        foreach ($requests as $key => $params) {
+            try {
+                list($url, $options) = $this->buildPrintRequest($params, $maxImageSize);
+                log_message('debug', 'WMS GetPrint request: ' . $url . '?' . http_build_query($options['query']));
+                $promises[$key] = $this->client->getAsync($url, $options);
+            } catch (Exception $e) {
+                $results[$key] = ['error' => $e->getMessage()];
+            }
+        }
+
+        foreach (\GuzzleHttp\Promise\Utils::settle($promises)->wait() as $key => $outcome) {
+            try {
+                if ($outcome['state'] !== 'fulfilled') {
+                    $reason = $outcome['reason'];
+                    throw new Exception('GetPrint request failed: ' . ($reason instanceof Throwable ? $reason->getMessage() : (string)$reason));
+                }
+                $results[$key] = $this->savePrintImage($outcome['value'], $maxImageSize, $maxPixels);
+            } catch (Exception $e) {
+                log_message('error', 'WMS GetPrint failed for map ' . $key . ': ' . $e->getMessage());
+                $results[$key] = ['error' => $e->getMessage()];
+            }
+        }
+
+        $ordered = [];
+        foreach (array_keys($requests) as $key) {
+            $ordered[$key] = $results[$key];
+        }
+        return $ordered;
+    }
+
+    private function buildPrintRequest(array $params, $maxImageSize)
+    {
+        foreach (['URL', 'TEMPLATE', 'EXTENT', 'LAYERS'] as $param) {
+            if (!isset($params[$param]) || !is_scalar($params[$param]) || (string)$params[$param] === '') {
+                throw new InvalidArgumentException("Missing required parameter: $param");
+            }
+        }
+        $version = isset($params['VERSION']) ? $params['VERSION'] : $this->defaultParams['VERSION'];
+        $crs = isset($params['CRS']) ? $params['CRS'] : $this->defaultParams['CRS'];
+        $query = [
+            'SERVICE' => 'WMS',
+            'VERSION' => $version,
+            'REQUEST' => 'GetPrint',
+            'TEMPLATE' => (string)$params['TEMPLATE'],
+            'FORMAT' => 'png',
+            'map0:EXTENT' => (string)$params['EXTENT'],
+            'map0:LAYERS' => (string)$params['LAYERS']
+        ];
+        $query[version_compare($version, '1.3.0', '>=') ? 'CRS' : 'SRS'] = $crs;
+        if (isset($params['DPI']) && is_numeric($params['DPI']) && (int)$params['DPI'] > 0) {
+            $query['DPI'] = (int)$params['DPI'];
+        }
+        if (!empty($params['HIGHLIGHT_GEOM']) && !empty($params['HIGHLIGHT_SYMBOL'])) {
+            $query['map0:HIGHLIGHT_GEOM'] = (string)$params['HIGHLIGHT_GEOM'];
+            $query['map0:HIGHLIGHT_SYMBOL'] = (string)$params['HIGHLIGHT_SYMBOL'];
+        }
+        if (isset($params['EXTERNAL_WMS_PARAMS']) && is_array($params['EXTERNAL_WMS_PARAMS'])) {
+            foreach ($params['EXTERNAL_WMS_PARAMS'] as $name => $value) {
+                if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*:(url|format|crs|layers|styles)$/', (string)$name) && is_scalar($value)) {
+                    $query[$name] = (string)$value;
+                }
+            }
+        }
+
+        $url = $this->getRequestUrl($params);
+        $options = $this->getRequestOptions($query, $params);
+        $options['timeout'] = isset($params['TIMEOUT']) && is_numeric($params['TIMEOUT']) && $params['TIMEOUT'] > 0
+            ? (float)$params['TIMEOUT']
+            : ($this->CI->config->item('wms_print_timeout') ?: 45);
+        // Abort before downloading an image that is announced as too large.
+        $options['on_headers'] = function (\Psr\Http\Message\ResponseInterface $response) use ($maxImageSize) {
+            $length = $response->getHeaderLine('Content-Length');
+            if ($length !== '' && (int)$length > $maxImageSize) {
+                throw new Exception('GetPrint image is too large');
+            }
+        };
+        return [$url, $options];
+    }
+
+    private function savePrintImage(\Psr\Http\Message\ResponseInterface $response, $maxImageSize, $maxPixels)
+    {
+        $contentType = strtolower($response->getHeaderLine('Content-Type'));
+        if (strpos($contentType, 'image/png') !== 0) {
+            $body = substr((string)$response->getBody(), 0, 500);
+            throw new Exception('GetPrint returned ' . ($contentType !== '' ? $contentType : 'no content type') . ': ' . strip_tags($body));
+        }
+        $imageData = (string)$response->getBody();
+        if (strlen($imageData) === 0 || strlen($imageData) > $maxImageSize) {
+            throw new Exception('GetPrint image is empty or too large');
+        }
+        $size = @getimagesizefromstring($imageData);
+        if ($size === false || $size[2] !== IMAGETYPE_PNG || $size[0] <= 0 || $size[1] <= 0) {
+            throw new Exception('GetPrint returned an invalid PNG');
+        }
+        if ($size[0] * $size[1] > $maxPixels) {
+            throw new Exception('GetPrint image has too many pixels; lower wms_print_dpi or the layout page size');
+        }
+
+        $imagePath = tempnam(sys_get_temp_dir(), 'print_');
+        if ($imagePath === false || file_put_contents($imagePath, $imageData) === false) {
+            throw new Exception('Could not save the GetPrint image');
+        }
+        return ['path' => $imagePath, 'width' => (int)$size[0], 'height' => (int)$size[1]];
+    }
+
     private function isValidWmsUrl($url)
     {
         if (!is_string($url) || filter_var($url, FILTER_VALIDATE_URL) === false) {
@@ -418,6 +555,7 @@ class Wms_client
             'features' => [],
             'feature_count' => 0,
             'layer_name' => '',
+            'layers' => [],
             'bbox' => '',
             'generated_date' => date('Y-m-d H:i:s'),
             'generated_by' => 'WMS Client'
@@ -433,6 +571,12 @@ class Wms_client
             $layerName = isset($layer['name']) ? (string)$layer['name'] : '';
             if ($result['layer_name'] === '' && $layerName !== '') {
                 $result['layer_name'] = $layerName;
+            }
+            if ($layerName !== '') {
+                $result['layers'][] = [
+                    'name' => $layerName,
+                    'title' => isset($layer['title']) ? (string)$layer['title'] : ''
+                ];
             }
 
             foreach ($layer->xpath('./*[local-name()="Feature"]') as $feature) {

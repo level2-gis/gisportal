@@ -16,6 +16,41 @@ class Documents extends CI_Controller
      */
     public function feature_report()
     {
+        $this->_runReport(function ($input, $displayName) {
+            return $this->wms_report_service->collectFeatureReport($input, $displayName);
+        }, function ($report, $input) {
+            return [
+                $this->_generateDocument($report['data'], $report['template']),
+                $this->_buildDownloadFilename($report['data'], $input)
+            ];
+        }, 'Feature report');
+    }
+
+    /**
+     * GET|POST /documents/location_report
+     * Generate a DOCX report of all features intersecting one map location in the
+     * requested layers. Location uses the client map context: bbox, width, height, i, j.
+     */
+    public function location_report()
+    {
+        $timeLimit = (int)$this->config->item('wms_location_report_time_limit');
+        if ($timeLimit > 0) {
+            @set_time_limit($timeLimit);
+        }
+
+        $this->_runReport(function ($input, $displayName) {
+            return $this->wms_report_service->collectLocationReport($input, $displayName);
+        }, function ($report) {
+            $templateProcessor = $this->_loadReportTemplate($report['template']);
+            return [
+                $this->phpword_lib->replaceLocationData($templateProcessor, $report['data']),
+                $this->_buildLocationFilename($report['data'])
+            ];
+        }, 'Location report');
+    }
+
+    private function _runReport(callable $collect, callable $render, $label)
+    {
         $temporaryFiles = [];
 
         try {
@@ -28,13 +63,13 @@ class Documents extends CI_Controller
             if (is_array($postInput)) {
                 $input = array_merge(is_array($input) ? $input : [], $postInput);
             }
+            $input = is_array($input) ? $input : [];
 
             $user = $this->ion_auth->user()->row();
             $displayName = !empty($user->user_display_name) ? $user->user_display_name : $user->username;
-            $report = $this->wms_report_service->collectFeatureReport($input, $displayName);
+            $report = $collect($input, $displayName);
             $temporaryFiles = $report['temporary_files'];
-            $document = $this->_generateDocument($report['data'], $report['template']);
-            $filename = $this->_buildDownloadFilename($report['data'], $input);
+            list($document, $filename) = $render($report, $input);
             $this->phpword_lib->downloadDocument($document, $filename, 'Word2007');
         } catch (InvalidArgumentException $e) {
             return $this->_jsonError(422, $e->getMessage());
@@ -43,11 +78,11 @@ class Documents extends CI_Controller
         } catch (OutOfBoundsException $e) {
             return $this->_jsonError(404, $e->getMessage());
         } catch (UnexpectedValueException $e) {
-            log_message('error', 'Feature report project failure: ' . $e->getMessage());
+            log_message('error', $label . ' project failure: ' . $e->getMessage());
             return $this->_jsonError(502, 'Project could not be loaded');
         } catch (Throwable $e) {
-            log_message('error', 'Feature report generation failed: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
-            return $this->_jsonError(502, 'Feature report generation failed');
+            log_message('error', $label . ' generation failed: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
+            return $this->_jsonError(502, $label . ' generation failed');
         } finally {
             foreach ($temporaryFiles as $temporaryFile) {
                 if (is_file($temporaryFile)) {
@@ -57,15 +92,32 @@ class Documents extends CI_Controller
         }
     }
 
-    private function _generateDocument(array $reportData, $templateName)
+    private function _loadReportTemplate($templateName)
     {
         $templatePath = APPPATH . 'templates' . DIRECTORY_SEPARATOR . $templateName;
         if (!is_file($templatePath)) {
             throw new UnexpectedValueException('Report template was not found');
         }
+        return $this->phpword_lib->loadTemplate($templatePath);
+    }
 
-        $templateProcessor = $this->phpword_lib->loadTemplate($templatePath);
+    private function _generateDocument(array $reportData, $templateName)
+    {
+        $templateProcessor = $this->_loadReportTemplate($templateName);
         return $this->phpword_lib->replaceWmsData($templateProcessor, $reportData);
+    }
+
+    private function _buildLocationFilename(array $reportData)
+    {
+        $parts = [];
+        foreach (['project_name', 'location_x', 'location_y'] as $key) {
+            $value = isset($reportData[$key]) && is_scalar($reportData[$key]) ? (string)$reportData[$key] : '';
+            $value = trim(preg_replace('/[^A-Za-z0-9_.-]+/', '_', $value), '.-_');
+            if ($value !== '') {
+                $parts[] = $value;
+            }
+        }
+        return 'location_' . (empty($parts) ? 'report' : implode('_', $parts)) . '.docx';
     }
 
     private function _buildDownloadFilename(array $reportData, array $input)

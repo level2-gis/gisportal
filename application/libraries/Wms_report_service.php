@@ -95,6 +95,482 @@ class Wms_report_service
         ];
     }
 
+    /**
+     * Report for all features intersecting one map location in the requested layers.
+     */
+    public function collectLocationReport(array $input, $username)
+    {
+        $prepared = $this->prepareLocationReport($input, $username);
+        $this->releaseSessionLock();
+        return $this->executeLocationReport($prepared);
+    }
+
+    /**
+     * Validate the request and resolve project/layers. Needs the user session.
+     * The returned array is plain data, so it can be stored for a deferred job.
+     */
+    public function prepareLocationReport(array $input, $username)
+    {
+        $request = $this->validateLocationRequest($input);
+        $project = $this->resolveProject($request['project_name']);
+        $crs = (string)$project['properties']->crs;
+        if ($request['crs'] !== '' && strcasecmp($request['crs'], $crs) !== 0) {
+            throw new InvalidArgumentException('crs must match the project CRS ' . $crs);
+        }
+
+        $layers = $this->resolveLocationLayers($project['properties'], $request['layers'], $skipped);
+        if (empty($layers)) {
+            throw new InvalidArgumentException('None of the requested layers can be queried');
+        }
+        $maxLayers = max(1, (int)($this->CI->config->item('wms_report_max_layers') ?: 20));
+        if (count($layers) > $maxLayers) {
+            throw new InvalidArgumentException('At most ' . $maxLayers . ' layers can be requested, groups expand to ' . count($layers));
+        }
+        $qgisLayers = implode(',', array_map(function ($layer) {
+            return $layer['qgis_layer'];
+        }, $layers));
+
+        $featureInfoParams = array_merge($this->locationToleranceParams(), [
+            'URL' => $project['url'],
+            'VERSION' => $project['version'],
+            'CRS' => $crs,
+            'LAYERS' => $qgisLayers,
+            'QUERY_LAYERS' => $qgisLayers,
+            'STYLES' => str_repeat(',', count($layers) - 1),
+            'BBOX' => implode(',', $request['bbox']),
+            'WIDTH' => $request['width'],
+            'HEIGHT' => $request['height'],
+            'FEATURE_COUNT' => max(1, (int)($this->CI->config->item('wms_location_report_feature_count') ?: 10)),
+            'INFO_FORMAT' => 'text/xml',
+            'WITH_GEOMETRY' => 'false',
+            'WITH_MAPTIP' => 'false',
+            'TIMEOUT' => $this->CI->config->item('wms_location_report_timeout'),
+            'MAX_RESPONSE_SIZE' => $this->CI->config->item('wms_location_report_max_response_size')
+        ]);
+        if (version_compare($project['version'], '1.3.0', '>=')) {
+            $featureInfoParams['I'] = $request['i'];
+            $featureInfoParams['J'] = $request['j'];
+        } else {
+            $featureInfoParams['X'] = $request['i'];
+            $featureInfoParams['Y'] = $request['j'];
+        }
+
+        list($minX, $minY, $maxX, $maxY) = $request['bbox'];
+        $location = [
+            'x' => $minX + (($request['i'] + 0.5) / $request['width']) * ($maxX - $minX),
+            'y' => $maxY - (($request['j'] + 0.5) / $request['height']) * ($maxY - $minY)
+        ];
+
+        return [
+            'project' => [
+                'name' => $project['name'],
+                'display_name' => $project['display_name'],
+                'description' => $project['description']
+            ],
+            'layers' => $layers,
+            'skipped_layers' => $skipped,
+            'feature_info_params' => $featureInfoParams,
+            'maps' => $this->prepareMaps($project, $request['maps'], $request['bbox'], $location),
+            'crs' => $crs,
+            'bbox' => $request['bbox'],
+            'location' => $location,
+            'client' => $request['client'],
+            'address' => $request['address'],
+            'template' => $request['template'],
+            'username' => (string)$username
+        ];
+    }
+
+    /**
+     * Run the WMS request and build the report data. Uses no session state.
+     */
+    public function executeLocationReport(array $prepared)
+    {
+        $featureData = $this->CI->wms_client->getFeatureInfo($prepared['feature_info_params']);
+        $features = $this->normalizeFeatures(isset($featureData['features']) ? $featureData['features'] : []);
+
+        $layerLookup = [];
+        $reportLayers = [];
+        foreach ($prepared['layers'] as $index => $layer) {
+            foreach ([$layer['qgis_layer'], $layer['id'], $layer['name']] as $alias) {
+                if ($alias !== '' && !isset($layerLookup[$alias])) {
+                    $layerLookup[$alias] = $index;
+                }
+            }
+            $reportLayers[$index] = [
+                'id' => $layer['id'],
+                'name' => $layer['name'],
+                'group' => isset($layer['group_path']) ? $layer['group_path'] : '',
+                'requested_group' => isset($layer['requested_group']) ? $layer['requested_group'] : '',
+                'geometry_type' => $layer['geometry_type'],
+                'feature_count' => 0,
+                'features' => []
+            ];
+        }
+
+        $totalCount = 0;
+        $unmatched = [];
+        foreach ($features as $feature) {
+            if (!isset($layerLookup[$feature['layer']])) {
+                $unmatched[$feature['layer']] = true;
+                continue;
+            }
+            $index = $layerLookup[$feature['layer']];
+            if ($feature['geometry_type'] === '') {
+                $feature['geometry_type'] = $reportLayers[$index]['geometry_type'];
+            }
+            $feature['layer'] = $reportLayers[$index]['name'];
+            $feature['fields'] = $this->formatFeatureFields($feature, $prepared['project']['name'], $prepared['client']);
+            $reportLayers[$index]['features'][] = $feature;
+            $reportLayers[$index]['feature_count']++;
+            $totalCount++;
+        }
+        if (!empty($unmatched)) {
+            log_message('error', 'Location report: GetFeatureInfo returned unrequested layers: ' . implode(', ', array_keys($unmatched)));
+        }
+
+        list($maps, $skippedMaps, $temporaryFiles) = $this->renderMaps(isset($prepared['maps']) ? $prepared['maps'] : []);
+
+        $data = [
+            'title' => $prepared['project']['display_name'],
+            'description' => $prepared['project']['description'],
+            'project_name' => $prepared['project']['name'],
+            'crs' => $prepared['crs'],
+            'bbox' => $this->formatBbox($prepared['bbox']),
+            'location_x' => $this->formatCoordinate($prepared['location']['x']),
+            'location_y' => $this->formatCoordinate($prepared['location']['y']),
+            'location_address' => isset($prepared['address']) ? $prepared['address'] : '',
+            'scope' => 'location',
+            'layer_count' => count($reportLayers),
+            'feature_count' => $totalCount,
+            'generated_date' => date('Y-m-d H:i:s'),
+            'generated_by' => $prepared['username'],
+            'layers' => array_values($reportLayers),
+            'skipped_layers' => isset($prepared['skipped_layers']) ? $prepared['skipped_layers'] : [],
+            'map_count' => count($maps),
+            'maps' => $maps,
+            'skipped_maps' => $skippedMaps
+        ];
+
+        return [
+            'data' => $data,
+            'template' => $prepared['template'],
+            'temporary_files' => $temporaryFiles
+        ];
+    }
+
+    /**
+     * Validate layouts and layers of the requested maps and build their GetPrint parameters.
+     */
+    protected function prepareMaps(array $project, array $maps, array $bbox, array $location)
+    {
+        if (empty($maps)) {
+            return [];
+        }
+        $properties = $project['properties'];
+        $layouts = isset($properties->layouts) && is_array($properties->layouts) ? $properties->layouts : [];
+        $dpi = max(1, (int)($this->CI->config->item('wms_print_dpi') ?: 150));
+        $symbol = (string)$this->CI->config->item('wms_print_highlight_symbol');
+
+        $prepared = [];
+        foreach ($maps as $map) {
+            if (!in_array($map['template'], $layouts, true)) {
+                throw new DomainException('Print layout is not available in the current project: ' . $map['template']);
+            }
+            $layers = $this->resolveMapLayers($properties, $map['layers']);
+            $external = $this->resolveExternalLayers($map['external_layers']);
+            $params = [
+                'URL' => $project['url'],
+                'VERSION' => $project['version'],
+                'CRS' => (string)$properties->crs,
+                'TEMPLATE' => $map['template'],
+                'EXTENT' => implode(',', $bbox),
+                // WMS order: the first layer is drawn at the bottom, external backgrounds first.
+                'LAYERS' => implode(',', array_merge($external['layers'], $layers)),
+                'DPI' => $dpi,
+                'EXTERNAL_WMS_PARAMS' => $external['params'],
+                'TIMEOUT' => $this->CI->config->item('wms_print_timeout')
+            ];
+            if ($symbol !== '') {
+                $params['HIGHLIGHT_GEOM'] = 'POINT(' . $location['x'] . ' ' . $location['y'] . ')';
+                $params['HIGHLIGHT_SYMBOL'] = $symbol;
+            }
+            $prepared[] = [
+                'title' => $map['title'],
+                'template' => $map['template'],
+                'layers' => array_merge($map['external_layers'], $map['layers']),
+                'dpi' => $dpi,
+                'print_params' => $params
+            ];
+        }
+        return $prepared;
+    }
+
+    /**
+     * Map layers may be any visible project layer (also rasters and non-queryable layers)
+     * or a layer tree group, which is passed to QGIS by its WMS name. Returns WMS names in request order.
+     */
+    protected function resolveMapLayers($properties, array $requested)
+    {
+        $groups = !empty($properties->skip_group_names) || !isset($properties->groups) ? [] : $properties->groups;
+        $names = [];
+        foreach ($requested as $name) {
+            if (isset($properties->layers[$name])) {
+                $names[] = $this->resolveLayer($properties, $name)['qgis_layer'];
+                continue;
+            }
+            $match = null;
+            foreach ($groups as $group) {
+                if ($group->name === $name || ($group->short_name !== '' && $group->short_name === $name)) {
+                    $match = $group;
+                    break;
+                }
+            }
+            if ($match === null) {
+                throw new DomainException('Map layer or group is not available in the current project: ' . $name);
+            }
+            $names[] = $match->short_name !== '' ? $match->short_name : $match->name;
+        }
+        return array_values(array_unique($names));
+    }
+
+    /**
+     * Run the GetPrint requests in parallel. A failed map is reported in skipped maps,
+     * it does not fail the report.
+     */
+    protected function renderMaps(array $maps)
+    {
+        if (empty($maps)) {
+            return [[], [], []];
+        }
+        $images = $this->CI->wms_client->getPrints(array_map(function ($map) {
+            return $map['print_params'];
+        }, $maps));
+
+        // Word pages can be at most 22 inches on each side.
+        $maxPageInches = 22;
+        $rendered = [];
+        $skipped = [];
+        $temporaryFiles = [];
+        foreach ($maps as $index => $map) {
+            $image = isset($images[$index]) ? $images[$index] : ['error' => 'no response'];
+            if (!empty($image['path'])) {
+                $temporaryFiles[] = $image['path'];
+            }
+            $name = $map['title'] !== '' ? $map['title'] : $map['template'];
+            if (empty($image['path'])) {
+                $skipped[] = ['name' => $name, 'reason' => 'map could not be rendered'];
+                continue;
+            }
+            if ($image['width'] / $map['dpi'] > $maxPageInches || $image['height'] / $map['dpi'] > $maxPageInches) {
+                log_message('error', 'Location report: print layout ' . $map['template'] . ' is larger than a Word page');
+                $skipped[] = ['name' => $name, 'reason' => 'layout page is too large'];
+                continue;
+            }
+            $rendered[] = [
+                'title' => $map['title'],
+                'template' => $map['template'],
+                'layers' => $map['layers'],
+                'image_path' => $image['path'],
+                'image_width' => $image['width'],
+                'image_height' => $image['height'],
+                'dpi' => $map['dpi']
+            ];
+        }
+        return [$rendered, $skipped, $temporaryFiles];
+    }
+
+    protected function validateLocationRequest(array $input)
+    {
+        $projectName = isset($input['project']) && is_scalar($input['project']) ? trim((string)$input['project']) : '';
+        if ($projectName === '') {
+            throw new InvalidArgumentException('project is required');
+        }
+        $client = isset($input['client']) && is_scalar($input['client']) ? trim((string)$input['client']) : '';
+        if ($client !== '' && !preg_match('/^[A-Za-z0-9_.-]{1,64}$/', $client)) {
+            throw new InvalidArgumentException('client must be a simple name');
+        }
+
+        $layers = $this->readNameList($this->readInputValue($input, ['QUERY_LAYERS', 'query_layers']), 'QUERY_LAYERS');
+        if (empty($layers)) {
+            throw new InvalidArgumentException('QUERY_LAYERS is required');
+        }
+        $maxLayers = max(1, (int)($this->CI->config->item('wms_report_max_layers') ?: 20));
+        if (count($layers) > $maxLayers) {
+            throw new InvalidArgumentException('At most ' . $maxLayers . ' layers can be requested');
+        }
+
+        $bbox = $this->readInputValue($input, ['bbox', 'BBOX']);
+        $bbox = is_scalar($bbox) ? explode(',', (string)$bbox) : $bbox;
+        if (!is_array($bbox) || count($bbox) !== 4) {
+            throw new InvalidArgumentException('bbox must contain minx,miny,maxx,maxy');
+        }
+        $bbox = array_map(function ($value) {
+            $value = is_scalar($value) ? trim((string)$value) : '';
+            if (!is_numeric($value) || !is_finite((float)$value)) {
+                throw new InvalidArgumentException('bbox must contain numbers');
+            }
+            return (float)$value;
+        }, array_values($bbox));
+        if ($bbox[0] >= $bbox[2] || $bbox[1] >= $bbox[3]) {
+            throw new InvalidArgumentException('bbox is empty');
+        }
+
+        $maxSize = max(1, (int)($this->CI->config->item('wms_location_report_max_size') ?: 4096));
+        $width = $this->readIntegerInput($input, ['width', 'WIDTH'], 1, $maxSize, 'width');
+        $height = $this->readIntegerInput($input, ['height', 'HEIGHT'], 1, $maxSize, 'height');
+        $i = $this->readIntegerInput($input, ['i', 'I'], 0, $width - 1, 'i');
+        $j = $this->readIntegerInput($input, ['j', 'J'], 0, $height - 1, 'j');
+
+        $crs = $this->readInputValue($input, ['crs', 'CRS', 'SRS']);
+        $crs = is_scalar($crs) ? trim((string)$crs) : '';
+
+        return [
+            'project_name' => $projectName,
+            'client' => $client,
+            'address' => $this->readSingleLineText($input, ['address', 'location_address'], 255, 'address'),
+            'layers' => $layers,
+            'bbox' => $bbox,
+            'width' => $width,
+            'height' => $height,
+            'i' => $i,
+            'j' => $j,
+            'crs' => $crs,
+            'maps' => $this->readMapRequests($input),
+            'template' => $this->validateTemplate($this->CI->config->item('phpword_location_report_template_name'))
+        ];
+    }
+
+    /**
+     * Comma list or array of names, trimmed, without empty values and duplicates.
+     */
+    protected function readNameList($value, $label)
+    {
+        if ($value === null) {
+            return [];
+        }
+        if (is_scalar($value)) {
+            $value = explode(',', (string)$value);
+        }
+        if (!is_array($value)) {
+            throw new InvalidArgumentException($label . ' must be a comma list or an array');
+        }
+        return array_values(array_unique(array_filter(array_map(function ($name) {
+            return is_scalar($name) ? trim((string)$name) : '';
+        }, $value), function ($name) {
+            return $name !== '';
+        })));
+    }
+
+    /**
+     * Optional maps[n][template|layers|external_layers|title] for GetPrint pages, in index order.
+     */
+    protected function readMapRequests(array $input)
+    {
+        if (!isset($input['maps']) || $input['maps'] === '') {
+            return [];
+        }
+        $maps = $input['maps'];
+        if (!is_array($maps)) {
+            throw new InvalidArgumentException('maps must be an array');
+        }
+        $maxMaps = max(0, (int)$this->CI->config->item('wms_location_report_max_maps'));
+        if (count($maps) > $maxMaps) {
+            throw new InvalidArgumentException('At most ' . $maxMaps . ' maps can be requested');
+        }
+        $maxLayers = max(1, (int)($this->CI->config->item('wms_report_max_layers') ?: 20));
+        ksort($maps);
+
+        $result = [];
+        foreach (array_values($maps) as $index => $map) {
+            $label = 'maps[' . $index . ']';
+            if (!is_array($map)) {
+                throw new InvalidArgumentException($label . ' must contain template and layers');
+            }
+            $template = $this->readSingleLineText($map, ['template'], 255, $label . '[template]');
+            if ($template === '') {
+                throw new InvalidArgumentException($label . '[template] is required');
+            }
+            $layers = $this->readNameList(isset($map['layers']) ? $map['layers'] : null, $label . '[layers]');
+            $externalLayers = $this->readNameList(isset($map['external_layers']) ? $map['external_layers'] : null, $label . '[external_layers]');
+            if (empty($layers) && empty($externalLayers)) {
+                throw new InvalidArgumentException($label . '[layers] is required');
+            }
+            if (count($layers) + count($externalLayers) > $maxLayers) {
+                throw new InvalidArgumentException('At most ' . $maxLayers . ' layers can be requested in ' . $label);
+            }
+            $result[] = [
+                'template' => $template,
+                'layers' => $layers,
+                'external_layers' => $externalLayers,
+                'title' => $this->readSingleLineText($map, ['title'], 255, $label . '[title]')
+            ];
+        }
+        return $result;
+    }
+
+    protected function readInputValue(array $input, array $names)
+    {
+        foreach ($names as $name) {
+            if (isset($input[$name])) {
+                return $input[$name];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Optional client-supplied text (e.g. an address) reduced to one trimmed line.
+     */
+    protected function readSingleLineText(array $input, array $names, $maxLength, $label)
+    {
+        $value = $this->readInputValue($input, $names);
+        if ($value === null) {
+            return '';
+        }
+        if (!is_scalar($value)) {
+            throw new InvalidArgumentException($label . ' must be text');
+        }
+        $value = (string)$value;
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            throw new InvalidArgumentException($label . ' must be valid UTF-8');
+        }
+        $value = trim(preg_replace('/[\p{Cc}\p{Zl}\p{Zp}\s]+/u', ' ', $value));
+        if (mb_strlen($value, 'UTF-8') > $maxLength) {
+            throw new InvalidArgumentException($label . ' must be at most ' . $maxLength . ' characters');
+        }
+        return $value;
+    }
+
+    protected function readIntegerInput(array $input, array $names, $min, $max, $label)
+    {
+        $value = $this->readInputValue($input, $names);
+        $value = is_scalar($value) ? trim((string)$value) : '';
+        if (!preg_match('/^\d+$/', $value) || (int)$value < $min || (int)$value > $max) {
+            throw new InvalidArgumentException($label . ' must be an integer between ' . $min . ' and ' . $max);
+        }
+        return (int)$value;
+    }
+
+    protected function locationToleranceParams()
+    {
+        $tolerances = $this->CI->config->item('wms_location_report_tolerances');
+        $params = [];
+        if (is_array($tolerances)) {
+            foreach (['FI_POINT_TOLERANCE', 'FI_LINE_TOLERANCE', 'FI_POLYGON_TOLERANCE'] as $name) {
+                if (isset($tolerances[$name]) && is_numeric($tolerances[$name])) {
+                    $params[$name] = (int)$tolerances[$name];
+                }
+            }
+        }
+        return $params;
+    }
+
+    protected function formatCoordinate($value)
+    {
+        return rtrim(rtrim(number_format((float)$value, 2, '.', ''), '0'), '.');
+    }
+
     protected function validateRequest(array $input)
     {
         $projectName = isset($input['project']) && is_scalar($input['project'])
@@ -179,16 +655,76 @@ class Wms_report_service
 
     protected function resolveLayer($properties, $layerId)
     {
-        if (!isset($properties->layers[$layerId])) {
+        if (!isset($properties->layers[$layerId]) || !empty($properties->layers[$layerId]->restricted)) {
             throw new DomainException('Layer is not available in the current project');
         }
         $layer = $properties->layers[$layerId];
         return [
+            'id' => (string)$layer->id,
             'qgis_layer' => $properties->use_ids ? $layer->id : $layer->layername,
             'name' => $layer->layername,
             'key' => isset($layer->key) ? (string)$layer->key : '',
-            'geometry_type' => isset($layer->geom_type) ? (string)$layer->geom_type : ''
+            'geometry_type' => isset($layer->geom_type) ? (string)$layer->geom_type : '',
+            'identifiable' => !isset($layer->identifiable) || $layer->identifiable,
+            'group_path' => isset($layer->group_path) && is_array($layer->group_path) ? implode(' / ', $layer->group_path) : '',
+            'requested_group' => ''
         ];
+    }
+
+    /**
+     * Resolve requested layer ids and layer tree group names (or group WMS short names)
+     * to the queryable layers in tree order. Groups expand to all descendant layers.
+     * Layers that cannot be queried are reported in $skipped instead of failing the request.
+     */
+    protected function resolveLocationLayers($properties, array $requested, &$skipped)
+    {
+        $skipped = [];
+        $layers = [];
+        $seen = [];
+        $groups = !empty($properties->skip_group_names) || !isset($properties->groups) ? [] : $properties->groups;
+
+        foreach ($requested as $name) {
+            $candidates = [];
+            $requestedGroup = '';
+            if (isset($properties->layers[$name])) {
+                $candidates[] = $this->resolveLayer($properties, $name);
+            } else {
+                $matched = false;
+                foreach ($groups as $group) {
+                    if ($group->name !== $name && ($group->short_name === '' || $group->short_name !== $name)) {
+                        continue;
+                    }
+                    $matched = true;
+                    $requestedGroup = $group->name;
+                    foreach ($group->layer_ids as $layerId) {
+                        $candidates[] = $this->resolveLayer($properties, $layerId);
+                    }
+                }
+                if (!$matched) {
+                    throw new DomainException('Layer or group is not available in the current project: ' . $name);
+                }
+                if (empty($candidates)) {
+                    $skipped[] = ['name' => $requestedGroup, 'reason' => 'empty group'];
+                }
+            }
+
+            foreach ($candidates as $layer) {
+                if (isset($seen[$layer['id']])) {
+                    continue;
+                }
+                $seen[$layer['id']] = true;
+                $layer['requested_group'] = $requestedGroup;
+                if (!$layer['identifiable']) {
+                    $skipped[] = ['name' => $layer['name'], 'reason' => 'not queryable'];
+                } elseif ($layer['geometry_type'] === '') {
+                    $skipped[] = ['name' => $layer['name'], 'reason' => 'no geometry'];
+                } else {
+                    $layers[] = $layer;
+                }
+            }
+        }
+
+        return $layers;
     }
 
     protected function buildFeatureFilter(array $layer, $featureId, $featureField)

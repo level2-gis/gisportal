@@ -69,7 +69,8 @@ class Phpword_lib
             throw new Exception("Template file not found: " . $templatePath);
         }
         
-        return new \PhpOffice\PhpWord\TemplateProcessor($templatePath);
+        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Gisportal_template_processor.php';
+        return new Gisportal_template_processor($templatePath);
     }
     
     /**
@@ -464,22 +465,191 @@ class Phpword_lib
             $rowIndex = 1;
             foreach ($rows as $row) {
                 $templateProcessor->setValue("property_name$rowSuffix$rowIndex", $this->formatTemplateValue($row['label']));
-                $valueMacro = "property_value$rowSuffix$rowIndex";
-                if (!empty($row['is_files'])) {
-                    $this->setFilesImageValue($templateProcessor, $valueMacro, $row['image']);
-                } elseif (!empty($row['links'])) {
-                    $this->setHyperlinkListValue($templateProcessor, $valueMacro, $row['links']);
-                } elseif (!empty($row['url'])) {
-                    $linkText = $this->formatTemplateValue($row['value']);
-                    $this->setHyperlinkValue($templateProcessor, $valueMacro, $row['url'], $linkText !== '' ? $linkText : $row['url']);
-                } else {
-                    $templateProcessor->setValue($valueMacro, $this->formatTemplateValue($row['value']));
-                }
+                $this->setPropertyRowValue($templateProcessor, "property_value$rowSuffix$rowIndex", $row);
                 $rowIndex++;
             }
         } catch (Exception $e) {
             log_message('error', 'PHPWord: Properties table replacement failed: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Render one property value as text, hyperlink(s) or embedded files image.
+     *
+     * @param \PhpOffice\PhpWord\TemplateProcessor $templateProcessor
+     * @param string $valueMacro
+     * @param array $row Row produced by buildPropertyRows()
+     */
+    protected function setPropertyRowValue($templateProcessor, $valueMacro, array $row)
+    {
+        if (!empty($row['is_files'])) {
+            $this->setFilesImageValue($templateProcessor, $valueMacro, $row['image']);
+        } elseif (!empty($row['links'])) {
+            $this->setHyperlinkListValue($templateProcessor, $valueMacro, $row['links']);
+        } elseif (!empty($row['url'])) {
+            $linkText = $this->formatTemplateValue($row['value']);
+            $this->setHyperlinkValue($templateProcessor, $valueMacro, $row['url'], $linkText !== '' ? $linkText : $row['url']);
+        } else {
+            $templateProcessor->setValue($valueMacro, $this->formatTemplateValue($row['value']));
+        }
+    }
+
+    /**
+     * Fill a location report template: one ${layer_block} per requested layer,
+     * one nested ${feature_block} per intersecting feature and one
+     * ${property_name}/${property_value} row per attribute.
+     * Templates without blocks can use ${location_results} for a text listing.
+     *
+     * @param \PhpOffice\PhpWord\TemplateProcessor $templateProcessor
+     * @param array $data Data produced by Wms_report_service::executeLocationReport()
+     * @return \PhpOffice\PhpWord\TemplateProcessor
+     */
+    public function replaceLocationData($templateProcessor, array $data)
+    {
+        // Attribute values are user data; escape them for the document XML while filling this template.
+        $previousEscaping = \PhpOffice\PhpWord\Settings::isOutputEscapingEnabled();
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+        try {
+            $this->fillLocationTemplate($templateProcessor, $data);
+            // Last step: map pages are inserted after the template has been filled.
+            $this->replaceMapPages($templateProcessor, isset($data['maps']) && is_array($data['maps']) ? $data['maps'] : []);
+            return $templateProcessor;
+        } finally {
+            \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled($previousEscaping);
+        }
+    }
+
+    protected function fillLocationTemplate($templateProcessor, array $data)
+    {
+        $layers = isset($data['layers']) && is_array($data['layers']) ? array_values($data['layers']) : [];
+
+        foreach (['title', 'description', 'project_name', 'crs', 'bbox', 'location_x', 'location_y',
+                     'layer_count', 'feature_count', 'map_count', 'generated_date', 'generated_by'] as $placeholder) {
+            $templateProcessor->setValue($placeholder, $this->formatTemplateValue(isset($data[$placeholder]) ? $data[$placeholder] : ''));
+        }
+        $skippedLayers = isset($data['skipped_layers']) && is_array($data['skipped_layers']) ? $data['skipped_layers'] : [];
+        $templateProcessor->setValue('skipped_layers', $this->formatSkippedLayers($skippedLayers));
+        $skippedMaps = isset($data['skipped_maps']) && is_array($data['skipped_maps']) ? $data['skipped_maps'] : [];
+        $templateProcessor->setValue('skipped_maps', $this->formatSkippedLayers($skippedMaps));
+
+        // Optional: without an address, drop table rows holding the placeholder; elsewhere it becomes empty.
+        $address = isset($data['location_address']) ? trim((string)$data['location_address']) : '';
+        if ($address === '' && method_exists($templateProcessor, 'deleteRowsContaining')) {
+            $templateProcessor->deleteRowsContaining('location_address');
+        }
+        $templateProcessor->setValue('location_address', $this->formatTemplateValue($address));
+
+        $variables = $templateProcessor->getVariables();
+        if (in_array('location_results', $variables, true)) {
+            $templateProcessor->setValue('location_results', $this->formatLocationResultsAsText($layers, $skippedLayers));
+        }
+        if (!in_array('layer_block', $variables, true)) {
+            return $templateProcessor;
+        }
+
+        // Cloning with zero copies removes the block; deleteBlock() can corrupt the document XML.
+        $templateProcessor->cloneBlock('layer_block', count($layers), true, true);
+        foreach ($layers as $layerIndex => $layer) {
+            $l = $layerIndex + 1;
+            $features = isset($layer['features']) && is_array($layer['features']) ? array_values($layer['features']) : [];
+            $templateProcessor->setValue("layer_name#$l", $this->formatTemplateValue($layer['name']));
+            $templateProcessor->setValue("layer_id#$l", $this->formatTemplateValue($layer['id']));
+            $templateProcessor->setValue("layer_group#$l", $this->formatTemplateValue(isset($layer['group']) ? $layer['group'] : ''));
+            $templateProcessor->setValue("layer_feature_count#$l", (string)count($features));
+            $templateProcessor->setValue("layer_empty#$l", empty($features) ? '/' : '');
+
+            $templateProcessor->cloneBlock("feature_block#$l", count($features), true, true);
+            foreach ($features as $featureIndex => $feature) {
+                $suffix = "#$l#" . ($featureIndex + 1);
+                $templateProcessor->setValue("feature_id$suffix", $this->formatTemplateValue($feature['id']));
+                $templateProcessor->setValue("feature_layer$suffix", $this->formatTemplateValue($feature['layer']));
+                $templateProcessor->setValue("feature_type$suffix", $this->formatTemplateValue($feature['geometry_type']));
+                $this->replaceLocationPropertyRows($templateProcessor, $suffix, $this->buildPropertyRows($feature));
+            }
+        }
+
+        return $templateProcessor;
+    }
+
+    /**
+     * Put each GetPrint image on its own full page where the template has a ${maps} paragraph.
+     * The page size is the layout page size: image pixels / print DPI.
+     */
+    protected function replaceMapPages($templateProcessor, array $maps)
+    {
+        if (!method_exists($templateProcessor, 'replaceWithImagePages')) {
+            return;
+        }
+        $pages = [];
+        foreach ($maps as $map) {
+            $dpi = max(1, (int)$map['dpi']);
+            $pages[] = [
+                'path' => $map['image_path'],
+                'width' => (int)round($map['image_width'] / $dpi * 1440),
+                'height' => (int)round($map['image_height'] / $dpi * 1440)
+            ];
+        }
+        if (!$templateProcessor->replaceWithImagePages('maps', $pages) && !empty($pages)) {
+            log_message('error', 'PHPWord: location report template has no ${maps} paragraph, maps were not added');
+        }
+    }
+
+    protected function replaceLocationPropertyRows($templateProcessor, $suffix, array $rows)
+    {
+        $nameVar = "property_name$suffix";
+        $valueVar = "property_value$suffix";
+        if (!in_array($nameVar, $templateProcessor->getVariables(), true)) {
+            $templateProcessor->setValue("feature_properties$suffix", $this->formatPropertiesAsText($rows));
+            return;
+        }
+        if (empty($rows)) {
+            $templateProcessor->setValue($nameVar, 'No properties available');
+            $templateProcessor->setValue($valueVar, '');
+            return;
+        }
+
+        $templateProcessor->cloneRow($nameVar, count($rows));
+        foreach ($rows as $rowIndex => $row) {
+            $r = $rowIndex + 1;
+            $templateProcessor->setValue("$nameVar#$r", $this->formatTemplateValue($row['label']));
+            $this->setPropertyRowValue($templateProcessor, "$valueVar#$r", $row);
+        }
+    }
+
+    private function formatSkippedLayers(array $skippedLayers)
+    {
+        return implode(', ', array_map(function ($skipped) {
+            return $this->formatTemplateValue($skipped['name']) . ' (' . $this->formatTemplateValue($skipped['reason']) . ')';
+        }, $skippedLayers));
+    }
+
+    private function formatLocationResultsAsText(array $layers, array $skippedLayers = [])
+    {
+        $lines = [];
+        $currentGroup = null;
+        foreach ($layers as $layer) {
+            $group = isset($layer['group']) ? (string)$layer['group'] : '';
+            if ($group !== '' && $group !== $currentGroup) {
+                $lines[] = '[' . $group . ']';
+            }
+            $currentGroup = $group;
+            $features = isset($layer['features']) && is_array($layer['features']) ? $layer['features'] : [];
+            $lines[] = $this->formatTemplateValue($layer['name']) . ' (' . count($features) . ')';
+            if (empty($features)) {
+                $lines[] = '  No features';
+            }
+            foreach ($features as $feature) {
+                $lines[] = '  ' . $this->formatTemplateValue($feature['id']);
+                foreach ($this->buildPropertyRows($feature) as $row) {
+                    $value = !empty($row['url']) && $row['value'] === '' ? $row['url'] : $row['value'];
+                    $lines[] = '    ' . $row['label'] . ': ' . $this->formatTemplateValue($value);
+                }
+            }
+        }
+        if (!empty($skippedLayers)) {
+            $lines[] = 'Not queried: ' . $this->formatSkippedLayers($skippedLayers);
+        }
+        return implode("\n", $lines);
     }
 
     /**

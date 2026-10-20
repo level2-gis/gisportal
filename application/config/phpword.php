@@ -13,6 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // Default template settings
 $config['phpword_default_template_name'] = 'feature_report.docx';
 $config['phpword_default_template'] = APPPATH . 'templates' . DIRECTORY_SEPARATOR . $config['phpword_default_template_name'];
+$config['phpword_location_report_template_name'] = 'location_report.docx';
 
 // Image settings for maps
 $config['phpword_map_image_width'] = 500;

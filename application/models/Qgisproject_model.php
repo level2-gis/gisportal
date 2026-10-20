@@ -243,10 +243,6 @@ class Qgisproject_model extends CI_Model
 				}
 			}
 
-			if (empty($ds_parms['type'])) {
-				$ds_parms['type'] = (string)$layer['geometry'];
-			}
-
 			//read defined('AUTHCFG')user and pass for authcfg from settings
 			if (isset($ds_parms['authcfg']) && defined('AUTHCFG')) {
 				$auth = AUTHCFG;
@@ -257,6 +253,9 @@ class Qgisproject_model extends CI_Model
 				}
 			}
 		}
+        if (empty($ds_parms['type'])) {
+            $ds_parms['type'] = (string)$layer['geometry'];
+        }
         return $ds_parms;
     }
 

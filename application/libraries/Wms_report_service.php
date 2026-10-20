@@ -716,7 +716,7 @@ class Wms_report_service
                 $layer['requested_group'] = $requestedGroup;
                 if (!$layer['identifiable']) {
                     $skipped[] = ['name' => $layer['name'], 'reason' => 'not queryable'];
-                } elseif ($layer['geometry_type'] === '') {
+                } elseif ($layer['geometry_type'] === '' || strcasecmp($layer['geometry_type'], 'No geometry') === 0) {
                     $skipped[] = ['name' => $layer['name'], 'reason' => 'no geometry'];
                 } else {
                     $layers[] = $layer;

@@ -10,6 +10,30 @@ class Documents extends CI_Controller
         $this->load->library('wms_report_service');
     }
 
+    public function csrf_token()
+    {
+        $this->output
+            ->set_header('Cache-Control: private, no-store')
+            ->set_header('X-Content-Type-Options: nosniff');
+
+        if ($this->input->method() !== 'get') {
+            $this->output->set_header('Allow: GET');
+            return $this->_jsonError(405, 'GET required');
+        }
+        if (!$this->ion_auth->logged_in()) {
+            return $this->_jsonError(401, 'Authentication required');
+        }
+
+        $enabled = (bool)$this->config->item('csrf_protection');
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'enabled' => $enabled,
+                'name' => $enabled ? $this->security->get_csrf_token_name() : null,
+                'hash' => $enabled ? $this->security->get_csrf_hash() : null
+            ]));
+    }
+
     /**
     * GET /documents/feature_report
      * Generate a DOCX report for one feature in the authenticated project.

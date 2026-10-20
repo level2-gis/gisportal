@@ -93,9 +93,12 @@ $config['feature_format_field_templates'] = [
     'PA_MID' => ['newName' => 'POVEZAVE', 'links' => [
         ['template' => 'JAVNI VPOGLED', 'url' => 'https://geo-portal.si/modules/eprostor/open/1001/'],
         ['template' => 'PDF IZPIS', 'url' => 'https://geo-portal.si/modules/eprostor/report/1001/'],
-        ['template' => 'VREDNOST', 'url' => 'https://vrednotenje.gov.si/EV_JV/#/parcela_'],
+        ['template' => 'VREDNOST', 'url' => 'https://vrednotenje.gov.si/EV_JV/#/parcela_']
     ]],
-    'ST_MID' => ['newName' => 'POVEZAVE', 'template' => 'JAVNI VPOGLED', 'url' => 'https://geo-portal.si/modules/eprostor/open/1002/'],
+    'ST_MID' => ['newName' => 'POVEZAVE', 'links' => [
+        ['template' => 'JAVNI VPOGLED', 'url' => 'https://geo-portal.si/modules/eprostor/open/1002/'],
+        ['template' => 'VREDNOST', 'url' => 'https://vrednotenje.gov.si/EV_JV/#/stavba_']
+    ]],
 
     'STATUS_OM' => ['template' => '%VALUE%', 'url' => 'https://geo-portal.si/wsgi/lookup.wsgi?table=lookup.status_odjemnega_mesta&code='],
     'STATUS_SM' => ['template' => '%VALUE%', 'url' => 'https://geo-portal.si/wsgi/lookup.wsgi?table=lookup.status_svetilnega_mesta&code='],

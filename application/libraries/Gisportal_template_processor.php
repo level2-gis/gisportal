@@ -64,7 +64,7 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
     /**
      * Replace the paragraph holding ${$search} with one full-page section per image.
      * Each $pages item: ['path' => PNG file, 'width' => twips, 'height' => twips].
-     * Each image is inserted into the page body; map sections use empty headers and footers.
+     * Images float in front of text at the page origin; map sections use empty headers and footers.
      * Without pages the paragraph is removed. Returns false when the placeholder is not in the document.
      */
     public function replaceWithImagePages($search, array $pages)
@@ -100,7 +100,6 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
         $pagesXml = '';
         $lastSectPr = '';
         foreach (array_values($pages) as $index => $page) {
-            $pageHeight = (int)$page['height'];
             $imageRelationId = $this->addMapImageRelation($page['path']);
             $docPrId++;
             $pageSectPr = $this->buildFullPageSectPr(
@@ -111,10 +110,12 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
                 $footerRelationId
             );
             $isLast = $index === count($pages) - 1;
-            $pagesXml .= '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="' . $pageHeight . '" w:lineRule="exact"/><w:rPr><w:sz w:val="2"/></w:rPr>'
+            $pagesXml .= '<w:p><w:pPr><w:keepNext w:val="0"/><w:keepLines w:val="0"/><w:pageBreakBefore w:val="0"/>'
+                . '<w:snapToGrid w:val="0"/><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/>'
+                . '<w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr><w:sz w:val="2"/></w:rPr>'
                 . ($isLast && $endsDocument ? '' : $pageSectPr)
                 . '</w:pPr><w:r><w:drawing>'
-                . $this->buildPageInlineXml($imageRelationId, $docPrId, (int)$page['width'], (int)$page['height'])
+                . $this->buildPageAnchorXml($imageRelationId, $docPrId, (int)$page['width'], (int)$page['height'])
                 . '</w:drawing></w:r></w:p>';
             $lastSectPr = $pageSectPr;
         }
@@ -196,7 +197,7 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
         }
         $sectPr = substr($sectPr, 0, $openEnd) . $headers . $footers . substr($sectPr, $openEnd);
 
-        $page = '<w:pgSz w:w="' . $widthTwips . '" w:h="' . $heightTwips . '"'
+        $page = '<w:type w:val="nextPage"/><w:pgSz w:w="' . $widthTwips . '" w:h="' . $heightTwips . '"'
             . ($widthTwips > $heightTwips ? ' w:orient="landscape"' : '') . '/>'
             . '<w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0" w:header="0" w:footer="0" w:gutter="0"/>';
 
@@ -260,14 +261,20 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
         return $relationId;
     }
 
-    private function buildPageInlineXml($relationId, $docPrId, $widthTwips, $heightTwips)
+    private function buildPageAnchorXml($relationId, $docPrId, $widthTwips, $heightTwips)
     {
         // 1 twip = 635 EMU
         $cx = $widthTwips * 635;
         $cy = $heightTwips * 635;
-        return '<wp:inline xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" distT="0" distB="0" distL="0" distR="0">'
+        return '<wp:anchor xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'
+            . ' distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="' . $docPrId . '"'
+            . ' behindDoc="0" locked="1" layoutInCell="0" allowOverlap="1">'
+            . '<wp:simplePos x="0" y="0"/>'
+            . '<wp:positionH relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionH>'
+            . '<wp:positionV relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionV>'
             . '<wp:extent cx="' . $cx . '" cy="' . $cy . '"/>'
             . '<wp:effectExtent l="0" t="0" r="0" b="0"/>'
+            . '<wp:wrapNone/>'
             . '<wp:docPr id="' . $docPrId . '" name="Map ' . $docPrId . '"/>'
             . '<wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/></wp:cNvGraphicFramePr>'
             . '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
@@ -278,7 +285,7 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
             . '<a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
             . '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' . $cx . '" cy="' . $cy . '"/></a:xfrm>'
             . '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
-            . '</pic:pic></a:graphicData></a:graphic></wp:inline>';
+            . '</pic:pic></a:graphicData></a:graphic></wp:anchor>';
     }
 
     private function getMaxDocPrId()

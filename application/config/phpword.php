@@ -15,9 +15,12 @@ $config['phpword_default_template_name'] = 'feature_report.docx';
 $config['phpword_default_template'] = APPPATH . 'templates' . DIRECTORY_SEPARATOR . $config['phpword_default_template_name'];
 $config['phpword_location_report_template_name'] = 'location_report.docx';
 $config['phpword_feature_report_templates'] = [
-        'demo_grobarine' => [
-            'grobovi_view_3f631fa0_c562_4c3b_b1cc_50b43cb014b1' => 'feature_report_grobovi.docx'
-    ]
+	'demo_grobarine' => [
+		'grobovi_view_3f631fa0_c562_4c3b_b1cc_50b43cb014b1' => 'feature_report_grobovi.docx'
+	],
+	'insurance' => [
+		'Stavbe_2aa0e248_5621_4ebe_971e_5a70d7898d14' => 'feature_report_stavbe.docx'
+	]
 ];
 
 // Image settings for maps

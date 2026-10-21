@@ -63,6 +63,12 @@ $config['wms_feature_report_width'] = 800;
 $config['wms_feature_report_dpi'] = 200;
 $config['wms_feature_report_bbox_margin'] = 0.20; // 20% on each side
 $config['wms_feature_report_min_extent_meters'] = 50; // Minimum ground width and height for small features
+$config['wms_feature_report_max_relations'] = 10;
+$config['wms_feature_report_relation_max_records'] = 100;
+$config['wms_feature_report_relation_max_total_records'] = 500;
+$config['wms_feature_report_relation_timeout'] = 10;
+$config['wms_feature_report_relation_time_limit'] = 60;
+$config['wms_feature_report_relation_max_response_size'] = 2 * 1024 * 1024;
 
 // External WMS layers clients may enable with external_layers[].
 $config['wms_feature_report_external_layers'] = [

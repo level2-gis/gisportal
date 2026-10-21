@@ -21,6 +21,15 @@ class Wms_report_service
         $request = $this->validateRequest($input);
         $project = $this->resolveProject($request['project_name']);
         $layer = $this->resolveLayer($project['properties'], $request['layer_id']);
+        $request['template'] = $this->selectFeatureReportTemplate($project['name'], $layer['id'], $override);
+        $relations = [];
+        if ($override) {
+            $this->CI->load->library('phpword_lib');
+            $requirements = $this->CI->phpword_lib->getFeatureReportRelations($request['template']);
+            if (!empty($requirements)) {
+                $relations = $this->prepareFeatureRelations($project['properties'], $layer, $requirements);
+            }
+        }
         $featureParams = [
             'URL' => $project['url'],
             'VERSION' => $project['version'],
@@ -68,6 +77,10 @@ class Wms_report_service
             'generated_by' => $username,
             'features' => [$selected[0]]
         ];
+
+        if (!empty($relations)) {
+            $data['relations'] = $this->collectRelatedRecords($project, $relations, $selected[0]['id'], $request['client']);
+        }
 
         if ($request['include_map']) {
             $mapContext = $this->buildMapContext($mapBbox);
@@ -291,6 +304,11 @@ class Wms_report_service
                 'EXTERNAL_WMS_PARAMS' => $external['params'],
                 'TIMEOUT' => $this->CI->config->item('wms_print_timeout')
             ];
+            if (!empty($properties->print_metadata_layers)) {
+                $params['FILTER'] = implode(';', array_map(function ($layer) {
+                    return $layer . ':"user_name" = \'\' AND "user_name" != \'\'';
+                }, $properties->print_metadata_layers));
+            }
             if ($symbol !== '') {
                 $params['HIGHLIGHT_GEOM'] = 'POINT(' . $location['x'] . ' ' . $location['y'] . ')';
                 $params['HIGHLIGHT_SYMBOL'] = $symbol;
@@ -615,9 +633,167 @@ class Wms_report_service
             'feature_field' => $featureField,
             'client' => $client,
             'include_map' => filter_var(isset($input['include_map']) ? $input['include_map'] : false, FILTER_VALIDATE_BOOLEAN),
-            'external_layers' => $externalLayers,
-            'template' => $this->validateTemplate($this->CI->config->item('phpword_default_template_name'))
+            'external_layers' => $externalLayers
         ];
+    }
+
+    protected function selectFeatureReportTemplate($projectName, $layerId, &$override)
+    {
+        $templates = $this->CI->config->item('phpword_feature_report_templates') ?? [];
+        if (!is_array($templates) || (isset($templates[$projectName]) && !is_array($templates[$projectName]))) {
+            throw new RuntimeException('Invalid feature report template configuration');
+        }
+        $override = isset($templates[$projectName]) && array_key_exists($layerId, $templates[$projectName]);
+        $name = $override ? $templates[$projectName][$layerId] : $this->CI->config->item('phpword_default_template_name');
+        if (!is_string($name)) {
+            throw new RuntimeException('Invalid feature report template name');
+        }
+        return $this->validateTemplate($name);
+    }
+
+    protected function prepareFeatureRelations($properties, array $parent, array $requirements)
+    {
+        if (count($requirements) > $this->relationLimit('max_relations', 10)) {
+            throw new RuntimeException('Feature report requests too many relations');
+        }
+        $config = $this->CI->qgisproject_model->read_project_json();
+        $configured = $config['relations'] ?? [];
+        if (!is_array($configured) || (isset($configured['hideJoinField']) && !is_bool($configured['hideJoinField']))) {
+            throw new RuntimeException('Invalid project relations configuration');
+        }
+        $definitions = $configured[$parent['name']] ?? [];
+        if (!is_array($definitions) || array_values($definitions) !== $definitions) {
+            throw new RuntimeException('Layer relations must be an array of definitions');
+        }
+        $byName = [];
+        foreach ($definitions as $definition) {
+            if (!is_array($definition) || !isset($definition['relate_layer']) || !is_string($definition['relate_layer'])) {
+                throw new RuntimeException('Invalid related layer definition');
+            }
+            $name = $definition['relate_layer'];
+            if (isset($byName[$name])) {
+                throw new RuntimeException('Duplicate related layer definition: ' . $name);
+            }
+            $byName[$name] = $definition;
+        }
+        $relations = [];
+        $seen = [];
+        foreach ($requirements as $name => $requirement) {
+            if (!isset($byName[$name])) {
+                throw new RuntimeException('Template relation is not configured for this layer: ' . $name);
+            }
+            $definition = $byName[$name];
+            foreach (['join_field', 'display_field'] as $option) {
+                if ($option === 'display_field' && !isset($definition[$option])) {
+                    continue;
+                }
+                if (!isset($definition[$option]) || !is_string($definition[$option])
+                    || !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $definition[$option])) {
+                    throw new RuntimeException('Invalid related layer ' . $option);
+                }
+            }
+            $layerId = $name;
+            if (!isset($properties->layers[$layerId])) {
+                $matches = [];
+                foreach ($properties->layers as $id => $candidate) {
+                    if ($candidate->layername === $name) {
+                        $matches[] = $id;
+                    }
+                }
+                if (count($matches) !== 1) {
+                    throw new DomainException('Related layer is unavailable or ambiguous: ' . $name);
+                }
+                $layerId = $matches[0];
+            }
+            $layer = $this->resolveLayer($properties, $layerId);
+            if (!$layer['identifiable']) {
+                throw new DomainException('Related layer is not queryable: ' . $name);
+            }
+            if (isset($seen[$layer['id']])) {
+                throw new RuntimeException('Duplicate related table in report');
+            }
+            $seen[$layer['id']] = true;
+            $relations[$name] = [
+                'layer' => $layer,
+                'join_field' => $definition['join_field'],
+                'fields' => $requirement['fields'],
+                'hide_join_field' => !empty($configured['hideJoinField'])
+            ];
+        }
+        return $relations;
+    }
+
+    protected function relationLimit($suffix, $default)
+    {
+        return max(1, (int)($this->CI->config->item('wms_feature_report_' . $suffix) ?: $default));
+    }
+
+    protected function collectRelatedRecords(array $project, array $relations, $parentId, $client)
+    {
+        $deadline = microtime(true) + $this->relationLimit('relation_time_limit', 60);
+        $perRelation = $this->relationLimit('relation_max_records', 100);
+        $maxTotal = $this->relationLimit('relation_max_total_records', 500);
+        $total = 0;
+        $result = [];
+        foreach ($relations as $name => $relation) {
+            if (microtime(true) >= $deadline) {
+                throw new RuntimeException('Related record query time limit exceeded');
+            }
+            $response = $this->CI->wms_client->getFeatureInfo([
+                'URL' => $project['url'],
+                'VERSION' => $project['version'],
+                'CRS' => $project['properties']->crs,
+                'LAYERS' => $relation['layer']['qgis_layer'],
+                'QUERY_LAYERS' => $relation['layer']['qgis_layer'],
+                'WIDTH' => 1,
+                'HEIGHT' => 1,
+                'FEATURE_COUNT' => min($perRelation, $maxTotal - $total) + 1,
+                'INFO_FORMAT' => 'text/xml',
+                'WITH_GEOMETRY' => 'false',
+                'WITH_MAPTIP' => 'false',
+                'FILTER' => $this->buildFeatureFilter($relation['layer'], $parentId, $relation['join_field']),
+                'TIMEOUT' => $this->relationLimit('relation_timeout', 10),
+                'DEADLINE' => $deadline,
+                'MAX_RESPONSE_SIZE' => $this->relationLimit('relation_max_response_size', 2 * 1024 * 1024),
+                'REDACT_LOGS' => true,
+                'ALLOW_EMPTY_BBOX' => true
+            ]);
+            $features = $this->normalizeFeatures($response['features']);
+            $total += count($features);
+            if (count($features) > $perRelation || $total > $maxTotal) {
+                throw new RuntimeException('Related records exceed the report limit');
+            }
+            $records = [];
+            $available = [];
+            foreach ($features as $feature) {
+                $properties = $feature['properties'];
+                $join = $relation['join_field'];
+                if (isset($properties[$join]) && (string)$properties[$join] !== (string)$parentId) {
+                    throw new RuntimeException('Related record did not match the selected feature');
+                }
+                $available += array_fill_keys(array_keys($properties), true);
+                $fields = $this->formatFeatureFields($feature, $project['name'], $client);
+                $record = [];
+                foreach ($fields as $field) {
+                    if (!empty($field['hidden']) || ($relation['hide_join_field'] && $field['name'] === $join)) {
+                        continue;
+                    }
+                    $record[$field['name']] = $this->CI->feature_info_formatter->toText($field);
+                }
+                $records[] = $record;
+            }
+            foreach ($relation['fields'] as $field) {
+                if (!empty($features) && !isset($available[$field])
+                    && !($relation['hide_join_field'] && $field === $relation['join_field'])) {
+                    throw new RuntimeException('Unknown relation template field: ' . $name . ':' . $field);
+                }
+            }
+            $result[$name] = ['records' => $records];
+        }
+        if (microtime(true) > $deadline) {
+            throw new RuntimeException('Related record query time limit exceeded');
+        }
+        return $result;
     }
 
     protected function resolveProject($projectName)

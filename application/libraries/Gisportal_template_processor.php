@@ -11,6 +11,70 @@ class Gisportal_template_processor extends \PhpOffice\PhpWord\TemplateProcessor
     /** @var array Zip entries added in this run (the zip index is not updated until save). */
     private $addedParts = [];
 
+    public function getRelationTables()
+    {
+        $tables = [];
+        $counts = $this->getVariableCount();
+        foreach ($counts as $variable => $count) {
+            if (!preg_match('/^relation(?:#[0-9]+)?:/', $variable)) {
+                continue;
+            }
+            if (!preg_match('/^relation:([^:{}$#&<>]+):(row|count|field:([A-Za-z_][A-Za-z0-9_]*))$/uD', $variable, $match)
+                || trim($match[1]) !== $match[1]) {
+                throw new UnexpectedValueException('Invalid relation template placeholder');
+            }
+            $name = $match[1];
+            if (!isset($tables[$name])) {
+                $tables[$name] = ['fields' => []];
+            }
+            if (isset($match[3]) && !in_array($match[3], $tables[$name]['fields'], true)) {
+                $tables[$name]['fields'][] = $match[3];
+            }
+        }
+        if (empty($tables)) {
+            return [];
+        }
+        $document = new DOMDocument();
+        if (!$document->loadXML($this->tempDocumentMainPart, LIBXML_NONET)) {
+            throw new UnexpectedValueException('Invalid relation template XML');
+        }
+        $xpath = new DOMXPath($document);
+        $xpath->registerNamespace('w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main');
+        foreach ($tables as $name => $table) {
+            $anchor = 'relation:' . $name . ':row';
+            if (($counts[$anchor] ?? 0) !== 1 || empty($table['fields'])) {
+                throw new UnexpectedValueException('Relation table needs one row anchor and field placeholders: ' . $name);
+            }
+            $found = false;
+            foreach ($xpath->query('//w:tr') as $row) {
+                if (strpos($row->textContent, '${' . $anchor . '}') === false) {
+                    continue;
+                }
+                if ($found || $xpath->query('.//w:tbl | .//w:vMerge', $row)->length > 0) {
+                    throw new UnexpectedValueException('Relation prototype rows cannot contain nested tables or vertical merges');
+                }
+                $found = true;
+                preg_match_all('/\$\{([^}]+)\}/u', $row->textContent, $matches);
+                $rowCounts = array_count_values($matches[1]);
+                foreach ($rowCounts as $variable => $count) {
+                    if ($variable !== $anchor && strpos($variable, 'relation:' . $name . ':field:') !== 0) {
+                        throw new UnexpectedValueException('Relation prototype row contains an unrelated placeholder');
+                    }
+                }
+                foreach ($table['fields'] as $field) {
+                    $variable = 'relation:' . $name . ':field:' . $field;
+                    if (($rowCounts[$variable] ?? 0) !== $counts[$variable]) {
+                        throw new UnexpectedValueException('Relation fields must be inside their prototype row');
+                    }
+                }
+            }
+            if (!$found) {
+                throw new UnexpectedValueException('Relation row anchor must be inside a document table');
+            }
+        }
+        return $tables;
+    }
+
     protected static function ensureUtf8Encoded($subject)
     {
         if ($subject === null || $subject === false || $subject === '') {

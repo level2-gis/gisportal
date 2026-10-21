@@ -141,30 +141,73 @@ class Wms_client
         $maxResponseSize = isset($params['MAX_RESPONSE_SIZE']) && is_numeric($params['MAX_RESPONSE_SIZE']) && $params['MAX_RESPONSE_SIZE'] > 0
             ? (int)$params['MAX_RESPONSE_SIZE']
             : ($this->CI->config->item('wms_max_feature_response_size') ?: (2 * 1024 * 1024));
+        if (!empty($params['REDACT_LOGS'])) {
+            $requestOptions['stream'] = true;
+        }
 
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            if (isset($params['DEADLINE'])) {
+                $remaining = $params['DEADLINE'] - microtime(true);
+                if ($remaining <= 0) {
+                    throw new RuntimeException('WMS request time limit exceeded');
+                }
+                $requestOptions['timeout'] = min($requestOptions['timeout'], $remaining);
+                $requestOptions['connect_timeout'] = min($this->CI->config->item('wms_connect_timeout') ?: 5, $requestOptions['timeout']);
+                $requestOptions['read_timeout'] = $requestOptions['timeout'];
+            }
             try {
                 $response = $this->client->get($requestUrl, $requestOptions);
             
-                $body = $response->getBody()->getContents();
+                if (!empty($params['REDACT_LOGS'])) {
+                    $stream = $response->getBody();
+                    $body = '';
+                    try {
+                        while (!$stream->eof()) {
+                            if (isset($params['DEADLINE']) && microtime(true) >= $params['DEADLINE']) {
+                                throw new RuntimeException('WMS request time limit exceeded');
+                            }
+                            $chunk = $stream->read(min(8192, $maxResponseSize + 1 - strlen($body)));
+                            $body .= $chunk;
+                            if (strlen($body) > $maxResponseSize) {
+                                throw new RuntimeException('WMS GetFeatureInfo response is too large');
+                            }
+                            if ($chunk === '' && !$stream->eof()) {
+                                throw new RuntimeException('WMS GetFeatureInfo response could not be read');
+                            }
+                        }
+                    } finally {
+                        $stream->close();
+                    }
+                } else {
+                    $body = $response->getBody()->getContents();
+                }
                 if (strlen($body) > $maxResponseSize) {
                     throw new Exception('WMS GetFeatureInfo response is too large');
                 }
                 $parsed = $this->parseFeatureInfoResponse($body, $requestParams['INFO_FORMAT']);
-                if (empty($parsed['bbox']) && $hasFilter) {
+                if (empty($parsed['bbox']) && $hasFilter && empty($params['ALLOW_EMPTY_BBOX'])) {
                     log_message('error', 'WMS GetFeatureInfo raw response (no bbox): ' . substr($body, 0, 2000));
                 }
                 return $parsed;
             
             } catch (\GuzzleHttp\Exception\TransferException $e) {
                 if ($attempt < $maxAttempts && $this->isTransientRequestFailure($e)) {
-                    log_message('error', 'Transient WMS GetFeatureInfo failure on attempt ' . $attempt . ' of ' . $maxAttempts . ': ' . $e->getMessage());
+                    log_message('error', !empty($params['REDACT_LOGS'])
+                        ? 'Transient related-record WMS failure on attempt ' . $attempt
+                        : 'Transient WMS GetFeatureInfo failure on attempt ' . $attempt . ' of ' . $maxAttempts . ': ' . $e->getMessage());
                     if ($retryDelayMs > 0) {
+                        if (isset($params['DEADLINE']) && microtime(true) + $retryDelayMs / 1000 >= $params['DEADLINE']) {
+                            throw new RuntimeException('WMS request time limit exceeded');
+                        }
                         usleep($retryDelayMs * 1000);
                     }
                     continue;
                 }
 
+                if (!empty($params['REDACT_LOGS'])) {
+                    log_message('error', 'Related-record WMS request failed after ' . $attempt . ' attempt(s)');
+                    throw new RuntimeException('Related-record WMS request failed');
+                }
                 $responseInfo = 'no response';
                 if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
                     $response = $e->getResponse();
@@ -391,6 +434,20 @@ class Wms_client
             'map0:LAYERS' => (string)$params['LAYERS']
         ];
         $query[version_compare($version, '1.3.0', '>=') ? 'CRS' : 'SRS'] = $crs;
+        $urlParams = [];
+        parse_str((string)parse_url($params['URL'], PHP_URL_QUERY), $urlParams);
+        $filters = [];
+        foreach ($urlParams as $name => $value) {
+            if (strcasecmp($name, 'FILTER') === 0 && is_string($value) && $value !== '') {
+                $filters[] = $value;
+            }
+        }
+        if (isset($params['FILTER']) && is_string($params['FILTER']) && $params['FILTER'] !== '') {
+            $filters[] = $params['FILTER'];
+        }
+        if ($filters) {
+            $query['FILTER'] = implode(';', $filters);
+        }
         if (isset($params['DPI']) && is_numeric($params['DPI']) && (int)$params['DPI'] > 0) {
             $query['DPI'] = (int)$params['DPI'];
         }

@@ -57,7 +57,7 @@ class Phpword_lib
      * Create a new document from template
      * 
      * @param string $templatePath Path to the template file
-     * @return \PhpOffice\PhpWord\TemplateProcessor
+    * @return Gisportal_template_processor
      */
     public function loadTemplate($templatePath = null)
     {
@@ -94,6 +94,7 @@ class Phpword_lib
     public function replaceWmsData($templateProcessor, $wmsData, $placeholders = [])
     {
         try {
+            $this->replaceRelationTables($templateProcessor, $wmsData['relations'] ?? []);
             $templateVars = $templateProcessor->getVariables();
             
             // Default placeholder mappings
@@ -175,6 +176,44 @@ class Phpword_lib
      * @param \PhpOffice\PhpWord\TemplateProcessor $templateProcessor
      * @param array $features Feature data from WMS GetFeatureInfo
      */
+    public function getFeatureReportRelations($templateName)
+    {
+        $processor = $this->loadTemplate(APPPATH . 'templates' . DIRECTORY_SEPARATOR . $templateName);
+        return $processor->getRelationTables();
+    }
+
+    protected function replaceRelationTables($templateProcessor, array $relations)
+    {
+        $tables = $templateProcessor->getRelationTables();
+        $previousEscaping = \PhpOffice\PhpWord\Settings::isOutputEscapingEnabled();
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+        try {
+            foreach ($tables as $name => $table) {
+                if (!isset($relations[$name])) {
+                    throw new UnexpectedValueException('Missing relation data for template table: ' . $name);
+                }
+                $records = $relations[$name]['records'];
+                $prefix = 'relation:' . $name . ':';
+                $templateProcessor->setValue($prefix . 'count', count($records));
+                $templateProcessor->cloneRow($prefix . 'row', count($records));
+                foreach ($records as $index => $record) {
+                    $indexedPrefix = 'relation#' . ($index + 1) . ':' . $name . ':';
+                    $templateProcessor->setValue($indexedPrefix . 'row', '');
+                    foreach ($table['fields'] as $field) {
+                        $templateProcessor->setValue($indexedPrefix . 'field:' . $field, $record[$field] ?? '');
+                    }
+                }
+            }
+        } finally {
+            \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled($previousEscaping);
+        }
+        foreach ($templateProcessor->getVariables() as $variable) {
+            if (preg_match('/^relation(?:#[0-9]+)?:/', $variable)) {
+                throw new UnexpectedValueException('Unresolved relation template placeholder');
+            }
+        }
+    }
+
     protected function replaceFeatureTable($templateProcessor, $features) {
         try {
             log_message('debug', 'PHPWord: Starting feature table replacement');

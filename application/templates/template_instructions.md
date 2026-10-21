@@ -78,6 +78,96 @@ included in the map.
 3. Keep PHPWord placeholders intact in a single Word run where possible.
 4. The server controls the WMS URL, BBOX, dimensions, CRS, and layer name.
 
+## Layer-specific templates and related tables
+
+The client keeps using the same feature-report parameters. Configure an override
+in `application/config/phpword.php`, keyed by project name and the main layer's
+canonical QGIS layer ID (the same ID accepted as `layer_id`):
+
+```php
+$config['phpword_feature_report_templates'] = [
+    'cemetery' => [
+        'grobovi_layer_id' => 'grobovi_report.docx'
+    ]
+];
+```
+
+Replace the example project/layer ID and place the DOCX in
+`application/templates/`. Only an explicitly mapped override enables relations.
+An unmapped layer keeps the default report and does not read project JSON or
+query related records. An invalid/missing mapped DOCX is an error, not a fallback.
+
+The server resolves the `.qgs` file using the existing project-path lookup, then
+reads the optional adjacent JSON with the same basename: `cemetery.qgs` uses
+`cemetery.json`, not `cemetery.qgs.json`. It reads the existing gisapp definitions:
+
+```json
+{
+  "relations": {
+    "Grobovi": [
+      {"relate_layer": "NajemnikiGrobovi", "join_field": "sifra_grb", "display_field": "oznaka"},
+      {"relate_layer": "Pokojni", "join_field": "sifra_grb"}
+    ],
+    "hideJoinField": true
+  }
+}
+```
+
+The parent key (`Grobovi`) must be its exact QGIS layer name. `relate_layer` may
+be an exact QGIS layer ID or a unique exact layer name in that project. Restricted
+and non-identifiable layers are rejected. Non-spatial related tables are allowed;
+they must be queryable through the project's QGIS Server filtered GetFeatureInfo.
+The parent report still needs its existing feature bounding box.
+
+For each related table, add a header row and **one prototype data row**. For
+`NajemnikiGrobovi`, a one-column prototype could contain:
+
+```text
+${relation:NajemnikiGrobovi:row}${relation:NajemnikiGrobovi:field:oznaka}
+```
+
+Put additional `${relation:NajemnikiGrobovi:field:FIELD_NAME}` placeholders in
+other cells of that same row. For `Pokojni`, create a separate table using the
+`relation:Pokojni` prefix and replace `FIELD_NAME` with actual returned fields:
+
+```text
+${relation:Pokojni:row}${relation:Pokojni:field:FIELD_NAME}
+```
+
+Put `${relation:Pokojni:count}` or `${relation:NajemnikiGrobovi:count}` outside
+the prototype row to show its record count. Namespace names must match
+`relate_layer` exactly; spaces/Unicode are supported, but `:`, `{`, `}`, `$`,
+`#`, `&`, `<` and `>` are reserved. Field names must be simple identifiers
+(`A-Z`, `a-z`, `_`, followed by letters, digits or `_`). Do not add clone indexes;
+the renderer handles PHPWord's indexed variable names internally.
+
+Each table has exactly one row anchor and at least one field placeholder. All its
+field placeholders belong inside that row. The prototype cannot contain other
+relations, parent metadata placeholders, count placeholders, nested tables or
+vertical cell merges. All other headings, column labels and layout are authored
+in Word. Only template-referenced relations are queried; unknown relations and
+unknown fields in populated results fail instead of silently producing blanks.
+Missing individual values are blank; an empty result cannot validate field names.
+
+The related `join_field` is filtered against the selected parent's raw feature
+ID, preserving leading zeros and escaping quotes. `display_field` does not alter
+the join, select columns or sort results. Column order comes from the DOCX; row
+order follows QGIS. `hideJoinField=true` removes the child join value from display
+(an explicit join-field cell is blank), without hiding any parent attribute.
+Values use the existing field formatter and are XML-escaped. Links are rendered
+as formatted text with their URLs; related file-image fields are not embedded.
+
+Zero records removes the prototype row and leaves the header/count (`0`). Failed
+queries abort the report; they are never treated as empty results. Missing JSON
+or absent definitions cannot satisfy a template that requests a relation.
+Existing invalid, unreadable or oversized JSON (over 1 MiB) is an error.
+
+Limits in `application/config/wms.php` default to 10 relations, 100 records per
+relation, 500 total records, 10 seconds per attempt, a 60-second combined relation
+query budget including retries, and 2 MiB per response. The server requests one
+extra row to detect overflow and fails explicitly rather than truncating.
+No recursive joins, composite joins, direct SQL or automatic WFS fallback are used.
+
 # Location Report Template
 
 The location report template is `location_report.docx`

@@ -150,7 +150,31 @@ class Qgisproject_model extends CI_Model
         }
     }
 
-    public function read_qgs_file() {
+	public function read_project_json() {
+		if (empty($this->qgs_file)) {
+			throw new UnexpectedValueException('Project file has not been resolved');
+		}
+		$path = dirname($this->qgs_file) . DIRECTORY_SEPARATOR
+			. pathinfo($this->qgs_file, PATHINFO_FILENAME) . '.json';
+		if (!file_exists($path)) {
+			return [];
+		}
+		if (!is_file($path) || !is_readable($path)) {
+			throw new UnexpectedValueException('Project JSON could not be read');
+		}
+		$limit = 1024 * 1024;
+		$json = file_get_contents($path, false, null, 0, $limit + 1);
+		if ($json === false || strlen($json) > $limit) {
+			throw new UnexpectedValueException('Project JSON could not be read or is too large');
+		}
+		$config = json_decode($json);
+		if (json_last_error() !== JSON_ERROR_NONE || !is_object($config)) {
+			throw new UnexpectedValueException('Project JSON must contain a valid JSON object');
+		}
+		return json_decode($json, true);
+	}
+
+	public function read_qgs_file() {
         $xml = null;
         try {
             libxml_clear_errors();
@@ -336,6 +360,7 @@ class Qgisproject_model extends CI_Model
 		$prop->groups = [];
 		$prop->skip_group_names = false;
 		$prop->layouts = [];
+		$prop->print_metadata_layers = [];
 
 		if(empty($this->error)) {
 			$prop->crs = (string)$xml->mapcanvas->destinationsrs->spatialrefsys->authid;
@@ -389,6 +414,14 @@ class Qgisproject_model extends CI_Model
 					//continue if layer is excluded
 					if(in_array($lay->layername, $excluded)) {
 						continue;
+					}
+					if (!$lay->restricted && $lay_object && (
+						$lay->layername === 'users_print_view'
+						|| preg_match('/(?:^|\.)"?users_print_view"?$/i', isset($lay_info['table']) ? $lay_info['table'] : '')
+					)) {
+						$shortName = (string)$lay_object->shortname;
+						$prop->print_metadata_layers[] = $prop->use_ids ? $lay->id
+							: ($shortName !== '' ? $shortName : $lay->layername);
 					}
 
 					if($lay->visible && !empty($lay->geom_type)) {

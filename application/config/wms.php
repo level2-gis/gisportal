@@ -25,7 +25,7 @@ $config['wms_feature_info_retry_delay_ms'] = 200;
 
 // GetFeatureInfo settings
 $config['wms_feature_count'] = 10; // Maximum features to retrieve (as requested)
-$config['wms_report_max_layers'] = 20;
+$config['wms_report_max_layers'] = 40;
 $config['wms_max_feature_response_size'] = 2 * 1024 * 1024; // 2MB
 
 // Location report (GetFeatureInfo for all requested layers at one map location)

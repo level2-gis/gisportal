@@ -305,6 +305,9 @@ class Wms_report_service
                 'TIMEOUT' => $this->CI->config->item('wms_print_timeout')
             ];
             if (!empty($properties->print_metadata_layers)) {
+                $params['LAYERS'] = implode(',', array_unique(array_merge(
+                    $external['layers'], $layers, $properties->print_metadata_layers
+                )));
                 $params['FILTER'] = implode(';', array_map(function ($layer) {
                     return $layer . ':"user_name" = \'\' AND "user_name" != \'\'';
                 }, $properties->print_metadata_layers));

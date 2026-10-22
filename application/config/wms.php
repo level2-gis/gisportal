@@ -46,7 +46,7 @@ $config['wms_max_image_size'] = 10 * 1024 * 1024; // 10MB
 
 // Location report maps: QGIS Server GetPrint (PNG) of a project print layout, one full DOCX page per map.
 // The PNG size is the layout page size at wms_print_dpi; the DOCX page gets the same physical size.
-$config['wms_location_report_max_maps'] = 4;
+$config['wms_location_report_max_maps'] = 8;
 $config['wms_print_dpi'] = 150;
 $config['wms_print_timeout'] = 45; // seconds per GetPrint request, maps are requested in parallel
 $config['wms_print_max_image_size'] = 20 * 1024 * 1024; // 20MB per PNG

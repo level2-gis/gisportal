@@ -134,7 +134,11 @@ function setBaseLayer(lay, projection) {
 
 		case 'WMS' :
 
-			if (definition.singleTile) {
+			var singleTile = definition.singleTile !== undefined
+				? definition.singleTile
+				: definition.options && definition.options.singleTile;
+
+			if (singleTile) {
 				layOl = new ol.layer.Image({
 					visible: visible,
 					source: new ol.source.ImageWMS({
@@ -264,4 +268,3 @@ for (var i = 0; i < baseLayers.length; i++) {
 if (GP.map.showProjection) {
 	$('#projection').html(projection.getCode());
 }
-

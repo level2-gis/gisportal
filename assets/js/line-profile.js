@@ -448,8 +448,12 @@
         });
         forEach(elevationTicks, function (tickElevation) {
             var tickY = yOffset + (zMax - tickElevation) * elevationScale;
+            var tickLabel = tickElevation.toLocaleString(opts.locale || 'sl-SI', {
+                minimumFractionDigits: elevationDecimals,
+                maximumFractionDigits: elevationDecimals
+            });
             svgParts.push('<line x1="' + (margin.left - 4) + '" y1="' + tickY + '" x2="' + margin.left + '" y2="' + tickY + '" stroke="#9aa3b3"/>');
-            svgParts.push('<text x="' + (margin.left - 7) + '" y="' + tickY + '" text-anchor="end" dominant-baseline="middle">' + escapeXml(formatNumber(tickElevation, elevationDecimals, opts.locale)) + '</text>');
+            svgParts.push('<text x="' + (margin.left - 7) + '" y="' + tickY + '" text-anchor="end" dominant-baseline="middle">' + escapeXml(tickLabel) + '</text>');
         });
         if (opts.distanceAxisLabel) {
             svgParts.push('<text x="' + (margin.left + plotWidth / 2) + '" y="' + Math.max(axisY + 27, height - 10) + '" text-anchor="middle">' + escapeXml(opts.distanceAxisLabel) + '</text>');

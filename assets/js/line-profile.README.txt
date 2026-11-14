@@ -47,8 +47,9 @@ the flat segment color. Repeated or decreasing distances are drawn as straight
 segments between interpolated runs.
 Both axes show rounded tick values in meters: whole meters for distance and
 meter or decimeter multiples for elevation. Finer elevation intervals are used
-when necessary to show multiple labels on very short ranges. `buildChart`
-accepts `locale` for tick formatting. Axis titles are hidden by default to
+when necessary to show multiple labels on very short ranges. Elevation ticks
+use a consistent number of decimal places. `buildChart` accepts `locale` for
+tick formatting. Axis titles are hidden by default to
 leave more room for the profile; `distanceAxisLabel` and `elevationAxisLabel`
 can be supplied to show them. If specifying a custom `margin`, allow room for
 tick values and any axis titles.

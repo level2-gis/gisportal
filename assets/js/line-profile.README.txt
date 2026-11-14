@@ -21,13 +21,36 @@ Typical usage:
 
   4. Wire up hover interaction on the container that now holds the SVG:
        var detach = GPLineProfile.attachHover(containerEl, state, chart.layout, {
-           onHover: function (point, slopePercent, projectedPoint) { ... },
+           onHover: function (point, slopePercent, projectedPoint) {
+               var slopeText = GPLineProfile.isFiniteNumber(slopePercent)
+                   ? GPLineProfile.formatNumber(slopePercent, 2) + '%' : 'ni podatka';
+               // Example: display 'Naklon: ' + slopeText in the client.
+           },
            onLeave: function () { ... }
        });
        // call detach() before re-rendering/removing the chart
 
+Hovering interpolates distance, coordinates and elevation linearly between
+the surrounding samples and reports the current segment's slope. At an interior
+sample, the following segment's slope is used; at the last sample, the
+preceding segment's slope is used. Missing slopes remain null. The marker and
+guides follow the linear reading, which may differ from the displayed PCHIP
+curve. Repeated distances select the next nonzero segment, except at the end;
+decreasing distances retain nearest-sample hover.
 `idPrefix` must be unique per chart instance on the page (it's used for
 internal SVG element ids). Reuse the same GPLineProfile.formatNumber /
 formatWithUnit helpers to keep number formatting consistent across clients.
+
+The chart uses shape-preserving cubic interpolation between samples; segment
+colors describe the original segments. Slopes from -1% to +1%, inclusive, use
+the flat segment color. Repeated or decreasing distances are drawn as straight
+segments between interpolated runs.
+Both axes show rounded tick values in meters: whole meters for distance and
+meter or decimeter multiples for elevation. Finer elevation intervals are used
+when necessary to show multiple labels on very short ranges. `buildChart`
+accepts `locale` for tick formatting. Axis titles are hidden by default to
+leave more room for the profile; `distanceAxisLabel` and `elevationAxisLabel`
+can be supplied to show them. If specifying a custom `margin`, allow room for
+tick values and any axis titles.
 
 See usage in gisportal-modules/application/views/modules/plan3d/map.php.
